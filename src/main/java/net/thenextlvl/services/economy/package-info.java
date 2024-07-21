@@ -2,7 +2,7 @@
 @FieldsAreNotNullByDefault
 @MethodsReturnNotNullByDefault
 @ParametersAreNotNullByDefault
-package net.thenextlvl.services.economy.account;
+package net.thenextlvl.services.economy;
 
 import core.annotation.FieldsAreNotNullByDefault;
 import core.annotation.MethodsReturnNotNullByDefault;

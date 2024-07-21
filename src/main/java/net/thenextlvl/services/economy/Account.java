@@ -1,4 +1,4 @@
-package net.thenextlvl.services.economy.account;
+package net.thenextlvl.services.economy;
 
 import java.util.UUID;
 
@@ -15,6 +15,14 @@ public interface Account {
     UUID getOwner();
 
     /**
+     * Deposits the specified amount into the account balance.
+     *
+     * @param amount the amount to be deposited
+     * @return the new balance after the deposit
+     */
+    double deposit(double amount);
+
+    /**
      * Retrieves the balance of the account.
      *
      * @return the balance of the account
@@ -28,12 +36,4 @@ public interface Account {
      * @return the new balance after the withdrawal
      */
     double withdraw(double amount);
-
-    /**
-     * Deposits the specified amount into the account balance.
-     *
-     * @param amount the amount to be deposited
-     * @return the new balance after the deposit
-     */
-    double deposit(double amount);
 }
