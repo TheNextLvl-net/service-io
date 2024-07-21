@@ -1,6 +1,7 @@
-package net.thenextlvl.services.chat;
+package net.thenextlvl.services.api.chat;
 
-import net.thenextlvl.services.permission.Group;
+import net.thenextlvl.services.api.permission.Group;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -13,6 +14,7 @@ public interface ChatProfile {
      *
      * @return The primary group of the chat profile.
      */
+    @Nullable
     Group getPrimaryGroup();
 
     /**
@@ -23,10 +25,19 @@ public interface ChatProfile {
     Set<Group> getGroups();
 
     /**
+     * Retrieves the name associated with the chat profile.
+     *
+     * @return The name of the chat profile as a string.
+     */
+    @Nullable
+    String getName();
+
+    /**
      * Retrieves the prefix for the chat profile.
      *
      * @return The prefix as a string.
      */
+    @Nullable
     String getPrefix();
 
     /**
@@ -34,6 +45,7 @@ public interface ChatProfile {
      *
      * @return The suffix as a string.
      */
+    @Nullable
     String getSuffix();
 
     /**
@@ -41,12 +53,12 @@ public interface ChatProfile {
      *
      * @param prefix The prefix to be set as a string.
      */
-    void setPrefix(String prefix);
+    void setPrefix(@Nullable String prefix);
 
     /**
      * Sets the suffix for the chat profile.
      *
      * @param suffix The suffix to be set as a string.
      */
-    void setSuffix(String suffix);
+    void setSuffix(@Nullable String suffix);
 }

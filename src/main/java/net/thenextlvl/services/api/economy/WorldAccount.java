@@ -1,4 +1,4 @@
-package net.thenextlvl.services.economy;
+package net.thenextlvl.services.api.economy;
 
 import org.bukkit.World;
 

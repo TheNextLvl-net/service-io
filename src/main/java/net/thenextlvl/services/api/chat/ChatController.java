@@ -1,4 +1,4 @@
-package net.thenextlvl.services.chat;
+package net.thenextlvl.services.api.chat;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
