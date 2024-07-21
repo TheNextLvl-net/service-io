@@ -7,6 +7,11 @@ plugins {
 group = "net.thenextlvl.services"
 version = "1.0.0"
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
 repositories {
     mavenCentral()
     maven("https://repo.thenextlvl.net/releases")
