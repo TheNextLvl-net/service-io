@@ -1,4 +1,5 @@
 import io.papermc.hangarpublishplugin.model.Platforms
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 
 plugins {
     id("java")
@@ -50,6 +51,7 @@ paper {
     author = "NonSwag"
     apiVersion = "1.21"
     foliaSupported = true
+    load = BukkitPluginDescription.PluginLoadOrder.STARTUP
 
     website = "https://thenextlvl.net"
     provides = listOf("Vault")
