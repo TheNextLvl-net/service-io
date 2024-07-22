@@ -1,4 +1,14 @@
 package net.thenextlvl.services.api.capability;
 
-public record Capability<C, I extends C>(Class<C> commonInterface, I implementation) {
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.ApiStatus;
+
+public interface Capability {
+    @ApiStatus.OverrideOnly
+    void disable(CapabilityController controller);
+
+    @ApiStatus.OverrideOnly
+    void enable(CapabilityController controller);
+
+    Plugin getPlugin();
 }
