@@ -10,6 +10,7 @@ import net.thenextlvl.services.api.economy.EconomyController;
 import net.thenextlvl.services.api.permission.GroupController;
 import net.thenextlvl.services.capability.PaperCapabilityController;
 import net.thenextlvl.services.chat.PaperChatController;
+import net.thenextlvl.services.listener.PluginListener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,6 +27,11 @@ public class ServicePlugin extends JavaPlugin implements ServiceProvider {
     @Override
     public void onLoad() {
         getServer().getServicesManager().register(ServiceProvider.class, this, this, ServicePriority.Highest);
+    }
+
+    @Override
+    public void onEnable() {
+        getServer().getPluginManager().registerEvents(new PluginListener(this), this);
     }
 
     @Override
