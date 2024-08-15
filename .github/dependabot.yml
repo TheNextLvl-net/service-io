@@ -10,4 +10,4 @@ updates:
       - "plugin"
       - "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
