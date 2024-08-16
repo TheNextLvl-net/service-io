@@ -34,7 +34,7 @@ dependencies {
     implementation("org.bstats:bstats-bukkit:3.0.2")
     implementation("com.github.MilkBowl:VaultAPI:1.7.1")
 
-    testImplementation(platform("org.junit:junit-bom:5.10.3"))
+    testImplementation(platform("org.junit:junit-bom:5.11.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 
     annotationProcessor("org.projectlombok:lombok:1.18.34")
