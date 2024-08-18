@@ -1,5 +1,6 @@
 import io.papermc.hangarpublishplugin.model.Platforms
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
+import net.minecrell.pluginyml.paper.PaperPluginDescription
 
 plugins {
     id("java")
@@ -14,8 +15,11 @@ group = rootProject.group
 version = rootProject.version
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+}
+
+tasks.compileJava {
+    options.release.set(21)
 }
 
 repositories {
@@ -26,19 +30,28 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.projectlombok:lombok:1.18.34")
-    compileOnly("net.thenextlvl.core:annotations:2.0.1")
+    annotationProcessor("org.projectlombok:lombok:1.18.34")
+
     compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
+    compileOnly("net.thenextlvl.core:annotations:2.0.1")
+    compileOnly("org.projectlombok:lombok:1.18.34")
+
+    compileOnly("com.github.ElgarL:groupmanager:3.2")
+    compileOnly("net.luckperms:api:5.4")
+
+    implementation("com.github.MilkBowl:VaultAPI:1.7.1")
+    implementation("net.thenextlvl.core:paper:1.4.1")
+    implementation("org.bstats:bstats-bukkit:3.0.2")
 
     implementation(rootProject)
 
-    implementation("org.bstats:bstats-bukkit:3.0.2")
-    implementation("com.github.MilkBowl:VaultAPI:1.7.1")
-
-    testImplementation(platform("org.junit:junit-bom:5.11.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation(platform("org.junit:junit-bom:5.11.0"))
+}
 
-    annotationProcessor("org.projectlombok:lombok:1.18.34")
+tasks.shadowJar {
+    relocate("org.bstats", "net.thenextlvl.services.bstats")
+    archiveBaseName.set("service-io")
 }
 
 tasks.test {
@@ -55,6 +68,17 @@ paper {
 
     website = "https://thenextlvl.net"
     provides = listOf("Vault")
+
+    serverDependencies {
+        register("GroupManager") {
+            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            required = false
+        }
+        register("LuckPerms") {
+            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            required = false
+        }
+    }
 }
 
 val versionString: String = project.version as String
@@ -66,7 +90,7 @@ val versions: List<String> = (property("gameVersions") as String)
 
 hangarPublish { // docs - https://docs.papermc.io/misc/hangar-publishing
     publications.register("plugin") {
-        id.set("ServiceIO") // todo: create project
+        id.set("ServiceIO")
         version.set(versionString)
         channel.set(if (isRelease) "Release" else "Snapshot")
         apiKey.set(System.getenv("HANGAR_API_TOKEN"))
