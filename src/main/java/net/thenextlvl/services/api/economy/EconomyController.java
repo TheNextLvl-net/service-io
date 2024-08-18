@@ -10,7 +10,6 @@ import java.util.concurrent.CompletableFuture;
  * The AccountController interface provides methods to create, retrieve and delete accounts.
  */
 public interface EconomyController {
-
     /**
      * Creates an account for the specified player.
      *
