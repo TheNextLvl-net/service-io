@@ -1,13 +1,11 @@
 package net.thenextlvl.services.api.permission;
 
-import org.bukkit.permissions.Permissible;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * The Group interface represents a group with a display name, name, prefix, and suffix.
- * It extends the Permissible interface.
  */
-public interface Group extends Permissible {
+public interface Group extends PermissionHolder {
     /**
      * Returns the display name of the group.
      *
