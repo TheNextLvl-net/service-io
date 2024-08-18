@@ -6,7 +6,6 @@ import net.thenextlvl.services.api.capability.Capability;
 import net.thenextlvl.services.api.capability.CapabilityConstructor;
 import net.thenextlvl.services.api.capability.CapabilityController;
 import net.thenextlvl.services.api.capability.CapabilityRegistry;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Arrays;
@@ -34,7 +33,7 @@ public class PaperCapabilityRegistry implements CapabilityRegistry {
     public void registerCapability(CapabilityConstructor<?> constructor) {
         Preconditions.checkState(capabilityConstructors.add(constructor),
                 "Capability constructor is already registered");
-        Arrays.stream(Bukkit.getPluginManager().getPlugins())
+        Arrays.stream(controller.owner().getServer().getPluginManager().getPlugins())
                 .filter(Plugin::isEnabled)
                 .filter(constructor::isCapable)
                 .map(plugin -> constructor.construct(controller.provider(), plugin))
