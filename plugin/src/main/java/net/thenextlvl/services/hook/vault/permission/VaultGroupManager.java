@@ -1,4 +1,4 @@
-package net.thenextlvl.services.hook.permission;
+package net.thenextlvl.services.hook.vault.permission;
 
 import lombok.Getter;
 import net.milkbowl.vault.permission.Permission;

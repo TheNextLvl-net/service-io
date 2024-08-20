@@ -1,4 +1,4 @@
-package net.thenextlvl.services.hook.chat;
+package net.thenextlvl.services.hook.vault.chat;
 
 import lombok.Getter;
 import net.milkbowl.vault.chat.Chat;

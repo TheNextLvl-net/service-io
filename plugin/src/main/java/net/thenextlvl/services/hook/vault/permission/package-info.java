@@ -1,7 +1,7 @@
 @FieldsAreNotNullByDefault
 @MethodsReturnNullableByDefault
 @ParametersAreNullableByDefault
-package net.thenextlvl.services.hook.chat;
+package net.thenextlvl.services.hook.vault.permission;
 
 import core.annotation.FieldsAreNotNullByDefault;
 import core.annotation.MethodsReturnNullableByDefault;

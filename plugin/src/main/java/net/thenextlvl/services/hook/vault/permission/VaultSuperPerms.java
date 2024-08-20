@@ -1,23 +1,14 @@
-package net.thenextlvl.services.hook.permission;
+package net.thenextlvl.services.hook.vault.permission;
 
 import lombok.Getter;
-import net.luckperms.api.LuckPerms;
-import net.luckperms.api.context.ImmutableContextSet;
-import net.luckperms.api.query.QueryMode;
-import net.luckperms.api.query.QueryOptions;
 import net.milkbowl.vault.permission.Permission;
-import net.thenextlvl.services.ServicePlugin;
-
-import java.util.Objects;
+import org.bukkit.plugin.Plugin;
 
 @Getter
-public class VaultLuckPerms extends Permission {
-    private final String name = "LuckPerms";
-    private final LuckPerms luckPerms;
+public class VaultSuperPerms extends Permission {
+    private final String name = "SuperPerms";
 
-    public VaultLuckPerms(ServicePlugin plugin) {
-        var servicesManager = plugin.getServer().getServicesManager();
-        this.luckPerms = Objects.requireNonNull(servicesManager.load(LuckPerms.class), "LuckPerms not found");
+    public VaultSuperPerms(Plugin plugin) {
         this.plugin = plugin;
     }
 
@@ -27,16 +18,9 @@ public class VaultLuckPerms extends Permission {
     }
 
     @Override
-    public boolean hasSuperPermsCompat() {
-        return true;
-    }
-
-    @Override
-    public boolean playerHas(String world, String player, String permission) {
-        var user = luckPerms.getUserManager().getUser(player);
-        return user != null && user.getCachedData().getPermissionData(QueryOptions.builder(QueryMode.CONTEXTUAL)
-                .context(ImmutableContextSet.of("world", world)).build()
-        ).checkPermission(permission).asBoolean();
+    public boolean playerHas(String world, String name, String permission) {
+        var player = plugin.getServer().getPlayer(name);
+        return player != null && player.hasPermission(permission);
     }
 
     @Override
@@ -51,42 +35,42 @@ public class VaultLuckPerms extends Permission {
 
     @Override
     public boolean groupHas(String world, String group, String permission) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean groupAdd(String world, String group, String permission) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean groupRemove(String world, String group, String permission) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean playerInGroup(String world, String player, String group) {
-        return false;
+        return playerHas(world, player, "groups." + group);
     }
 
     @Override
     public boolean playerAddGroup(String world, String player, String group) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean playerRemoveGroup(String world, String player, String group) {
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public String[] getPlayerGroups(String world, String player) {
-        return new String[0];
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public String getPrimaryGroup(String world, String player) {
-        return "";
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -95,7 +79,12 @@ public class VaultLuckPerms extends Permission {
     }
 
     @Override
-    public boolean hasGroupSupport() {
+    public boolean hasSuperPermsCompat() {
         return true;
+    }
+
+    @Override
+    public boolean hasGroupSupport() {
+        return false;
     }
 }
