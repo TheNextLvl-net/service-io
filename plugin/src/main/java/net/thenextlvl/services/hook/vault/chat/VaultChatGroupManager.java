@@ -9,12 +9,13 @@ import org.anjocaido.groupmanager.dataholder.OverloadedWorldHolder;
 import org.anjocaido.groupmanager.permissions.AnjoPermissionsHandler;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Getter
 public class VaultChatGroupManager extends Chat {
-    private final String name = "GroupManager - Chat";
-    private final ServicePlugin plugin;
-    private final GroupManager groupManager;
+    private final @NotNull String name = "GroupManager - Chat";
+    private final @NotNull ServicePlugin plugin;
+    private final @NotNull GroupManager groupManager;
 
     public VaultChatGroupManager(@NotNull ServicePlugin plugin, @NotNull Permission permission) {
         super(permission);
@@ -28,7 +29,7 @@ public class VaultChatGroupManager extends Chat {
     }
 
     @Override
-    public int getPlayerInfoInteger(String worldName, String playerName, String node, int defaultValue) {
+    public int getPlayerInfoInteger(@Nullable String worldName, @Nullable String playerName, @Nullable String node, int defaultValue) {
         AnjoPermissionsHandler handler;
         if (worldName == null) handler = groupManager.getWorldsHolder().getWorldPermissionsByPlayerName(playerName);
         else handler = groupManager.getWorldsHolder().getWorldPermissions(worldName);
@@ -37,7 +38,7 @@ public class VaultChatGroupManager extends Chat {
     }
 
     @Override
-    public void setPlayerInfoInteger(String worldName, String playerName, String node, int value) {
+    public void setPlayerInfoInteger(@Nullable String worldName, @Nullable String playerName, @Nullable String node, int value) {
         setPlayerValue(worldName, playerName, node, value);
     }
 
@@ -112,7 +113,7 @@ public class VaultChatGroupManager extends Chat {
     }
 
     @Override
-    public String getPlayerInfoString(String worldName, String playerName, String node, String defaultValue) {
+    public @Nullable String getPlayerInfoString(String worldName, String playerName, String node, String defaultValue) {
         AnjoPermissionsHandler handler;
         if (worldName == null) handler = groupManager.getWorldsHolder().getWorldPermissionsByPlayerName(playerName);
         else handler = groupManager.getWorldsHolder().getWorldPermissions(worldName);
@@ -127,7 +128,7 @@ public class VaultChatGroupManager extends Chat {
     }
 
     @Override
-    public String getGroupInfoString(String worldName, String groupName, String node, String defaultValue) {
+    public @Nullable String getGroupInfoString(@Nullable String worldName, @Nullable String groupName, @Nullable String node, @Nullable String defaultValue) {
         AnjoPermissionsHandler handler;
         if (worldName == null) handler = groupManager.getWorldsHolder().getDefaultWorld().getPermissionsHandler();
         else handler = groupManager.getWorldsHolder().getWorldPermissions(worldName);
@@ -137,12 +138,12 @@ public class VaultChatGroupManager extends Chat {
     }
 
     @Override
-    public void setGroupInfoString(String worldName, String groupName, String node, String value) {
+    public void setGroupInfoString(@Nullable String worldName, @Nullable String groupName, @Nullable String node, @Nullable String value) {
         setGroupValue(worldName, groupName, node, value);
     }
 
     @Override
-    public String getPlayerPrefix(String worldName, String playerName) {
+    public @Nullable String getPlayerPrefix(@Nullable String worldName, @Nullable String playerName) {
         AnjoPermissionsHandler handler;
         if (worldName == null) handler = groupManager.getWorldsHolder().getWorldPermissionsByPlayerName(playerName);
         else handler = groupManager.getWorldsHolder().getWorldPermissions(worldName);
@@ -151,7 +152,7 @@ public class VaultChatGroupManager extends Chat {
     }
 
     @Override
-    public String getPlayerSuffix(String worldName, String playerName) {
+    public @Nullable String getPlayerSuffix(@Nullable String worldName, @Nullable String playerName) {
         AnjoPermissionsHandler handler;
         if (worldName == null) handler = groupManager.getWorldsHolder().getWorldPermissionsByPlayerName(playerName);
         else handler = groupManager.getWorldsHolder().getWorldPermissions(worldName);
@@ -160,36 +161,36 @@ public class VaultChatGroupManager extends Chat {
     }
 
     @Override
-    public void setPlayerSuffix(String worldName, String player, String suffix) {
+    public void setPlayerSuffix(@Nullable String worldName, @Nullable String player, @Nullable String suffix) {
         setPlayerInfoString(worldName, player, "suffix", suffix);
     }
 
     @Override
-    public void setPlayerPrefix(String worldName, String player, String prefix) {
+    public void setPlayerPrefix(@Nullable String worldName, @Nullable String player, @Nullable String prefix) {
         setPlayerInfoString(worldName, player, "prefix", prefix);
     }
 
     @Override
-    public String getGroupPrefix(String worldName, String group) {
+    public @Nullable String getGroupPrefix(@Nullable String worldName, @Nullable String group) {
         return getGroupInfoString(worldName, group, "prefix", "");
     }
 
     @Override
-    public void setGroupPrefix(String worldName, String group, String prefix) {
+    public void setGroupPrefix(@Nullable String worldName, @Nullable String group, @Nullable String prefix) {
         setGroupInfoString(worldName, group, "prefix", prefix);
     }
 
     @Override
-    public String getGroupSuffix(String worldName, String group) {
+    public @Nullable String getGroupSuffix(@Nullable String worldName, @Nullable String group) {
         return getGroupInfoString(worldName, group, "suffix", "");
     }
 
     @Override
-    public void setGroupSuffix(String worldName, String group, String suffix) {
+    public void setGroupSuffix(@Nullable String worldName, @Nullable String group, @Nullable String suffix) {
         setGroupInfoString(worldName, group, "suffix", suffix);
     }
 
-    private void setPlayerValue(String worldName, String playerName, String node, Object value) {
+    private void setPlayerValue(@Nullable String worldName, @Nullable String playerName, @Nullable String node, @Nullable Object value) {
         OverloadedWorldHolder owh;
         if (worldName == null) owh = groupManager.getWorldsHolder().getWorldDataByPlayerName(playerName);
         else owh = groupManager.getWorldsHolder().getWorldData(worldName);
@@ -199,7 +200,7 @@ public class VaultChatGroupManager extends Chat {
         user.getVariables().addVar(node, value);
     }
 
-    private void setGroupValue(String worldName, String groupName, String node, Object value) {
+    private void setGroupValue(@Nullable String worldName, @Nullable String groupName, @Nullable String node, @Nullable Object value) {
         OverloadedWorldHolder owh;
         if (worldName == null) owh = groupManager.getWorldsHolder().getDefaultWorld();
         else owh = groupManager.getWorldsHolder().getWorldData(worldName);
