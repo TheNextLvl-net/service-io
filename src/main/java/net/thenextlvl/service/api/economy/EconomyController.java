@@ -1,4 +1,4 @@
-package net.thenextlvl.services.api.economy;
+package net.thenextlvl.service.api.economy;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -25,7 +25,7 @@ public interface EconomyController {
      * @param world  the world in which the player's account will be created
      * @return a CompletableFuture that will complete with the created account
      */
-    CompletableFuture<WorldAccount> createAccount(OfflinePlayer player, World world);
+    CompletableFuture<Account> createAccount(OfflinePlayer player, World world);
 
     /**
      * Creates an account with the given unique ID.
@@ -42,7 +42,7 @@ public interface EconomyController {
      * @param world    the world in which the account will be created
      * @return a CompletableFuture that will complete with the created account
      */
-    CompletableFuture<WorldAccount> createAccount(UUID uniqueId, World world);
+    CompletableFuture<Account> createAccount(UUID uniqueId, World world);
 
     /**
      * Retrieves the account for the specified player.
@@ -67,7 +67,7 @@ public interface EconomyController {
      * @param world    the world in which the account is located
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    CompletableFuture<WorldAccount> getAccount(UUID uniqueId, World world);
+    CompletableFuture<Account> getAccount(UUID uniqueId, World world);
 
     /**
      * Deletes the specified account.

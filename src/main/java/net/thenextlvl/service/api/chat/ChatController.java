@@ -1,4 +1,4 @@
-package net.thenextlvl.services.api.chat;
+package net.thenextlvl.service.api.chat;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -16,7 +16,9 @@ public interface ChatController {
      * @param player The OfflinePlayer whose ChatProfile is to be retrieved.
      * @return a CompletableFuture that will complete with the chat profile
      */
-    CompletableFuture<ChatProfile> getProfile(OfflinePlayer player);
+    default CompletableFuture<ChatProfile> getProfile(OfflinePlayer player) {
+        return getProfile(player.getUniqueId());
+    }
 
     /**
      * Retrieves the chat profile for the given OfflinePlayer in the specified world.
@@ -25,7 +27,9 @@ public interface ChatController {
      * @param world  The world for which the chat profile is requested.
      * @return A CompletableFuture that will complete with the chat profile.
      */
-    CompletableFuture<ChatProfile> getProfile(OfflinePlayer player, World world);
+    default CompletableFuture<ChatProfile> getProfile(OfflinePlayer player, World world) {
+        return getProfile(player.getUniqueId(), world);
+    }
 
     /**
      * Retrieves the chat profile for the given UUID.

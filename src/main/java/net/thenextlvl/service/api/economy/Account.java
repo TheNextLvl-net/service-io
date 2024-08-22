@@ -1,4 +1,4 @@
-package net.thenextlvl.services.api.economy;
+package net.thenextlvl.service.api.economy;
 
 import java.util.UUID;
 

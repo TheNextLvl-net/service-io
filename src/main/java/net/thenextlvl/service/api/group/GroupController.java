@@ -1,4 +1,4 @@
-package net.thenextlvl.services.api.permission;
+package net.thenextlvl.service.api.group;
 
 import java.util.Collection;
 import java.util.UUID;
