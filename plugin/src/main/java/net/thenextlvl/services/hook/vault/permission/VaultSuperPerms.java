@@ -2,13 +2,15 @@ package net.thenextlvl.services.hook.vault.permission;
 
 import lombok.Getter;
 import net.milkbowl.vault.permission.Permission;
-import org.bukkit.plugin.Plugin;
+import net.thenextlvl.services.ServicePlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @Getter
 public class VaultSuperPerms extends Permission {
-    private final String name = "SuperPerms";
+    private final @NotNull String name = "SuperPerms";
 
-    public VaultSuperPerms(Plugin plugin) {
+    public VaultSuperPerms(@NotNull ServicePlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -18,69 +20,69 @@ public class VaultSuperPerms extends Permission {
     }
 
     @Override
-    public boolean playerHas(String world, String name, String permission) {
+    public boolean hasSuperPermsCompat() {
+        return true;
+    }
+
+    @Override
+    public boolean playerHas(@Nullable String world, @NotNull String name, @NotNull String permission) {
         var player = plugin.getServer().getPlayer(name);
         return player != null && player.hasPermission(permission);
     }
 
     @Override
-    public boolean playerAdd(String world, String player, String permission) {
+    public boolean playerAdd(@Nullable String world, @NotNull String player, @NotNull String permission) {
         return false;
     }
 
     @Override
-    public boolean playerRemove(String world, String player, String permission) {
+    public boolean playerRemove(@Nullable String world, @NotNull String player, @NotNull String permission) {
         return false;
     }
 
     @Override
-    public boolean groupHas(String world, String group, String permission) {
+    public boolean groupHas(@Nullable String world, @NotNull String group, @NotNull String permission) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean groupAdd(String world, String group, String permission) {
+    public boolean groupAdd(@Nullable String world, @NotNull String group, @NotNull String permission) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean groupRemove(String world, String group, String permission) {
+    public boolean groupRemove(@Nullable String world, @NotNull String group, @NotNull String permission) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean playerInGroup(String world, String player, String group) {
+    public boolean playerInGroup(@Nullable String world, @NotNull String player, @NotNull String group) {
         return playerHas(world, player, "groups." + group);
     }
 
     @Override
-    public boolean playerAddGroup(String world, String player, String group) {
+    public boolean playerAddGroup(@Nullable String world, @NotNull String player, @NotNull String group) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean playerRemoveGroup(String world, String player, String group) {
+    public boolean playerRemoveGroup(@Nullable String world, @NotNull String player, @NotNull String group) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public String[] getPlayerGroups(String world, String player) {
+    public @NotNull String[] getPlayerGroups(@Nullable String world, @NotNull String player) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public String getPrimaryGroup(String world, String player) {
+    public @NotNull String getPrimaryGroup(@Nullable String world, @NotNull String player) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public String[] getGroups() {
+    public @NotNull String[] getGroups() {
         return new String[0];
-    }
-
-    @Override
-    public boolean hasSuperPermsCompat() {
-        return true;
     }
 
     @Override
