@@ -1,31 +1,27 @@
-package net.thenextlvl.services;
+package net.thenextlvl.service;
 
-import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.milkbowl.vault.chat.Chat;
+import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-import net.thenextlvl.services.api.ServiceProvider;
-import net.thenextlvl.services.api.chat.ChatController;
-import net.thenextlvl.services.api.economy.EconomyController;
-import net.thenextlvl.services.api.permission.GroupController;
-import net.thenextlvl.services.chat.PaperChatController;
-import net.thenextlvl.services.hook.vault.chat.VaultChatGroupManager;
-import net.thenextlvl.services.hook.vault.chat.VaultChatLuckPerms;
-import net.thenextlvl.services.hook.vault.permission.VaultGroupManager;
-import net.thenextlvl.services.hook.vault.permission.VaultLuckPerms;
-import net.thenextlvl.services.hook.vault.permission.VaultSuperPerms;
-import net.thenextlvl.services.version.PluginVersionChecker;
+import net.thenextlvl.service.vault.chat.GroupManagerVaultChat;
+import net.thenextlvl.service.vault.chat.LuckPermsVaultChat;
+import net.thenextlvl.service.vault.permission.VaultGroupManager;
+import net.thenextlvl.service.vault.permission.VaultLuckPerms;
+import net.thenextlvl.service.vault.permission.VaultSuperPerms;
+import net.thenextlvl.service.version.PluginVersionChecker;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 
 @Getter
 @Accessors(fluent = true)
-public class ServicePlugin extends JavaPlugin implements ServiceProvider {
+public class ServicePlugin extends JavaPlugin {
     private final PluginVersionChecker versionChecker = new PluginVersionChecker(this);
     private final Metrics metrics = new Metrics(this, 23083);
 
@@ -34,7 +30,6 @@ public class ServicePlugin extends JavaPlugin implements ServiceProvider {
     @Override
     public void onLoad() {
         versionChecker().checkVersion();
-        registerServices();
     }
 
     @Override
@@ -44,6 +39,8 @@ public class ServicePlugin extends JavaPlugin implements ServiceProvider {
 
         loadVaultPermission();
         loadVaultChat();
+
+        addCustomCharts();
     }
 
     @Override
@@ -51,32 +48,15 @@ public class ServicePlugin extends JavaPlugin implements ServiceProvider {
         metrics().shutdown();
     }
 
-    private void registerServices() {
-        getServer().getServicesManager().register(ServiceProvider.class, this, this, ServicePriority.Highest);
+    private void addCustomCharts() {
+        addCustomChart(Chat.class, Chat::getName, "chat");
+        addCustomChart(Economy.class, Economy::getName, "economy");
+        addCustomChart(Permission.class, Permission::getName, "permission");
     }
 
-    @Override
-    public ChatController chatController() {
-        return Objects.requireNonNullElseGet(
-                getServer().getServicesManager().load(ChatController.class),
-                () -> new PaperChatController(this)
-        );
-    }
-
-    @Override
-    public EconomyController economyController() {
-        return Preconditions.checkNotNull(
-                getServer().getServicesManager().load(EconomyController.class),
-                "No EconomyController available"
-        );
-    }
-
-    @Override
-    public GroupController groupController() {
-        return Preconditions.checkNotNull(
-                getServer().getServicesManager().load(GroupController.class),
-                "No GroupController available"
-        );
+    private <T> void addCustomChart(Class<T> service, Function<T, String> function, String name) {
+        var loaded = getServer().getServicesManager().load(service);
+        metrics.addCustomChart(new SimplePie(name, () -> loaded != null ? function.apply(loaded) : "None"));
     }
 
     private void loadPermissionControllers() {
@@ -86,8 +66,8 @@ public class ServicePlugin extends JavaPlugin implements ServiceProvider {
     }
 
     private void loadVaultChat() {
-        hookVaultChat("GroupManager", () -> new VaultChatGroupManager(this, permissions), ServicePriority.High);
-        hookVaultChat("LuckPerms", () -> new VaultChatLuckPerms(this, permissions), ServicePriority.Highest);
+        hookVaultChat("GroupManager", () -> new GroupManagerVaultChat(this, permissions), ServicePriority.High);
+        hookVaultChat("LuckPerms", () -> new LuckPermsVaultChat(this, permissions), ServicePriority.Highest);
     }
 
     private void loadVaultPermission() {

@@ -60,7 +60,7 @@ tasks.test {
 
 paper {
     name = "ServiceIO"
-    main = "net.thenextlvl.services.ServicePlugin"
+    main = "net.thenextlvl.service.ServicePlugin"
     author = "NonSwag"
     apiVersion = "1.21"
     foliaSupported = true

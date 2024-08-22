@@ -1,8 +1,8 @@
-package net.thenextlvl.services.hook.vault.permission;
+package net.thenextlvl.service.vault.permission;
 
 import lombok.Getter;
 import net.milkbowl.vault.permission.Permission;
-import net.thenextlvl.services.ServicePlugin;
+import net.thenextlvl.service.ServicePlugin;
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.data.Group;
 import org.anjocaido.groupmanager.data.User;

@@ -1,4 +1,4 @@
-package net.thenextlvl.services.hook.vault.chat;
+package net.thenextlvl.service.vault.chat;
 
 import lombok.Getter;
 import net.luckperms.api.LuckPerms;
@@ -15,18 +15,18 @@ import net.luckperms.api.node.types.SuffixNode;
 import net.luckperms.api.query.QueryOptions;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
-import net.thenextlvl.services.ServicePlugin;
+import net.thenextlvl.service.ServicePlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 @Getter
-public class VaultChatLuckPerms extends Chat {
+public class LuckPermsVaultChat extends Chat {
     private final @NotNull String name = "LuckPerms - Chat";
     private final @NotNull LuckPerms luckPerms;
 
-    public VaultChatLuckPerms(@NotNull ServicePlugin plugin, @NotNull Permission permission) {
+    public LuckPermsVaultChat(@NotNull ServicePlugin plugin, @NotNull Permission permission) {
         super(permission);
         this.luckPerms = LuckPermsProvider.get();
     }

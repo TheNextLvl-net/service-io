@@ -1,4 +1,4 @@
-package net.thenextlvl.services.version;
+package net.thenextlvl.service.version;
 
 import core.paper.version.PaperHangarVersionChecker;
 import core.version.SemanticVersion;

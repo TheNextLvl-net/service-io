@@ -1,9 +1,9 @@
-package net.thenextlvl.services.hook.vault.chat;
+package net.thenextlvl.service.vault.chat;
 
 import lombok.Getter;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
-import net.thenextlvl.services.ServicePlugin;
+import net.thenextlvl.service.ServicePlugin;
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.dataholder.OverloadedWorldHolder;
 import org.anjocaido.groupmanager.permissions.AnjoPermissionsHandler;
@@ -12,12 +12,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Getter
-public class VaultChatGroupManager extends Chat {
+public class GroupManagerVaultChat extends Chat {
     private final @NotNull String name = "GroupManager - Chat";
     private final @NotNull ServicePlugin plugin;
     private final @NotNull GroupManager groupManager;
 
-    public VaultChatGroupManager(@NotNull ServicePlugin plugin, @NotNull Permission permission) {
+    public GroupManagerVaultChat(@NotNull ServicePlugin plugin, @NotNull Permission permission) {
         super(permission);
         this.groupManager = JavaPlugin.getPlugin(GroupManager.class);
         this.plugin = plugin;

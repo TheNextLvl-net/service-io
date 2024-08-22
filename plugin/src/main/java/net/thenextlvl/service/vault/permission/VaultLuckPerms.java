@@ -1,4 +1,4 @@
-package net.thenextlvl.services.hook.vault.permission;
+package net.thenextlvl.service.vault.permission;
 
 import lombok.Getter;
 import net.luckperms.api.LuckPerms;
@@ -10,7 +10,7 @@ import net.luckperms.api.model.user.User;
 import net.luckperms.api.query.QueryMode;
 import net.luckperms.api.query.QueryOptions;
 import net.milkbowl.vault.permission.Permission;
-import net.thenextlvl.services.ServicePlugin;
+import net.thenextlvl.service.ServicePlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
