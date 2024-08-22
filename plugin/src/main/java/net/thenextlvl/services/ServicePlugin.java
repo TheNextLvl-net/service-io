@@ -47,8 +47,6 @@ public class ServicePlugin extends JavaPlugin implements ServiceProvider {
 
     @Override
     public void onEnable() {
-        registerListeners();
-
         loadPermissionControllers();
         loadChatControllers();
 
@@ -63,10 +61,6 @@ public class ServicePlugin extends JavaPlugin implements ServiceProvider {
 
     private void registerServices() {
         getServer().getServicesManager().register(ServiceProvider.class, this, this, ServicePriority.Highest);
-    }
-
-    private void registerListeners() {
-        getServer().getPluginManager().registerEvents(new PluginListener(this), this);
     }
 
     @Override
