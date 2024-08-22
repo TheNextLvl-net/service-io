@@ -6,38 +6,30 @@ import lombok.experimental.Accessors;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import net.thenextlvl.services.api.ServiceProvider;
-import net.thenextlvl.services.api.capability.CapabilityController;
 import net.thenextlvl.services.api.chat.ChatController;
 import net.thenextlvl.services.api.economy.EconomyController;
 import net.thenextlvl.services.api.permission.GroupController;
-import net.thenextlvl.services.capability.PaperCapabilityController;
 import net.thenextlvl.services.chat.PaperChatController;
 import net.thenextlvl.services.hook.vault.chat.VaultChatGroupManager;
 import net.thenextlvl.services.hook.vault.chat.VaultChatLuckPerms;
 import net.thenextlvl.services.hook.vault.permission.VaultGroupManager;
 import net.thenextlvl.services.hook.vault.permission.VaultLuckPerms;
 import net.thenextlvl.services.hook.vault.permission.VaultSuperPerms;
-import net.thenextlvl.services.listener.PluginListener;
 import net.thenextlvl.services.version.PluginVersionChecker;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
 @Getter
 @Accessors(fluent = true)
 public class ServicePlugin extends JavaPlugin implements ServiceProvider {
-    private final Map<Plugin, CapabilityController> capabilityControllers = new HashMap<>();
     private final PluginVersionChecker versionChecker = new PluginVersionChecker(this);
     private final Metrics metrics = new Metrics(this, 23083);
 
-    private @Nullable Permission permissions;
+    private Permission permissions = new VaultSuperPerms(this);
 
     @Override
     public void onLoad() {
@@ -61,12 +53,6 @@ public class ServicePlugin extends JavaPlugin implements ServiceProvider {
 
     private void registerServices() {
         getServer().getServicesManager().register(ServiceProvider.class, this, this, ServicePriority.Highest);
-    }
-
-    @Override
-    public CapabilityController capabilityController(Plugin plugin) {
-        return capabilityControllers().computeIfAbsent(plugin, owner ->
-                new PaperCapabilityController(owner, this));
     }
 
     @Override
@@ -108,11 +94,11 @@ public class ServicePlugin extends JavaPlugin implements ServiceProvider {
         hookVaultPermission("GroupManager", () -> new VaultGroupManager(this), ServicePriority.High);
         hookVaultPermission("LuckPerms", () -> new VaultLuckPerms(this), ServicePriority.Highest);
 
-        var permissions = new VaultSuperPerms(this);
-        getServer().getServicesManager().register(Permission.class, permissions, this, ServicePriority.Lowest);
-        getComponentLogger().info("[Permission] SuperPermissions loaded as backup permission system.");
+        getServer().getServicesManager().register(Permission.class, this.permissions, this, ServicePriority.Lowest);
+        getComponentLogger().info("[Permission] Registered SuperPerms as backup provider");
 
-        this.permissions = getServer().getServicesManager().load(Permission.class);
+        var permissions = getServer().getServicesManager().load(Permission.class);
+        if (permissions != null) this.permissions = permissions;
     }
 
     private void hookVaultChat(String name, Callable<? extends Chat> callable, ServicePriority priority) {
