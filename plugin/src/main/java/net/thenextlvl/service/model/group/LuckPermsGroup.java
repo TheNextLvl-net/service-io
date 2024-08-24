@@ -8,6 +8,7 @@ import net.thenextlvl.service.api.group.Group;
 
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.function.Function;
 
 public record LuckPermsGroup(net.luckperms.api.model.group.Group group, QueryOptions options) implements Group {
     @Override
@@ -32,7 +33,7 @@ public record LuckPermsGroup(net.luckperms.api.model.group.Group group, QueryOpt
 
     @Override
     public String getName() {
-        return group().getFriendlyName();
+        return group().getName();
     }
 
     @Override
@@ -82,6 +83,32 @@ public record LuckPermsGroup(net.luckperms.api.model.group.Group group, QueryOpt
     @Override
     public boolean removePermission(String permission) {
         var result = group().data().remove(PermissionNode.builder(permission).context(options().context()).build());
+        LuckPermsProvider.get().getGroupManager().saveGroup(group());
+        return result.wasSuccessful();
+    }
+
+    @Override
+    public <T> Optional<T> getInfoNode(String key, Function<String, T> mapper) {
+        return group().getCachedData().getMetaData(options()).getMetaValue(key, mapper);
+    }
+
+    @Override
+    public boolean setInfoNode(String key, String value) {
+        var result = group().data().add(MetaNode.builder(key, value).context(options().context()).build());
+        LuckPermsProvider.get().getGroupManager().saveGroup(group());
+        return result.wasSuccessful();
+    }
+
+    @Override
+    public boolean removeInfoNode(String key) {
+        group().data().clear(options().context(), node -> node.getKey().equals(key));
+        LuckPermsProvider.get().getGroupManager().saveGroup(group());
+        return true;
+    }
+
+    @Override
+    public boolean removeInfoNode(String key, String value) {
+        var result = group().data().remove(MetaNode.builder(key, value).context(options().context()).build());
         LuckPermsProvider.get().getGroupManager().saveGroup(group());
         return result.wasSuccessful();
     }
