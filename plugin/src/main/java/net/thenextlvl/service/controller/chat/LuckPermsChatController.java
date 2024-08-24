@@ -1,5 +1,6 @@
 package net.thenextlvl.service.controller.chat;
 
+import lombok.Getter;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.context.ImmutableContextSet;
@@ -13,6 +14,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class LuckPermsChatController implements ChatController {
+    private final @Getter String name = "LuckPerms";
     private final LuckPerms luckPerms = LuckPermsProvider.get();
 
     @Override
