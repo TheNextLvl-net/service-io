@@ -11,6 +11,13 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface ChatController {
     /**
+     * Retrieves the name associated with the permission controller.
+     *
+     * @return the name of the chat controller.
+     */
+    String getName();
+
+    /**
      * Retrieves the chat profile for the given OfflinePlayer.
      *
      * @param player The OfflinePlayer whose ChatProfile is to be retrieved.
