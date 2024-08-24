@@ -146,7 +146,7 @@ public class ServicePlugin extends JavaPlugin {
     }
 
     private void loadVaultChatWrapper() {
-        var wrapper = new VaultChatServiceWrapper(vaultPermissionWrapper(), this);
+        var wrapper = new VaultChatServiceWrapper(vaultPermissionWrapper(), chatController(), this);
         getServer().getServicesManager().register(Chat.class, wrapper, this, ServicePriority.Highest);
     }
 }
