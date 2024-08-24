@@ -1,12 +1,12 @@
 package net.thenextlvl.service.api.economy;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
  * Account is an interface representing a financial account.
  */
 public interface Account {
-
     /**
      * Returns the UUID of the owner of this account.
      *
@@ -20,14 +20,14 @@ public interface Account {
      * @param amount the amount to be deposited
      * @return the new balance after the deposit
      */
-    double deposit(double amount);
+    BigDecimal deposit(Number amount);
 
     /**
      * Retrieves the balance of the account.
      *
      * @return the balance of the account
      */
-    double getBalance();
+    BigDecimal getBalance();
 
     /**
      * Withdraws the specified amount from the account balance.
@@ -35,5 +35,5 @@ public interface Account {
      * @param amount the amount to be withdrawn
      * @return the new balance after the withdrawal
      */
-    double withdraw(double amount);
+    BigDecimal withdraw(Number amount);
 }
