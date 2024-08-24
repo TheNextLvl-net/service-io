@@ -1,87 +1,109 @@
 package net.thenextlvl.service.api.group;
 
-import java.util.Collection;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * The GroupController interface provides methods for managing groups and the membership of players in groups.
+ * The GroupController interface provides methods for managing groups.
  */
 public interface GroupController {
     /**
-     * Checks whether a given player is in the specified group.
+     * Retrieves the name associated with the permission controller.
      *
-     * @param uniqueId The unique ID of the player.
-     * @param group    The group to check membership for.
-     * @return A CompletableFuture that will complete with a boolean indicating whether the player is in the group or not.
+     * @return the name of the chat controller.
      */
-    CompletableFuture<Boolean> inGroup(UUID uniqueId, Group group);
+    String getName();
 
     /**
-     * Checks whether a given player is in the specified group.
+     * Creates a new group with the given name.
      *
-     * @param uniqueId The unique ID of the player.
-     * @param group    The name of the group to check membership for.
-     * @return A CompletableFuture that will complete with a boolean indicating whether the player is in the group or not.
+     * @param name the name of the group to create
+     * @return a CompletableFuture that will complete with the created Group object
      */
-    CompletableFuture<Boolean> inGroup(UUID uniqueId, String group);
+    CompletableFuture<Group> createGroup(String name);
+
+    /**
+     * Creates a new group with the given name.
+     *
+     * @param name  the name of the group to create
+     * @param world the world the group should be created for
+     * @return a CompletableFuture that will complete with the created Group object
+     */
+    CompletableFuture<Group> createGroup(String name, World world);
+
+    /**
+     * Retrieves the group with the given name.
+     *
+     * @param name the name of the group to retrieve
+     * @return a CompletableFuture that will complete with the retrieved Group object
+     */
+    CompletableFuture<Group> getGroup(String name);
+
+    /**
+     * Retrieves the group with the given name.
+     *
+     * @param name  the name of the group to retrieve
+     * @param world the world the group should be received from
+     * @return a CompletableFuture that will complete with the retrieved Group object
+     */
+    CompletableFuture<Group> getGroup(String name, World world);
+
+    /**
+     * Retrieves the GroupHolder associated with the given player.
+     *
+     * @param player the player for which to retrieve the GroupHolder
+     * @return a CompletableFuture that will complete with the retrieved GroupHolder object
+     */
+    default CompletableFuture<GroupHolder> getGroupHolder(OfflinePlayer player) {
+        return getGroupHolder(player.getUniqueId());
+    }
+
+    /**
+     * Retrieves the GroupHolder associated with the given player.
+     *
+     * @param player the player for which to retrieve the GroupHolder
+     * @param world  the world the group holder should be received from
+     * @return a CompletableFuture that will complete with the retrieved GroupHolder object
+     */
+    default CompletableFuture<GroupHolder> getGroupHolder(OfflinePlayer player, World world) {
+        return getGroupHolder(player.getUniqueId(), world);
+    }
+
+    /**
+     * Retrieves the GroupHolder associated with the given UUID.
+     *
+     * @param uuid the UUID of the player for which to retrieve the GroupHolder
+     * @return a CompletableFuture that will complete with the retrieved GroupHolder object
+     */
+    CompletableFuture<GroupHolder> getGroupHolder(UUID uuid);
+
+    /**
+     * Retrieves the GroupHolder associated with the given UUID.
+     *
+     * @param uuid  the UUID of the player for which to retrieve the GroupHolder
+     * @param world the world the group holder should be received from
+     * @return a CompletableFuture that will complete with the retrieved GroupHolder object
+     */
+    CompletableFuture<GroupHolder> getGroupHolder(UUID uuid, World world);
 
     /**
      * Retrieves all groups.
      *
      * @return A CompletableFuture that will complete with a collection of all the groups.
      */
-    CompletableFuture<Collection<Group>> getGroups();
+    CompletableFuture<Set<Group>> getGroups();
 
     /**
-     * Retrieves the groups associated with a player identified by a unique ID.
+     * Retrieves all groups.
      *
-     * @param uniqueId The unique ID of the player.
-     * @return A CompletableFuture that will complete with a collection of Group objects associated with the player.
+     * @param world the world the groups should be received from
+     * @return A CompletableFuture that will complete with a collection of all the groups.
      */
-    CompletableFuture<Collection<Group>> getGroups(UUID uniqueId);
-
-    /**
-     * Creates a new group with the given name.
-     *
-     * @param group the name of the group to create
-     * @return a CompletableFuture that will complete with the created Group object
-     */
-    CompletableFuture<Group> createGroup(String group);
-
-    /**
-     * Retrieves the group with the given name.
-     *
-     * @param group the name of the group to retrieve
-     * @return a CompletableFuture that will complete with the retrieved Group object
-     */
-    CompletableFuture<Group> getGroup(String group);
-
-    /**
-     * Retrieves the primary group of a player with the provided UUID.
-     *
-     * @param uniqueId The UUID of the player.
-     * @return A CompletableFuture that will complete with the primary Group object of the player.
-     */
-    CompletableFuture<Group> getPrimaryGroup(UUID uniqueId);
-
-    /**
-     * Adds a group to the player with the provided unique ID.
-     *
-     * @param uniqueId the unique ID of the player to add the group to
-     * @param group    the group to add
-     * @return a CompletableFuture that will complete when the group has been successfully added to the player
-     */
-    CompletableFuture<Void> addGroup(UUID uniqueId, Group group);
-
-    /**
-     * Adds a group to a player with the provided unique ID.
-     *
-     * @param uniqueId the unique ID of the player to add the group to
-     * @param group    the name of the group to add
-     * @return a CompletableFuture that will complete when the group has been successfully added to the player
-     */
-    CompletableFuture<Void> addGroup(UUID uniqueId, String group);
+    CompletableFuture<Set<Group>> getGroups(World world);
 
     /**
      * Deletes the given group.
@@ -89,31 +111,31 @@ public interface GroupController {
      * @param group the group to delete
      * @return a CompletableFuture that will complete when the group has been deleted
      */
-    CompletableFuture<Void> deleteGroup(Group group);
+    CompletableFuture<Boolean> deleteGroup(Group group);
+
+    /**
+     * Deletes the given group.
+     *
+     * @param group the group to delete
+     * @param world the world the group should be deleted from
+     * @return a CompletableFuture that will complete when the group has been deleted
+     */
+    CompletableFuture<Boolean> deleteGroup(Group group, World world);
 
     /**
      * Deletes the group with the given name.
      *
-     * @param group the name of the group to delete
+     * @param name the name of the group to delete
      * @return a CompletableFuture that will complete when the group has been deleted
      */
-    CompletableFuture<Void> deleteGroup(String group);
+    CompletableFuture<Boolean> deleteGroup(String name);
 
     /**
-     * Removes the specified group from the player with the given unique ID.
+     * Deletes the group with the given name.
      *
-     * @param uniqueId the unique ID of the player
-     * @param group    the group to be removed from the player
-     * @return a CompletableFuture that will complete when the group has been successfully removed from the player
+     * @param name  the name of the group to delete
+     * @param world the world the group should be deleted from
+     * @return a CompletableFuture that will complete when the group has been deleted
      */
-    CompletableFuture<Void> removeGroup(UUID uniqueId, Group group);
-
-    /**
-     * Removes the specified group from the player with the given unique ID.
-     *
-     * @param uniqueId the unique ID of the player
-     * @param group    the name of the group to be removed from the player
-     * @return a CompletableFuture that will complete when the group has been successfully removed from the player
-     */
-    CompletableFuture<Void> removeGroup(UUID uniqueId, String group);
+    CompletableFuture<Boolean> deleteGroup(String name, World world);
 }
