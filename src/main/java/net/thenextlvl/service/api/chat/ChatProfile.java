@@ -1,6 +1,7 @@
 package net.thenextlvl.service.api.chat;
 
 import net.thenextlvl.service.api.group.Group;
+import net.thenextlvl.service.api.node.InfoNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -10,7 +11,7 @@ import java.util.Set;
 /**
  * The ChatProfile interface represents a chat profile for a user.
  */
-public interface ChatProfile {
+public interface ChatProfile extends InfoNode {
     /**
      * Retrieves the name associated with the chat profile.
      *
@@ -64,8 +65,8 @@ public interface ChatProfile {
      *
      * @param prefix The prefix to set for the chat profile.
      */
-    default void setPrefix(String prefix) {
-        setPrefix(prefix, 0);
+    default boolean setPrefix(String prefix) {
+        return setPrefix(prefix, 0);
     }
 
     /**
@@ -76,15 +77,15 @@ public interface ChatProfile {
      * @see ChatProfile#getPrefix()
      * @see ChatProfile#setPrefix(String)
      */
-    void setPrefix(String prefix, int priority);
+    boolean setPrefix(String prefix, int priority);
 
     /**
      * Sets the suffix associated with the chat profile.
      *
      * @param suffix The suffix to set for the chat profile.
      */
-    default void setSuffix(String suffix) {
-        setSuffix(suffix, 0);
+    default boolean setSuffix(String suffix) {
+        return setSuffix(suffix, 0);
     }
 
     /**
@@ -95,5 +96,5 @@ public interface ChatProfile {
      * @see ChatProfile#getSuffix()
      * @see ChatProfile#setSuffix(String)
      */
-    void setSuffix(String suffix, int priority);
+    boolean setSuffix(String suffix, int priority);
 }
