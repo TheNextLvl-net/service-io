@@ -2,6 +2,7 @@ package net.thenextlvl.service.model.chat;
 
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.types.MetaNode;
 import net.luckperms.api.node.types.PrefixNode;
 import net.luckperms.api.node.types.SuffixNode;
 import net.luckperms.api.query.QueryOptions;
@@ -9,9 +10,11 @@ import net.thenextlvl.service.api.chat.ChatProfile;
 import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.model.group.LuckPermsGroup;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public record LuckPermsChatProfile(User user, QueryOptions options) implements ChatProfile {
@@ -48,14 +51,42 @@ public record LuckPermsChatProfile(User user, QueryOptions options) implements C
     }
 
     @Override
-    public void setPrefix(String prefix, int priority) {
-        user().data().add(PrefixNode.builder(prefix, priority).context(options().context()).build());
+    public boolean setPrefix(String prefix, int priority) {
+        var result = user().data().add(PrefixNode.builder(prefix, priority).context(options().context()).build());
         LuckPermsProvider.get().getUserManager().saveUser(user());
+        return result.wasSuccessful();
     }
 
     @Override
-    public void setSuffix(String suffix, int priority) {
-        user().data().add(SuffixNode.builder(suffix, priority).context(options().context()).build());
+    public boolean setSuffix(String suffix, int priority) {
+        var result = user().data().add(SuffixNode.builder(suffix, priority).context(options().context()).build());
         LuckPermsProvider.get().getUserManager().saveUser(user());
+        return result.wasSuccessful();
+    }
+
+    @Override
+    public <T> Optional<T> getInfoNode(String key, Function<String, @Nullable T> mapper) {
+        return user().getCachedData().getMetaData(options()).getMetaValue(key, mapper);
+    }
+
+    @Override
+    public boolean setInfoNode(String key, String value) {
+        var result = user().data().add(MetaNode.builder(key, value).context(options().context()).build());
+        LuckPermsProvider.get().getUserManager().saveUser(user());
+        return result.wasSuccessful();
+    }
+
+    @Override
+    public boolean removeInfoNode(String key) {
+        user().data().clear(options().context(), node -> node.getKey().equals(key));
+        LuckPermsProvider.get().getUserManager().saveUser(user());
+        return true;
+    }
+
+    @Override
+    public boolean removeInfoNode(String key, String value) {
+        var result = user().data().remove(MetaNode.builder(key, value).context(options().context()).build());
+        LuckPermsProvider.get().getUserManager().saveUser(user());
+        return result.wasSuccessful();
     }
 }
