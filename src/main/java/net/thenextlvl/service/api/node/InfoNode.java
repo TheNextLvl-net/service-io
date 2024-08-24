@@ -3,8 +3,6 @@ package net.thenextlvl.service.api.node;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
 import java.util.function.Function;
 
 /**
@@ -76,10 +74,8 @@ public interface InfoNode {
      * @return an {@code OptionalDouble} containing the information node value if it exists
      * @throws NumberFormatException if the value associated with the key cannot be parsed into a double
      */
-    default OptionalDouble doubleInfoNode(String key) throws NumberFormatException {
-        return getInfoNode(key, s -> s != null ? Double.parseDouble(s) : null)
-                .map(OptionalDouble::of)
-                .orElseGet(OptionalDouble::empty);
+    default Optional<Double> doubleInfoNode(String key) throws NumberFormatException {
+        return getInfoNode(key, s -> s != null ? Double.parseDouble(s) : null);
     }
 
     /**
@@ -89,10 +85,8 @@ public interface InfoNode {
      * @return an {@code OptionalInt} containing the information node value if it exists
      * @throws NumberFormatException if the value associated with the key cannot be parsed into an integer
      */
-    default OptionalInt intInfoNode(String key) throws NumberFormatException {
-        return getInfoNode(key, s -> s != null ? Integer.parseInt(s) : null)
-                .map(OptionalInt::of)
-                .orElseGet(OptionalInt::empty);
+    default Optional<Integer> intInfoNode(String key) throws NumberFormatException {
+        return getInfoNode(key, s -> s != null ? Integer.parseInt(s) : null);
     }
 
     /**
