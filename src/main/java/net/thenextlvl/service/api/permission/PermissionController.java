@@ -13,6 +13,13 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface PermissionController {
     /**
+     * Retrieves the name associated with the permission controller.
+     *
+     * @return the name of the chat controller.
+     */
+    String getName();
+
+    /**
      * Retrieves the {@code PermissionHolder} for the given {@code OfflinePlayer}.
      *
      * @param player the player for whom to retrieve the permission holder
@@ -39,19 +46,19 @@ public interface PermissionController {
     /**
      * Retrieves the {@code PermissionHolder} for the specified {@code UUID}.
      *
-     * @param uniqueId the unique ID of the player for whom to retrieve the permission holder
+     * @param uuid the unique ID of the player for whom to retrieve the permission holder
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
      */
-    CompletableFuture<PermissionHolder> getPermissionHolder(UUID uniqueId);
+    CompletableFuture<PermissionHolder> getPermissionHolder(UUID uuid);
 
     /**
      * Retrieves the {@code PermissionHolder} for the specified {@code UUID} and {@code World}.
      *
-     * @param uniqueId the unique ID of the player for whom to retrieve the permission holder
-     * @param world    the world in which the permission holder exists
+     * @param uuid  the unique ID of the player for whom to retrieve the permission holder
+     * @param world the world in which the permission holder exists
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
      */
-    CompletableFuture<PermissionHolder> getPermissionHolder(UUID uniqueId, World world);
+    CompletableFuture<PermissionHolder> getPermissionHolder(UUID uuid, World world);
 }
