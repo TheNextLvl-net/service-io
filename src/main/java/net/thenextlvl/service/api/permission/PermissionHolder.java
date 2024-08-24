@@ -1,12 +1,14 @@
 package net.thenextlvl.service.api.permission;
 
 import net.kyori.adventure.util.TriState;
+import net.thenextlvl.service.api.node.InfoNode;
 
 /**
  * The {@code PermissionHolder} interface represents an entity that holds permissions.
+ * It extends the {@link InfoNode} interface.
  * It provides methods to check, add, and remove permissions for the holder.
  */
-public interface PermissionHolder {
+public interface PermissionHolder extends InfoNode {
     /**
      * Checks if the specified permission is granted.
      *
