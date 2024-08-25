@@ -11,11 +11,16 @@ import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+
+import static net.milkbowl.vault.economy.EconomyResponse.ResponseType.FAILURE;
+import static net.milkbowl.vault.economy.EconomyResponse.ResponseType.SUCCESS;
 
 @RequiredArgsConstructor
 @FieldsAreNotNullByDefault
@@ -33,6 +38,11 @@ public class VaultEconomyServiceWrapper implements Economy {
     @Override
     public String getName() {
         return economyController.getName();
+    }
+
+    private BankController bankController() throws UnsupportedOperationException {
+        if (bankController == null) throw new UnsupportedOperationException(getName() + " has no bank support");
+        return bankController;
     }
 
     @Override
@@ -71,8 +81,8 @@ public class VaultEconomyServiceWrapper implements Economy {
     }
 
     @Override
-    public boolean hasAccount(String name, String worldName) {
-        return getAccount(name, worldName).isPresent();
+    public boolean hasAccount(String playerName, String worldName) {
+        return getAccount(playerName, worldName).isPresent();
     }
 
     @Override
@@ -91,8 +101,8 @@ public class VaultEconomyServiceWrapper implements Economy {
     }
 
     @Override
-    public double getBalance(String name, String worldName) {
-        var player = name != null ? plugin.getServer().getOfflinePlayerIfCached(name) : null;
+    public double getBalance(String playerName, String worldName) {
+        var player = playerName != null ? plugin.getServer().getOfflinePlayerIfCached(playerName) : null;
         return getBalance(player, worldName);
     }
 
@@ -135,8 +145,8 @@ public class VaultEconomyServiceWrapper implements Economy {
     }
 
     @Override
-    public EconomyResponse withdrawPlayer(String name, String worldName, double amount) {
-        var player = name != null ? plugin.getServer().getOfflinePlayerIfCached(name) : null;
+    public EconomyResponse withdrawPlayer(String playerName, String worldName, double amount) {
+        var player = playerName != null ? plugin.getServer().getOfflinePlayerIfCached(playerName) : null;
         return withdrawPlayer(player, worldName, amount);
     }
 
@@ -145,11 +155,9 @@ public class VaultEconomyServiceWrapper implements Economy {
         return getAccount(player, null).map(account -> {
             var balance = account.getBalance();
             var withdraw = account.withdraw(amount);
-            var responseType = balance.equals(withdraw)
-                    ? EconomyResponse.ResponseType.SUCCESS
-                    : EconomyResponse.ResponseType.FAILURE;
+            var responseType = balance.equals(withdraw) ? SUCCESS : FAILURE;
             return new EconomyResponse(amount, withdraw.doubleValue(), responseType, null);
-        }).orElse(null);
+        }).orElseGet(() -> new EconomyResponse(amount, 0, FAILURE, null));
     }
 
     @Override
@@ -173,81 +181,121 @@ public class VaultEconomyServiceWrapper implements Economy {
         return getAccount(player, null).map(account -> {
             var balance = account.getBalance();
             var deposit = account.deposit(amount);
-            var responseType = balance.equals(deposit)
-                    ? EconomyResponse.ResponseType.SUCCESS
-                    : EconomyResponse.ResponseType.FAILURE;
+            var responseType = balance.equals(deposit) ? SUCCESS : FAILURE;
             return new EconomyResponse(amount, deposit.doubleValue(), responseType, null);
-        }).orElse(null);
+        }).orElseGet(() -> new EconomyResponse(amount, 0, FAILURE, null));
     }
 
     @Override
-    public EconomyResponse createBank(String name, String playerName) {
+    public EconomyResponse createBank(@NotNull String name, String playerName) {
         var player = playerName != null ? plugin.getServer().getOfflinePlayerIfCached(playerName) : null;
         return createBank(name, player);
     }
 
     @Override
-    public EconomyResponse createBank(String name, OfflinePlayer player) {
-        return null;
+    public EconomyResponse createBank(@NotNull String name, OfflinePlayer player) {
+        return Optional.ofNullable(player)
+                .map(offline -> bankController().createBank(offline, name).join())
+                .map(bank -> new EconomyResponse(0, 0, SUCCESS, null))
+                .orElseGet(() -> new EconomyResponse(0, 0, FAILURE, null));
     }
 
     @Override
-    public EconomyResponse deleteBank(String name) {
-        return null;
+    public EconomyResponse deleteBank(@NotNull String name) {
+        var deleted = bankController().deleteBank(name).join();
+        return new EconomyResponse(0, 0, deleted ? SUCCESS : FAILURE, null);
     }
 
     @Override
-    public EconomyResponse bankBalance(String name) {
-        return null;
+    public EconomyResponse bankBalance(@NotNull String name) {
+        try {
+            var bank = bankController().tryGetBank(name).get();
+            return new EconomyResponse(0, bank.getBalance().doubleValue(), SUCCESS, null);
+        } catch (InterruptedException | ExecutionException e) {
+            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
+        }
     }
 
     @Override
-    public EconomyResponse bankHas(String name, double amount) {
-        return null;
+    public EconomyResponse bankHas(@NotNull String name, double amount) {
+        try {
+            var bank = bankController().tryGetBank(name).get();
+            var balance = bank.getBalance().doubleValue();
+            var response = balance >= amount ? SUCCESS : FAILURE;
+            return new EconomyResponse(amount, balance, response, null);
+        } catch (InterruptedException | ExecutionException e) {
+            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
+        }
     }
 
     @Override
-    public EconomyResponse bankWithdraw(String name, double amount) {
-        return null;
+    public EconomyResponse bankWithdraw(@NotNull String name, double amount) {
+        try {
+            var bank = bankController().tryGetBank(name).get();
+            var balance = bank.withdraw(amount).doubleValue();
+            var response = balance >= amount ? SUCCESS : FAILURE;
+            return new EconomyResponse(amount, balance, response, null);
+        } catch (InterruptedException | ExecutionException e) {
+            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
+        }
     }
 
     @Override
-    public EconomyResponse bankDeposit(String name, double amount) {
-        return null;
+    public EconomyResponse bankDeposit(@NotNull String name, double amount) {
+        try {
+            var bank = bankController().tryGetBank(name).get();
+            var balance = bank.deposit(amount).doubleValue();
+            var response = balance >= amount ? SUCCESS : FAILURE;
+            return new EconomyResponse(amount, balance, response, null);
+        } catch (InterruptedException | ExecutionException e) {
+            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
+        }
     }
 
     @Override
-    public EconomyResponse isBankOwner(String name, String playerName) {
-        var player = name != null ? plugin.getServer().getOfflinePlayerIfCached(name) : null;
+    public EconomyResponse isBankOwner(@NotNull String name, String playerName) {
+        var player = playerName != null ? plugin.getServer().getOfflinePlayerIfCached(playerName) : null;
         return isBankOwner(name, player);
     }
 
     @Override
-    public EconomyResponse isBankOwner(String name, OfflinePlayer player) {
-        return null;
+    public EconomyResponse isBankOwner(@NotNull String name, OfflinePlayer player) {
+        try {
+            var bank = bankController().tryGetBank(name).get();
+            var response = player != null && bank.getOwner().equals(player.getUniqueId()) ? SUCCESS : FAILURE;
+            return new EconomyResponse(0, bank.getBalance().doubleValue(), response, null);
+        } catch (InterruptedException | ExecutionException e) {
+            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
+        }
     }
 
     @Override
-    public EconomyResponse isBankMember(String name, String playerName) {
-        var player = name != null ? plugin.getServer().getOfflinePlayerIfCached(name) : null;
+    public EconomyResponse isBankMember(@NotNull String name, String playerName) {
+        var player = playerName != null ? plugin.getServer().getOfflinePlayerIfCached(playerName) : null;
         return isBankMember(name, player);
     }
 
     @Override
-    public EconomyResponse isBankMember(String name, OfflinePlayer player) {
-        return null;
+    public EconomyResponse isBankMember(@NotNull String name, OfflinePlayer player) {
+        try {
+            var bank = bankController().tryGetBank(name).get();
+            var response = player != null && bank.isMember(player.getUniqueId()) ? SUCCESS : FAILURE;
+            return new EconomyResponse(0, bank.getBalance().doubleValue(), response, null);
+        } catch (InterruptedException | ExecutionException e) {
+            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
+        }
     }
 
     @Override
     public List<String> getBanks() {
         return Optional.ofNullable(bankController).map(BankController::getBanks)
-                .map(future -> future.join().stream().map(Bank::getName).toList())
+                .map(banks -> banks.stream().map(Bank::getName).toList())
                 .orElse(List.of());
     }
 
     @Override
-    public boolean createPlayerAccount(String name) {
-        var player = name != null ? plugin.getServer().getOfflinePlayerIfCached(name) : null;
+    public boolean createPlayerAccount(String playerName) {
+        var player = playerName != null ? plugin.getServer().getOfflinePlayerIfCached(playerName) : null;
         return createPlayerAccount(player);
     }
 
@@ -257,28 +305,28 @@ public class VaultEconomyServiceWrapper implements Economy {
     }
 
     @Override
-    public boolean createPlayerAccount(String name, String worldName) {
-        var player = name != null ? plugin.getServer().getOfflinePlayerIfCached(name) : null;
+    public boolean createPlayerAccount(String playerName, String worldName) {
+        var player = playerName != null ? plugin.getServer().getOfflinePlayerIfCached(playerName) : null;
         return createPlayerAccount(player, worldName);
     }
 
     @Override
     public boolean createPlayerAccount(OfflinePlayer player, String worldName) {
-        return Optional.ofNullable(player).flatMap(online -> Optional.ofNullable(worldName)
+        return Optional.ofNullable(player).flatMap(offline -> Optional.ofNullable(worldName)
                         .map(plugin.getServer()::getWorld)
                         .map(world -> economyController.createAccount(player, world).join()))
                 .isPresent();
     }
 
-    private Optional<Account> getAccount(String name, String worldName) {
-        return Optional.ofNullable(name)
+    private Optional<Account> getAccount(String playerName, String worldName) {
+        return Optional.ofNullable(playerName)
                 .map(plugin.getServer()::getOfflinePlayerIfCached)
                 .flatMap(player -> getAccount(player, worldName));
     }
 
     private Optional<Account> getAccount(OfflinePlayer player, String worldName) {
-        return Optional.ofNullable(player).flatMap(online -> Optional.ofNullable(worldName)
+        return Optional.ofNullable(player).flatMap(offline -> Optional.ofNullable(worldName)
                 .map(plugin.getServer()::getWorld)
-                .map(world -> economyController.getAccount(online, world).join()));
+                .map(world -> economyController.tryGetAccount(offline, world).join()));
     }
 }
