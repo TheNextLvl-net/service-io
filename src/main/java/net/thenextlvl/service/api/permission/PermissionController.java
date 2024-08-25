@@ -2,6 +2,7 @@ package net.thenextlvl.service.api.permission;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.jetbrains.annotations.Contract;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -12,13 +13,6 @@ import java.util.concurrent.CompletableFuture;
  * @see PermissionHolder
  */
 public interface PermissionController {
-    /**
-     * Retrieves the name associated with the permission controller.
-     *
-     * @return the name of the chat controller.
-     */
-    String getName();
-
     /**
      * Retrieves the {@code PermissionHolder} for the given {@code OfflinePlayer}.
      *
@@ -61,4 +55,12 @@ public interface PermissionController {
      * @see PermissionHolder
      */
     CompletableFuture<PermissionHolder> getPermissionHolder(UUID uuid, World world);
+
+    /**
+     * Retrieves the name associated with the permission controller.
+     *
+     * @return the name of the chat controller.
+     */
+    @Contract(pure = true)
+    String getName();
 }
