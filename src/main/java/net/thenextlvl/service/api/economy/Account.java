@@ -1,19 +1,15 @@
 package net.thenextlvl.service.api.economy;
 
+import org.bukkit.World;
+
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
  * Account is an interface representing a financial account.
  */
 public interface Account {
-    /**
-     * Returns the UUID of the owner of this account.
-     *
-     * @return the UUID of the owner
-     */
-    UUID getOwner();
-
     /**
      * Deposits the specified amount into the account balance.
      *
@@ -36,4 +32,18 @@ public interface Account {
      * @return the new balance after the withdrawal
      */
     BigDecimal withdraw(Number amount);
+
+    /**
+     * Returns an optional containing the world associated with this account.
+     *
+     * @return an {@code Optional<World>} containing the world associated with this account, or empty
+     */
+    Optional<World> getWorld();
+
+    /**
+     * Returns the UUID of the owner of this account.
+     *
+     * @return the UUID of the owner
+     */
+    UUID getOwner();
 }
