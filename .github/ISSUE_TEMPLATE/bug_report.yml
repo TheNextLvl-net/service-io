@@ -45,7 +45,7 @@ body:
       label: Error log (if applicable)
       description: If you are reporting a console error, upload any relevant log excerpts to either https://paste.gg/ or https://gist.github.com, save and the paste the link in this box.
 
-  - type: input
+  - type: textarea
     attributes:
       label: Installed plugins
       description: What plugins are you using? (`/plugins`)
