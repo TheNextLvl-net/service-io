@@ -1,6 +1,7 @@
 name: Bug report
 description: Create a report to help us improve
-assignees: NonSwag
+assignees:
+  - NonSwag
 body:
   - type: markdown
     attributes:
