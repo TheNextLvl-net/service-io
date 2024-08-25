@@ -12,6 +12,7 @@ import net.thenextlvl.service.model.group.LuckPermsGroup;
 import net.thenextlvl.service.model.permission.LuckPermsPermissionHolder;
 import org.bukkit.World;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -36,7 +37,7 @@ public class LuckPermsGroupController implements GroupController {
     }
 
     @Override
-    public CompletableFuture<Group> getGroup(String name) {
+    public CompletableFuture<Group> loadGroup(String name) {
         return luckPerms.getGroupManager().loadGroup(name).thenCompose(optional ->
                 optional.<Group>map(group -> new LuckPermsGroup(group, QueryOptions.defaultContextualOptions()))
                         .map(CompletableFuture::completedFuture)
@@ -44,7 +45,7 @@ public class LuckPermsGroupController implements GroupController {
     }
 
     @Override
-    public CompletableFuture<Group> getGroup(String name, World world) {
+    public CompletableFuture<Group> loadGroup(String name, World world) {
         return luckPerms.getGroupManager().loadGroup(name).thenCompose(optional -> optional.<Group>map(group -> {
                     var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
                     return new LuckPermsGroup(group, context);
@@ -54,13 +55,13 @@ public class LuckPermsGroupController implements GroupController {
     }
 
     @Override
-    public CompletableFuture<GroupHolder> getGroupHolder(UUID uuid) {
+    public CompletableFuture<GroupHolder> loadGroupHolder(UUID uuid) {
         return luckPerms.getUserManager().loadUser(uuid).thenApply(user ->
                 new LuckPermsPermissionHolder(user, QueryOptions.defaultContextualOptions()));
     }
 
     @Override
-    public CompletableFuture<GroupHolder> getGroupHolder(UUID uuid, World world) {
+    public CompletableFuture<GroupHolder> loadGroupHolder(UUID uuid, World world) {
         return luckPerms.getUserManager().loadUser(uuid).thenApply(user -> {
             var options = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
             return new LuckPermsPermissionHolder(user, options);
@@ -68,22 +69,13 @@ public class LuckPermsGroupController implements GroupController {
     }
 
     @Override
-    public CompletableFuture<Set<Group>> getGroups() {
-        return luckPerms.getGroupManager().loadAllGroups().thenApply(none ->
-                luckPerms.getGroupManager().getLoadedGroups().stream()
-                        .map(group -> new LuckPermsGroup(group, QueryOptions.defaultContextualOptions()))
-                        .collect(Collectors.toUnmodifiableSet()));
+    public CompletableFuture<Set<Group>> loadGroups() {
+        return luckPerms.getGroupManager().loadAllGroups().thenApply(unused -> getGroups());
     }
 
     @Override
-    public CompletableFuture<Set<Group>> getGroups(World world) {
-        return luckPerms.getGroupManager().loadAllGroups().thenApply(none ->
-                luckPerms.getGroupManager().getLoadedGroups().stream()
-                        .map(group -> {
-                            var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
-                            return new LuckPermsGroup(group, context);
-                        })
-                        .collect(Collectors.toUnmodifiableSet()));
+    public CompletableFuture<Set<Group>> loadGroups(World world) {
+        return luckPerms.getGroupManager().loadAllGroups().thenApply(unused -> getGroups(world));
     }
 
     @Override
@@ -106,5 +98,48 @@ public class LuckPermsGroupController implements GroupController {
     @Override
     public CompletableFuture<Boolean> deleteGroup(String name, World world) {
         return deleteGroup(name);
+    }
+
+    @Override
+    public Optional<Group> getGroup(String name) {
+        return Optional.ofNullable(luckPerms.getGroupManager().getGroup(name)).map(group ->
+                new LuckPermsGroup(group, QueryOptions.defaultContextualOptions()));
+    }
+
+    @Override
+    public Optional<Group> getGroup(String name, World world) {
+        return Optional.ofNullable(luckPerms.getGroupManager().getGroup(name)).map(group -> {
+            var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
+            return new LuckPermsGroup(group, context);
+        });
+    }
+
+    @Override
+    public Optional<GroupHolder> getGroupHolder(UUID uuid) {
+        return Optional.ofNullable(luckPerms.getUserManager().getUser(uuid)).map(user ->
+                new LuckPermsPermissionHolder(user, QueryOptions.defaultContextualOptions()));
+    }
+
+    @Override
+    public Optional<GroupHolder> getGroupHolder(UUID uuid, World world) {
+        return Optional.ofNullable(luckPerms.getUserManager().getUser(uuid)).map(user -> {
+            var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
+            return new LuckPermsPermissionHolder(user, context);
+        });
+    }
+
+    @Override
+    public Set<Group> getGroups() {
+        return luckPerms.getGroupManager().getLoadedGroups().stream()
+                .map(group -> new LuckPermsGroup(group, QueryOptions.defaultContextualOptions()))
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
+    @Override
+    public Set<Group> getGroups(World world) {
+        var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
+        return luckPerms.getGroupManager().getLoadedGroups().stream()
+                .map(group -> new LuckPermsGroup(group, context))
+                .collect(Collectors.toUnmodifiableSet());
     }
 }
