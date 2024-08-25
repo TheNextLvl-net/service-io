@@ -47,6 +47,14 @@ body:
 
   - type: input
     attributes:
+      label: Installed plugins
+      description: What plugins are you using? (`/plugins`)
+      placeholder: "Example output: Essentials, PlotSquared, ServiceIO, VaultChatFormatter"
+    validations:
+      required: true
+      
+  - type: input
+    attributes:
       label: ServiceIO Version
       description: What version of ServiceIO are you running? (`/version ServiceIO`)
       placeholder: "For example: version 1.1.0"
