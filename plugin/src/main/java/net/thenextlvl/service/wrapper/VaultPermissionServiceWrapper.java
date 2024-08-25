@@ -7,6 +7,7 @@ import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.group.GroupHolder;
 import net.thenextlvl.service.api.permission.PermissionController;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -15,7 +16,11 @@ public class VaultPermissionServiceWrapper extends Permission {
     private final @Nullable GroupController groupController;
     private final PermissionController permissionController;
 
-    public VaultPermissionServiceWrapper(@Nullable GroupController groupController, PermissionController permissionController, ServicePlugin plugin) {
+    public VaultPermissionServiceWrapper(
+            @Nullable GroupController groupController,
+            @NotNull PermissionController permissionController,
+            @NotNull ServicePlugin plugin
+    ) {
         this.groupController = groupController;
         this.permissionController = permissionController;
         super.plugin = plugin;
@@ -37,7 +42,7 @@ public class VaultPermissionServiceWrapper extends Permission {
     }
 
     @Override
-    public boolean playerHas(String world, String player, String permission) {
+    public boolean playerHas(String world, String player, @NotNull String permission) {
         return getGroupHolder(player, world)
                 .map(holder -> holder.checkPermission(permission))
                 .map(TriState::toBoolean)
@@ -45,30 +50,32 @@ public class VaultPermissionServiceWrapper extends Permission {
     }
 
     @Override
-    public boolean playerAdd(String world, String player, String permission) {
+    public boolean playerAdd(String world, String player, @NotNull String permission) {
         return getGroupHolder(player, world)
                 .map(holder -> holder.addPermission(permission))
                 .orElse(false);
     }
 
     @Override
-    public boolean playerRemove(String world, String player, String permission) {
+    public boolean playerRemove(String world, String player, @NotNull String permission) {
         return getGroupHolder(player, world)
                 .map(holder -> holder.removePermission(permission))
                 .orElse(false);
     }
 
     @Override
-    public boolean groupHas(String world, String group, String permission) {
-        return groupController().getGroup(group).thenApply(group1 ->
-                        group1.checkPermission(permission))
-                .join().equals(TriState.TRUE);
+    public boolean groupHas(String world, @NotNull String groupName, @NotNull String permission) {
+        return groupController().getGroup(groupName)
+                .map(group -> group.checkPermission(permission))
+                .map(TriState.TRUE::equals)
+                .orElse(false);
     }
 
     @Override
-    public boolean groupAdd(String world, String group, String permission) {
+    public boolean groupAdd(String world, @NotNull String group, @NotNull String permission) {
         var groupController = groupController();
-        return Optional.ofNullable(plugin.getServer().getWorld(world))
+        return Optional.ofNullable(world)
+                .map(plugin.getServer()::getWorld)
                 .map(target -> groupController.createGroup(group, target))
                 .orElseGet(() -> groupController.createGroup(group))
                 .thenApply(created -> true)
@@ -76,30 +83,31 @@ public class VaultPermissionServiceWrapper extends Permission {
     }
 
     @Override
-    public boolean groupRemove(String world, String group, String permission) {
+    public boolean groupRemove(String world, @NotNull String group, @NotNull String permission) {
         var groupController = groupController();
-        return Optional.ofNullable(plugin.getServer().getWorld(world))
+        return Optional.ofNullable(world)
+                .map(plugin.getServer()::getWorld)
                 .map(target -> groupController.deleteGroup(group, target))
                 .orElseGet(() -> groupController.deleteGroup(group))
                 .join();
     }
 
     @Override
-    public boolean playerInGroup(String world, String player, String group) {
+    public boolean playerInGroup(String world, String player, @NotNull String group) {
         return getGroupHolder(player, world)
                 .map(holder -> holder.inGroup(group))
                 .orElse(false);
     }
 
     @Override
-    public boolean playerAddGroup(String world, String player, String group) {
+    public boolean playerAddGroup(String world, String player, @NotNull String group) {
         return getGroupHolder(player, world)
                 .map(holder -> holder.addGroup(group))
                 .orElse(false);
     }
 
     @Override
-    public boolean playerRemoveGroup(String world, String player, String group) {
+    public boolean playerRemoveGroup(String world, String player, @NotNull String group) {
         return getGroupHolder(player, world)
                 .map(holder -> holder.removeGroup(group))
                 .orElse(false);
@@ -123,7 +131,7 @@ public class VaultPermissionServiceWrapper extends Permission {
 
     @Override
     public String[] getGroups() {
-        return groupController().getGroups().join().stream()
+        return groupController().getGroups().stream()
                 .map(Group::getName)
                 .toArray(String[]::new);
     }
@@ -140,11 +148,11 @@ public class VaultPermissionServiceWrapper extends Permission {
 
     private Optional<GroupHolder> getGroupHolder(String player, @Nullable String world) {
         var groupController = groupController();
-        return Optional.ofNullable(plugin.getServer().getPlayer(player))
-                .map(online -> Optional.ofNullable(world)
+        return Optional.ofNullable(player)
+                .map(plugin.getServer()::getOfflinePlayerIfCached)
+                .map(offline -> Optional.ofNullable(world)
                         .map(plugin.getServer()::getWorld)
-                        .map(target -> groupController.getGroupHolder(online, target))
-                        .orElseGet(() -> groupController.getGroupHolder(online))
-                        .join());
+                        .map(target -> groupController.tryGetGroupHolder(offline, target).join())
+                        .orElseGet(() -> groupController.tryGetGroupHolder(offline).join()));
     }
 }
