@@ -23,7 +23,7 @@ public record GroupManagerChatProfile(User user, WorldDataHolder holder) impleme
 
     @Override
     public Optional<String> getPrefix() {
-        return getInfoNode("prefix");
+        return Optional.ofNullable(holder().getPermissionsHandler().getUserPrefix(user().getLastName()));
     }
 
     @Override
@@ -33,7 +33,7 @@ public record GroupManagerChatProfile(User user, WorldDataHolder holder) impleme
 
     @Override
     public Optional<String> getSuffix() {
-        return getInfoNode("suffix");
+        return Optional.ofNullable(holder().getPermissionsHandler().getUserSuffix(user().getLastName()));
     }
 
     @Override
