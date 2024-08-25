@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  * Account is an interface representing a financial account.
  */
-public interface Account {
+public interface Account extends Comparable<Account> {
     /**
      * Deposits the specified amount into the account balance.
      *
@@ -46,4 +46,16 @@ public interface Account {
      * @return the UUID of the owner
      */
     UUID getOwner();
+
+    /**
+     * Compares this account to the specified account based on their balance.
+     *
+     * @param account the account to be compared
+     * @return a negative integer, zero, or a positive integer if this account is
+     * less than, equal to, or greater than the specified account
+     */
+    @Override
+    default int compareTo(Account account) {
+        return getBalance().compareTo(account.getBalance());
+    }
 }
