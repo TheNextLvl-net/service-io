@@ -1,30 +1,66 @@
----
 name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: bug
+description: Create a report to help us improve
 assignees: NonSwag
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report for ServiceIO! Fill out the following form to your best ability to help us fix the problem.
+        Only use this if you're absolutely sure that you found a bug and can reproduce it. For anything else, use: [our Discord server](https://thenextlvl.net/discord).
 
----
+  - type: textarea
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+  - type: textarea
+    attributes:
+      label: To Reproduce
+      description: Steps to reproduce this behaviour
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+  - type: textarea
+    attributes:
+      label: Expected behaviour
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+  - type: textarea
+    attributes:
+      label: Screenshots / Videos
+      description: If applicable, add screenshots to help explain your problem.
 
-**Screenshots and Logs**
-If applicable, add screenshots and logs to help explain your problem.
+  - type: input
+    attributes:
+      label: Error log (if applicable)
+      description: If you are reporting a console error, upload any relevant log excerpts to either https://paste.gg/ or https://gist.github.com, save and the paste the link in this box.
 
-**Plugins**
-Provide a list of all of your plugins
+  - type: input
+    attributes:
+      label: ServiceIO Version
+      description: What version of ServiceIO are you running? (`/version ServiceIO`)
+      placeholder: "For example: version 1.1.0"
+    validations:
+      required: true
 
-**Additional context**
-Add any other context about the problem here.
+  - type: checkboxes
+    attributes:
+      label: Checklist
+      description: Make sure you have followed each of the steps outlined here.
+      options:
+        - label: I am using the newest build from https://github.com/TheNextLvl-net/service-io and the issue still persists.
+          required: true
+
+  - type: textarea
+    attributes:
+      label: Anything else?
+      description: You can provide additional context below.
