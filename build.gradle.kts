@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "net.thenextlvl.services"
-version = "1.0.0"
+version = "0.1.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
