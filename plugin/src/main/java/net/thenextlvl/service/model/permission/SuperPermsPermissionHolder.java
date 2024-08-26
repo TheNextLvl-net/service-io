@@ -62,7 +62,7 @@ public record SuperPermsPermissionHolder(CommandSender sender) implements GroupH
     }
 
     @Override
-    public boolean addGroup(String group) {
+    public boolean addGroup(String name) {
         return false;
     }
 
@@ -72,7 +72,7 @@ public record SuperPermsPermissionHolder(CommandSender sender) implements GroupH
     }
 
     @Override
-    public boolean inGroup(String group) {
+    public boolean inGroup(String name) {
         return false;
     }
 
@@ -82,7 +82,7 @@ public record SuperPermsPermissionHolder(CommandSender sender) implements GroupH
     }
 
     @Override
-    public boolean removeGroup(String group) {
+    public boolean removeGroup(String name) {
         return false;
     }
 
@@ -92,7 +92,7 @@ public record SuperPermsPermissionHolder(CommandSender sender) implements GroupH
     }
 
     @Override
-    public boolean setPrimaryGroup(String group) {
+    public boolean setPrimaryGroup(String name) {
         return false;
     }
 }
