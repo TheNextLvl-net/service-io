@@ -7,6 +7,7 @@ import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.group.GroupHolder;
 import net.thenextlvl.service.api.permission.PermissionController;
+import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +44,7 @@ public class VaultPermissionServiceWrapper extends Permission {
 
     @Override
     public boolean playerHas(String world, String player, @NotNull String permission) {
-        return getGroupHolder(player, world)
+        return getPermissionHolder(player, world)
                 .map(holder -> holder.checkPermission(permission))
                 .map(TriState::toBoolean)
                 .orElse(false);
@@ -51,14 +52,14 @@ public class VaultPermissionServiceWrapper extends Permission {
 
     @Override
     public boolean playerAdd(String world, String player, @NotNull String permission) {
-        return getGroupHolder(player, world)
+        return getPermissionHolder(player, world)
                 .map(holder -> holder.addPermission(permission))
                 .orElse(false);
     }
 
     @Override
     public boolean playerRemove(String world, String player, @NotNull String permission) {
-        return getGroupHolder(player, world)
+        return getPermissionHolder(player, world)
                 .map(holder -> holder.removePermission(permission))
                 .orElse(false);
     }
@@ -144,6 +145,15 @@ public class VaultPermissionServiceWrapper extends Permission {
     private GroupController groupController() throws UnsupportedOperationException {
         if (groupController != null) return groupController;
         throw new UnsupportedOperationException(getName() + " has no group support");
+    }
+
+    private Optional<PermissionHolder> getPermissionHolder(String player, @Nullable String world) {
+        return Optional.ofNullable(player)
+                .map(plugin.getServer()::getOfflinePlayerIfCached)
+                .map(offline -> Optional.ofNullable(world)
+                        .map(plugin.getServer()::getWorld)
+                        .map(target -> permissionController.getPermissionHolder(offline, target).join())
+                        .orElseGet(() -> permissionController.getPermissionHolder(offline).join()));
     }
 
     private Optional<GroupHolder> getGroupHolder(String player, @Nullable String world) {
