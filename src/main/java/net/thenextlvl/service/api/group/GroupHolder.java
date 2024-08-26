@@ -41,10 +41,10 @@ public interface GroupHolder extends PermissionHolder {
     /**
      * Adds a group to the permission holder.
      *
-     * @param group the name of the group to be added
+     * @param name the name of the group to be added
      * @return true if the group was successfully added, false otherwise
      */
-    boolean addGroup(String group);
+    boolean addGroup(String name);
 
     /**
      * Checks if the permission holder is in the specified group.
@@ -57,10 +57,10 @@ public interface GroupHolder extends PermissionHolder {
     /**
      * Checks if the permission holder is in the specified group.
      *
-     * @param group the name of the group to check
+     * @param name the name of the group to check
      * @return true if the permission holder is in the group, false otherwise
      */
-    boolean inGroup(String group);
+    boolean inGroup(String name);
 
     /**
      * Removes a group from the permission holder.
@@ -73,10 +73,10 @@ public interface GroupHolder extends PermissionHolder {
     /**
      * Removes a group from the permission holder.
      *
-     * @param group the name of the group to be removed
+     * @param name the name of the group to be removed
      * @return true if the group was successfully removed, false otherwise
      */
-    boolean removeGroup(String group);
+    boolean removeGroup(String name);
 
     /**
      * Sets the primary group for the permission holder.
@@ -89,8 +89,8 @@ public interface GroupHolder extends PermissionHolder {
     /**
      * Sets the primary group for the permission holder.
      *
-     * @param group the name of the group to set as the primary group
+     * @param name the name of the group to set as the primary group
      * @return true if the primary group is successfully set, false otherwise
      */
-    boolean setPrimaryGroup(String group);
+    boolean setPrimaryGroup(String name);
 }
