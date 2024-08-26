@@ -57,12 +57,17 @@ public record GroupManagerGroup(org.anjocaido.groupmanager.data.Group group) imp
 
     @Override
     public TriState checkPermission(String permission) {
-        return group().hasSamePermissionNode(permission) ? TriState.TRUE : TriState.NOT_SET;
+        var handler = group().getDataSource().getPermissionsHandler();
+        return switch(handler.checkGroupOnlyPermission(group(), permission).resultType) {
+            case FOUND -> TriState.TRUE;
+            case NEGATION, EXCEPTION -> TriState.FALSE;
+            default -> TriState.NOT_SET;
+        };
     }
 
     @Override
     public boolean addPermission(String permission) {
-        if (checkPermission(permission).equals(TriState.TRUE)) return false;
+        if (!checkPermission(permission).equals(TriState.NOT_SET)) return false;
         group().addPermission(permission);
         return true;
     }
