@@ -83,8 +83,8 @@ public record LuckPermsPermissionHolder(User user, QueryOptions options) impleme
     }
 
     @Override
-    public boolean addGroup(String group) {
-        return addPermission("group." + group);
+    public boolean addGroup(String name) {
+        return addPermission("group." + name);
     }
 
     @Override
@@ -93,8 +93,8 @@ public record LuckPermsPermissionHolder(User user, QueryOptions options) impleme
     }
 
     @Override
-    public boolean inGroup(String group) {
-        return checkPermission("group." + group).equals(TriState.TRUE);
+    public boolean inGroup(String name) {
+        return checkPermission("group." + name).equals(TriState.TRUE);
     }
 
     @Override
@@ -103,8 +103,8 @@ public record LuckPermsPermissionHolder(User user, QueryOptions options) impleme
     }
 
     @Override
-    public boolean removeGroup(String group) {
-        return removePermission("group." + group);
+    public boolean removeGroup(String name) {
+        return removePermission("group." + name);
     }
 
     @Override
@@ -113,7 +113,7 @@ public record LuckPermsPermissionHolder(User user, QueryOptions options) impleme
     }
 
     @Override
-    public boolean setPrimaryGroup(String group) {
-        return user.setPrimaryGroup(group).wasSuccessful();
+    public boolean setPrimaryGroup(String name) {
+        return user.setPrimaryGroup(name).wasSuccessful();
     }
 }
