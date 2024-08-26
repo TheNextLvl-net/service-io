@@ -46,6 +46,6 @@ public class GroupManagerPermissionController implements PermissionController {
         if (holder == null) return CompletableFuture.completedFuture(null);
         var user = name != null ? holder.getUser(uuid.toString(), name) : holder.getUser(uuid.toString());
         if (user == null) return CompletableFuture.completedFuture(null);
-        return CompletableFuture.completedFuture(new GroupManagerPermissionHolder(user));
+        return CompletableFuture.completedFuture(new GroupManagerPermissionHolder(user, holder));
     }
 }
