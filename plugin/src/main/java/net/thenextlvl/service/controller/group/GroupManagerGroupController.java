@@ -139,10 +139,8 @@ public class GroupManagerGroupController implements GroupController {
 
     @Override
     public Set<Group> getGroups() {
-        var holder = groupManager.getWorldsHolder().getDefaultWorld();
-        if (holder == null) return Set.of();
-        return holder.getGroups().values().stream()
-                .map(GroupManagerGroup::new)
+        return groupManager.getServer().getWorlds().stream()
+                .<Group>mapMulti((world, consumer) -> getGroups().forEach(consumer))
                 .collect(Collectors.toUnmodifiableSet());
     }
 
@@ -159,6 +157,6 @@ public class GroupManagerGroupController implements GroupController {
         if (holder == null) return Optional.empty();
         var user = name != null ? holder.getUser(uuid.toString(), name) : holder.getUser(uuid.toString());
         if (user == null) return Optional.empty();
-        return Optional.of(new GroupManagerPermissionHolder(user));
+        return Optional.of(new GroupManagerPermissionHolder(user, holder));
     }
 }
