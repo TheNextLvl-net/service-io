@@ -20,26 +20,26 @@ public class SuperPermsPermissionController implements PermissionController {
     private final ServicePlugin plugin;
 
     @Override
-    public CompletableFuture<PermissionHolder> getPermissionHolder(OfflinePlayer player) {
-        return getPermissionHolder(player.getPlayer());
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(OfflinePlayer player) {
+        return loadPermissionHolder(player.getPlayer());
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> getPermissionHolder(OfflinePlayer player, World world) {
-        return getPermissionHolder(player.getPlayer());
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(OfflinePlayer player, World world) {
+        return loadPermissionHolder(player.getPlayer());
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> getPermissionHolder(UUID uuid) {
-        return getPermissionHolder(plugin.getServer().getPlayer(uuid));
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid) {
+        return loadPermissionHolder(plugin.getServer().getPlayer(uuid));
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> getPermissionHolder(UUID uuid, World world) {
-        return getPermissionHolder(plugin.getServer().getPlayer(uuid));
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, World world) {
+        return loadPermissionHolder(plugin.getServer().getPlayer(uuid));
     }
 
-    private CompletableFuture<PermissionHolder> getPermissionHolder(@Nullable Player player) {
+    private CompletableFuture<PermissionHolder> loadPermissionHolder(@Nullable Player player) {
         return player == null ? CompletableFuture.completedFuture(null)
                 : CompletableFuture.completedFuture(new SuperPermsPermissionHolder(player));
     }

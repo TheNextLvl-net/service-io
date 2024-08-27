@@ -20,8 +20,8 @@ public interface PermissionController {
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
      */
-    default CompletableFuture<PermissionHolder> getPermissionHolder(OfflinePlayer player) {
-        return getPermissionHolder(player.getUniqueId());
+    default CompletableFuture<PermissionHolder> loadPermissionHolder(OfflinePlayer player) {
+        return loadPermissionHolder(player.getUniqueId());
     }
 
     /**
@@ -33,8 +33,8 @@ public interface PermissionController {
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
      */
-    default CompletableFuture<PermissionHolder> getPermissionHolder(OfflinePlayer player, World world) {
-        return getPermissionHolder(player.getUniqueId(), world);
+    default CompletableFuture<PermissionHolder> loadPermissionHolder(OfflinePlayer player, World world) {
+        return loadPermissionHolder(player.getUniqueId(), world);
     }
 
     /**
@@ -44,7 +44,7 @@ public interface PermissionController {
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
      */
-    CompletableFuture<PermissionHolder> getPermissionHolder(UUID uuid);
+    CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid);
 
     /**
      * Retrieves the {@code PermissionHolder} for the specified {@code UUID} and {@code World}.
@@ -54,7 +54,7 @@ public interface PermissionController {
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
      */
-    CompletableFuture<PermissionHolder> getPermissionHolder(UUID uuid, World world);
+    CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, World world);
 
     /**
      * Retrieves the name associated with the permission controller.

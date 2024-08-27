@@ -152,8 +152,8 @@ public class VaultPermissionServiceWrapper extends Permission {
                 .map(plugin.getServer()::getOfflinePlayerIfCached)
                 .map(offline -> Optional.ofNullable(world)
                         .map(plugin.getServer()::getWorld)
-                        .map(target -> permissionController.getPermissionHolder(offline, target).join())
-                        .orElseGet(() -> permissionController.getPermissionHolder(offline).join()));
+                        .map(target -> permissionController.loadPermissionHolder(offline, target).join())
+                        .orElseGet(() -> permissionController.loadPermissionHolder(offline).join()));
     }
 
     private Optional<GroupHolder> getGroupHolder(String player, @Nullable String world) {

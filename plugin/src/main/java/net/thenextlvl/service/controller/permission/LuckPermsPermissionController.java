@@ -18,13 +18,13 @@ public class LuckPermsPermissionController implements PermissionController {
     private final @Getter String name = "LuckPerms";
 
     @Override
-    public CompletableFuture<PermissionHolder> getPermissionHolder(UUID uuid) {
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid) {
         return luckPerms.getUserManager().loadUser(uuid).thenApply(user ->
                 new LuckPermsPermissionHolder(user, QueryOptions.defaultContextualOptions()));
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> getPermissionHolder(UUID uuid, World world) {
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, World world) {
         return luckPerms.getUserManager().loadUser(uuid).thenApply(user -> {
             var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
             return new LuckPermsPermissionHolder(user, context);

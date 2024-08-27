@@ -19,25 +19,25 @@ public class GroupManagerPermissionController implements PermissionController {
     private final @Getter String name = "GroupManager";
 
     @Override
-    public CompletableFuture<PermissionHolder> getPermissionHolder(OfflinePlayer player) {
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(OfflinePlayer player) {
         var holder = groupManager.getWorldsHolder().getDefaultWorld();
         return getHolder(holder, player.getUniqueId(), player.getName());
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> getPermissionHolder(OfflinePlayer player, World world) {
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(OfflinePlayer player, World world) {
         var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
         return getHolder(holder, player.getUniqueId(), player.getName());
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> getPermissionHolder(UUID uuid) {
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid) {
         var holder = groupManager.getWorldsHolder().getDefaultWorld();
         return getHolder(holder, uuid, null);
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> getPermissionHolder(UUID uuid, World world) {
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, World world) {
         var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
         return getHolder(holder, uuid, null);
     }
