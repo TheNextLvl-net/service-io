@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface PermissionController {
     /**
-     * Retrieves the {@code PermissionHolder} for the given {@code OfflinePlayer}.
+     * Loads the {@code PermissionHolder} for the specified {@code OfflinePlayer} asynchronously.
      *
      * @param player the player for whom to retrieve the permission holder
      * @return a {@code CompletableFuture} that will complete with the permission holder
@@ -25,7 +25,7 @@ public interface PermissionController {
     }
 
     /**
-     * Retrieves the {@code PermissionHolder} for the specified {@code OfflinePlayer}
+     * Loads the {@code PermissionHolder} for the specified {@code OfflinePlayer} asynchronously.
      * and {@code World}.
      *
      * @param player the player for whom to retrieve the permission holder
@@ -38,7 +38,7 @@ public interface PermissionController {
     }
 
     /**
-     * Retrieves the {@code PermissionHolder} for the specified {@code UUID}.
+     * Loads the {@code PermissionHolder} for the specified {@code UUID} asynchronously.
      *
      * @param uuid the unique ID of the player for whom to retrieve the permission holder
      * @return a {@code CompletableFuture} that will complete with the permission holder
@@ -47,7 +47,7 @@ public interface PermissionController {
     CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid);
 
     /**
-     * Retrieves the {@code PermissionHolder} for the specified {@code UUID} and {@code World}.
+     * Loads the {@code PermissionHolder} for the specified {@code UUID} and {@code World} asynchronously.
      *
      * @param uuid  the unique ID of the player for whom to retrieve the permission holder
      * @param world the world in which the permission holder exists
