@@ -58,6 +58,61 @@ public interface PermissionController {
     CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, World world);
 
     /**
+     * Retrieves the {@code PermissionHolder} for the specified {@code OfflinePlayer} or try to load it.
+     *
+     * @param player the player for whom to retrieve the permission holder
+     * @return a {@code CompletableFuture} that will complete with the permission holder
+     * @see PermissionHolder
+     */
+    default CompletableFuture<PermissionHolder> tryGetPermissionHolder(OfflinePlayer player) {
+        return getPermissionHolder(player)
+                .map(CompletableFuture::completedFuture)
+                .orElseGet(() -> loadPermissionHolder(player));
+    }
+
+    /**
+     * Retrieves the {@code PermissionHolder} for the specified {@code OfflinePlayer} or try to load it.
+     * and {@code World}.
+     *
+     * @param player the player for whom to retrieve the permission holder
+     * @param world  the world in which the permission holder exists
+     * @return a {@code CompletableFuture} that will complete with the permission holder
+     * @see PermissionHolder
+     */
+    default CompletableFuture<PermissionHolder> tryGetPermissionHolder(OfflinePlayer player, World world) {
+        return getPermissionHolder(player, world)
+                .map(CompletableFuture::completedFuture)
+                .orElseGet(() -> loadPermissionHolder(player, world));
+    }
+
+    /**
+     * Retrieves the {@code PermissionHolder} for the specified {@code UUID} or try to load it.
+     *
+     * @param uuid the unique ID of the player for whom to retrieve the permission holder
+     * @return a {@code CompletableFuture} that will complete with the permission holder
+     * @see PermissionHolder
+     */
+    default CompletableFuture<PermissionHolder> tryGetPermissionHolder(UUID uuid) {
+        return getPermissionHolder(uuid)
+                .map(CompletableFuture::completedFuture)
+                .orElseGet(() -> loadPermissionHolder(uuid));
+    }
+
+    /**
+     * Retrieves the {@code PermissionHolder} for the specified {@code UUID} and {@code World} or try to load it.
+     *
+     * @param uuid  the unique ID of the player for whom to retrieve the permission holder
+     * @param world the world in which the permission holder exists
+     * @return a {@code CompletableFuture} that will complete with the permission holder
+     * @see PermissionHolder
+     */
+    default CompletableFuture<PermissionHolder> tryGetPermissionHolder(UUID uuid, World world) {
+        return getPermissionHolder(uuid, world)
+                .map(CompletableFuture::completedFuture)
+                .orElseGet(() -> loadPermissionHolder(uuid, world));
+    }
+
+    /**
      * Retrieves the {@code PermissionHolder} for the specified {@code OfflinePlayer}.
      *
      * @param player the player for whom to retrieve the permission holder
