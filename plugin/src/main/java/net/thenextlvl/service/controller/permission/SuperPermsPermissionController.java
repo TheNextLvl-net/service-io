@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -21,26 +22,35 @@ public class SuperPermsPermissionController implements PermissionController {
 
     @Override
     public CompletableFuture<PermissionHolder> loadPermissionHolder(OfflinePlayer player) {
-        return loadPermissionHolder(player.getPlayer());
+        return CompletableFuture.completedFuture(getPermissionHolder(player.getPlayer()).orElse(null));
     }
 
     @Override
     public CompletableFuture<PermissionHolder> loadPermissionHolder(OfflinePlayer player, World world) {
-        return loadPermissionHolder(player.getPlayer());
+        return loadPermissionHolder(player);
     }
 
     @Override
     public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid) {
-        return loadPermissionHolder(plugin.getServer().getPlayer(uuid));
+        return CompletableFuture.completedFuture(getPermissionHolder(uuid).orElse(null));
     }
 
     @Override
     public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, World world) {
-        return loadPermissionHolder(plugin.getServer().getPlayer(uuid));
+        return loadPermissionHolder(uuid);
     }
 
-    private CompletableFuture<PermissionHolder> loadPermissionHolder(@Nullable Player player) {
-        return player == null ? CompletableFuture.completedFuture(null)
-                : CompletableFuture.completedFuture(new SuperPermsPermissionHolder(player));
+    @Override
+    public Optional<PermissionHolder> getPermissionHolder(UUID uuid) {
+        return getPermissionHolder(plugin.getServer().getPlayer(uuid));
+    }
+
+    @Override
+    public Optional<PermissionHolder> getPermissionHolder(UUID uuid, World world) {
+        return getPermissionHolder(uuid);
+    }
+
+    private Optional<PermissionHolder> getPermissionHolder(@Nullable Player player) {
+        return Optional.ofNullable(player).map(SuperPermsPermissionHolder::new);
     }
 }
