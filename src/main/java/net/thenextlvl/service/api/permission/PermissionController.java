@@ -4,6 +4,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jetbrains.annotations.Contract;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -55,6 +56,49 @@ public interface PermissionController {
      * @see PermissionHolder
      */
     CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, World world);
+
+    /**
+     * Retrieves the {@code PermissionHolder} for the specified {@code OfflinePlayer}.
+     *
+     * @param player the player for whom to retrieve the permission holder
+     * @return a {@code CompletableFuture} that will complete with the permission holder
+     * @see PermissionHolder
+     */
+    default Optional<PermissionHolder> getPermissionHolder(OfflinePlayer player) {
+        return getPermissionHolder(player.getUniqueId());
+    }
+
+    /**
+     * Retrieves the {@code PermissionHolder} for the specified {@code OfflinePlayer}
+     * and {@code World}.
+     *
+     * @param player the player for whom to retrieve the permission holder
+     * @param world  the world in which the permission holder exists
+     * @return a {@code CompletableFuture} that will complete with the permission holder
+     * @see PermissionHolder
+     */
+    default Optional<PermissionHolder> getPermissionHolder(OfflinePlayer player, World world) {
+        return getPermissionHolder(player.getUniqueId(), world);
+    }
+
+    /**
+     * Retrieves the {@code PermissionHolder} for the specified {@code UUID}.
+     *
+     * @param uuid the unique ID of the player for whom to retrieve the permission holder
+     * @return a {@code CompletableFuture} that will complete with the permission holder
+     * @see PermissionHolder
+     */
+    Optional<PermissionHolder> getPermissionHolder(UUID uuid);
+
+    /**
+     * Retrieves the {@code PermissionHolder} for the specified {@code UUID} and {@code World}.
+     *
+     * @param uuid  the unique ID of the player for whom to retrieve the permission holder
+     * @param world the world in which the permission holder exists
+     * @return a {@code CompletableFuture} that will complete with the permission holder
+     * @see PermissionHolder
+     */
+    Optional<PermissionHolder> getPermissionHolder(UUID uuid, World world);
 
     /**
      * Retrieves the name associated with the permission controller.
