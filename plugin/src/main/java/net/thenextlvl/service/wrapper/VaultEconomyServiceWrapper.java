@@ -5,14 +5,13 @@ import core.annotation.ParametersAreNullableByDefault;
 import lombok.RequiredArgsConstructor;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
-import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.Account;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
@@ -26,9 +25,8 @@ import static net.milkbowl.vault.economy.EconomyResponse.ResponseType.SUCCESS;
 @FieldsAreNotNullByDefault
 @ParametersAreNullableByDefault
 public class VaultEconomyServiceWrapper implements Economy {
-    private final @Nullable BankController bankController;
     private final EconomyController economyController;
-    private final ServicePlugin plugin;
+    private final Plugin plugin;
 
     @Override
     public boolean isEnabled() {
@@ -41,13 +39,13 @@ public class VaultEconomyServiceWrapper implements Economy {
     }
 
     private BankController bankController() throws UnsupportedOperationException {
-        if (bankController == null) throw new UnsupportedOperationException(getName() + " has no bank support");
-        return bankController;
+        return economyController.getBankController().orElseThrow(() ->
+                new UnsupportedOperationException(getName() + " has no bank support"));
     }
 
     @Override
     public boolean hasBankSupport() {
-        return bankController != null;
+        return economyController.getBankController().isPresent();
     }
 
     @Override
@@ -288,9 +286,9 @@ public class VaultEconomyServiceWrapper implements Economy {
 
     @Override
     public List<String> getBanks() {
-        return Optional.ofNullable(bankController).map(BankController::getBanks)
-                .map(banks -> banks.stream().map(Bank::getName).toList())
-                .orElse(List.of());
+        return bankController().getBanks().stream()
+                .map(Bank::getName)
+                .toList();
     }
 
     @Override
