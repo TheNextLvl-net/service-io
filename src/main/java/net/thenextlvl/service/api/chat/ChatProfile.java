@@ -45,12 +45,12 @@ public interface ChatProfile extends InfoNode {
     Optional<String> getSuffix();
 
     /**
-     * Retrieves the groups associated with the chat profile.
+     * Retrieves the name of the groups associated with the chat profile.
      *
-     * @return The groups associated with the chat profile.
+     * @return The name of the groups associated with the chat profile.
      */
     @Unmodifiable
-    Set<Group> getGroups();
+    Set<String> getGroups();
 
     /**
      * Sets the primary group for the chat profile.
