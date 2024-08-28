@@ -50,13 +50,6 @@ public record GroupManagerPermissionHolder(User user, WorldDataHolder holder) im
     }
 
     @Override
-    public boolean removeInfoNode(String key, String value) {
-        var infoNode = getInfoNode(key).orElse(null);
-        if (!value.equals(infoNode)) return false;
-        return removeInfoNode(key);
-    }
-
-    @Override
     public boolean setInfoNode(String key, String value) {
         user().getVariables().addVar(key, value);
         return true;
