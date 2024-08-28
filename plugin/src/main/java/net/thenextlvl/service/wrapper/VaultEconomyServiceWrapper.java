@@ -325,6 +325,7 @@ public class VaultEconomyServiceWrapper implements Economy {
     private Optional<Account> getAccount(OfflinePlayer player, String worldName) {
         return Optional.ofNullable(player).flatMap(offline -> Optional.ofNullable(worldName)
                 .map(plugin.getServer()::getWorld)
-                .map(world -> economyController.tryGetAccount(offline, world).join()));
+                .flatMap(world -> economyController.tryGetAccount(offline, world).join())
+                .or(() -> economyController.tryGetAccount(offline).join()));
     }
 }
