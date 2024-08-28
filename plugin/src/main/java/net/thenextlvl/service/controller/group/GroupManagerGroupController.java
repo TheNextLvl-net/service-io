@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class GroupManagerGroupController implements GroupController {
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
-    private final @Getter String name = "GroupManager";
+    private final @Getter String name = "GroupManager Groups";
 
     @Override
     public CompletableFuture<Group> createGroup(String name) {
