@@ -79,6 +79,24 @@ paper {
             required = false
         }
     }
+
+    permissions {
+        register("vault.admin") {
+            description = "Backwards compatibility for Vault permission"
+            default = BukkitPluginDescription.Permission.Default.OP
+            children = listOf("service.info", "service.convert")
+        }
+        register("service.info") {
+            description = "Gives access to /service info"
+            default = BukkitPluginDescription.Permission.Default.OP
+            children = listOf("service.command")
+        }
+        register("service.convert") {
+            description = "Gives access to /service convert"
+            default = BukkitPluginDescription.Permission.Default.OP
+            children = listOf("service.command")
+        }
+    }
 }
 
 val versionString: String = project.version as String
