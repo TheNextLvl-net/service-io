@@ -10,6 +10,8 @@ import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.permission.PermissionController;
+import net.thenextlvl.service.command.ServiceCommand;
+import net.thenextlvl.service.command.VaultCommand;
 import net.thenextlvl.service.controller.chat.GroupManagerChatController;
 import net.thenextlvl.service.controller.chat.LuckPermsChatController;
 import net.thenextlvl.service.controller.group.GroupManagerGroupController;
@@ -21,6 +23,8 @@ import net.thenextlvl.service.version.PluginVersionChecker;
 import net.thenextlvl.service.wrapper.VaultChatServiceWrapper;
 import net.thenextlvl.service.wrapper.VaultEconomyServiceWrapper;
 import net.thenextlvl.service.wrapper.VaultPermissionServiceWrapper;
+import net.thenextlvl.service.wrapper.service.ChatServiceWrapper;
+import net.thenextlvl.service.wrapper.service.EconomyServiceWrapper;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.plugin.ServicePriority;
@@ -40,17 +44,22 @@ public class ServicePlugin extends JavaPlugin {
     private @Nullable ChatController chatController = null;
     private @Nullable GroupController groupController = null;
 
-    private @Nullable VaultPermissionServiceWrapper vaultPermissionWrapper = null;
+    private @Nullable Permission vaultPermissionWrapper = null;
 
     private PermissionController permissionController = new SuperPermsPermissionController(this);
 
     @Override
     public void onLoad() {
         versionChecker().checkVersion();
+        registerCommands();
     }
 
     @Override
     public void onEnable() {
+        loadServicePermissionWrapper();
+        loadServiceEconomyWrapper();
+        loadServiceChatWrapper();
+
         loadPermissionServices();
         loadGroupServices();
         loadChatServices();
@@ -62,6 +71,11 @@ public class ServicePlugin extends JavaPlugin {
         loadVaultChatWrapper();
 
         addCustomCharts();
+    }
+
+    private void registerCommands() {
+        new ServiceCommand(this).register();
+        new VaultCommand(this).register();
     }
 
     @Override
@@ -131,10 +145,30 @@ public class ServicePlugin extends JavaPlugin {
         }
     }
 
+    private void loadServicePermissionWrapper() {
+
+    }
+
+    private void loadServiceEconomyWrapper() {
+        getServer().getServicesManager().getRegistrations(Economy.class).forEach(economy -> {
+            var wrapper = new EconomyServiceWrapper(economy.getProvider(), this);
+            getServer().getServicesManager().register(EconomyController.class, wrapper, economy.getPlugin(), economy.getPriority());
+        });
+    }
+
+    private void loadServiceChatWrapper() {
+        getServer().getServicesManager().getRegistrations(Chat.class).forEach(chat -> {
+            var wrapper = new ChatServiceWrapper(chat.getProvider(), this);
+            getServer().getServicesManager().register(ChatController.class, wrapper, chat.getPlugin(), chat.getPriority());
+        });
+    }
+
     private void loadVaultPermissionWrapper() {
-        var wrapper = new VaultPermissionServiceWrapper(groupController(), permissionController(), this);
-        getServer().getServicesManager().register(Permission.class, wrapper, this, ServicePriority.Highest);
-        this.vaultPermissionWrapper = wrapper;
+        getServer().getServicesManager().getRegistrations(PermissionController.class).forEach(provider -> {
+            var wrapper = new VaultPermissionServiceWrapper(groupController(), provider.getProvider(), provider.getPlugin());
+            getServer().getServicesManager().register(Permission.class, wrapper, provider.getPlugin(), provider.getPriority());
+        });
+        this.vaultPermissionWrapper = getServer().getServicesManager().load(Permission.class);
     }
 
     private void loadVaultEconomyWrapper() {
