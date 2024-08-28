@@ -15,7 +15,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class LuckPermsChatController implements ChatController {
-    private final @Getter String name = "LuckPerms";
+    private final @Getter String name = "LuckPerms Chat";
     private final LuckPerms luckPerms = LuckPermsProvider.get();
 
     @Override
