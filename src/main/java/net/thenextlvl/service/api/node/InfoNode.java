@@ -36,7 +36,11 @@ public interface InfoNode {
      * @param value the value of the information node to be removed
      * @return true if the information node was successfully removed, false otherwise
      */
-    boolean removeInfoNode(String key, String value);
+    default boolean removeInfoNode(String key, String value) {
+        var infoNode = getInfoNode(key).orElse(null);
+        if (!value.equals(infoNode)) return false;
+        return removeInfoNode(key);
+    }
 
     /**
      * Sets the information node value for the specified key.
