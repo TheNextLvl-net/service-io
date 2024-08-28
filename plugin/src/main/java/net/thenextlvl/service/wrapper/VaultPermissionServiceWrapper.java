@@ -2,12 +2,12 @@ package net.thenextlvl.service.wrapper;
 
 import net.kyori.adventure.util.TriState;
 import net.milkbowl.vault.permission.Permission;
-import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.group.GroupHolder;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.api.permission.PermissionHolder;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +20,7 @@ public class VaultPermissionServiceWrapper extends Permission {
     public VaultPermissionServiceWrapper(
             @Nullable GroupController groupController,
             @NotNull PermissionController permissionController,
-            @NotNull ServicePlugin plugin
+            @NotNull Plugin plugin
     ) {
         this.groupController = groupController;
         this.permissionController = permissionController;
