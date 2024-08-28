@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class LuckPermsGroupController implements GroupController {
     private final LuckPerms luckPerms = LuckPermsProvider.get();
-    private final @Getter String name = "LuckPerms";
+    private final @Getter String name = "LuckPerms Groups";
 
     @Override
     public CompletableFuture<Group> createGroup(String name) {
