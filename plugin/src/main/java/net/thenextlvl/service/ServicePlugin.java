@@ -8,6 +8,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.economy.EconomyController;
+import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.command.ServiceCommand;
@@ -148,9 +149,12 @@ public class ServicePlugin extends JavaPlugin {
     }
 
     private void loadServiceEconomyWrapper() {
-        getServer().getServicesManager().getRegistrations(Economy.class).forEach(economy -> {
+        var services = getServer().getServicesManager();
+        services.getRegistrations(Economy.class).forEach(economy -> {
             var wrapper = new EconomyServiceWrapper(economy.getProvider(), this);
-            getServer().getServicesManager().register(EconomyController.class, wrapper, economy.getPlugin(), economy.getPriority());
+            services.register(EconomyController.class, wrapper, economy.getPlugin(), economy.getPriority());
+            wrapper.getBankController().ifPresent(controller ->
+                    services.register(BankController.class, controller, economy.getPlugin(), economy.getPriority()));
         });
     }
 
