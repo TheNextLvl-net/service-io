@@ -19,6 +19,7 @@ import net.thenextlvl.service.controller.permission.LuckPermsPermissionControlle
 import net.thenextlvl.service.controller.permission.SuperPermsPermissionController;
 import net.thenextlvl.service.version.PluginVersionChecker;
 import net.thenextlvl.service.wrapper.VaultChatServiceWrapper;
+import net.thenextlvl.service.wrapper.VaultEconomyServiceWrapper;
 import net.thenextlvl.service.wrapper.VaultPermissionServiceWrapper;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -137,8 +138,10 @@ public class ServicePlugin extends JavaPlugin {
     }
 
     private void loadVaultEconomyWrapper() {
-        var economyController = getServer().getServicesManager().load(EconomyController.class);
-        if (economyController == null) return;
+        getServer().getServicesManager().getRegistrations(EconomyController.class).forEach(provider -> {
+            var wrapper = new VaultEconomyServiceWrapper(provider.getProvider(), provider.getPlugin());
+            getServer().getServicesManager().register(Economy.class, wrapper, provider.getPlugin(), provider.getPriority());
+        });
     }
 
     private void loadVaultChatWrapper() {
