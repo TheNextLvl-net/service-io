@@ -1,8 +1,6 @@
 package net.thenextlvl.service.api.chat;
 
-import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.node.InfoNode;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Optional;
@@ -51,14 +49,6 @@ public interface ChatProfile extends InfoNode {
      */
     @Unmodifiable
     Set<String> getGroups();
-
-    /**
-     * Sets the primary group for the chat profile.
-     *
-     * @param group The name of the group to be set as the primary group.
-     * @return True if the primary group was successfully set, false otherwise.
-     */
-    boolean setPrimaryGroup(@NotNull String group);
 
     /**
      * Sets the prefix associated with the chat profile.
