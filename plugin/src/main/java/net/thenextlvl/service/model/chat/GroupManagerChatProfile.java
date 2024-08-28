@@ -1,8 +1,7 @@
 package net.thenextlvl.service.model.chat;
 
 import net.thenextlvl.service.api.chat.ChatProfile;
-import net.thenextlvl.service.api.group.Group;
-import net.thenextlvl.service.model.group.GroupManagerGroup;
+import org.anjocaido.groupmanager.data.Group;
 import org.anjocaido.groupmanager.data.User;
 import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
 import org.jetbrains.annotations.NotNull;
@@ -37,11 +36,11 @@ public record GroupManagerChatProfile(User user, WorldDataHolder holder) impleme
     }
 
     @Override
-    public @Unmodifiable Set<Group> getGroups() {
+    public @Unmodifiable Set<String> getGroups() {
         return user().getSaveSubGroupsList().stream()
                 .map(holder()::getGroup)
                 .filter(Objects::nonNull)
-                .map(GroupManagerGroup::new)
+                .map(Group::getName)
                 .collect(Collectors.toUnmodifiableSet());
     }
 
