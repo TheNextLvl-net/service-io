@@ -17,7 +17,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class GroupManagerChatController implements ChatController {
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
-    private final @Getter String name = "GroupManager";
+    private final @Getter String name = "GroupManager Chat";
 
     @Override
     public CompletableFuture<ChatProfile> loadProfile(OfflinePlayer player) {
