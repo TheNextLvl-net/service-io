@@ -1,5 +1,6 @@
 package net.thenextlvl.service.api.economy;
 
+import net.thenextlvl.service.api.economy.bank.BankController;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jetbrains.annotations.Contract;
@@ -13,6 +14,13 @@ import java.util.concurrent.CompletableFuture;
  * The AccountController interface provides methods to create, retrieve and delete accounts.
  */
 public interface EconomyController {
+    /**
+     * Retrieves the BankController associated with this EconomyController.
+     *
+     * @return an optional containing the BankController, or empty if no bank support
+     */
+    Optional<BankController> getBankController();
+
     /**
      * Formats the specified amount as a string.
      *
