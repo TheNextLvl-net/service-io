@@ -8,7 +8,6 @@ import net.luckperms.api.node.types.PrefixNode;
 import net.luckperms.api.node.types.SuffixNode;
 import net.luckperms.api.query.QueryOptions;
 import net.thenextlvl.service.api.chat.ChatProfile;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -42,11 +41,6 @@ public record LuckPermsChatProfile(User user, QueryOptions options) implements C
         return user().getInheritedGroups(options()).stream()
                 .map(Group::getName)
                 .collect(Collectors.toUnmodifiableSet());
-    }
-
-    @Override
-    public boolean setPrimaryGroup(@NotNull String group) {
-        return user().setPrimaryGroup(group).wasSuccessful();
     }
 
     @Override
