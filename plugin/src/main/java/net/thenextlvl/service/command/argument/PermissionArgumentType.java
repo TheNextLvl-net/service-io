@@ -22,7 +22,7 @@ public class PermissionArgumentType extends WrappedArgumentType<String, Permissi
                     .filter(controller -> filter.test(context, controller))
                     .map(PermissionController::getName)
                     .map(StringArgumentType::escapeIfRequired)
-                    .filter(name -> name.contains(context.getInput()))
+                    .filter(name -> name.contains(builder.getRemaining()))
                     .forEach(builder::suggest);
             return builder.buildFuture();
         });

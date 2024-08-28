@@ -22,7 +22,7 @@ public class GroupArgumentType extends WrappedArgumentType<String, GroupControll
                     .filter(controller -> filter.test(context, controller))
                     .map(GroupController::getName)
                     .map(StringArgumentType::escapeIfRequired)
-                    .filter(name -> name.contains(context.getInput()))
+                    .filter(name -> name.contains(builder.getRemaining()))
                     .forEach(builder::suggest);
             return builder.buildFuture();
         });

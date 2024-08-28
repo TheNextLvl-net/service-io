@@ -22,7 +22,7 @@ public class EconomyArgumentType extends WrappedArgumentType<String, EconomyCont
                     .filter(controller -> filter.test(context, controller))
                     .map(EconomyController::getName)
                     .map(StringArgumentType::escapeIfRequired)
-                    .filter(name -> name.contains(context.getInput()))
+                    .filter(name -> name.contains(builder.getRemaining()))
                     .forEach(builder::suggest);
             return builder.buildFuture();
         });
