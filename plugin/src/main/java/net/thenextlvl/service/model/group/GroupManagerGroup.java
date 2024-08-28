@@ -90,13 +90,6 @@ public record GroupManagerGroup(org.anjocaido.groupmanager.data.Group group) imp
     }
 
     @Override
-    public boolean removeInfoNode(String key, String value) {
-        var infoNode = getInfoNode(key).orElse(null);
-        if (!value.equals(infoNode)) return false;
-        return removeInfoNode(key);
-    }
-
-    @Override
     public boolean setInfoNode(String key, String value) {
         group().getVariables().addVar(key, value);
         return true;
