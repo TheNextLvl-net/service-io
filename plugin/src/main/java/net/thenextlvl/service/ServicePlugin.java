@@ -11,7 +11,6 @@ import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.command.ServiceCommand;
-import net.thenextlvl.service.command.VaultCommand;
 import net.thenextlvl.service.controller.chat.GroupManagerChatController;
 import net.thenextlvl.service.controller.chat.LuckPermsChatController;
 import net.thenextlvl.service.controller.group.GroupManagerGroupController;
@@ -75,7 +74,6 @@ public class ServicePlugin extends JavaPlugin {
 
     private void registerCommands() {
         new ServiceCommand(this).register();
-        new VaultCommand(this).register();
     }
 
     @Override
