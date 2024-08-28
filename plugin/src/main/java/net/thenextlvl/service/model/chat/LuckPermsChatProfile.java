@@ -1,14 +1,13 @@
 package net.thenextlvl.service.model.chat;
 
 import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.types.MetaNode;
 import net.luckperms.api.node.types.PrefixNode;
 import net.luckperms.api.node.types.SuffixNode;
 import net.luckperms.api.query.QueryOptions;
 import net.thenextlvl.service.api.chat.ChatProfile;
-import net.thenextlvl.service.api.group.Group;
-import net.thenextlvl.service.model.group.LuckPermsGroup;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,9 +38,9 @@ public record LuckPermsChatProfile(User user, QueryOptions options) implements C
     }
 
     @Override
-    public Set<Group> getGroups() {
+    public Set<String> getGroups() {
         return user().getInheritedGroups(options()).stream()
-                .map(group -> new LuckPermsGroup(group, options()))
+                .map(Group::getName)
                 .collect(Collectors.toUnmodifiableSet());
     }
 
