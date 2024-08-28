@@ -4,7 +4,6 @@ import net.thenextlvl.service.api.chat.ChatProfile;
 import org.anjocaido.groupmanager.data.Group;
 import org.anjocaido.groupmanager.data.User;
 import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -45,14 +44,6 @@ public record GroupManagerChatProfile(User user, WorldDataHolder holder) impleme
     }
 
     @Override
-    public boolean setPrimaryGroup(@NotNull String group) {
-        var primaryGroup = holder().getGroup(group);
-        if (primaryGroup == null) return false;
-        user().setGroup(primaryGroup, true);
-        return true;
-    }
-
-    @Override
     public boolean setPrefix(String prefix, int priority) {
         return setInfoNode("prefix", prefix);
     }
@@ -72,13 +63,6 @@ public record GroupManagerChatProfile(User user, WorldDataHolder holder) impleme
         if (!hasInfoNode(key)) return false;
         user().getVariables().removeVar(key);
         return true;
-    }
-
-    @Override
-    public boolean removeInfoNode(String key, String value) {
-        var infoNode = getInfoNode(key).orElse(null);
-        if (!value.equals(infoNode)) return false;
-        return removeInfoNode(key);
     }
 
     @Override
