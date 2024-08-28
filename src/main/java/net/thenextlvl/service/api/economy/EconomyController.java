@@ -96,9 +96,9 @@ public interface EconomyController {
      * @param player the player for whom the account will be retrieved
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    default CompletableFuture<Account> tryGetAccount(OfflinePlayer player) {
+    default CompletableFuture<Optional<Account>> tryGetAccount(OfflinePlayer player) {
         return getAccount(player)
-                .map(CompletableFuture::completedFuture)
+                .map(account -> CompletableFuture.completedFuture(Optional.of(account)))
                 .orElseGet(() -> loadAccount(player));
     }
 
@@ -109,9 +109,9 @@ public interface EconomyController {
      * @param world  the world in which the account is located
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    default CompletableFuture<Account> tryGetAccount(OfflinePlayer player, World world) {
+    default CompletableFuture<Optional<Account>> tryGetAccount(OfflinePlayer player, World world) {
         return getAccount(player, world)
-                .map(CompletableFuture::completedFuture)
+                .map(account -> CompletableFuture.completedFuture(Optional.of(account)))
                 .orElseGet(() -> loadAccount(player, world));
     }
 
@@ -121,9 +121,9 @@ public interface EconomyController {
      * @param uuid the uuid of the account to be retrieved
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    default CompletableFuture<Account> tryGetAccount(UUID uuid) {
+    default CompletableFuture<Optional<Account>> tryGetAccount(UUID uuid) {
         return getAccount(uuid)
-                .map(CompletableFuture::completedFuture)
+                .map(account -> CompletableFuture.completedFuture(Optional.of(account)))
                 .orElseGet(() -> loadAccount(uuid));
     }
 
@@ -134,9 +134,9 @@ public interface EconomyController {
      * @param world the world in which the account is located
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    default CompletableFuture<Account> tryGetAccount(UUID uuid, World world) {
+    default CompletableFuture<Optional<Account>> tryGetAccount(UUID uuid, World world) {
         return getAccount(uuid, world)
-                .map(CompletableFuture::completedFuture)
+                .map(account -> CompletableFuture.completedFuture(Optional.of(account)))
                 .orElseGet(() -> loadAccount(uuid, world));
     }
 
@@ -188,7 +188,7 @@ public interface EconomyController {
      * @param player the player for whom the account will be retrieved
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    default CompletableFuture<Account> loadAccount(OfflinePlayer player) {
+    default CompletableFuture<Optional<Account>> loadAccount(OfflinePlayer player) {
         return loadAccount(player.getUniqueId());
     }
 
@@ -199,7 +199,7 @@ public interface EconomyController {
      * @param world  the world in which the account is located
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    default CompletableFuture<Account> loadAccount(OfflinePlayer player, World world) {
+    default CompletableFuture<Optional<Account>> loadAccount(OfflinePlayer player, World world) {
         return loadAccount(player.getUniqueId(), world);
     }
 
@@ -209,7 +209,7 @@ public interface EconomyController {
      * @param uuid the uuid of the account to be retrieved
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    CompletableFuture<Account> loadAccount(UUID uuid);
+    CompletableFuture<Optional<Account>> loadAccount(UUID uuid);
 
     /**
      * Loads the account for the specified uuid and world asynchronously.
@@ -218,7 +218,7 @@ public interface EconomyController {
      * @param world the world in which the account is located
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    CompletableFuture<Account> loadAccount(UUID uuid, World world);
+    CompletableFuture<Optional<Account>> loadAccount(UUID uuid, World world);
 
     /**
      * Deletes the specified account.
