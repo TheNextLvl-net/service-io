@@ -1,16 +1,13 @@
 package net.thenextlvl.service.model.permission;
 
 import net.kyori.adventure.util.TriState;
-import net.thenextlvl.service.api.group.Group;
-import net.thenextlvl.service.api.group.GroupHolder;
+import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 
-public record SuperPermsPermissionHolder(CommandSender sender) implements GroupHolder {
+public record SuperPermsPermissionHolder(CommandSender sender) implements PermissionHolder {
     @Override
     public TriState checkPermission(String permission) {
         return sender.permissionValue(permission);
@@ -43,56 +40,6 @@ public record SuperPermsPermissionHolder(CommandSender sender) implements GroupH
 
     @Override
     public boolean setInfoNode(String key, String value) {
-        return false;
-    }
-
-    @Override
-    public @Unmodifiable Set<Group> getGroups() {
-        return Set.of();
-    }
-
-    @Override
-    public String getPrimaryGroup() {
-        return "";
-    }
-
-    @Override
-    public boolean addGroup(Group group) {
-        return false;
-    }
-
-    @Override
-    public boolean addGroup(String name) {
-        return false;
-    }
-
-    @Override
-    public boolean inGroup(Group group) {
-        return false;
-    }
-
-    @Override
-    public boolean inGroup(String name) {
-        return false;
-    }
-
-    @Override
-    public boolean removeGroup(Group group) {
-        return false;
-    }
-
-    @Override
-    public boolean removeGroup(String name) {
-        return false;
-    }
-
-    @Override
-    public boolean setPrimaryGroup(Group group) {
-        return false;
-    }
-
-    @Override
-    public boolean setPrimaryGroup(String name) {
         return false;
     }
 }
