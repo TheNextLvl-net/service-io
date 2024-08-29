@@ -31,10 +31,11 @@ public class ServiceInfoCommand {
 
     LiteralArgumentBuilder<CommandSourceStack> create() {
         return Commands.literal("info")
-                .then(Commands.literal("chat"))
-                .then(Commands.literal("economy"))
-                .then(Commands.literal("groups"))
-                .then(Commands.literal("permissions"))
+                .then(Commands.literal("bank").executes(this::infoBank))
+                .then(Commands.literal("chat").executes(this::infoChat))
+                .then(Commands.literal("economy").executes(this::infoEconomy))
+                .then(Commands.literal("groups").executes(this::infoGroups))
+                .then(Commands.literal("permissions").executes(this::infoPermissions))
                 .requires(stack -> stack.getSender().hasPermission("service.info"))
                 .executes(this::info);
     }
@@ -42,32 +43,68 @@ public class ServiceInfoCommand {
     @SuppressWarnings("DuplicatedCode")
     private int info(CommandContext<CommandSourceStack> context) {
 
-        var sender = context.getSource().getSender();
-
-        var bank = plugin.getServer().getServicesManager().load(BankController.class);
-        var chat = plugin.getServer().getServicesManager().load(ChatController.class);
-        var economy = plugin.getServer().getServicesManager().load(EconomyController.class);
-        var group = plugin.getServer().getServicesManager().load(GroupController.class);
-        var permission = plugin.getServer().getServicesManager().load(PermissionController.class);
-
-        var banks = getRegistrations(BankController.class, bank, BankController::getName);
-        var chats = getRegistrations(ChatController.class, chat, ChatController::getName);
-        var economies = getRegistrations(EconomyController.class, economy, EconomyController::getName);
-        var groups = getRegistrations(GroupController.class, group, GroupController::getName);
-        var permissions = getRegistrations(PermissionController.class, permission, PermissionController::getName);
-
         // ED8106
 
-        sender.sendRichMessage("ServiceIO Information (v<version>)",
+        context.getSource().getSender().sendRichMessage("ServiceIO Information (v<version>)",
                 Placeholder.parsed("version", plugin.getPluginMeta().getVersion()));
 
-        sendServiceInfo(sender, "Bank", bank != null ? bank.getName() : null, banks);
-        sendServiceInfo(sender, "Chat", chat != null ? chat.getName() : null, chats);
-        sendServiceInfo(sender, "Economy", economy != null ? economy.getName() : null, economies);
-        sendServiceInfo(sender, "Group", group != null ? group.getName() : null, groups);
-        sendServiceInfo(sender, "Permission", permission != null ? permission.getName() : null, permissions);
+        infoBank(context);
+        infoChat(context);
+        infoEconomy(context);
+        infoGroups(context);
+        infoPermissions(context);
 
         return Command.SINGLE_SUCCESS;
+    }
+
+    private int infoBank(CommandContext<CommandSourceStack> context) {
+        var sender = context.getSource().getSender();
+        var bank = plugin.getServer().getServicesManager().load(BankController.class);
+        var banks = getRegistrations(BankController.class, bank, BankController::getName);
+        if (sendServiceInfo(sender, "Bank", bank != null ? bank.getName() : null, banks))
+            return Command.SINGLE_SUCCESS;
+        sender.sendRichMessage("<red>No bank service found.");
+        return 0;
+    }
+
+    private int infoChat(CommandContext<CommandSourceStack> context) {
+        var sender = context.getSource().getSender();
+        var chat = plugin.getServer().getServicesManager().load(ChatController.class);
+        var chats = getRegistrations(ChatController.class, chat, ChatController::getName);
+        if (sendServiceInfo(sender, "Chat", chat != null ? chat.getName() : null, chats))
+            return Command.SINGLE_SUCCESS;
+        sender.sendRichMessage("<red>No chat service found.");
+        return 0;
+    }
+
+    private int infoEconomy(CommandContext<CommandSourceStack> context) {
+        var sender = context.getSource().getSender();
+        var economy = plugin.getServer().getServicesManager().load(EconomyController.class);
+        var economies = getRegistrations(EconomyController.class, economy, EconomyController::getName);
+        if (sendServiceInfo(sender, "Economy", economy != null ? economy.getName() : null, economies))
+            return Command.SINGLE_SUCCESS;
+        sender.sendRichMessage("<red>No economy service found.");
+        return 0;
+    }
+
+    private int infoGroups(CommandContext<CommandSourceStack> context) {
+        var sender = context.getSource().getSender();
+        var group = plugin.getServer().getServicesManager().load(GroupController.class);
+        var groups = getRegistrations(GroupController.class, group, GroupController::getName);
+        if (sendServiceInfo(sender, "Group", group != null ? group.getName() : null, groups))
+            return Command.SINGLE_SUCCESS;
+        sender.sendRichMessage("<red>No group service found.");
+        return 0;
+    }
+
+    private int infoPermissions(CommandContext<CommandSourceStack> context) {
+        var sender = context.getSource().getSender();
+        var permission = plugin.getServer().getServicesManager().load(PermissionController.class);
+        var permissions = getRegistrations(PermissionController.class, permission, PermissionController::getName);
+        if (sendServiceInfo(sender, "Permission", permission != null ? permission.getName() : null, permissions))
+            return Command.SINGLE_SUCCESS;
+        sender.sendRichMessage("<red>No permission service found.");
+        return 0;
     }
 
     private final JoinConfiguration separator = JoinConfiguration.builder()
@@ -84,10 +121,11 @@ public class ServiceInfoCommand {
                 .toList();
     }
 
-    private void sendServiceInfo(CommandSender sender, String type, @Nullable String provider, List<TextComponent> registrations) {
+    private boolean sendServiceInfo(CommandSender sender, String type, @Nullable String provider, List<TextComponent> registrations) {
         if (provider != null) sender.sendRichMessage("<#0288D1><type>: <provider>",
                 Placeholder.parsed("provider", provider), Placeholder.parsed("type", type));
         if (!registrations.isEmpty()) sender.sendRichMessage("<green><registered>",
                 Placeholder.component("registered", Component.join(separator, registrations)));
+        return provider != null || !registrations.isEmpty();
     }
 }
