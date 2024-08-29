@@ -25,6 +25,7 @@ import net.thenextlvl.service.wrapper.VaultEconomyServiceWrapper;
 import net.thenextlvl.service.wrapper.VaultPermissionServiceWrapper;
 import net.thenextlvl.service.wrapper.service.ChatServiceWrapper;
 import net.thenextlvl.service.wrapper.service.EconomyServiceWrapper;
+import net.thenextlvl.service.wrapper.service.PermissionServiceWrapper;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.plugin.ServicePriority;
@@ -145,7 +146,10 @@ public class ServicePlugin extends JavaPlugin {
     }
 
     private void loadServicePermissionWrapper() {
-
+        getServer().getServicesManager().getRegistrations(Permission.class).forEach(provider -> {
+            var wrapper = new PermissionServiceWrapper(provider.getProvider(), this);
+            getServer().getServicesManager().register(PermissionController.class, wrapper, provider.getPlugin(), provider.getPriority());
+        });
     }
 
     private void loadServiceEconomyWrapper() {
