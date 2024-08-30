@@ -25,21 +25,21 @@ public class LuckPermsGroupController implements GroupController {
     @Override
     public CompletableFuture<Group> createGroup(String name) {
         return luckPerms.getGroupManager().createAndLoadGroup(name)
-                .thenApply(group -> new LuckPermsGroup(group, QueryOptions.defaultContextualOptions()));
+                .thenApply(group -> new LuckPermsGroup(group, group.getQueryOptions(), null));
     }
 
     @Override
     public CompletableFuture<Group> createGroup(String name, World world) {
         return luckPerms.getGroupManager().createAndLoadGroup(name).thenApply(group -> {
             var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
-            return new LuckPermsGroup(group, context);
+            return new LuckPermsGroup(group, context, null);
         });
     }
 
     @Override
     public CompletableFuture<Group> loadGroup(String name) {
         return luckPerms.getGroupManager().loadGroup(name).thenCompose(optional ->
-                optional.<Group>map(group -> new LuckPermsGroup(group, QueryOptions.defaultContextualOptions()))
+                optional.<Group>map(group -> new LuckPermsGroup(group, group.getQueryOptions(), null))
                         .map(CompletableFuture::completedFuture)
                         .orElse(CompletableFuture.completedFuture(null)));
     }
@@ -48,7 +48,7 @@ public class LuckPermsGroupController implements GroupController {
     public CompletableFuture<Group> loadGroup(String name, World world) {
         return luckPerms.getGroupManager().loadGroup(name).thenCompose(optional -> optional.<Group>map(group -> {
                     var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
-                    return new LuckPermsGroup(group, context);
+                    return new LuckPermsGroup(group, context, world);
                 })
                 .map(CompletableFuture::completedFuture)
                 .orElse(CompletableFuture.completedFuture(null)));
@@ -103,14 +103,14 @@ public class LuckPermsGroupController implements GroupController {
     @Override
     public Optional<Group> getGroup(String name) {
         return Optional.ofNullable(luckPerms.getGroupManager().getGroup(name)).map(group ->
-                new LuckPermsGroup(group, QueryOptions.defaultContextualOptions()));
+                new LuckPermsGroup(group, group.getQueryOptions(), null));
     }
 
     @Override
     public Optional<Group> getGroup(String name, World world) {
         return Optional.ofNullable(luckPerms.getGroupManager().getGroup(name)).map(group -> {
             var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
-            return new LuckPermsGroup(group, context);
+            return new LuckPermsGroup(group, context, null);
         });
     }
 
@@ -131,7 +131,7 @@ public class LuckPermsGroupController implements GroupController {
     @Override
     public Set<Group> getGroups() {
         return luckPerms.getGroupManager().getLoadedGroups().stream()
-                .map(group -> new LuckPermsGroup(group, QueryOptions.defaultContextualOptions()))
+                .map(group -> new LuckPermsGroup(group, group.getQueryOptions(), null))
                 .collect(Collectors.toUnmodifiableSet());
     }
 
@@ -139,7 +139,7 @@ public class LuckPermsGroupController implements GroupController {
     public Set<Group> getGroups(World world) {
         var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
         return luckPerms.getGroupManager().getLoadedGroups().stream()
-                .map(group -> new LuckPermsGroup(group, context))
+                .map(group -> new LuckPermsGroup(group, context, world))
                 .collect(Collectors.toUnmodifiableSet());
     }
 }
