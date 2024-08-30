@@ -1,6 +1,7 @@
 package net.thenextlvl.service.api.group;
 
 import net.thenextlvl.service.api.permission.PermissionHolder;
+import org.bukkit.World;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -32,6 +33,14 @@ public interface Group extends PermissionHolder {
      * Returns an empty Optional if no suffix is set.
      */
     Optional<String> getSuffix();
+
+    /**
+     * Retrieves the world associated with the group.
+     *
+     * @return An Optional containing the world of the group.
+     * Returns an empty Optional if no world is set.
+     */
+    Optional<World> getWorld();
 
     /**
      * Retrieves the weight of the group.
