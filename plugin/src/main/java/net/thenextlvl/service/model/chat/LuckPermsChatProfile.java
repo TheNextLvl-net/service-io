@@ -3,6 +3,7 @@ package net.thenextlvl.service.model.chat;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.types.DisplayNameNode;
 import net.luckperms.api.node.types.MetaNode;
 import net.luckperms.api.node.types.PrefixNode;
 import net.luckperms.api.node.types.SuffixNode;
@@ -16,6 +17,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public record LuckPermsChatProfile(User user, QueryOptions options) implements ChatProfile {
+    @Override
+    public Optional<String> getDisplayName() {
+        return getInfoNode("DISPLAY_NAME");
+    }
+
     @Override
     public Optional<String> getName() {
         return Optional.ofNullable(user().getUsername());
@@ -44,17 +50,45 @@ public record LuckPermsChatProfile(User user, QueryOptions options) implements C
     }
 
     @Override
-    public boolean setPrefix(String prefix, int priority) {
+    public boolean setDisplayName(@Nullable String displayName) {
+        if (displayName == null) return unsetDisplayName();
+        var result = user().data().add(DisplayNameNode.builder(displayName).build());
+        LuckPermsProvider.get().getUserManager().saveUser(user());
+        return result.wasSuccessful();
+    }
+
+    private boolean unsetDisplayName() {
+        user().data().clear(options().context(), node -> node instanceof DisplayNameNode);
+        LuckPermsProvider.get().getUserManager().saveUser(user());
+        return true;
+    }
+
+    @Override
+    public boolean setPrefix(@Nullable String prefix, int priority) {
+        if (prefix == null) return unsetPrefix(priority);
         var result = user().data().add(PrefixNode.builder(prefix, priority).context(options().context()).build());
         LuckPermsProvider.get().getUserManager().saveUser(user());
         return result.wasSuccessful();
     }
 
+    private boolean unsetPrefix(int priority) {
+        user().data().clear(options().context(), node -> node instanceof PrefixNode prefix && prefix.getPriority() == priority);
+        LuckPermsProvider.get().getUserManager().saveUser(user());
+        return true;
+    }
+
     @Override
-    public boolean setSuffix(String suffix, int priority) {
+    public boolean setSuffix(@Nullable String suffix, int priority) {
+        if (suffix == null) return unsetSuffix(priority);
         var result = user().data().add(SuffixNode.builder(suffix, priority).context(options().context()).build());
         LuckPermsProvider.get().getUserManager().saveUser(user());
         return result.wasSuccessful();
+    }
+
+    private boolean unsetSuffix(int priority) {
+        user().data().clear(options().context(), node -> node instanceof SuffixNode suffix && suffix.getPriority() == priority);
+        LuckPermsProvider.get().getUserManager().saveUser(user());
+        return true;
     }
 
     @Override
