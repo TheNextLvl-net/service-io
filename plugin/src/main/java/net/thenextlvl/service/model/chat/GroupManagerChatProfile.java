@@ -15,6 +15,11 @@ import java.util.stream.Collectors;
 
 public record GroupManagerChatProfile(User user, WorldDataHolder holder) implements ChatProfile {
     @Override
+    public Optional<String> getDisplayName() {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<String> getName() {
         return Optional.of(user().getLastName());
     }
@@ -44,12 +49,19 @@ public record GroupManagerChatProfile(User user, WorldDataHolder holder) impleme
     }
 
     @Override
-    public boolean setPrefix(String prefix, int priority) {
+    public boolean setDisplayName(@Nullable String displayName) {
+        return false;
+    }
+
+    @Override
+    public boolean setPrefix(@Nullable String prefix, int priority) {
+        if (prefix == null) return removeInfoNode("prefix");
         return setInfoNode("prefix", prefix);
     }
 
     @Override
-    public boolean setSuffix(String suffix, int priority) {
+    public boolean setSuffix(@Nullable String suffix, int priority) {
+        if (suffix == null) return removeInfoNode("suffix");
         return setInfoNode("suffix", suffix);
     }
 
