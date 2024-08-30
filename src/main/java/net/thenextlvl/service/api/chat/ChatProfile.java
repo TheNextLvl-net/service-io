@@ -1,6 +1,7 @@
 package net.thenextlvl.service.api.chat;
 
 import net.thenextlvl.service.api.node.InfoNode;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Optional;
@@ -10,6 +11,14 @@ import java.util.Set;
  * The ChatProfile interface represents a chat profile for a user.
  */
 public interface ChatProfile extends InfoNode {
+    /**
+     * Retrieves the display name associated with the chat profile.
+     *
+     * @return An Optional containing the display name of the chat profile.
+     * Returns an empty Optional if no display name is set.
+     */
+    Optional<String> getDisplayName();
+
     /**
      * Retrieves the name associated with the chat profile.
      *
@@ -51,11 +60,19 @@ public interface ChatProfile extends InfoNode {
     Set<String> getGroups();
 
     /**
+     * Sets the display name associated with the chat profile.
+     *
+     * @param displayName The display name to set for the chat profile, null to clear.
+     * @return true if the display name was successfully set, false otherwise.
+     */
+    boolean setDisplayName(@Nullable String displayName);
+
+    /**
      * Sets the prefix associated with the chat profile.
      *
      * @param prefix The prefix to set for the chat profile.
      */
-    default boolean setPrefix(String prefix) {
+    default boolean setPrefix(@Nullable String prefix) {
         return setPrefix(prefix, 0);
     }
 
@@ -67,14 +84,14 @@ public interface ChatProfile extends InfoNode {
      * @see ChatProfile#getPrefix()
      * @see ChatProfile#setPrefix(String)
      */
-    boolean setPrefix(String prefix, int priority);
+    boolean setPrefix(@Nullable String prefix, int priority);
 
     /**
      * Sets the suffix associated with the chat profile.
      *
      * @param suffix The suffix to set for the chat profile.
      */
-    default boolean setSuffix(String suffix) {
+    default boolean setSuffix(@Nullable String suffix) {
         return setSuffix(suffix, 0);
     }
 
@@ -86,5 +103,5 @@ public interface ChatProfile extends InfoNode {
      * @see ChatProfile#getSuffix()
      * @see ChatProfile#setSuffix(String)
      */
-    boolean setSuffix(String suffix, int priority);
+    boolean setSuffix(@Nullable String suffix, int priority);
 }
