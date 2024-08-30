@@ -20,6 +20,7 @@ import org.bukkit.OfflinePlayer;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 @RequiredArgsConstructor
 @SuppressWarnings("UnstableApiUsage")
@@ -73,14 +74,97 @@ class ServiceConvertCommand {
     }
 
     private int convertBanks(CommandContext<CommandSourceStack> context) {
-        return Command.SINGLE_SUCCESS;
+        return convert(context, BankController.class, BankController::getName, new BankConverter());
     }
 
     private int convertChat(CommandContext<CommandSourceStack> context) {
-        return Command.SINGLE_SUCCESS;
+        return convert(context, ChatController.class, ChatController::getName, new ChatConverter());
     }
 
     private int convertEconomy(CommandContext<CommandSourceStack> context) {
+        return convert(context, EconomyController.class, EconomyController::getName, new EconomyConverter());
+    }
+
+    private int convertGroups(CommandContext<CommandSourceStack> context) {
+        return convert(context, GroupController.class, GroupController::getName, new GroupConverter());
+    }
+
+    private int convertPermissions(CommandContext<CommandSourceStack> context) {
+        return convert(context, PermissionController.class, PermissionController::getName, new PermissionConverter());
+    }
+
+    private final class BankConverter extends PlayerConverter<BankController> {
+        @Override
+        public void convert(OfflinePlayer player, BankController source, BankController target) {
+            source.loadBanks().thenAccept(banks -> banks.forEach(bank ->
+                    bank.getWorld().map(world -> target.createBank(bank.getOwner(), bank.getName(), world))
+                            .orElseGet(() -> target.createBank(bank.getOwner(), bank.getName()))
+                            .thenAccept(targetBank -> {
+                                targetBank.setBalance(bank.getBalance());
+                                bank.getMembers().forEach(targetBank::addMember);
+                            })));
+        }
+    }
+
+    private final class ChatConverter extends PlayerConverter<ChatController> {
+        @Override
+        public void convert(OfflinePlayer player, ChatController source, ChatController target) {
+            source.tryGetProfile(player).thenAccept(sourceProfile -> target.tryGetProfile(player)
+                    .thenAccept(targetProfile -> {
+                        sourceProfile.getPrefix().ifPresent(targetProfile::setPrefix);
+                        sourceProfile.getSuffix().ifPresent(targetProfile::setSuffix);
+                        sourceProfile.getDisplayName().ifPresent(targetProfile::setDisplayName);
+                    }));
+        }
+    }
+
+    private final class EconomyConverter extends PlayerConverter<EconomyController> {
+        @Override
+        public void convert(OfflinePlayer player, EconomyController source, EconomyController target) {
+            source.tryGetAccount(player).thenAccept(sourceAccount -> sourceAccount.ifPresent(account ->
+                    account.getWorld().ifPresentOrElse(world -> target.createAccount(player, world)
+                                    .thenAccept(account1 -> account1.setBalance(account.getBalance())),
+                            () -> target.createAccount(player)
+                                    .thenAccept(account1 -> account1.setBalance(account.getBalance())))));
+        }
+    }
+
+    private final class GroupConverter extends PlayerConverter<GroupController> {
+        @Override
+        public void convert(OfflinePlayer player, GroupController source, GroupController target) {
+            source.tryGetGroupHolder(player).thenAccept(holder -> target.tryGetGroupHolder(player)
+                    .thenAccept(targetHolder -> {
+                        holder.getGroups().forEach(targetHolder::addGroup);
+                        holder.getPermissions().forEach(targetHolder::setPermission);
+                        targetHolder.setPrimaryGroup(holder.getPrimaryGroup());
+                    }));
+        }
+
+        @Override
+        public void convert(GroupController source, GroupController target) {
+            source.loadGroups().thenAccept(groups -> groups.forEach(group -> group.getWorld()
+                    .map(world -> target.createGroup(group.getName(), world))
+                    .orElseGet(() -> target.createGroup(group.getName()))
+                    .thenAccept(targetGroup -> {
+                        group.getDisplayName().ifPresent(targetGroup::setDisplayName);
+                        group.getPermissions().forEach(targetGroup::setPermission);
+                        group.getPrefix().ifPresent(targetGroup::setPrefix);
+                        group.getSuffix().ifPresent(targetGroup::setSuffix);
+                        group.getWeight().ifPresent(targetGroup::setWeight);
+                    })));
+            super.convert(source, target);
+        }
+    }
+
+    private final class PermissionConverter extends PlayerConverter<PermissionController> {
+        @Override
+        public void convert(OfflinePlayer player, PermissionController source, PermissionController target) {
+            source.tryGetPermissionHolder(player).thenAccept(holder -> target.tryGetPermissionHolder(player)
+                    .thenAccept(targetHolder -> holder.getPermissions().forEach(targetHolder::setPermission)));
+        }
+    }
+
+    private <T> int convert(CommandContext<CommandSourceStack> context, Class<T> controller, Function<T, String> name, Converter<T> converter) {
         var sender = context.getSource().getSender();
 
         if (conversionRunning.get()) {
@@ -88,22 +172,23 @@ class ServiceConvertCommand {
             return 0;
         }
 
-        var source = context.getArgument("source", EconomyController.class);
-        var target = context.getArgument("target", EconomyController.class);
+        var source = context.getArgument("source", controller);
+        var target = context.getArgument("target", controller);
 
         if (source.equals(target)) {
-            sender.sendRichMessage("Source and target economy cannot be the same.");
+            sender.sendRichMessage("Source and target service cannot be the same.");
             return 0;
         }
 
         plugin.getServer().getAsyncScheduler().runNow(plugin, scheduledTask -> {
-            sender.sendRichMessage("Start converting economy from <source> to <target>. This may take a while.");
+            sender.sendRichMessage("Start converting data from <source> to <target>. This may take a while.",
+                    Placeholder.parsed("source", name.apply(source)),
+                    Placeholder.parsed("target", name.apply(target)));
 
             var now = System.currentTimeMillis();
             conversionRunning.set(true);
 
-            Arrays.stream(plugin.getServer().getOfflinePlayers())
-                    .forEach(player -> migratePlayer(player, source, target));
+            converter.convert(source, target);
 
             conversionRunning.set(false);
 
@@ -115,19 +200,19 @@ class ServiceConvertCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private int convertGroups(CommandContext<CommandSourceStack> context) {
-        return Command.SINGLE_SUCCESS;
+    @FunctionalInterface
+    private interface Converter<T> {
+        void convert(T source, T target);
     }
 
-    private int convertPermissions(CommandContext<CommandSourceStack> context) {
-        return Command.SINGLE_SUCCESS;
-    }
+    @RequiredArgsConstructor
+    private abstract class PlayerConverter<T> implements Converter<T> {
+        public abstract void convert(OfflinePlayer player, T source, T target);
 
-    private void migratePlayer(OfflinePlayer player, EconomyController source, EconomyController target) {
-        source.tryGetAccount(player).thenAccept(sourceAccount -> sourceAccount.ifPresent(account ->
-                account.getWorld().ifPresentOrElse(world -> target.createAccount(player, world)
-                                .thenAccept(account1 -> account1.setBalance(account.getBalance())),
-                        () -> target.createAccount(player)
-                                .thenAccept(account1 -> account1.setBalance(account.getBalance())))));
+        @Override
+        public void convert(T source, T target) {
+            Arrays.stream(plugin.getServer().getOfflinePlayers())
+                    .forEach(player -> convert(player, source, target));
+        }
     }
 }
