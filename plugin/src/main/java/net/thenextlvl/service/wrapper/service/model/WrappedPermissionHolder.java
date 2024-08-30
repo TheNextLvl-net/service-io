@@ -6,16 +6,29 @@ import net.milkbowl.vault.permission.Permission;
 import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class WrappedPermissionHolder implements PermissionHolder {
     private final @Nullable World world;
     private final Player holder;
     private final Permission permission;
+
+    @Override
+    public @Unmodifiable Map<String, Boolean> getPermissions() {
+        return holder.getEffectivePermissions().stream()
+                .collect(Collectors.toUnmodifiableMap(
+                        PermissionAttachmentInfo::getPermission,
+                        PermissionAttachmentInfo::getValue
+                ));
+    }
 
     @Override
     public TriState checkPermission(String permission) {
@@ -30,6 +43,11 @@ public class WrappedPermissionHolder implements PermissionHolder {
     @Override
     public boolean removePermission(String permission) {
         return this.permission.playerRemove(world != null ? world.getName() : null, holder, permission);
+    }
+
+    @Override
+    public boolean setPermission(String permission, boolean value) {
+        return false;
     }
 
     @Override
