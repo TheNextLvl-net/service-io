@@ -3,19 +3,26 @@ package net.thenextlvl.service.model.permission;
 import net.kyori.adventure.util.TriState;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
 import net.luckperms.api.node.types.MetaNode;
-import net.luckperms.api.node.types.PermissionNode;
 import net.luckperms.api.query.QueryOptions;
 import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.group.GroupHolder;
 import net.thenextlvl.service.model.group.LuckPermsGroup;
+import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public record LuckPermsPermissionHolder(User user, QueryOptions options) implements GroupHolder {
+    @Override
+    public @Unmodifiable Map<String, Boolean> getPermissions() {
+        return user().getCachedData().getPermissionData(options()).getPermissionMap();
+    }
+
     @Override
     public TriState checkPermission(String permission) {
         return switch (user().getCachedData().getPermissionData(options()).checkPermission(permission)) {
@@ -27,14 +34,19 @@ public record LuckPermsPermissionHolder(User user, QueryOptions options) impleme
 
     @Override
     public boolean addPermission(String permission) {
-        var result = user().data().add(PermissionNode.builder(permission).context(options().context()).build());
+        return setPermission(permission, true);
+    }
+
+    @Override
+    public boolean removePermission(String permission) {
+        var result = user().data().remove(Node.builder(permission).context(options().context()).build());
         LuckPermsProvider.get().getUserManager().saveUser(user());
         return result.wasSuccessful();
     }
 
     @Override
-    public boolean removePermission(String permission) {
-        var result = user().data().add(PermissionNode.builder(permission).context(options().context()).build());
+    public boolean setPermission(String permission, boolean value) {
+        var result = user().data().add(Node.builder(permission).value(value).context(options().context()).build());
         LuckPermsProvider.get().getUserManager().saveUser(user());
         return result.wasSuccessful();
     }
@@ -68,7 +80,7 @@ public record LuckPermsPermissionHolder(User user, QueryOptions options) impleme
     @Override
     public Set<Group> getGroups() {
         return user().getInheritedGroups(options()).stream()
-                .map(group -> new LuckPermsGroup(group, options()))
+                .map(group -> new LuckPermsGroup(group, options(), null))
                 .collect(Collectors.toUnmodifiableSet());
     }
 
