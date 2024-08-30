@@ -3,11 +3,24 @@ package net.thenextlvl.service.model.permission;
 import net.kyori.adventure.util.TriState;
 import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public record SuperPermsPermissionHolder(CommandSender sender) implements PermissionHolder {
+    @Override
+    public @Unmodifiable Map<String, Boolean> getPermissions() {
+        return sender.getEffectivePermissions().stream()
+                .collect(Collectors.toUnmodifiableMap(
+                        PermissionAttachmentInfo::getPermission,
+                        PermissionAttachmentInfo::getValue
+                ));
+    }
+
     @Override
     public TriState checkPermission(String permission) {
         return sender.permissionValue(permission);
@@ -20,6 +33,11 @@ public record SuperPermsPermissionHolder(CommandSender sender) implements Permis
 
     @Override
     public boolean removePermission(String permission) {
+        return false;
+    }
+
+    @Override
+    public boolean setPermission(String permission, boolean value) {
         return false;
     }
 
