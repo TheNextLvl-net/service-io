@@ -9,13 +9,20 @@ import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public record GroupManagerPermissionHolder(User user, WorldDataHolder holder) implements GroupHolder {
+    @Override
+    public @Unmodifiable Map<String, Boolean> getPermissions() {
+        return user().getPermissionList().stream().collect(Collectors.toUnmodifiableMap(
+                permission -> permission, permission -> checkPermission(permission).toBooleanOrElse(false))
+        );
+    }
+
     @Override
     public TriState checkPermission(String permission) {
         return switch (holder().getPermissionsHandler().checkFullUserPermission(user(), permission).resultType) {
@@ -35,6 +42,11 @@ public record GroupManagerPermissionHolder(User user, WorldDataHolder holder) im
     @Override
     public boolean removePermission(String permission) {
         return user().removePermission(permission);
+    }
+
+    @Override
+    public boolean setPermission(String permission, boolean value) {
+        return false;
     }
 
     @Override
@@ -62,15 +74,8 @@ public record GroupManagerPermissionHolder(User user, WorldDataHolder holder) im
 
     @Override
     public @Unmodifiable Set<Group> getGroups() {
-        var groups = new HashSet<String>();
-        var handler = holder().getPermissionsHandler();
-
-        var inherited = handler.listAllGroupsInherited(user().getGroup());
-        if (inherited != null) groups.addAll(inherited);
-
-        user().subGroupListCopy().forEach(group -> groups.addAll(handler.listAllGroupsInherited(group)));
-
-        return groups.stream().map(holder()::getGroup)
+        return holder.getGroups().values().stream()
+                .filter(group -> inGroup(group.getName()))
                 .map(GroupManagerGroup::new)
                 .collect(Collectors.toUnmodifiableSet());
     }
@@ -101,9 +106,7 @@ public record GroupManagerPermissionHolder(User user, WorldDataHolder holder) im
     @Override
     public boolean inGroup(String name) {
         var handler = holder().getPermissionsHandler();
-        if (handler.hasGroupInInheritance(user().getGroup(), name)) return true;
-        return user().subGroupListCopy().stream().anyMatch(group ->
-                handler.hasGroupInInheritance(group, name));
+        return handler.hasGroupInInheritance(user().getGroup(), name);
     }
 
     @Override
