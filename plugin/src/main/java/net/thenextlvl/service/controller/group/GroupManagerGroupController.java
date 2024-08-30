@@ -140,7 +140,7 @@ public class GroupManagerGroupController implements GroupController {
     @Override
     public Set<Group> getGroups() {
         return groupManager.getServer().getWorlds().stream()
-                .<Group>mapMulti((world, consumer) -> getGroups().forEach(consumer))
+                .<Group>mapMulti((world, consumer) -> getGroups(world).forEach(consumer))
                 .collect(Collectors.toUnmodifiableSet());
     }
 
