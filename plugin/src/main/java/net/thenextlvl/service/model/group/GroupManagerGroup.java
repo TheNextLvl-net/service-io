@@ -2,14 +2,19 @@ package net.thenextlvl.service.model.group;
 
 import net.kyori.adventure.util.TriState;
 import net.thenextlvl.service.api.group.Group;
+import org.anjocaido.groupmanager.GroupManager;
+import org.bukkit.World;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public record GroupManagerGroup(org.anjocaido.groupmanager.data.Group group) implements Group {
-
     @Override
     public Optional<String> getDisplayName() {
         return Optional.empty();
@@ -36,6 +41,13 @@ public record GroupManagerGroup(org.anjocaido.groupmanager.data.Group group) imp
     }
 
     @Override
+    public Optional<World> getWorld() {
+        var plugin = JavaPlugin.getPlugin(GroupManager.class);
+        return Optional.ofNullable(group().getDataSource().getName())
+                .map(plugin.getServer()::getWorld);
+    }
+
+    @Override
     public boolean setDisplayName(String displayName) {
         return false;
     }
@@ -56,9 +68,16 @@ public record GroupManagerGroup(org.anjocaido.groupmanager.data.Group group) imp
     }
 
     @Override
+    public @Unmodifiable Map<String, Boolean> getPermissions() {
+        return group.getPermissionList().stream().collect(Collectors.toUnmodifiableMap(
+                permission -> permission, permission -> checkPermission(permission).toBooleanOrElse(false))
+        );
+    }
+
+    @Override
     public TriState checkPermission(String permission) {
         var handler = group().getDataSource().getPermissionsHandler();
-        return switch(handler.checkGroupOnlyPermission(group(), permission).resultType) {
+        return switch (handler.checkGroupOnlyPermission(group(), permission).resultType) {
             case FOUND -> TriState.TRUE;
             case NEGATION, EXCEPTION -> TriState.FALSE;
             default -> TriState.NOT_SET;
@@ -75,6 +94,12 @@ public record GroupManagerGroup(org.anjocaido.groupmanager.data.Group group) imp
     @Override
     public boolean removePermission(String permission) {
         return group().removePermission(permission);
+    }
+
+    @Override
+    public boolean setPermission(String permission, boolean value) {
+        removePermission(!value ? "-" + permission : permission);
+        return value ? addPermission(permission) : addPermission("-" + permission);
     }
 
     @Override
