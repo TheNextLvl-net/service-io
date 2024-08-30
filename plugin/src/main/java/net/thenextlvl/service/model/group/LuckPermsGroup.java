@@ -2,15 +2,24 @@ package net.thenextlvl.service.model.group;
 
 import net.kyori.adventure.util.TriState;
 import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.node.Node;
 import net.luckperms.api.node.types.*;
 import net.luckperms.api.query.QueryOptions;
 import net.thenextlvl.service.api.group.Group;
+import org.bukkit.World;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Function;
 
-public record LuckPermsGroup(net.luckperms.api.model.group.Group group, QueryOptions options) implements Group {
+public record LuckPermsGroup(
+        net.luckperms.api.model.group.Group group,
+        QueryOptions options,
+        @Nullable World world
+) implements Group {
     @Override
     public Optional<String> getDisplayName() {
         return Optional.ofNullable(group().getDisplayName(options()));
@@ -34,6 +43,11 @@ public record LuckPermsGroup(net.luckperms.api.model.group.Group group, QueryOpt
     @Override
     public String getName() {
         return group().getName();
+    }
+
+    @Override
+    public Optional<World> getWorld() {
+        return Optional.ofNullable(world());
     }
 
     @Override
@@ -65,6 +79,11 @@ public record LuckPermsGroup(net.luckperms.api.model.group.Group group, QueryOpt
     }
 
     @Override
+    public @Unmodifiable Map<String, Boolean> getPermissions() {
+        return Map.of();
+    }
+
+    @Override
     public TriState checkPermission(String permission) {
         return switch (group().getCachedData().getPermissionData(options()).checkPermission(permission)) {
             case FALSE -> TriState.FALSE;
@@ -75,14 +94,19 @@ public record LuckPermsGroup(net.luckperms.api.model.group.Group group, QueryOpt
 
     @Override
     public boolean addPermission(String permission) {
-        var result = group().data().add(PermissionNode.builder(permission).context(options().context()).build());
+        return setPermission(permission, true);
+    }
+
+    @Override
+    public boolean removePermission(String permission) {
+        var result = group().data().remove(Node.builder(permission).context(options().context()).build());
         LuckPermsProvider.get().getGroupManager().saveGroup(group());
         return result.wasSuccessful();
     }
 
     @Override
-    public boolean removePermission(String permission) {
-        var result = group().data().remove(PermissionNode.builder(permission).context(options().context()).build());
+    public boolean setPermission(String permission, boolean value) {
+        var result = group().data().add(Node.builder(permission).value(value).context(options().context()).build());
         LuckPermsProvider.get().getGroupManager().saveGroup(group());
         return result.wasSuccessful();
     }
