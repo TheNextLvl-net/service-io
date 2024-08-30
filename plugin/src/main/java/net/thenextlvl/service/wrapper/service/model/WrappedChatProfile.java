@@ -19,6 +19,11 @@ public class WrappedChatProfile implements ChatProfile {
     private final OfflinePlayer holder;
 
     @Override
+    public Optional<String> getDisplayName() {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<String> getName() {
         return Optional.ofNullable(holder.getName());
     }
@@ -44,13 +49,18 @@ public class WrappedChatProfile implements ChatProfile {
     }
 
     @Override
-    public boolean setPrefix(String prefix, int priority) {
+    public boolean setDisplayName(@Nullable String displayName) {
+        return false;
+    }
+
+    @Override
+    public boolean setPrefix(@Nullable String prefix, int priority) {
         chat.setPlayerPrefix(world != null ? world.getName() : null, holder, prefix);
         return true;
     }
 
     @Override
-    public boolean setSuffix(String suffix, int priority) {
+    public boolean setSuffix(@Nullable String suffix, int priority) {
         chat.setPlayerSuffix(world != null ? world.getName() : null, holder, suffix);
         return true;
     }
