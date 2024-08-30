@@ -34,9 +34,7 @@ public record GroupManagerPermissionHolder(User user, WorldDataHolder holder) im
 
     @Override
     public boolean addPermission(String permission) {
-        if (!checkPermission(permission).equals(TriState.NOT_SET)) return false;
-        user().addPermission(permission);
-        return true;
+        return setPermission(permission, true);
     }
 
     @Override
@@ -46,7 +44,11 @@ public record GroupManagerPermissionHolder(User user, WorldDataHolder holder) im
 
     @Override
     public boolean setPermission(String permission, boolean value) {
-        return false;
+        var state = checkPermission(permission).toBoolean();
+        if (state != null && state.equals(value)) return false;
+        removePermission(value ? "-" + permission : permission);
+        user().addPermission(!value ? "-" + permission : permission);
+        return true;
     }
 
     @Override

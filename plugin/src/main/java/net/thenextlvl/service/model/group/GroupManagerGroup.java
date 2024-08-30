@@ -86,9 +86,7 @@ public record GroupManagerGroup(org.anjocaido.groupmanager.data.Group group) imp
 
     @Override
     public boolean addPermission(String permission) {
-        if (!checkPermission(permission).equals(TriState.NOT_SET)) return false;
-        group().addPermission(permission);
-        return true;
+        return setPermission(permission, true);
     }
 
     @Override
@@ -98,8 +96,11 @@ public record GroupManagerGroup(org.anjocaido.groupmanager.data.Group group) imp
 
     @Override
     public boolean setPermission(String permission, boolean value) {
-        removePermission(!value ? "-" + permission : permission);
-        return value ? addPermission(permission) : addPermission("-" + permission);
+        var state = checkPermission(permission).toBoolean();
+        if (state != null && state.equals(value)) return false;
+        removePermission(value ? "-" + permission : permission);
+        group().addPermission(!value ? "-" + permission : permission);
+        return true;
     }
 
     @Override
