@@ -10,7 +10,9 @@ import net.luckperms.api.node.types.SuffixNode;
 import net.luckperms.api.query.QueryOptions;
 import net.thenextlvl.service.api.chat.ChatProfile;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -33,6 +35,16 @@ public record LuckPermsChatProfile(User user, QueryOptions options) implements C
     }
 
     @Override
+    public Optional<String> getPrefix(int priority) {
+        return Optional.ofNullable(getPrefixes().get(priority));
+    }
+
+    @Override
+    public @Unmodifiable Map<Integer, String> getPrefixes() {
+        return user().getCachedData().getMetaData(options()).getPrefixes();
+    }
+
+    @Override
     public Optional<String> getPrimaryGroup() {
         return Optional.of(user().getPrimaryGroup());
     }
@@ -40,6 +52,16 @@ public record LuckPermsChatProfile(User user, QueryOptions options) implements C
     @Override
     public Optional<String> getSuffix() {
         return Optional.ofNullable(user().getCachedData().getMetaData(options()).getSuffix());
+    }
+
+    @Override
+    public Optional<String> getSuffix(int priority) {
+        return Optional.ofNullable(getSuffixes().get(priority));
+    }
+
+    @Override
+    public @Unmodifiable Map<Integer, String> getSuffixes() {
+        return user().getCachedData().getMetaData(options()).getSuffixes();
     }
 
     @Override
