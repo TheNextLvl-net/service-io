@@ -84,7 +84,7 @@ dependencies {
 
 To find the latest version:
 
-1. Visit the [repository link](https://repo.thenextlvl.net/#/releases/net/thenextlvl/services/api).
+1. Visit the [repository link](https://repo.thenextlvl.net/#/releases/net/thenextlvl/services/service-io).
 2. Replace `<version>` in your dependency declaration with the latest version number listed.
 
 For example, if the latest version is **0.1.0**, your dependency would look like this:
