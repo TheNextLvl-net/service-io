@@ -3,7 +3,7 @@
 A modern, drop-in replacement for Vault that offers enhanced functionality,
 better performance, and seamless integration across plugins.
 
-> [!Note]
+> [!NOTE]
 > ServiceIO only supports recent builds of [paper](https://papermc.io/downloads/paper) (1.21+)
 >
 > ServiceIO is designed as a full replacement for Vault, so Vault is no longer necessary when you make the switch. Rest
