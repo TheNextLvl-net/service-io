@@ -1,7 +1,7 @@
 package net.thenextlvl.service.api.permission;
 
 import net.kyori.adventure.util.TriState;
-import net.thenextlvl.service.api.node.InfoNode;
+import net.thenextlvl.service.api.model.InfoNode;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Map;
