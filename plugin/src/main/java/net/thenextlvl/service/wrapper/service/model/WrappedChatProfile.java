@@ -8,6 +8,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -29,8 +30,13 @@ public class WrappedChatProfile implements ChatProfile {
     }
 
     @Override
-    public Optional<String> getPrefix() {
+    public Optional<String> getPrefix(int priority) {
         return Optional.ofNullable(chat.getPlayerPrefix(world != null ? world.getName() : null, holder));
+    }
+
+    @Override
+    public @Unmodifiable Map<Integer, String> getPrefixes() {
+        return getPrefix().map(prefix -> Map.of(0, prefix)).orElseGet(Map::of);
     }
 
     @Override
@@ -39,8 +45,13 @@ public class WrappedChatProfile implements ChatProfile {
     }
 
     @Override
-    public Optional<String> getSuffix() {
+    public Optional<String> getSuffix(int priority) {
         return Optional.ofNullable(chat.getPlayerSuffix(world != null ? world.getName() : null, holder));
+    }
+
+    @Override
+    public @Unmodifiable Map<Integer, String> getSuffixes() {
+        return getSuffix().map(suffix -> Map.of(0, suffix)).orElseGet(Map::of);
     }
 
     @Override
