@@ -63,3 +63,79 @@ The `service.admin` permission grants access to all ServiceIO commands
 For compatibility reasons `vault.admin` acts as `service.admin`
 
 ## API
+
+To include the API in your Gradle project using Kotlin DSL, follow these steps:
+
+1. **Add the repository:** Include the `maven` repository in your `repositories` block.
+2. **Add the dependency:** Replace `<version>` with the actual version of the API.
+
+Here's an example configuration:
+
+```kts
+
+repositories {
+    maven("https://repo.thenextlvl.net/releases")
+}
+
+dependencies {
+    compileOnly("net.thenextlvl.services:api:<version>")
+}
+```
+
+To find the latest version:
+
+1. Visit the [repository link](https://repo.thenextlvl.net/#/releases/net/thenextlvl/services/api).
+2. Replace `<version>` in your dependency declaration with the latest version number listed.
+
+For example, if the latest version is **0.1.0**, your dependency would look like this:
+
+```kts
+dependencies {
+    compileOnly("net.thenextlvl.services:api:0.1.0")
+}
+```
+
+You can find both sources and javadocs on the repository<br/>
+Also you can download the docs from within your IDE
+
+### Implementing ServiceIO
+
+ServiceIO _loosely_ follows the Model View Controller (MVC) design pattern<br>
+At the moment there are following controllers:
+
+    BankController
+    ChatController
+    EconomyController
+    GroupController
+    PermissionController
+
+Controllers are responsible for loading, retrieving, deleting and creating data
+
+Example on how to access controllers:
+
+```java
+
+public @Nullable BankController getBankController() {
+    return getServer().getServicesManager().load(BankController.class);
+}
+
+public @Nullable ChatController getChatController() {
+    return getServer().getServicesManager().load(ChatController.class);
+}
+
+public @Nullable EconomyController getEconomyController() {
+    return getServer().getServicesManager().load(EconomyController.class);
+}
+```
+
+Example on how to provide your own controllers:
+
+```java
+private void registerBankController() {
+    getServer().getServicesManager().register(BankController.class, new YourBankController(), this, ServicePriority.Highest);
+}
+
+private void registerEconomyController() {
+    getServer().getServicesManager().register(EconomyController.class, new YourEconomyController(), this, ServicePriority.Highest);
+}
+```
