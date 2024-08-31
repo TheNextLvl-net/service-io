@@ -78,7 +78,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("net.thenextlvl.services:api:<version>")
+    compileOnly("net.thenextlvl.services:service-io:<version>")
 }
 ```
 
@@ -91,7 +91,7 @@ For example, if the latest version is **0.1.0**, your dependency would look like
 
 ```kts
 dependencies {
-    compileOnly("net.thenextlvl.services:api:0.1.0")
+    compileOnly("net.thenextlvl.services:service-io:0.1.0")
 }
 ```
 
