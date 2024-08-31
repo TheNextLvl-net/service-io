@@ -31,8 +31,28 @@ public record LuckPermsGroup(
     }
 
     @Override
+    public Optional<String> getPrefix(int priority) {
+        return Optional.ofNullable(getPrefixes().get(priority));
+    }
+
+    @Override
+    public @Unmodifiable Map<Integer, String> getPrefixes() {
+        return group().getCachedData().getMetaData(options()).getPrefixes();
+    }
+
+    @Override
     public Optional<String> getSuffix() {
         return Optional.ofNullable(group().getCachedData().getMetaData(options()).getSuffix());
+    }
+
+    @Override
+    public Optional<String> getSuffix(int priority) {
+        return Optional.ofNullable(getSuffixes().get(priority));
+    }
+
+    @Override
+    public @Unmodifiable Map<Integer, String> getSuffixes() {
+        return group().getCachedData().getMetaData(options()).getSuffixes();
     }
 
     @Override
@@ -80,7 +100,7 @@ public record LuckPermsGroup(
 
     @Override
     public @Unmodifiable Map<String, Boolean> getPermissions() {
-        return Map.of();
+        return group().getCachedData().getPermissionData().getPermissionMap();
     }
 
     @Override
