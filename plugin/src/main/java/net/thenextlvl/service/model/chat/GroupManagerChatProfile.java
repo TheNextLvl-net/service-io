@@ -7,6 +7,7 @@ import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -25,8 +26,13 @@ public record GroupManagerChatProfile(User user, WorldDataHolder holder) impleme
     }
 
     @Override
-    public Optional<String> getPrefix() {
+    public Optional<String> getPrefix(int priority) {
         return Optional.ofNullable(holder().getPermissionsHandler().getUserPrefix(user().getLastName()));
+    }
+
+    @Override
+    public @Unmodifiable Map<Integer, String> getPrefixes() {
+        return getPrefix().map(prefix -> Map.of(0, prefix)).orElseGet(Map::of);
     }
 
     @Override
@@ -35,8 +41,13 @@ public record GroupManagerChatProfile(User user, WorldDataHolder holder) impleme
     }
 
     @Override
-    public Optional<String> getSuffix() {
+    public Optional<String> getSuffix(int priority) {
         return Optional.ofNullable(holder().getPermissionsHandler().getUserSuffix(user().getLastName()));
+    }
+
+    @Override
+    public @Unmodifiable Map<Integer, String> getSuffixes() {
+        return getSuffix().map(suffix -> Map.of(0, suffix)).orElseGet(Map::of);
     }
 
     @Override
