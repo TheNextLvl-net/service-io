@@ -31,7 +31,7 @@ public class ServiceInfoCommand {
 
     LiteralArgumentBuilder<CommandSourceStack> create() {
         return Commands.literal("info")
-                .then(Commands.literal("bank").executes(this::infoBank))
+                .then(Commands.literal("banks").executes(this::infoBanks))
                 .then(Commands.literal("chat").executes(this::infoChat))
                 .then(Commands.literal("economy").executes(this::infoEconomy))
                 .then(Commands.literal("groups").executes(this::infoGroups))
@@ -40,15 +40,11 @@ public class ServiceInfoCommand {
                 .executes(this::info);
     }
 
-    @SuppressWarnings("DuplicatedCode")
     private int info(CommandContext<CommandSourceStack> context) {
-
-        // ED8106
-
         context.getSource().getSender().sendRichMessage("ServiceIO Information (v<version>)",
                 Placeholder.parsed("version", plugin.getPluginMeta().getVersion()));
 
-        infoBank(context);
+        infoBanks(context);
         infoChat(context);
         infoEconomy(context);
         infoGroups(context);
@@ -57,7 +53,7 @@ public class ServiceInfoCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private int infoBank(CommandContext<CommandSourceStack> context) {
+    private int infoBanks(CommandContext<CommandSourceStack> context) {
         var sender = context.getSource().getSender();
         var bank = plugin.getServer().getServicesManager().load(BankController.class);
         var banks = getRegistrations(BankController.class, bank, BankController::getName);
