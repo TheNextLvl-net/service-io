@@ -1,4 +1,4 @@
-package net.thenextlvl.service.api.node;
+package net.thenextlvl.service.api.model;
 
 import org.jetbrains.annotations.Nullable;
 
