@@ -21,13 +21,23 @@ public record GroupManagerGroup(org.anjocaido.groupmanager.data.Group group) imp
     }
 
     @Override
-    public Optional<String> getPrefix() {
+    public Optional<String> getPrefix(int priority) {
         return getInfoNode("prefix");
     }
 
     @Override
-    public Optional<String> getSuffix() {
+    public @Unmodifiable Map<Integer, String> getPrefixes() {
+        return getPrefix().map(prefix -> Map.of(0, prefix)).orElseGet(Map::of);
+    }
+
+    @Override
+    public Optional<String> getSuffix(int priority) {
         return getInfoNode("suffix");
+    }
+
+    @Override
+    public @Unmodifiable Map<Integer, String> getSuffixes() {
+        return getSuffix().map(suffix -> Map.of(0, suffix)).orElseGet(Map::of);
     }
 
     @Override
