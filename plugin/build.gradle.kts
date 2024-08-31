@@ -84,15 +84,20 @@ paper {
         register("vault.admin") {
             description = "Backwards compatibility for Vault permission"
             default = BukkitPluginDescription.Permission.Default.OP
+            children = listOf("service.admin")
+        }
+        register("service.admin") {
+            description = "Grants access to all /services commands"
+            default = BukkitPluginDescription.Permission.Default.OP
             children = listOf("service.info", "service.convert")
         }
         register("service.info") {
-            description = "Gives access to /service info"
+            description = "Grants access to /service info"
             default = BukkitPluginDescription.Permission.Default.OP
             children = listOf("service.command")
         }
         register("service.convert") {
-            description = "Gives access to /service convert"
+            description = "Grants access to /service convert"
             default = BukkitPluginDescription.Permission.Default.OP
             children = listOf("service.command")
         }
