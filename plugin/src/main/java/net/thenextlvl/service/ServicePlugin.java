@@ -220,9 +220,9 @@ public class ServicePlugin extends JavaPlugin {
     }
 
     private void addCustomCharts() {
-        addCustomChart(ChatController.class, ChatController::getName, "chat");
-        addCustomChart(EconomyController.class, EconomyController::getName, "economy");
-        addCustomChart(PermissionController.class, PermissionController::getName, "permission");
+        addCustomChart(ChatController.class, ChatController::getName, "chat provider");
+        addCustomChart(EconomyController.class, EconomyController::getName, "economy provider");
+        addCustomChart(PermissionController.class, PermissionController::getName, "permission provider");
     }
 
     private <T> void addCustomChart(Class<T> service, Function<T, String> function, String name) {
