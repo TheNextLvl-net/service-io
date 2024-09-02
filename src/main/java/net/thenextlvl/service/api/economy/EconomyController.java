@@ -147,7 +147,7 @@ public interface EconomyController {
      * @return a CompletableFuture that will complete with the created account
      * @throws IllegalStateException if a similar account already exists
      */
-    default CompletableFuture<Account> createAccount(OfflinePlayer player) throws IllegalStateException {
+    default CompletableFuture<Account> createAccount(OfflinePlayer player) {
         return createAccount(player.getUniqueId());
     }
 
@@ -157,9 +157,8 @@ public interface EconomyController {
      * @param player the player for whom the account will be created
      * @param world  the world in which the player's account will be created
      * @return a CompletableFuture that will complete with the created account
-     * @throws IllegalStateException if a similar account already exists
      */
-    default CompletableFuture<Account> createAccount(OfflinePlayer player, World world) throws IllegalStateException {
+    default CompletableFuture<Account> createAccount(OfflinePlayer player, World world) {
         return createAccount(player.getUniqueId(), world);
     }
 
@@ -168,9 +167,8 @@ public interface EconomyController {
      *
      * @param uuid the uuid of the account to be created
      * @return a CompletableFuture that will complete with the created account
-     * @throws IllegalStateException if a similar account already exists
      */
-    CompletableFuture<Account> createAccount(UUID uuid) throws IllegalStateException;
+    CompletableFuture<Account> createAccount(UUID uuid);
 
     /**
      * Creates an account with the given uuid and world.
@@ -178,9 +176,8 @@ public interface EconomyController {
      * @param uuid  the uuid of the account to be created
      * @param world the world in which the account will be created
      * @return a CompletableFuture that will complete with the created account
-     * @throws IllegalStateException if a similar account already exists
      */
-    CompletableFuture<Account> createAccount(UUID uuid, World world) throws IllegalStateException;
+    CompletableFuture<Account> createAccount(UUID uuid, World world);
 
     /**
      * Loads the account for the specified player asynchronously.
