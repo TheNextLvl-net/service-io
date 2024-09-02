@@ -19,6 +19,7 @@ import org.bukkit.OfflinePlayer;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
@@ -122,9 +123,13 @@ class ServiceConvertCommand {
         @Override
         public void convert(OfflinePlayer player, EconomyController source, EconomyController target) {
             source.tryGetAccount(player).thenAccept(sourceAccount -> sourceAccount.ifPresent(account ->
-                    account.getWorld().ifPresentOrElse(world -> target.createAccount(player, world)
+                    account.getWorld().ifPresentOrElse(world -> target.tryGetAccount(player, world)
+                                    .thenCompose(account1 -> account1.map(CompletableFuture::completedFuture)
+                                            .orElseGet(() -> target.createAccount(player, world)))
                                     .thenAccept(account1 -> account1.setBalance(account.getBalance())),
-                            () -> target.createAccount(player)
+                            () -> target.tryGetAccount(player)
+                                    .thenCompose(account1 -> account1.map(CompletableFuture::completedFuture)
+                                            .orElseGet(() -> target.createAccount(player)))
                                     .thenAccept(account1 -> account1.setBalance(account.getBalance())))));
         }
     }
