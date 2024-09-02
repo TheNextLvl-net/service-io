@@ -110,11 +110,11 @@ class ServiceConvertCommand {
     private final class ChatConverter extends PlayerConverter<ChatController> {
         @Override
         public void convert(OfflinePlayer player, ChatController source, ChatController target) {
-            source.tryGetProfile(player).thenAccept(sourceProfile -> target.tryGetProfile(player)
+            source.tryGetProfile(player).thenAccept(profile -> target.tryGetProfile(player)
                     .thenAccept(targetProfile -> {
-                        sourceProfile.getPrefix().ifPresent(targetProfile::setPrefix);
-                        sourceProfile.getSuffix().ifPresent(targetProfile::setSuffix);
-                        sourceProfile.getDisplayName().ifPresent(targetProfile::setDisplayName);
+                        profile.getPrefixes().forEach((priority, prefix) -> targetProfile.setPrefix(prefix, priority));
+                        profile.getSuffixes().forEach((priority, suffix) -> targetProfile.setSuffix(suffix, priority));
+                        profile.getDisplayName().ifPresent(targetProfile::setDisplayName);
                     }));
         }
     }
@@ -153,8 +153,8 @@ class ServiceConvertCommand {
                     .thenAccept(targetGroup -> {
                         group.getDisplayName().ifPresent(targetGroup::setDisplayName);
                         group.getPermissions().forEach(targetGroup::setPermission);
-                        group.getPrefix().ifPresent(targetGroup::setPrefix);
-                        group.getSuffix().ifPresent(targetGroup::setSuffix);
+                        group.getPrefixes().forEach((priority, prefix) -> targetGroup.setPrefix(prefix, priority));
+                        group.getSuffixes().forEach((priority, suffix) -> targetGroup.setSuffix(suffix, priority));
                         group.getWeight().ifPresent(targetGroup::setWeight);
                     })));
             super.convert(source, target);
