@@ -80,7 +80,8 @@ public class VaultEconomyServiceWrapper implements Economy {
 
     @Override
     public boolean hasAccount(String playerName, String worldName) {
-        return getAccount(playerName, worldName).isPresent();
+        var player = playerName != null ? plugin.getServer().getOfflinePlayerIfCached(playerName) : null;
+        return hasAccount(player, worldName);
     }
 
     @Override
@@ -150,10 +151,10 @@ public class VaultEconomyServiceWrapper implements Economy {
 
     @Override
     public EconomyResponse withdrawPlayer(OfflinePlayer player, String worldName, double amount) {
-        return getAccount(player, null).map(account -> {
+        return getAccount(player, worldName).map(account -> {
             var balance = account.getBalance();
             var withdraw = account.withdraw(amount);
-            var responseType = balance.equals(withdraw) ? SUCCESS : FAILURE;
+            var responseType = amount != 0 && balance.equals(withdraw) ? FAILURE : SUCCESS;
             return new EconomyResponse(amount, withdraw.doubleValue(), responseType, null);
         }).orElseGet(() -> new EconomyResponse(amount, 0, FAILURE, null));
     }
@@ -176,10 +177,10 @@ public class VaultEconomyServiceWrapper implements Economy {
 
     @Override
     public EconomyResponse depositPlayer(OfflinePlayer player, String worldName, double amount) {
-        return getAccount(player, null).map(account -> {
+        return getAccount(player, worldName).map(account -> {
             var balance = account.getBalance();
             var deposit = account.deposit(amount);
-            var responseType = balance.equals(deposit) ? SUCCESS : FAILURE;
+            var responseType = amount != 0 && balance.equals(deposit) ? FAILURE : SUCCESS;
             return new EconomyResponse(amount, deposit.doubleValue(), responseType, null);
         }).orElseGet(() -> new EconomyResponse(amount, 0, FAILURE, null));
     }
@@ -310,16 +311,11 @@ public class VaultEconomyServiceWrapper implements Economy {
 
     @Override
     public boolean createPlayerAccount(OfflinePlayer player, String worldName) {
-        return Optional.ofNullable(player).flatMap(offline -> Optional.ofNullable(worldName)
+        return Optional.ofNullable(player).map(offline -> Optional.ofNullable(worldName)
                         .map(plugin.getServer()::getWorld)
-                        .map(world -> economyController.createAccount(player, world).join()))
+                        .map(world -> economyController.createAccount(offline, world).join())
+                        .orElseGet(() -> economyController.createAccount(offline).join()))
                 .isPresent();
-    }
-
-    private Optional<Account> getAccount(String playerName, String worldName) {
-        return Optional.ofNullable(playerName)
-                .map(plugin.getServer()::getOfflinePlayerIfCached)
-                .flatMap(player -> getAccount(player, worldName));
     }
 
     private Optional<Account> getAccount(OfflinePlayer player, String worldName) {
