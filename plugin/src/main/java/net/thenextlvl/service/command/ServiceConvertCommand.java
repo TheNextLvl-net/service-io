@@ -96,8 +96,8 @@ class ServiceConvertCommand {
 
     private final class BankConverter extends PlayerConverter<BankController> {
         @Override
-        public void convert(OfflinePlayer player, BankController source, BankController target) {
-            source.loadBanks().thenAccept(banks -> banks.forEach(bank ->
+        public CompletableFuture<Void> convert(OfflinePlayer player, BankController source, BankController target) {
+            return source.loadBanks().thenAccept(banks -> banks.forEach(bank ->
                     bank.getWorld().map(world -> target.createBank(bank.getOwner(), bank.getName(), world))
                             .orElseGet(() -> target.createBank(bank.getOwner(), bank.getName()))
                             .thenAccept(targetBank -> {
@@ -109,8 +109,8 @@ class ServiceConvertCommand {
 
     private final class ChatConverter extends PlayerConverter<ChatController> {
         @Override
-        public void convert(OfflinePlayer player, ChatController source, ChatController target) {
-            source.tryGetProfile(player).thenAccept(profile -> target.tryGetProfile(player)
+        public CompletableFuture<Void> convert(OfflinePlayer player, ChatController source, ChatController target) {
+            return source.tryGetProfile(player).thenAccept(profile -> target.tryGetProfile(player)
                     .thenAccept(targetProfile -> {
                         profile.getPrefixes().forEach((priority, prefix) -> targetProfile.setPrefix(prefix, priority));
                         profile.getSuffixes().forEach((priority, suffix) -> targetProfile.setSuffix(suffix, priority));
@@ -121,8 +121,8 @@ class ServiceConvertCommand {
 
     private final class EconomyConverter extends PlayerConverter<EconomyController> {
         @Override
-        public void convert(OfflinePlayer player, EconomyController source, EconomyController target) {
-            source.tryGetAccount(player).thenAccept(sourceAccount -> sourceAccount.ifPresent(account ->
+        public CompletableFuture<Void> convert(OfflinePlayer player, EconomyController source, EconomyController target) {
+            return source.tryGetAccount(player).thenAccept(sourceAccount -> sourceAccount.ifPresent(account ->
                     account.getWorld().ifPresentOrElse(world -> target.tryGetAccount(player, world)
                                     .thenCompose(account1 -> account1.map(CompletableFuture::completedFuture)
                                             .orElseGet(() -> target.createAccount(player, world)))
@@ -136,8 +136,8 @@ class ServiceConvertCommand {
 
     private final class GroupConverter extends PlayerConverter<GroupController> {
         @Override
-        public void convert(OfflinePlayer player, GroupController source, GroupController target) {
-            source.tryGetGroupHolder(player).thenAccept(holder -> target.tryGetGroupHolder(player)
+        public CompletableFuture<Void> convert(OfflinePlayer player, GroupController source, GroupController target) {
+            return source.tryGetGroupHolder(player).thenAccept(holder -> target.tryGetGroupHolder(player)
                     .thenAccept(targetHolder -> {
                         holder.getGroups().forEach(targetHolder::addGroup);
                         holder.getPermissions().forEach(targetHolder::setPermission);
@@ -146,7 +146,7 @@ class ServiceConvertCommand {
         }
 
         @Override
-        public void convert(GroupController source, GroupController target) {
+        public CompletableFuture<Void> convert(GroupController source, GroupController target) {
             source.loadGroups().thenAccept(groups -> groups.forEach(group -> group.getWorld()
                     .map(world -> target.createGroup(group.getName(), world))
                     .orElseGet(() -> target.createGroup(group.getName()))
@@ -157,14 +157,14 @@ class ServiceConvertCommand {
                         group.getSuffixes().forEach((priority, suffix) -> targetGroup.setSuffix(suffix, priority));
                         group.getWeight().ifPresent(targetGroup::setWeight);
                     })));
-            super.convert(source, target);
+            return super.convert(source, target);
         }
     }
 
     private final class PermissionConverter extends PlayerConverter<PermissionController> {
         @Override
-        public void convert(OfflinePlayer player, PermissionController source, PermissionController target) {
-            source.tryGetPermissionHolder(player).thenAccept(holder -> target.tryGetPermissionHolder(player)
+        public CompletableFuture<Void> convert(OfflinePlayer player, PermissionController source, PermissionController target) {
+            return source.tryGetPermissionHolder(player).thenAccept(holder -> target.tryGetPermissionHolder(player)
                     .thenAccept(targetHolder -> holder.getPermissions().forEach(targetHolder::setPermission)));
         }
     }
@@ -193,31 +193,40 @@ class ServiceConvertCommand {
             var now = System.currentTimeMillis();
             conversionRunning.set(true);
 
-            converter.convert(source, target);
+            converter.convert(source, target).thenAccept(unused -> {
+                conversionRunning.set(false);
 
-            conversionRunning.set(false);
+                var time = new DecimalFormat("0.000").format((System.currentTimeMillis() - now) / 1000d);
+                sender.sendRichMessage("Completed conversion in <time> seconds, please verify the data before using it.",
+                        Placeholder.parsed("time", time));
 
-            var time = new DecimalFormat("0.000").format((System.currentTimeMillis() - now) / 1000d);
-            sender.sendRichMessage("Completed conversion in <time> seconds, please verify the data before using it.",
-                    Placeholder.parsed("time", time));
+            }).exceptionally(throwable -> {
+                conversionRunning.set(false);
 
+                var time = new DecimalFormat("0.000").format((System.currentTimeMillis() - now) / 1000d);
+                sender.sendRichMessage("<red>Conversion failed after <time> seconds, see the console for more information.",
+                        Placeholder.parsed("time", time));
+                plugin.getComponentLogger().error("Data conversion failed after {} seconds", time, throwable);
+                return null;
+            });
         });
         return Command.SINGLE_SUCCESS;
     }
 
     @FunctionalInterface
     private interface Converter<T> {
-        void convert(T source, T target);
+        CompletableFuture<Void> convert(T source, T target);
     }
 
     @RequiredArgsConstructor
     private abstract class PlayerConverter<T> implements Converter<T> {
-        public abstract void convert(OfflinePlayer player, T source, T target);
+        public abstract CompletableFuture<Void> convert(OfflinePlayer player, T source, T target);
 
         @Override
-        public void convert(T source, T target) {
-            Arrays.stream(plugin.getServer().getOfflinePlayers())
-                    .forEach(player -> convert(player, source, target));
+        public CompletableFuture<Void> convert(T source, T target) {
+            return CompletableFuture.allOf(Arrays.stream(plugin.getServer().getOfflinePlayers())
+                    .map(player -> convert(player, source, target))
+                    .toArray(CompletableFuture[]::new));
         }
     }
 }
