@@ -40,7 +40,7 @@ dependencies {
     compileOnly("net.luckperms:api:5.4")
 
     implementation("com.github.MilkBowl:VaultAPI:1.7.1")
-    implementation("net.thenextlvl.core:paper:1.5.1")
+    implementation("net.thenextlvl.core:paper:1.5.2")
     implementation("org.bstats:bstats-bukkit:3.1.0")
 
     implementation(rootProject)
