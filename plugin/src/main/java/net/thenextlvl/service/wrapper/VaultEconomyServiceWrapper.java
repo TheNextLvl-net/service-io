@@ -2,7 +2,6 @@ package net.thenextlvl.service.wrapper;
 
 import core.annotation.FieldsAreNotNullByDefault;
 import core.annotation.ParametersAreNullableByDefault;
-import lombok.RequiredArgsConstructor;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.thenextlvl.service.api.economy.Account;
@@ -12,6 +11,7 @@ import net.thenextlvl.service.api.economy.bank.BankController;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
@@ -21,12 +21,18 @@ import java.util.concurrent.ExecutionException;
 import static net.milkbowl.vault.economy.EconomyResponse.ResponseType.FAILURE;
 import static net.milkbowl.vault.economy.EconomyResponse.ResponseType.SUCCESS;
 
-@RequiredArgsConstructor
 @FieldsAreNotNullByDefault
 @ParametersAreNullableByDefault
 public class VaultEconomyServiceWrapper implements Economy {
+    private final @Nullable BankController bankController;
     private final EconomyController economyController;
     private final Plugin plugin;
+
+    public VaultEconomyServiceWrapper(@NotNull EconomyController economyController, @NotNull Plugin plugin) {
+        this.bankController = plugin.getServer().getServicesManager().load(BankController.class);
+        this.economyController = economyController;
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean isEnabled() {
@@ -39,13 +45,13 @@ public class VaultEconomyServiceWrapper implements Economy {
     }
 
     private BankController bankController() throws UnsupportedOperationException {
-        return economyController.getBankController().orElseThrow(() ->
-                new UnsupportedOperationException(getName() + " has no bank support"));
+        if (bankController != null) return bankController;
+        throw new UnsupportedOperationException(getName() + " has no bank support");
     }
 
     @Override
     public boolean hasBankSupport() {
-        return economyController.getBankController().isPresent();
+        return bankController != null;
     }
 
     @Override

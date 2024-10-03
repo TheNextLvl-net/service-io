@@ -4,11 +4,9 @@ import net.milkbowl.vault.economy.Economy;
 import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.Account;
 import net.thenextlvl.service.api.economy.EconomyController;
-import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.wrapper.service.model.WrappedAccount;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -16,19 +14,12 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class EconomyServiceWrapper implements EconomyController {
-    private final @Nullable BankController bankController;
     private final Economy economy;
     private final ServicePlugin plugin;
 
     public EconomyServiceWrapper(Economy economy, ServicePlugin plugin) {
-        this.bankController = economy.hasBankSupport() ? new BankServiceWrapper(economy, plugin) : null;
         this.economy = economy;
         this.plugin = plugin;
-    }
-
-    @Override
-    public Optional<BankController> getBankController() {
-        return Optional.ofNullable(bankController);
     }
 
     @Override

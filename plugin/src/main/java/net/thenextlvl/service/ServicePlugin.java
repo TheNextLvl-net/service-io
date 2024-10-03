@@ -23,6 +23,7 @@ import net.thenextlvl.service.version.PluginVersionChecker;
 import net.thenextlvl.service.wrapper.VaultChatServiceWrapper;
 import net.thenextlvl.service.wrapper.VaultEconomyServiceWrapper;
 import net.thenextlvl.service.wrapper.VaultPermissionServiceWrapper;
+import net.thenextlvl.service.wrapper.service.BankServiceWrapper;
 import net.thenextlvl.service.wrapper.service.ChatServiceWrapper;
 import net.thenextlvl.service.wrapper.service.EconomyServiceWrapper;
 import net.thenextlvl.service.wrapper.service.PermissionServiceWrapper;
@@ -157,8 +158,10 @@ public class ServicePlugin extends JavaPlugin {
         services.getRegistrations(Economy.class).forEach(economy -> {
             var wrapper = new EconomyServiceWrapper(economy.getProvider(), this);
             services.register(EconomyController.class, wrapper, economy.getPlugin(), economy.getPriority());
-            wrapper.getBankController().ifPresent(controller ->
-                    services.register(BankController.class, controller, economy.getPlugin(), economy.getPriority()));
+            if (economy.getProvider().hasBankSupport()) {
+                var banks = new BankServiceWrapper(economy.getProvider(), this);
+                services.register(BankController.class, banks, economy.getPlugin(), economy.getPriority());
+            }
         });
     }
 
