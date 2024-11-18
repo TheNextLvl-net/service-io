@@ -30,11 +30,11 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor("org.projectlombok:lombok:1.18.34")
+    annotationProcessor("org.projectlombok:lombok:1.18.36")
 
     compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
     compileOnly("net.thenextlvl.core:annotations:2.0.1")
-    compileOnly("org.projectlombok:lombok:1.18.34")
+    compileOnly("org.projectlombok:lombok:1.18.36")
 
     compileOnly("com.github.ElgarL:groupmanager:3.2")
     compileOnly("net.luckperms:api:5.4")
