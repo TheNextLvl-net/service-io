@@ -64,8 +64,12 @@ public class VaultPermissionServiceWrapper extends Permission {
     }
 
     @Override
-        return groupController().getGroup(groupName)
     public boolean groupHas(String world, String groupName, String permission) {
+        var groupController = groupController();
+        return Optional.ofNullable(world)
+                .map(plugin.getServer()::getWorld)
+                .flatMap(target -> groupController.getGroup(groupName, target)
+                        .or(() -> groupController.getGroup(groupName)))
                 .map(group -> group.checkPermission(permission))
                 .map(TriState.TRUE::equals)
                 .orElse(false);
@@ -76,10 +80,10 @@ public class VaultPermissionServiceWrapper extends Permission {
         var groupController = groupController();
         return Optional.ofNullable(world)
                 .map(plugin.getServer()::getWorld)
-                .map(target -> groupController.createGroup(group, target))
-                .orElseGet(() -> groupController.createGroup(group))
-                .thenApply(created -> true)
-                .join();
+                .flatMap(target -> groupController.getGroup(groupName, target)
+                        .or(() -> groupController.getGroup(groupName)))
+                .map(group -> group.addPermission(permission))
+                .orElse(false);
     }
 
     @Override
@@ -87,9 +91,10 @@ public class VaultPermissionServiceWrapper extends Permission {
         var groupController = groupController();
         return Optional.ofNullable(world)
                 .map(plugin.getServer()::getWorld)
-                .map(target -> groupController.deleteGroup(group, target))
-                .orElseGet(() -> groupController.deleteGroup(group))
-                .join();
+                .flatMap(target -> groupController.getGroup(groupName, target)
+                        .or(() -> groupController.getGroup(groupName)))
+                .map(group -> group.removePermission(permission))
+                .orElse(false);
     }
 
     @Override
