@@ -89,9 +89,9 @@ public class VaultPermissionServiceWrapper extends Permission {
         var groupController = groupController();
         return Optional.ofNullable(world)
                 .map(plugin.getServer()::getWorld)
-                .map(target -> groupController.deleteGroup(group, target))
-                .orElseGet(() -> groupController.deleteGroup(group))
-                .join();
+                .flatMap(target -> groupController.getGroup(groupName, target))
+                .map(group -> group.removePermission(permission))
+                .orElse(false);
     }
 
     @Override
