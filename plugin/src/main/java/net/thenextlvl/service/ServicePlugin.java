@@ -1,8 +1,12 @@
 package net.thenextlvl.service;
 
 import com.google.common.base.Preconditions;
+import core.i18n.file.ComponentBundle;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -29,11 +33,14 @@ import net.thenextlvl.service.wrapper.service.EconomyServiceWrapper;
 import net.thenextlvl.service.wrapper.service.PermissionServiceWrapper;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import java.io.File;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
@@ -51,6 +58,15 @@ public class ServicePlugin extends JavaPlugin {
     private @Nullable Permission vaultPermissionWrapper = null;
 
     private PermissionController permissionController = new SuperPermsPermissionController(this);
+
+    private final ComponentBundle bundle = new ComponentBundle(new File(getDataFolder(), "translations"),
+            audience -> audience instanceof Player player ? player.locale() : Locale.US)
+            .register("service-io", Locale.US)
+            .register("service-io_german", Locale.GERMANY)
+            .miniMessage(bundle -> MiniMessage.builder().tags(TagResolver.resolver(
+                    Placeholder.component("prefix", bundle.component(Locale.US, "prefix")),
+                    TagResolver.standard()
+            )).build());
 
     @Override
     public void onLoad() {
