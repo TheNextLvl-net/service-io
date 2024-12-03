@@ -68,7 +68,8 @@ public class VaultPermissionServiceWrapper extends Permission {
         var groupController = groupController();
         return Optional.ofNullable(world)
                 .map(plugin.getServer()::getWorld)
-                .flatMap(target -> groupController.getGroup(groupName, target))
+                .flatMap(target -> groupController.getGroup(groupName, target)
+                        .or(() -> groupController.getGroup(groupName)))
                 .map(group -> group.checkPermission(permission))
                 .map(TriState.TRUE::equals)
                 .orElse(false);
@@ -79,7 +80,8 @@ public class VaultPermissionServiceWrapper extends Permission {
         var groupController = groupController();
         return Optional.ofNullable(world)
                 .map(plugin.getServer()::getWorld)
-                .flatMap(target -> groupController.getGroup(groupName, target))
+                .flatMap(target -> groupController.getGroup(groupName, target)
+                        .or(() -> groupController.getGroup(groupName)))
                 .map(group -> group.addPermission(permission))
                 .orElse(false);
     }
@@ -89,7 +91,8 @@ public class VaultPermissionServiceWrapper extends Permission {
         var groupController = groupController();
         return Optional.ofNullable(world)
                 .map(plugin.getServer()::getWorld)
-                .flatMap(target -> groupController.getGroup(groupName, target))
+                .flatMap(target -> groupController.getGroup(groupName, target)
+                        .or(() -> groupController.getGroup(groupName)))
                 .map(group -> group.removePermission(permission))
                 .orElse(false);
     }
