@@ -14,7 +14,11 @@ import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.permission.PermissionController;
-import net.thenextlvl.service.command.argument.*;
+import net.thenextlvl.service.command.argument.BankArgumentType;
+import net.thenextlvl.service.command.argument.ChatArgumentType;
+import net.thenextlvl.service.command.argument.EconomyArgumentType;
+import net.thenextlvl.service.command.argument.GroupArgumentType;
+import net.thenextlvl.service.command.argument.PermissionArgumentType;
 import org.bukkit.OfflinePlayer;
 import org.jspecify.annotations.NullMarked;
 
@@ -174,7 +178,7 @@ class ServiceConvertCommand {
         var sender = context.getSource().getSender();
 
         if (conversionRunning.get()) {
-            sender.sendRichMessage("A conversion is already running.");
+            plugin.bundle().sendMessage(sender, "service.convert.running");
             return 0;
         }
 
@@ -182,12 +186,12 @@ class ServiceConvertCommand {
         var target = context.getArgument("target", controller);
 
         if (source.equals(target)) {
-            sender.sendRichMessage("Source and target service cannot be the same.");
+            plugin.bundle().sendMessage(sender, "service.convert.source-target");
             return 0;
         }
 
         plugin.getServer().getAsyncScheduler().runNow(plugin, scheduledTask -> {
-            sender.sendRichMessage("Start converting data from <source> to <target>. This may take a while.",
+            plugin.bundle().sendMessage(sender, "service.convert.start",
                     Placeholder.parsed("source", name.apply(source)),
                     Placeholder.parsed("target", name.apply(target)));
 
@@ -198,15 +202,13 @@ class ServiceConvertCommand {
                 conversionRunning.set(false);
 
                 var time = new DecimalFormat("0.000").format((System.currentTimeMillis() - now) / 1000d);
-                sender.sendRichMessage("Completed conversion in <time> seconds, please verify the data before using it.",
-                        Placeholder.parsed("time", time));
+                plugin.bundle().sendMessage(sender, "service.convert.done", Placeholder.parsed("time", time));
 
             }).exceptionally(throwable -> {
                 conversionRunning.set(false);
 
                 var time = new DecimalFormat("0.000").format((System.currentTimeMillis() - now) / 1000d);
-                sender.sendRichMessage("<red>Conversion failed after <time> seconds, see the console for more information.",
-                        Placeholder.parsed("time", time));
+                plugin.bundle().sendMessage(sender, "service.convert.failed", Placeholder.parsed("time", time));
                 plugin.getComponentLogger().error("Data conversion failed after {} seconds", time, throwable);
                 return null;
             });

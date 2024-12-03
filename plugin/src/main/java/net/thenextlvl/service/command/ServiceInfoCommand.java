@@ -42,7 +42,7 @@ public class ServiceInfoCommand {
     }
 
     private int info(CommandContext<CommandSourceStack> context) {
-        context.getSource().getSender().sendRichMessage("ServiceIO Information (v<version>)",
+        plugin.bundle().sendMessage(context.getSource().getSender(), "service.version",
                 Placeholder.parsed("version", plugin.getPluginMeta().getVersion()));
 
         infoBanks(context);
@@ -60,7 +60,7 @@ public class ServiceInfoCommand {
         var banks = getRegistrations(BankController.class, bank, BankController::getName);
         if (sendServiceInfo(sender, "Bank", bank != null ? bank.getName() : null, banks))
             return Command.SINGLE_SUCCESS;
-        sender.sendRichMessage("<red>No bank service found.");
+        plugin.bundle().sendMessage(sender, "service.bank.none");
         return 0;
     }
 
@@ -70,7 +70,7 @@ public class ServiceInfoCommand {
         var chats = getRegistrations(ChatController.class, chat, ChatController::getName);
         if (sendServiceInfo(sender, "Chat", chat != null ? chat.getName() : null, chats))
             return Command.SINGLE_SUCCESS;
-        sender.sendRichMessage("<red>No chat service found.");
+        plugin.bundle().sendMessage(sender, "service.chat.none");
         return 0;
     }
 
@@ -80,7 +80,7 @@ public class ServiceInfoCommand {
         var economies = getRegistrations(EconomyController.class, economy, EconomyController::getName);
         if (sendServiceInfo(sender, "Economy", economy != null ? economy.getName() : null, economies))
             return Command.SINGLE_SUCCESS;
-        sender.sendRichMessage("<red>No economy service found.");
+        plugin.bundle().sendMessage(sender, "service.economy.none");
         return 0;
     }
 
@@ -90,7 +90,7 @@ public class ServiceInfoCommand {
         var groups = getRegistrations(GroupController.class, group, GroupController::getName);
         if (sendServiceInfo(sender, "Group", group != null ? group.getName() : null, groups))
             return Command.SINGLE_SUCCESS;
-        sender.sendRichMessage("<red>No group service found.");
+        plugin.bundle().sendMessage(sender, "service.group.none");
         return 0;
     }
 
@@ -100,7 +100,7 @@ public class ServiceInfoCommand {
         var permissions = getRegistrations(PermissionController.class, permission, PermissionController::getName);
         if (sendServiceInfo(sender, "Permission", permission != null ? permission.getName() : null, permissions))
             return Command.SINGLE_SUCCESS;
-        sender.sendRichMessage("<red>No permission service found.");
+        plugin.bundle().sendMessage(sender, "service.permission.none");
         return 0;
     }
 
@@ -119,9 +119,9 @@ public class ServiceInfoCommand {
     }
 
     private boolean sendServiceInfo(CommandSender sender, String type, @Nullable String provider, List<TextComponent> registrations) {
-        if (provider != null) sender.sendRichMessage("<#0288D1><type>: <provider>",
+        if (provider != null) plugin.bundle().sendMessage(sender, "service.provider.name",
                 Placeholder.parsed("provider", provider), Placeholder.parsed("type", type));
-        if (!registrations.isEmpty()) sender.sendRichMessage("<green><registered>",
+        if (!registrations.isEmpty()) plugin.bundle().sendMessage(sender, "service.provider.registrations",
                 Placeholder.component("registered", Component.join(separator, registrations)));
         return provider != null || !registrations.isEmpty();
     }
