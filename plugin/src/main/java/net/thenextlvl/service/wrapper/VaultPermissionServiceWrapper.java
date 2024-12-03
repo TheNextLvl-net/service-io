@@ -64,8 +64,11 @@ public class VaultPermissionServiceWrapper extends Permission {
     }
 
     @Override
-        return groupController().getGroup(groupName)
     public boolean groupHas(String world, String groupName, String permission) {
+        var groupController = groupController();
+        return Optional.ofNullable(world)
+                .map(plugin.getServer()::getWorld)
+                .flatMap(target -> groupController.getGroup(groupName, target))
                 .map(group -> group.checkPermission(permission))
                 .map(TriState.TRUE::equals)
                 .orElse(false);
