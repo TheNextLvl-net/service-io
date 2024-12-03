@@ -5,12 +5,14 @@ import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@NullMarked
 public record SuperPermsPermissionHolder(CommandSender sender) implements PermissionHolder {
     @Override
     public @Unmodifiable Map<String, Boolean> getPermissions() {

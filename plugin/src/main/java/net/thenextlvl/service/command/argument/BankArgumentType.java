@@ -6,9 +6,11 @@ import core.paper.command.WrappedArgumentType;
 import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.function.BiPredicate;
 
+@NullMarked
 public class BankArgumentType extends WrappedArgumentType<String, BankController> {
     public BankArgumentType(ServicePlugin plugin, BiPredicate<CommandContext<?>, BankController> filter) {
         super(StringArgumentType.string(), (reader, type) -> plugin.getServer().getServicesManager()

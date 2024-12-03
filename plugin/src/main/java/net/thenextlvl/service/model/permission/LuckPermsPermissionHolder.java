@@ -10,6 +10,7 @@ import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.group.GroupHolder;
 import net.thenextlvl.service.model.group.LuckPermsGroup;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Map;
 import java.util.Optional;
@@ -17,6 +18,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@NullMarked
 public record LuckPermsPermissionHolder(User user, QueryOptions options) implements GroupHolder {
     @Override
     public @Unmodifiable Map<String, Boolean> getPermissions() {

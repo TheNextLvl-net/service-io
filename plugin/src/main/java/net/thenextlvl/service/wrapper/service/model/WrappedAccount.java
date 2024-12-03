@@ -5,12 +5,14 @@ import net.milkbowl.vault.economy.Economy;
 import net.thenextlvl.service.api.economy.Account;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
+@NullMarked
 @RequiredArgsConstructor
 public class WrappedAccount implements Account {
     private final @Nullable World world;

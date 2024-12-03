@@ -7,14 +7,16 @@ import net.luckperms.api.node.types.*;
 import net.luckperms.api.query.QueryOptions;
 import net.thenextlvl.service.api.group.Group;
 import org.bukkit.World;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.function.Function;
 
+@NullMarked
 public record LuckPermsGroup(
         net.luckperms.api.model.group.Group group,
         QueryOptions options,
@@ -71,7 +73,11 @@ public record LuckPermsGroup(
     }
 
     @Override
-    public boolean setDisplayName(String displayName) {
+    public boolean setDisplayName(@Nullable String displayName) {
+        if (displayName == null) {
+            group.data().clear(node -> node instanceof DisplayNameNode);
+            return true;
+        }
         var result = group().data().add(DisplayNameNode.builder(displayName).context(options().context()).build());
         LuckPermsProvider.get().getGroupManager().saveGroup(group());
         return result.wasSuccessful();
@@ -85,14 +91,22 @@ public record LuckPermsGroup(
     }
 
     @Override
-    public boolean setPrefix(String prefix, int priority) {
+    public boolean setPrefix(@Nullable String prefix, int priority) {
+        if (prefix == null) {
+            group.data().clear(node -> node instanceof PrefixNode);
+            return true;
+        }
         var result = group().data().add(PrefixNode.builder(prefix, priority).context(options().context()).build());
         LuckPermsProvider.get().getGroupManager().saveGroup(group());
         return result.wasSuccessful();
     }
 
     @Override
-    public boolean setSuffix(String suffix, int priority) {
+    public boolean setSuffix(@Nullable String suffix, int priority) {
+        if (suffix == null) {
+            group.data().clear(node -> node instanceof SuffixNode);
+            return true;
+        }
         var result = group().data().add(SuffixNode.builder(suffix, priority).context(options().context()).build());
         LuckPermsProvider.get().getGroupManager().saveGroup(group());
         return result.wasSuccessful();

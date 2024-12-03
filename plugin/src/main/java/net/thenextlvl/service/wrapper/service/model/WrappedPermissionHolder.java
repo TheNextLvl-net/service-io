@@ -7,14 +7,16 @@ import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@NullMarked
 @RequiredArgsConstructor
 public class WrappedPermissionHolder implements PermissionHolder {
     private final @Nullable World world;

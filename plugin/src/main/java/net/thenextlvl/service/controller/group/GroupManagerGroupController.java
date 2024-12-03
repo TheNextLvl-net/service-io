@@ -11,7 +11,8 @@ import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.Set;
@@ -19,6 +20,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+@NullMarked
 public class GroupManagerGroupController implements GroupController {
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
     private final @Getter String name = "GroupManager Groups";

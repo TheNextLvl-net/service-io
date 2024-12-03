@@ -9,12 +9,14 @@ import net.thenextlvl.service.model.permission.SuperPermsPermissionHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+@NullMarked
 @RequiredArgsConstructor
 public class SuperPermsPermissionController implements PermissionController {
     private final @Getter String name = "SuperPerms";

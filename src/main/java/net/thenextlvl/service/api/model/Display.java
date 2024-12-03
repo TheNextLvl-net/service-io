@@ -1,6 +1,8 @@
 package net.thenextlvl.service.api.model;
 
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Optional;
@@ -8,6 +10,7 @@ import java.util.Optional;
 /**
  * The Display interface provides methods to manage display names, prefixes, and suffixes associated with an object.
  */
+@NullMarked
 public interface Display {
     /**
      * Retrieves the display name associated with the object.
@@ -75,7 +78,7 @@ public interface Display {
      * @param displayName The display name to set for the object.
      * @return true if the display name was successfully set, false otherwise.
      */
-    boolean setDisplayName(String displayName);
+    boolean setDisplayName(@Nullable String displayName);
 
     /**
      * Sets the prefix associated with the object.
@@ -83,7 +86,7 @@ public interface Display {
      * @param prefix The prefix to set for the object.
      * @return true if the prefix was successfully set, false otherwise.
      */
-    default boolean setPrefix(String prefix) {
+    default boolean setPrefix(@Nullable String prefix) {
         return setPrefix(prefix, 0);
     }
 
@@ -96,7 +99,7 @@ public interface Display {
      * @see Display#getPrefix()
      * @see Display#setPrefix(String)
      */
-    boolean setPrefix(String prefix, int priority);
+    boolean setPrefix(@Nullable String prefix, int priority);
 
     /**
      * Sets the suffix associated with the object.
@@ -104,7 +107,7 @@ public interface Display {
      * @param suffix The suffix to set for the object.
      * @return true if the suffix was successfully set, false otherwise.
      */
-    default boolean setSuffix(String suffix) {
+    default boolean setSuffix(@Nullable String suffix) {
         return setSuffix(suffix, 0);
     }
 
@@ -117,5 +120,5 @@ public interface Display {
      * @see Display#getSuffix()
      * @see Display#setSuffix(String)
      */
-    boolean setSuffix(String suffix, int priority);
+    boolean setSuffix(@Nullable String suffix, int priority);
 }

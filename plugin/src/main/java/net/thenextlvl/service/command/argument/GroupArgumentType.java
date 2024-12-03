@@ -6,9 +6,11 @@ import core.paper.command.WrappedArgumentType;
 import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.group.GroupController;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.function.BiPredicate;
 
+@NullMarked
 public class GroupArgumentType extends WrappedArgumentType<String, GroupController> {
     public GroupArgumentType(ServicePlugin plugin, BiPredicate<CommandContext<?>, GroupController> filter) {
         super(StringArgumentType.string(), (reader, type) -> plugin.getServer().getServicesManager()

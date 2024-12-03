@@ -9,11 +9,13 @@ import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.chat.ChatProfile;
 import net.thenextlvl.service.model.chat.LuckPermsChatProfile;
 import org.bukkit.World;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+@NullMarked
 public class LuckPermsChatController implements ChatController {
     private final @Getter String name = "LuckPerms Chat";
     private final LuckPerms luckPerms = LuckPermsProvider.get();

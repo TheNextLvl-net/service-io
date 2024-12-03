@@ -19,13 +19,14 @@ import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.permission.PermissionController;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.RegisteredServiceProvider;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Function;
 
+@NullMarked
 @RequiredArgsConstructor
-@SuppressWarnings("UnstableApiUsage")
 public class ServiceInfoCommand {
     private final ServicePlugin plugin;
 

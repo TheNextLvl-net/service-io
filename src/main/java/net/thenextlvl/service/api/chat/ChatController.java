@@ -3,6 +3,7 @@ package net.thenextlvl.service.api.chat;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -11,6 +12,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * The ChatController interface provides methods to retrieve a chat profile of a player.
  */
+@NullMarked
 public interface ChatController {
     /**
      * Loads the chat profile for the given OfflinePlayer.

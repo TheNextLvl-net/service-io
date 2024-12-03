@@ -8,11 +8,13 @@ import net.thenextlvl.service.api.chat.ChatProfile;
 import net.thenextlvl.service.wrapper.service.model.WrappedChatProfile;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+@NullMarked
 @RequiredArgsConstructor
 public class ChatServiceWrapper implements ChatController {
     private final Chat chat;

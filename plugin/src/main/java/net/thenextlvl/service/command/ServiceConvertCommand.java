@@ -16,6 +16,7 @@ import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.command.argument.*;
 import org.bukkit.OfflinePlayer;
+import org.jspecify.annotations.NullMarked;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -23,8 +24,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
+@NullMarked
 @RequiredArgsConstructor
-@SuppressWarnings("UnstableApiUsage")
 class ServiceConvertCommand {
     private final AtomicBoolean conversionRunning = new AtomicBoolean(false);
     private final ServicePlugin plugin;

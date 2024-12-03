@@ -9,11 +9,13 @@ import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.api.permission.PermissionHolder;
 import net.thenextlvl.service.model.permission.LuckPermsPermissionHolder;
 import org.bukkit.World;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+@NullMarked
 public class LuckPermsPermissionController implements PermissionController {
     private final LuckPerms luckPerms = LuckPermsProvider.get();
     private final @Getter String name = "LuckPerms";
