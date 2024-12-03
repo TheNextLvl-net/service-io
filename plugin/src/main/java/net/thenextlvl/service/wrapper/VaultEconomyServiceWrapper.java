@@ -1,7 +1,5 @@
 package net.thenextlvl.service.wrapper;
 
-import core.annotation.FieldsAreNotNullByDefault;
-import core.annotation.ParametersAreNullableByDefault;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.thenextlvl.service.api.economy.Account;
@@ -10,8 +8,8 @@ import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
@@ -21,14 +19,12 @@ import java.util.concurrent.ExecutionException;
 import static net.milkbowl.vault.economy.EconomyResponse.ResponseType.FAILURE;
 import static net.milkbowl.vault.economy.EconomyResponse.ResponseType.SUCCESS;
 
-@FieldsAreNotNullByDefault
-@ParametersAreNullableByDefault
 public class VaultEconomyServiceWrapper implements Economy {
     private final @Nullable BankController bankController;
     private final EconomyController economyController;
     private final Plugin plugin;
 
-    public VaultEconomyServiceWrapper(@NotNull EconomyController economyController, @NotNull Plugin plugin) {
+    public VaultEconomyServiceWrapper(@NonNull EconomyController economyController, @NonNull Plugin plugin) {
         this.bankController = plugin.getServer().getServicesManager().load(BankController.class);
         this.economyController = economyController;
         this.plugin = plugin;
@@ -192,13 +188,13 @@ public class VaultEconomyServiceWrapper implements Economy {
     }
 
     @Override
-    public EconomyResponse createBank(@NotNull String name, String playerName) {
+    public EconomyResponse createBank(String name, String playerName) {
         var player = playerName != null ? plugin.getServer().getOfflinePlayerIfCached(playerName) : null;
         return createBank(name, player);
     }
 
     @Override
-    public EconomyResponse createBank(@NotNull String name, OfflinePlayer player) {
+    public EconomyResponse createBank(String name, OfflinePlayer player) {
         return Optional.ofNullable(player)
                 .map(offline -> bankController().createBank(offline, name).join())
                 .map(bank -> new EconomyResponse(0, 0, SUCCESS, null))
@@ -206,13 +202,13 @@ public class VaultEconomyServiceWrapper implements Economy {
     }
 
     @Override
-    public EconomyResponse deleteBank(@NotNull String name) {
+    public EconomyResponse deleteBank(String name) {
         var deleted = bankController().deleteBank(name).join();
         return new EconomyResponse(0, 0, deleted ? SUCCESS : FAILURE, null);
     }
 
     @Override
-    public EconomyResponse bankBalance(@NotNull String name) {
+    public EconomyResponse bankBalance(String name) {
         try {
             var bank = bankController().tryGetBank(name).get();
             return new EconomyResponse(0, bank.getBalance().doubleValue(), SUCCESS, null);
@@ -222,7 +218,7 @@ public class VaultEconomyServiceWrapper implements Economy {
     }
 
     @Override
-    public EconomyResponse bankHas(@NotNull String name, double amount) {
+    public EconomyResponse bankHas(String name, double amount) {
         try {
             var bank = bankController().tryGetBank(name).get();
             var balance = bank.getBalance().doubleValue();
@@ -234,7 +230,7 @@ public class VaultEconomyServiceWrapper implements Economy {
     }
 
     @Override
-    public EconomyResponse bankWithdraw(@NotNull String name, double amount) {
+    public EconomyResponse bankWithdraw(String name, double amount) {
         try {
             var bank = bankController().tryGetBank(name).get();
             var balance = bank.withdraw(amount).doubleValue();
@@ -246,7 +242,7 @@ public class VaultEconomyServiceWrapper implements Economy {
     }
 
     @Override
-    public EconomyResponse bankDeposit(@NotNull String name, double amount) {
+    public EconomyResponse bankDeposit(String name, double amount) {
         try {
             var bank = bankController().tryGetBank(name).get();
             var balance = bank.deposit(amount).doubleValue();
@@ -258,13 +254,13 @@ public class VaultEconomyServiceWrapper implements Economy {
     }
 
     @Override
-    public EconomyResponse isBankOwner(@NotNull String name, String playerName) {
+    public EconomyResponse isBankOwner(String name, String playerName) {
         var player = playerName != null ? plugin.getServer().getOfflinePlayerIfCached(playerName) : null;
         return isBankOwner(name, player);
     }
 
     @Override
-    public EconomyResponse isBankOwner(@NotNull String name, OfflinePlayer player) {
+    public EconomyResponse isBankOwner(String name, OfflinePlayer player) {
         try {
             var bank = bankController().tryGetBank(name).get();
             var response = player != null && bank.getOwner().equals(player.getUniqueId()) ? SUCCESS : FAILURE;
@@ -275,13 +271,13 @@ public class VaultEconomyServiceWrapper implements Economy {
     }
 
     @Override
-    public EconomyResponse isBankMember(@NotNull String name, String playerName) {
+    public EconomyResponse isBankMember(String name, String playerName) {
         var player = playerName != null ? plugin.getServer().getOfflinePlayerIfCached(playerName) : null;
         return isBankMember(name, player);
     }
 
     @Override
-    public EconomyResponse isBankMember(@NotNull String name, OfflinePlayer player) {
+    public EconomyResponse isBankMember(String name, OfflinePlayer player) {
         try {
             var bank = bankController().tryGetBank(name).get();
             var response = player != null && bank.isMember(player.getUniqueId()) ? SUCCESS : FAILURE;

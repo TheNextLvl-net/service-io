@@ -11,6 +11,7 @@ import net.thenextlvl.service.api.group.GroupHolder;
 import net.thenextlvl.service.model.group.LuckPermsGroup;
 import net.thenextlvl.service.model.permission.LuckPermsPermissionHolder;
 import org.bukkit.World;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 import java.util.Set;
@@ -18,6 +19,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+@NullMarked
 public class LuckPermsGroupController implements GroupController {
     private final LuckPerms luckPerms = LuckPermsProvider.get();
     private final @Getter String name = "LuckPerms Groups";

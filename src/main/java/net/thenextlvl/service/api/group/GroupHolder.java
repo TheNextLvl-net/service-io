@@ -2,6 +2,7 @@ package net.thenextlvl.service.api.group;
 
 import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import java.util.Set;
  * It extends the {@link PermissionHolder} interface.
  * It provides methods to retrieve and manipulate groups for the holder.
  */
+@NullMarked
 public interface GroupHolder extends PermissionHolder {
     /**
      * Retrieves the groups associated with the permission holder.

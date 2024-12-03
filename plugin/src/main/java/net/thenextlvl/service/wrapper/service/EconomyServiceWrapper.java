@@ -7,12 +7,14 @@ import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.wrapper.service.model.WrappedAccount;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+@NullMarked
 public class EconomyServiceWrapper implements EconomyController {
     private final Economy economy;
     private final ServicePlugin plugin;

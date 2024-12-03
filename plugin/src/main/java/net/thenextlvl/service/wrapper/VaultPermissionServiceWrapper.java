@@ -8,8 +8,7 @@ import net.thenextlvl.service.api.group.GroupHolder;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -19,8 +18,8 @@ public class VaultPermissionServiceWrapper extends Permission {
 
     public VaultPermissionServiceWrapper(
             @Nullable GroupController groupController,
-            @NotNull PermissionController permissionController,
-            @NotNull Plugin plugin
+            PermissionController permissionController,
+            Plugin plugin
     ) {
         this.groupController = groupController;
         this.permissionController = permissionController;
@@ -43,7 +42,7 @@ public class VaultPermissionServiceWrapper extends Permission {
     }
 
     @Override
-    public boolean playerHas(String world, String player, @NotNull String permission) {
+    public boolean playerHas(String world, String player, String permission) {
         return getPermissionHolder(player, world)
                 .map(holder -> holder.checkPermission(permission))
                 .map(TriState::toBoolean)
@@ -51,29 +50,29 @@ public class VaultPermissionServiceWrapper extends Permission {
     }
 
     @Override
-    public boolean playerAdd(String world, String player, @NotNull String permission) {
+    public boolean playerAdd(String world, String player, String permission) {
         return getPermissionHolder(player, world)
                 .map(holder -> holder.addPermission(permission))
                 .orElse(false);
     }
 
     @Override
-    public boolean playerRemove(String world, String player, @NotNull String permission) {
+    public boolean playerRemove(String world, String player, String permission) {
         return getPermissionHolder(player, world)
                 .map(holder -> holder.removePermission(permission))
                 .orElse(false);
     }
 
     @Override
-    public boolean groupHas(String world, @NotNull String groupName, @NotNull String permission) {
         return groupController().getGroup(groupName)
+    public boolean groupHas(String world, String groupName, String permission) {
                 .map(group -> group.checkPermission(permission))
                 .map(TriState.TRUE::equals)
                 .orElse(false);
     }
 
     @Override
-    public boolean groupAdd(String world, @NotNull String group, @NotNull String permission) {
+    public boolean groupAdd(String world, String groupName, String permission) {
         var groupController = groupController();
         return Optional.ofNullable(world)
                 .map(plugin.getServer()::getWorld)
@@ -84,7 +83,7 @@ public class VaultPermissionServiceWrapper extends Permission {
     }
 
     @Override
-    public boolean groupRemove(String world, @NotNull String group, @NotNull String permission) {
+    public boolean groupRemove(String world, String groupName, String permission) {
         var groupController = groupController();
         return Optional.ofNullable(world)
                 .map(plugin.getServer()::getWorld)
@@ -94,21 +93,21 @@ public class VaultPermissionServiceWrapper extends Permission {
     }
 
     @Override
-    public boolean playerInGroup(String world, String player, @NotNull String group) {
+    public boolean playerInGroup(String world, String player, String group) {
         return getGroupHolder(player, world)
                 .map(holder -> holder.inGroup(group))
                 .orElse(false);
     }
 
     @Override
-    public boolean playerAddGroup(String world, String player, @NotNull String group) {
+    public boolean playerAddGroup(String world, String player, String group) {
         return getGroupHolder(player, world)
                 .map(holder -> holder.addGroup(group))
                 .orElse(false);
     }
 
     @Override
-    public boolean playerRemoveGroup(String world, String player, @NotNull String group) {
+    public boolean playerRemoveGroup(String world, String player, String group) {
         return getGroupHolder(player, world)
                 .map(holder -> holder.removeGroup(group))
                 .orElse(false);
@@ -147,7 +146,7 @@ public class VaultPermissionServiceWrapper extends Permission {
         throw new UnsupportedOperationException(getName() + " has no group support");
     }
 
-    private Optional<PermissionHolder> getPermissionHolder(String player, @Nullable String world) {
+    private Optional<PermissionHolder> getPermissionHolder(String player, String world) {
         return Optional.ofNullable(player)
                 .map(plugin.getServer()::getOfflinePlayerIfCached)
                 .map(offline -> Optional.ofNullable(world)
@@ -156,7 +155,7 @@ public class VaultPermissionServiceWrapper extends Permission {
                         .orElseGet(() -> permissionController.loadPermissionHolder(offline).join()));
     }
 
-    private Optional<GroupHolder> getGroupHolder(String player, @Nullable String world) {
+    private Optional<GroupHolder> getGroupHolder(String player, String world) {
         var groupController = groupController();
         return Optional.ofNullable(player)
                 .map(plugin.getServer()::getOfflinePlayerIfCached)

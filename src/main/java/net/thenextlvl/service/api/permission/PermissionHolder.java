@@ -3,6 +3,7 @@ package net.thenextlvl.service.api.permission;
 import net.kyori.adventure.util.TriState;
 import net.thenextlvl.service.api.model.InfoNode;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import java.util.Map;
  * It extends the {@link InfoNode} interface.
  * It provides methods to check, add, and remove permissions for the holder.
  */
+@NullMarked
 public interface PermissionHolder extends InfoNode {
     /**
      * Retrieves the permissions held by the permission holder.

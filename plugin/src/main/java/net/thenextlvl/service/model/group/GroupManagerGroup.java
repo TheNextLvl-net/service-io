@@ -5,8 +5,9 @@ import net.thenextlvl.service.api.group.Group;
 import org.anjocaido.groupmanager.GroupManager;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import java.util.OptionalInt;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@NullMarked
 public record GroupManagerGroup(org.anjocaido.groupmanager.data.Group group) implements Group {
     @Override
     public Optional<String> getDisplayName() {
@@ -58,7 +60,7 @@ public record GroupManagerGroup(org.anjocaido.groupmanager.data.Group group) imp
     }
 
     @Override
-    public boolean setDisplayName(String displayName) {
+    public boolean setDisplayName(@Nullable String displayName) {
         return false;
     }
 
@@ -68,12 +70,12 @@ public record GroupManagerGroup(org.anjocaido.groupmanager.data.Group group) imp
     }
 
     @Override
-    public boolean setPrefix(String prefix, int priority) {
+    public boolean setPrefix(@Nullable String prefix, int priority) {
         return setInfoNode("prefix", prefix);
     }
 
     @Override
-    public boolean setSuffix(String suffix, int priority) {
+    public boolean setSuffix(@Nullable String suffix, int priority) {
         return setInfoNode("suffix", suffix);
     }
 
@@ -126,7 +128,7 @@ public record GroupManagerGroup(org.anjocaido.groupmanager.data.Group group) imp
     }
 
     @Override
-    public boolean setInfoNode(String key, String value) {
+    public boolean setInfoNode(String key, @Nullable String value) {
         group().getVariables().addVar(key, value);
         return true;
     }

@@ -6,9 +6,11 @@ import core.paper.command.WrappedArgumentType;
 import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.chat.ChatController;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.function.BiPredicate;
 
+@NullMarked
 public class ChatArgumentType extends WrappedArgumentType<String, ChatController> {
     public ChatArgumentType(ServicePlugin plugin, BiPredicate<CommandContext<?>, ChatController> filter) {
         super(StringArgumentType.string(), (reader, type) -> plugin.getServer().getServicesManager()

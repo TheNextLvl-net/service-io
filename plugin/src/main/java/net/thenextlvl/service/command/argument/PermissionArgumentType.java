@@ -6,9 +6,11 @@ import core.paper.command.WrappedArgumentType;
 import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.permission.PermissionController;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.function.BiPredicate;
 
+@NullMarked
 public class PermissionArgumentType extends WrappedArgumentType<String, PermissionController> {
     public PermissionArgumentType(ServicePlugin plugin, BiPredicate<CommandContext<?>, PermissionController> filter) {
         super(StringArgumentType.string(), (reader, type) -> plugin.getServer().getServicesManager()

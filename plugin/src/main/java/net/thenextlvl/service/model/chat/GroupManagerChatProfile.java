@@ -4,8 +4,9 @@ import net.thenextlvl.service.api.chat.ChatProfile;
 import org.anjocaido.groupmanager.data.Group;
 import org.anjocaido.groupmanager.data.User;
 import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Objects;
@@ -14,6 +15,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@NullMarked
 public record GroupManagerChatProfile(User user, WorldDataHolder holder) implements ChatProfile {
     @Override
     public Optional<String> getDisplayName() {

@@ -1,6 +1,7 @@
 package net.thenextlvl.service.api.economy;
 
 import org.bukkit.World;
+import org.jspecify.annotations.NullMarked;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import java.util.UUID;
 /**
  * Account is an interface representing a financial account.
  */
+@NullMarked
 public interface Account extends Comparable<Account> {
     /**
      * Deposits the specified amount into the account balance.

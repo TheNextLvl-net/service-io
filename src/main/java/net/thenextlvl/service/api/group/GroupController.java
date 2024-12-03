@@ -4,6 +4,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 import java.util.Set;
@@ -15,6 +16,7 @@ import java.util.concurrent.CompletableFuture;
  * It allows creating, loading, deleting, and retrieving groups and group holders.
  * Operations can be performed asynchronously using CompletableFutures.
  */
+@NullMarked
 public interface GroupController {
     /**
      * Creates a new group with the given name.

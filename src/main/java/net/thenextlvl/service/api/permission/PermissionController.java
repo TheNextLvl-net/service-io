@@ -3,6 +3,7 @@ package net.thenextlvl.service.api.permission;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @see PermissionHolder
  */
+@NullMarked
 public interface PermissionController {
     /**
      * Loads the {@code PermissionHolder} for the specified {@code OfflinePlayer} asynchronously.
