@@ -54,6 +54,7 @@ public class ServicePlugin extends JavaPlugin {
     private final Metrics metrics = new Metrics(this, 23083);
 
     private @Nullable ChatController chatController = null;
+    private @Nullable EconomyController economyController = null;
     private @Nullable GroupController groupController = null;
     private @Nullable HologramController hologramController = null;
 
@@ -86,6 +87,7 @@ public class ServicePlugin extends JavaPlugin {
         loadGroupServices();
         loadChatServices();
         loadHologramServices();
+        loadEconomyServices();
 
         printServices();
 
@@ -137,6 +139,11 @@ public class ServicePlugin extends JavaPlugin {
 
         var controller = getServer().getServicesManager().load(HologramController.class);
         if (controller != null) this.hologramController = controller;
+    }
+
+    private void loadEconomyServices() {
+        var controller = getServer().getServicesManager().load(EconomyController.class);
+        if (controller != null) this.economyController = controller;
     }
 
     private void hookChatService(String name, Callable<? extends ChatController> callable, ServicePriority priority) {
