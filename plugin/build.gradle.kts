@@ -35,6 +35,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("org.projectlombok:lombok:1.18.36")
 
+    compileOnly("com.github.decentsoftware-eu:decentholograms:2.8.12")
     compileOnly("com.github.ElgarL:groupmanager:3.2")
     compileOnly("net.luckperms:api:5.4")
 
@@ -70,6 +71,10 @@ paper {
     provides = listOf("Vault")
 
     serverDependencies {
+        register("DecentHolograms") {
+            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            required = false
+        }
         register("GroupManager") {
             load = PaperPluginDescription.RelativeLoadOrder.BEFORE
             required = false
