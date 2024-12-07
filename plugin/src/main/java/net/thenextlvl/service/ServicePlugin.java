@@ -14,12 +14,14 @@ import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.api.group.GroupController;
+import net.thenextlvl.service.api.hologram.HologramController;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.command.ServiceCommand;
 import net.thenextlvl.service.controller.chat.GroupManagerChatController;
 import net.thenextlvl.service.controller.chat.LuckPermsChatController;
 import net.thenextlvl.service.controller.group.GroupManagerGroupController;
 import net.thenextlvl.service.controller.group.LuckPermsGroupController;
+import net.thenextlvl.service.controller.hologram.DecentHologramController;
 import net.thenextlvl.service.controller.permission.GroupManagerPermissionController;
 import net.thenextlvl.service.controller.permission.LuckPermsPermissionController;
 import net.thenextlvl.service.controller.permission.SuperPermsPermissionController;
@@ -41,7 +43,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.File;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 
@@ -54,6 +55,7 @@ public class ServicePlugin extends JavaPlugin {
 
     private @Nullable ChatController chatController = null;
     private @Nullable GroupController groupController = null;
+    private @Nullable HologramController hologramController = null;
 
     private @Nullable Permission vaultPermissionWrapper = null;
 
@@ -83,6 +85,7 @@ public class ServicePlugin extends JavaPlugin {
         loadPermissionServices();
         loadGroupServices();
         loadChatServices();
+        loadHologramServices();
 
         printServices();
 
@@ -128,6 +131,14 @@ public class ServicePlugin extends JavaPlugin {
         if (controller != null) this.permissionController = controller;
     }
 
+    @SuppressWarnings("Convert2MethodRef")
+    private void loadHologramServices() {
+        hookHologramService("DecentHolograms", () -> new DecentHologramController(), ServicePriority.Highest);
+
+        var controller = getServer().getServicesManager().load(HologramController.class);
+        if (controller != null) this.hologramController = controller;
+    }
+
     private void hookChatService(String name, Callable<? extends ChatController> callable, ServicePriority priority) {
         try {
             if (getServer().getPluginManager().getPlugin(name) == null) return;
@@ -160,6 +171,18 @@ public class ServicePlugin extends JavaPlugin {
             getComponentLogger().debug("Added {} as permission provider ({})", name, priority.name());
         } catch (Exception e) {
             getComponentLogger().error("Failed to register {} as permission provider - " +
+                                       "check to make sure you're using a compatible version!", name, e);
+        }
+    }
+
+    private void hookHologramService(String name, Callable<? extends HologramController> callable, ServicePriority priority) {
+        try {
+            if (getServer().getPluginManager().getPlugin(name) == null) return;
+            var hook = callable.call();
+            getServer().getServicesManager().register(HologramController.class, hook, this, priority);
+            getComponentLogger().debug("Added {} as hologram provider ({})", name, priority.name());
+        } catch (Exception e) {
+            getComponentLogger().error("Failed to register {} as hologram provider - " +
                                        "check to make sure you're using a compatible version!", name, e);
         }
     }
