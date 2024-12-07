@@ -1,25 +1,39 @@
 package net.thenextlvl.service.api.hologram;
 
-import net.kyori.adventure.text.Component;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.inventory.ItemStack;
+import net.thenextlvl.service.api.model.Viewable;
+import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 import org.jspecify.annotations.NullMarked;
 
-import java.util.Optional;
+import java.util.UUID;
 
 @NullMarked
-public interface HologramLine {
-    Optional<BlockData> getBlockData();
+public interface HologramLine<T> extends Viewable {
+    EntityType getEntityType();
 
-    Optional<Component> getText();
+    LineType getType();
 
-    Optional<ItemStack> getItem();
+    Location getLocation(); // copy
+
+    T getContent();
+
+    UUID getUniqueId();
+
+    boolean isGlowing();
+
+    double getHeight();
+
+    double getOffset();
+
+    int getEntityId();
 
     void remove();
 
-    void setBlockData(BlockData blockData);
+    void setContent(T content);
 
-    void setItem(ItemStack item);
+    void setGlowing(boolean glowing);
 
-    void setText(Component text);
+    void setHeight(double height);
+
+    void setOffset(double offset);
 }
