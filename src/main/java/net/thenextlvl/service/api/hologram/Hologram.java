@@ -3,8 +3,6 @@ package net.thenextlvl.service.api.hologram;
 import net.thenextlvl.service.api.model.Persistable;
 import net.thenextlvl.service.api.model.Viewable;
 import org.bukkit.Location;
-import org.bukkit.Server;
-import org.bukkit.World;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
@@ -23,12 +21,6 @@ public interface Hologram extends Persistable, Viewable, Iterable<HologramLine<?
 
     @Unmodifiable
     List<HologramLine<?>> getLines();
-
-    Location getLocation();
-
-    Server getServer();
-
-    World getWorld();
 
     boolean addLine(HologramLine<?> line);
 

@@ -1,7 +1,6 @@
 package net.thenextlvl.service.api.hologram;
 
 import net.thenextlvl.service.api.model.Viewable;
-import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.jspecify.annotations.NullMarked;
 
@@ -12,8 +11,6 @@ public interface HologramLine<T> extends Viewable {
     EntityType getEntityType();
 
     LineType getType();
-
-    Location getLocation(); // copy
 
     T getContent();
 
