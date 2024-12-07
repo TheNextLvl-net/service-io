@@ -1,8 +1,8 @@
 package net.thenextlvl.service.api.model;
 
-import net.kyori.adventure.key.Keyed;
+public interface Persistable {
+    String getName();
 
-public interface Persistable extends Keyed {
     boolean isPersistent();
 
     boolean persist();

@@ -7,6 +7,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -15,7 +16,9 @@ import java.util.concurrent.CompletableFuture;
  */
 @NullMarked
 public interface Hologram extends Persistable, Viewable, Iterable<HologramLine<?>> {
-    CompletableFuture<Boolean> teleportAsync(Location location);
+    default CompletableFuture<Boolean> teleportAsync(Location location) {
+        return teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+    }
 
     CompletableFuture<Boolean> teleportAsync(Location location, PlayerTeleportEvent.TeleportCause cause);
 
@@ -25,6 +28,8 @@ public interface Hologram extends Persistable, Viewable, Iterable<HologramLine<?
     boolean addLine(HologramLine<?> line);
 
     boolean addLine(int index, HologramLine<?> line);
+
+    boolean addLines(Collection<HologramLine<?>> lines);
 
     boolean removeLine(HologramLine<?> line);
 

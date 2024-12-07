@@ -1,36 +1,29 @@
 package net.thenextlvl.service.api.hologram;
 
-import net.thenextlvl.service.api.model.Viewable;
-import org.bukkit.entity.EntityType;
+import net.thenextlvl.service.api.model.Positioned;
 import org.jspecify.annotations.NullMarked;
 
-import java.util.UUID;
-
 @NullMarked
-public interface HologramLine<T> extends Viewable {
-    EntityType getEntityType();
-
+public interface HologramLine<T> extends Positioned {
     LineType getType();
 
     T getContent();
 
-    UUID getUniqueId();
-
-    boolean isGlowing();
-
     double getHeight();
 
-    double getOffset();
+    double getOffsetX();
 
-    int getEntityId();
+    double getOffsetY();
 
-    void remove();
+    double getOffsetZ();
 
     void setContent(T content);
 
-    void setGlowing(boolean glowing);
-
     void setHeight(double height);
 
-    void setOffset(double offset);
+    void setOffsetX(double offsetX);
+
+    void setOffsetY(double offsetY);
+
+    void setOffsetZ(double offsetZ);
 }

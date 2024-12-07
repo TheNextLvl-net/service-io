@@ -1,8 +1,5 @@
 package net.thenextlvl.service.api.model;
 
-import org.bukkit.Location;
-import org.bukkit.Server;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
@@ -11,22 +8,16 @@ import java.util.Collection;
 import java.util.Set;
 
 @NullMarked
-public interface Viewable {
-    Location getLocation(); // copy
-
-    Server getServer();
-
+public interface Viewable extends Positioned {
     @Unmodifiable
     Set<Player> getTrackedBy();
 
     @Unmodifiable
     Set<Player> getViewers();
 
-    World getWorld();
-
     boolean addViewer(Player player);
 
-    boolean addViewers(Collection<Player> player);
+    boolean addViewers(Collection<Player> players);
 
     boolean isInvisible();
 
@@ -38,19 +29,9 @@ public interface Viewable {
 
     boolean removeViewer(Player player);
 
-    boolean removeViewers(Collection<Player> player);
+    boolean removeViewers(Collection<Player> players);
 
     double getDisplayRange();
-
-    double getX();
-
-    double getY();
-
-    double getZ();
-
-    float getPitch();
-
-    float getYaw();
 
     void setDisplayRange(double range);
 
