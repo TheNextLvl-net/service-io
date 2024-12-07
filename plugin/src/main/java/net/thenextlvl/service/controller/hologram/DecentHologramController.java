@@ -107,4 +107,9 @@ public class DecentHologramController implements HologramController {
         return Optional.ofNullable(DHAPI.getHologram(name))
                 .map(DecentHologram::new);
     }
+
+    @Override
+    public String getName() {
+        return "DecentHolograms";
+    }
 }

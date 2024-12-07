@@ -36,4 +36,6 @@ public interface HologramController {
     List<Hologram> getHolograms(World world);
 
     Optional<Hologram> getHologram(String name);
+
+    String getName();
 }
