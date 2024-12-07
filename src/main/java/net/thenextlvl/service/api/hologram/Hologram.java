@@ -26,6 +26,9 @@ public interface Hologram extends Persistable, Viewable, Iterable<HologramLine<?
 
     boolean addLine(int index, HologramLine<?> line);
 
+    boolean removeLine(HologramLine<?> line);
+
+    boolean removeLine(int index);
 
     int getLineCount();
 
