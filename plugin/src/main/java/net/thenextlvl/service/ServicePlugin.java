@@ -244,30 +244,25 @@ public class ServicePlugin extends JavaPlugin {
 
     private void printServices() {
         var chat = chatController() != null ? chatController().getName() : null;
+        var economy = economyController() != null ? economyController().getName() : null;
         var group = groupController() != null ? groupController().getName() : null;
+        var hologram = hologramController() != null ? hologramController().getName() : null;
+
         var permission = permissionController().getName();
 
-        if (chat == null && group == null) {
-            getComponentLogger().info("Found no chat and group provider");
-        } else if (chat == null) {
-            getComponentLogger().info("Found no chat provider");
-        } else if (group == null) {
-            getComponentLogger().info("Found no group provider");
-        }
+        getComponentLogger().info("Using {} as permission provider", permission);
+        
+        if (chat != null) getComponentLogger().info("Using {} as chat provider", chat);
+        else getComponentLogger().info("Found no chat provider");
 
-        if (Objects.equals(chat, group) && Objects.equals(chat, permission)) {
-            getComponentLogger().info("Using {} as chat, group and permission provider", chat);
-        } else if (chat != null && Objects.equals(chat, group)) {
-            getComponentLogger().info("Using {} as chat and group provider", chat);
-            getComponentLogger().info("Using {} as permission provider", permission);
-        } else if (Objects.equals(chat, permission)) {
-            getComponentLogger().info("Using {} as chat and permission provider", chat);
-            if (group != null) getComponentLogger().info("Using {} as group provider", group);
-        } else {
-            if (chat != null) getComponentLogger().info("Using {} as chat provider", chat);
-            if (group != null) getComponentLogger().info("Using {} as group provider", group);
-            getComponentLogger().info("Using {} as permission provider", permission);
-        }
+        if (economy != null) getComponentLogger().info("Using {} as economy provider", economy);
+        else getComponentLogger().info("Found no economy provider");
+
+        if (group != null) getComponentLogger().info("Using {} as group provider", group);
+        else getComponentLogger().info("Found no group provider");
+
+        if (hologram != null) getComponentLogger().info("Using {} as hologram provider", hologram);
+        else getComponentLogger().info("Found no hologram provider");
     }
 
     private void addCustomCharts() {
