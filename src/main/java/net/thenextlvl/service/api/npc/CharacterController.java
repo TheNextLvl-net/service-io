@@ -5,12 +5,11 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.jspecify.annotations.NullMarked;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @NullMarked
 public interface CharacterController {
-    Optional<Character> createCharacter(Location location, EntityType type);
+    Character createCharacter(Location location, EntityType type);
 
     PlayerCharacter createCharacter(Location location, PlayerProfile profile);
 
