@@ -13,11 +13,13 @@ import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.api.group.GroupController;
+import net.thenextlvl.service.api.hologram.HologramController;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.command.argument.BankArgumentType;
 import net.thenextlvl.service.command.argument.ChatArgumentType;
 import net.thenextlvl.service.command.argument.EconomyArgumentType;
 import net.thenextlvl.service.command.argument.GroupArgumentType;
+import net.thenextlvl.service.command.argument.HologramArgumentType;
 import net.thenextlvl.service.command.argument.PermissionArgumentType;
 import org.bukkit.OfflinePlayer;
 import org.jspecify.annotations.NullMarked;
@@ -41,6 +43,7 @@ class ServiceConvertCommand {
                 .then(Commands.literal("chat").then(chat()))
                 .then(Commands.literal("economy").then(economy()))
                 .then(Commands.literal("groups").then(groups()))
+                .then(Commands.literal("holograms").then(holograms()))
                 .then(Commands.literal("permissions").then(permissions()));
     }
 
@@ -72,6 +75,13 @@ class ServiceConvertCommand {
                         .executes(this::convertGroups));
     }
 
+    private ArgumentBuilder<CommandSourceStack, ?> holograms() {
+        return Commands.argument("source", new HologramArgumentType(plugin, (c, e) -> true))
+                .then(Commands.argument("target", new HologramArgumentType(plugin, (context, controller) ->
+                                !context.getLastChild().getArgument("source", HologramController.class).equals(controller)))
+                        .executes(this::convertHolograms));
+    }
+
     private ArgumentBuilder<CommandSourceStack, ?> permissions() {
         return Commands.argument("source", new PermissionArgumentType(plugin, (c, e) -> true))
                 .then(Commands.argument("target", new PermissionArgumentType(plugin, (context, controller) ->
@@ -93,6 +103,10 @@ class ServiceConvertCommand {
 
     private int convertGroups(CommandContext<CommandSourceStack> context) {
         return convert(context, GroupController.class, GroupController::getName, new GroupConverter());
+    }
+
+    private int convertHolograms(CommandContext<CommandSourceStack> context) {
+        return convert(context, HologramController.class, HologramController::getName, new HologramConverter());
     }
 
     private int convertPermissions(CommandContext<CommandSourceStack> context) {
@@ -163,6 +177,20 @@ class ServiceConvertCommand {
                         group.getWeight().ifPresent(targetGroup::setWeight);
                     })));
             return super.convert(source, target);
+        }
+    }
+
+    private static final class HologramConverter implements Converter<HologramController> {
+        @Override
+        public CompletableFuture<Void> convert(HologramController source, HologramController target) {
+            return CompletableFuture.runAsync(() -> source.getHolograms().forEach(hologram -> {
+                var created = target.createHologram(hologram.getName(), hologram.getLocation(), hologram.getLines());
+                created.addViewers(hologram.getViewers());
+                created.setDisplayRange(hologram.getDisplayRange());
+                created.setPersistent(hologram.isPersistent());
+                created.setVisibleByDefault(hologram.isVisibleByDefault());
+                created.setInvisible(hologram.isInvisible());
+            }));
         }
     }
 
