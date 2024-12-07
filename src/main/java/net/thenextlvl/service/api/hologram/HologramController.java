@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Unmodifiable;
@@ -13,13 +14,15 @@ import java.util.List;
 
 @NullMarked
 public interface HologramController {
-    Hologram createHologram(Location location, HologramLine... lines);
+    Hologram createHologram(Location location, HologramLine<?>... lines);
 
-    HologramLine createLine(BlockData block);
+    HologramLine<BlockData> createLine(BlockData block);
 
-    HologramLine createLine(Component text);
+    HologramLine<Component> createLine(Component text);
 
-    HologramLine createLine(ItemStack itemStack);
+    HologramLine<Entity> createLine(Entity entity);
+
+    HologramLine<ItemStack> createLine(ItemStack itemStack);
 
     @Unmodifiable
     List<Hologram> getHolograms();
