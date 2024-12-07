@@ -16,9 +16,9 @@ import java.util.concurrent.CompletableFuture;
  */
 @NullMarked
 public interface Hologram extends Viewable, Iterable<HologramLine<?>> {
-    CompletableFuture<Boolean> teleport(Location location);
+    CompletableFuture<Boolean> teleportAsync(Location location);
 
-    CompletableFuture<Boolean> teleport(Location location, PlayerTeleportEvent.TeleportCause cause);
+    CompletableFuture<Boolean> teleportAsync(Location location, PlayerTeleportEvent.TeleportCause cause);
 
     @Unmodifiable
     List<HologramLine<?>> getLines();
