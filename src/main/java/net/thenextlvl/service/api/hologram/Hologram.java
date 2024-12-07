@@ -1,24 +1,43 @@
 package net.thenextlvl.service.api.hologram;
 
 import net.thenextlvl.service.api.model.Viewable;
-import org.bukkit.entity.Entity;
+import org.bukkit.Location;
+import org.bukkit.Server;
+import org.bukkit.World;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * An interface that represents a hologram
  */
 @NullMarked
-public interface Hologram extends Entity, Viewable, Iterable<HologramLine> {
-    List<HologramLine> getLines();
+public interface Hologram extends Viewable, Iterable<HologramLine<?>> {
+    CompletableFuture<Boolean> teleport(Location location);
 
-    Optional<HologramLine> getLine(int index);
+    CompletableFuture<Boolean> teleport(Location location, PlayerTeleportEvent.TeleportCause cause);
 
-    boolean addLine(HologramLine line);
+    @Unmodifiable
+    List<HologramLine<?>> getLines();
 
-    boolean addLine(int index, HologramLine line);
+    Location getLocation();
+
+    Server getServer();
+
+    World getWorld();
+
+    boolean addLine(HologramLine<?> line);
+
+    boolean addLine(int index, HologramLine<?> line);
+
+    boolean isGlowing();
 
     int getLineCount();
+
+    void remove();
+
+    void setGlowing(boolean glowing);
 }
