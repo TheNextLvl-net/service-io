@@ -1,5 +1,6 @@
 package net.thenextlvl.service.api.hologram;
 
+import net.thenextlvl.service.api.model.Persistable;
 import net.thenextlvl.service.api.model.Viewable;
 import org.bukkit.Location;
 import org.bukkit.Server;
@@ -15,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
  * An interface that represents a hologram
  */
 @NullMarked
-public interface Hologram extends Viewable, Iterable<HologramLine<?>> {
+public interface Hologram extends Persistable, Viewable, Iterable<HologramLine<?>> {
     CompletableFuture<Boolean> teleportAsync(Location location);
 
     CompletableFuture<Boolean> teleportAsync(Location location, PlayerTeleportEvent.TeleportCause cause);
