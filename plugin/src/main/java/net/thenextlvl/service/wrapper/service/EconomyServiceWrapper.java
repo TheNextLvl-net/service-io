@@ -7,12 +7,17 @@ import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.wrapper.service.model.WrappedAccount;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @NullMarked
 public class EconomyServiceWrapper implements EconomyController {
@@ -42,6 +47,22 @@ public class EconomyServiceWrapper implements EconomyController {
     @Override
     public String getCurrencySymbol() {
         return "";
+    }
+
+    @Override
+    public CompletableFuture<@Unmodifiable Set<Account>> loadAccounts() {
+        return CompletableFuture.supplyAsync(() -> Arrays.stream(plugin.getServer().getOfflinePlayers())
+                .map(player -> tryGetAccount(player).join().orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toUnmodifiableSet()));
+    }
+
+    @Override
+    public @Unmodifiable Set<Account> getAccounts() {
+        return Arrays.stream(plugin.getServer().getOfflinePlayers())
+                .map(player -> getAccount(player).orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
