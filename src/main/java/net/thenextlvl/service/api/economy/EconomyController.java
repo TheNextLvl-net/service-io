@@ -3,10 +3,12 @@ package net.thenextlvl.service.api.economy;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -45,6 +47,22 @@ public interface EconomyController {
      * @return the currency symbol as a string
      */
     String getCurrencySymbol();
+
+    /**
+     * Loads all accounts asynchronously.
+     *
+     * @return a {@link CompletableFuture} that, when completed, will provide a {@link Set} of {@link Account} objects representing
+     * all the accounts available.
+     */
+    CompletableFuture<@Unmodifiable Set<Account>> loadAccounts();
+
+    /**
+     * Retrieves all the accounts currently available.
+     *
+     * @return a set of accounts
+     */
+    @Unmodifiable
+    Set<Account> getAccounts();
 
     /**
      * Retrieve the account for the specified player.
