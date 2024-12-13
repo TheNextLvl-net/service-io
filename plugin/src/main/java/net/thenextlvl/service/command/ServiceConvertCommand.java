@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.chat.ChatController;
+import net.thenextlvl.service.api.economy.Account;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.api.group.GroupController;
@@ -124,18 +125,24 @@ class ServiceConvertCommand {
         }
     }
 
-    private final class EconomyConverter extends PlayerConverter<EconomyController> {
+    private static final class EconomyConverter implements Converter<EconomyController> {
+
         @Override
-        public CompletableFuture<Void> convert(OfflinePlayer player, EconomyController source, EconomyController target) {
-            return source.tryGetAccount(player).thenAccept(sourceAccount -> sourceAccount.ifPresent(account ->
-                    account.getWorld().ifPresentOrElse(world -> target.tryGetAccount(player, world)
-                                    .thenCompose(account1 -> account1.map(CompletableFuture::completedFuture)
-                                            .orElseGet(() -> target.createAccount(player, world)))
-                                    .thenAccept(account1 -> account1.setBalance(account.getBalance())),
-                            () -> target.tryGetAccount(player)
-                                    .thenCompose(account1 -> account1.map(CompletableFuture::completedFuture)
-                                            .orElseGet(() -> target.createAccount(player)))
-                                    .thenAccept(account1 -> account1.setBalance(account.getBalance())))));
+        public CompletableFuture<Void> convert(EconomyController source, EconomyController target) {
+            return source.loadAccounts().thenCompose(accounts -> CompletableFuture.allOf(accounts.stream()
+                    .map(account -> convert(account, source, target))
+                    .toArray(CompletableFuture[]::new)));
+        }
+
+        public CompletableFuture<Void> convert(Account account, EconomyController source, EconomyController target) {
+            return account.getWorld().map(world -> target.tryGetAccount(account.getOwner(), world)
+                            .thenCompose(account1 -> account1.map(CompletableFuture::completedFuture)
+                                    .orElseGet(() -> target.createAccount(account.getOwner(), world)))
+                            .thenAccept(account1 -> account1.setBalance(account.getBalance())))
+                    .orElseGet(() -> target.tryGetAccount(account.getOwner())
+                            .thenCompose(account1 -> account1.map(CompletableFuture::completedFuture)
+                                    .orElseGet(() -> target.createAccount(account.getOwner())))
+                            .thenAccept(account1 -> account1.setBalance(account.getBalance())));
         }
     }
 
