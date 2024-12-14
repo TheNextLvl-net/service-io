@@ -25,9 +25,9 @@ tasks.compileJava {
 repositories {
     mavenCentral()
     maven("https://jitpack.io")
-    maven("https://repo.thenextlvl.net/releases")
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://repo.fancyplugins.de/releases")
+    maven("https://repo.thenextlvl.net/releases")
 }
 
 dependencies {
