@@ -58,9 +58,7 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
 
     @Override
     public boolean addLines(Collection<HologramLine<?>> lines) {
-        return lines.stream()
-                .filter(this::addLine)
-                .anyMatch(ignored -> true);
+        return lines.stream().map(this::addLine).reduce(false, Boolean::logicalOr);
     }
 
     @Override
@@ -152,9 +150,7 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
 
     @Override
     public boolean addViewers(Collection<Player> players) {
-        return players.stream()
-                .filter(this::addViewer)
-                .anyMatch(ignored -> true);
+        return players.stream().map(this::addViewer).reduce(false, Boolean::logicalOr);
     }
 
     @Override
@@ -187,9 +183,7 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
 
     @Override
     public boolean removeViewers(Collection<Player> players) {
-        return players.stream()
-                .filter(this::removeViewer)
-                .anyMatch(ignored -> true);
+        return players.stream().map(this::removeViewer).reduce(false, Boolean::logicalOr);
     }
 
     @Override
