@@ -136,6 +136,7 @@ public class ServicePlugin extends JavaPlugin {
     @SuppressWarnings("Convert2MethodRef")
     private void loadHologramServices() {
         hookHologramService("DecentHolograms", () -> new DecentHologramController(), ServicePriority.Highest);
+        hookHologramService("FancyHolograms", () -> new FancyHologramController(), ServicePriority.High);
 
         var controller = getServer().getServicesManager().load(HologramController.class);
         if (controller != null) this.hologramController = controller;
