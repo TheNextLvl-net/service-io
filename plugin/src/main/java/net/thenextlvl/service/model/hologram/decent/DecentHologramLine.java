@@ -1,4 +1,4 @@
-package net.thenextlvl.service.model.hologram;
+package net.thenextlvl.service.model.hologram.decent;
 
 import net.thenextlvl.service.api.hologram.HologramLine;
 import org.bukkit.Bukkit;

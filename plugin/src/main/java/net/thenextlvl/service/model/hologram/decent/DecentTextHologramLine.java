@@ -1,4 +1,4 @@
-package net.thenextlvl.service.model.hologram;
+package net.thenextlvl.service.model.hologram.decent;
 
 import eu.decentsoftware.holograms.api.holograms.HologramLine;
 import net.kyori.adventure.text.Component;
