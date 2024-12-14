@@ -22,6 +22,7 @@ import net.thenextlvl.service.controller.chat.LuckPermsChatController;
 import net.thenextlvl.service.controller.group.GroupManagerGroupController;
 import net.thenextlvl.service.controller.group.LuckPermsGroupController;
 import net.thenextlvl.service.controller.hologram.DecentHologramController;
+import net.thenextlvl.service.controller.hologram.FancyHologramController;
 import net.thenextlvl.service.controller.permission.GroupManagerPermissionController;
 import net.thenextlvl.service.controller.permission.LuckPermsPermissionController;
 import net.thenextlvl.service.controller.permission.SuperPermsPermissionController;
