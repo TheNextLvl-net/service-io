@@ -11,6 +11,8 @@ better performance, and seamless integration across plugins.
 
 Metrics can be found [here](https://bstats.org/plugin/bukkit/TheNextLvl%20ServiceIO/23083)
 
+[Download the plugin on Hangar](https://hangar.papermc.io/TheNextLvl/ServiceIO)
+
 ## Why You should use ServiceIO?
 
 ServiceIO is a cutting-edge alternative to Vault, designed to overcome the limitations of the outdated VaultAPI. While
