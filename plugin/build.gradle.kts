@@ -77,6 +77,10 @@ paper {
             load = PaperPluginDescription.RelativeLoadOrder.BEFORE
             required = false
         }
+        register("FancyHolograms") {
+            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            required = false
+        }
         register("GroupManager") {
             load = PaperPluginDescription.RelativeLoadOrder.BEFORE
             required = false
