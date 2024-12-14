@@ -2,8 +2,6 @@ package net.thenextlvl.service.controller.hologram;
 
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.utils.items.HologramItem;
-import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.thenextlvl.service.api.hologram.Hologram;
@@ -16,7 +14,6 @@ import net.thenextlvl.service.model.hologram.DecentItemHologramLine;
 import net.thenextlvl.service.model.hologram.DecentTextHologramLine;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Skull;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -41,10 +38,6 @@ public class DecentHologramController implements HologramController {
     @Override
     public HologramLine<BlockData> createLine(BlockData block) {
         var item = ItemStack.of(block.getMaterial());
-        if (block instanceof Skull skull && skull.getPlayerProfile() != null) {
-            var profile = ResolvableProfile.resolvableProfile(skull.getPlayerProfile());
-            item.setData(DataComponentTypes.PROFILE, profile);
-        }
         var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
                 null, new Location(null, 0, 0, 0),
                 "#HEAD:" + HologramItem.fromItemStack(item).getContent()
