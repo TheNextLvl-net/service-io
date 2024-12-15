@@ -19,11 +19,9 @@ public interface Viewable extends Positioned {
 
     boolean addViewers(Collection<Player> players);
 
-    boolean isInvisible();
-
     boolean isTrackedBy(Player player);
 
-    boolean isViewer(Player player);
+    boolean canSee(Player player);
 
     boolean isVisibleByDefault();
 
@@ -34,8 +32,6 @@ public interface Viewable extends Positioned {
     double getDisplayRange();
 
     void setDisplayRange(double range);
-
-    void setInvisible(boolean invisible);
 
     void setVisibleByDefault(boolean visible);
 }

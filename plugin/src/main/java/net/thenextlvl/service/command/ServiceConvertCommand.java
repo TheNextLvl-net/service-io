@@ -196,7 +196,7 @@ class ServiceConvertCommand {
                 created.setDisplayRange(hologram.getDisplayRange());
                 created.setPersistent(hologram.isPersistent());
                 created.setVisibleByDefault(hologram.isVisibleByDefault());
-                created.setInvisible(hologram.isInvisible());
+                created.persist();
             }));
         }
     }

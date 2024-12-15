@@ -6,5 +6,6 @@ import org.bukkit.entity.Entity;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public interface Character extends Entity, Persistable, Viewable {
+public interface Character extends Persistable, Viewable {
+    Entity getEntity();
 }

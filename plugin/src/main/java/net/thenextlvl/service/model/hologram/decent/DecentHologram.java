@@ -8,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 @NullMarked
 public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram hologram) implements Hologram {
     @Override
-    public CompletableFuture<Boolean> teleportAsync(Location location, PlayerTeleportEvent.TeleportCause cause) {
+    public CompletableFuture<Boolean> teleportAsync(Location location) {
         return CompletableFuture.supplyAsync(() -> {
             DHAPI.moveHologram(hologram(), location);
             return true;
@@ -154,17 +153,12 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
     }
 
     @Override
-    public boolean isInvisible() {
-        return hologram().isEnabled();
-    }
-
-    @Override
     public boolean isTrackedBy(Player player) {
         return hologram().isVisible(player);
     }
 
     @Override
-    public boolean isViewer(Player player) {
+    public boolean canSee(Player player) {
         return hologram().isShowState(player) && !hologram().isHideState(player) && hologram().canShow(player);
     }
 
@@ -219,12 +213,6 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
     @Override
     public void setDisplayRange(double range) {
         hologram().setDisplayRange((int) range);
-    }
-
-    @Override
-    public void setInvisible(boolean invisible) {
-        if (invisible && !isInvisible()) hologram().disable();
-        else if (!invisible && !isInvisible()) hologram().enable();
     }
 
     @Override

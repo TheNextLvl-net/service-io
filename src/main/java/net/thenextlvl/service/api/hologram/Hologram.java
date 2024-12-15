@@ -3,7 +3,6 @@ package net.thenextlvl.service.api.hologram;
 import net.thenextlvl.service.api.model.Persistable;
 import net.thenextlvl.service.api.model.Viewable;
 import org.bukkit.Location;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -16,11 +15,7 @@ import java.util.concurrent.CompletableFuture;
  */
 @NullMarked
 public interface Hologram extends Persistable, Viewable, Iterable<HologramLine<?>> {
-    default CompletableFuture<Boolean> teleportAsync(Location location) {
-        return teleportAsync(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
-    }
-
-    CompletableFuture<Boolean> teleportAsync(Location location, PlayerTeleportEvent.TeleportCause cause);
+    CompletableFuture<Boolean> teleportAsync(Location location);
 
     @Unmodifiable
     List<HologramLine<?>> getLines();

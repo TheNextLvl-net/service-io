@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public class FancyHologramController implements HologramController {
-
     @Override
     public Hologram createHologram(String name, Location location, Collection<HologramLine<?>> lines) {
         var line = lines.iterator().next();

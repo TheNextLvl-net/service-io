@@ -12,7 +12,6 @@ import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -27,7 +26,7 @@ import java.util.stream.Collectors;
 @NullMarked
 public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram hologram) implements Hologram {
     @Override
-    public CompletableFuture<Boolean> teleportAsync(Location location, PlayerTeleportEvent.TeleportCause cause) {
+    public CompletableFuture<Boolean> teleportAsync(Location location) {
         return CompletableFuture.supplyAsync(() -> {
             hologram().getData().setLocation(location);
             hologram().refreshForViewersInWorld();
@@ -118,14 +117,14 @@ public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram holog
     @Override
     public @Unmodifiable Set<Player> getViewers() {
         return getServer().getOnlinePlayers().stream()
-                .filter(this::isViewer)
+                .filter(this::canSee)
                 .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
     public boolean addViewer(Player player) {
         hologram().showHologram(player);
-        return isViewer(player);
+        return canSee(player);
     }
 
     @Override
@@ -134,17 +133,12 @@ public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram holog
     }
 
     @Override
-    public boolean isInvisible() {
-        return false;
-    }
-
-    @Override
     public boolean isTrackedBy(Player player) {
         return hologram().isViewer(player);
     }
 
     @Override
-    public boolean isViewer(Player player) {
+    public boolean canSee(Player player) {
         return hologram().meetsVisibilityConditions(player);
     }
 
@@ -157,7 +151,7 @@ public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram holog
     public boolean removeViewer(Player player) {
         hologram().hideHologram(player);
         hologram().forceHideHologram(player);
-        return isViewer(player);
+        return canSee(player);
     }
 
     @Override
@@ -173,10 +167,6 @@ public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram holog
     @Override
     public void setDisplayRange(double range) {
         hologram().getData().setVisibilityDistance((int) range);
-    }
-
-    @Override
-    public void setInvisible(boolean invisible) {
     }
 
     @Override
