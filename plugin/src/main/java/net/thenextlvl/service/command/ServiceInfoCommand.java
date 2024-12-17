@@ -16,6 +16,7 @@ import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.api.group.GroupController;
+import net.thenextlvl.service.api.hologram.HologramController;
 import net.thenextlvl.service.api.permission.PermissionController;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -36,6 +37,7 @@ public class ServiceInfoCommand {
                 .then(Commands.literal("chat").executes(this::infoChat))
                 .then(Commands.literal("economy").executes(this::infoEconomy))
                 .then(Commands.literal("groups").executes(this::infoGroups))
+                .then(Commands.literal("holograms").executes(this::infoHolograms))
                 .then(Commands.literal("permissions").executes(this::infoPermissions))
                 .requires(stack -> stack.getSender().hasPermission("service.info"))
                 .executes(this::info);
@@ -91,6 +93,16 @@ public class ServiceInfoCommand {
         if (sendServiceInfo(sender, "Group", group != null ? group.getName() : null, groups))
             return Command.SINGLE_SUCCESS;
         plugin.bundle().sendMessage(sender, "service.group.none");
+        return 0;
+    }
+
+    private int infoHolograms(CommandContext<CommandSourceStack> context) {
+        var sender = context.getSource().getSender();
+        var hologram = plugin.getServer().getServicesManager().load(HologramController.class);
+        var holograms = getRegistrations(HologramController.class, hologram, HologramController::getName);
+        if (sendServiceInfo(sender, "Hologram", hologram != null ? hologram.getName() : null, holograms))
+            return Command.SINGLE_SUCCESS;
+        plugin.bundle().sendMessage(sender, "service.hologram.none");
         return 0;
     }
 

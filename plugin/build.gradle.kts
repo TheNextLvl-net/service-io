@@ -25,8 +25,10 @@ tasks.compileJava {
 repositories {
     mavenCentral()
     maven("https://jitpack.io")
-    maven("https://repo.thenextlvl.net/releases")
+    maven("https://maven.citizensnpcs.co/repo")
     maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.fancyplugins.de/releases")
+    maven("https://repo.thenextlvl.net/releases")
 }
 
 dependencies {
@@ -35,6 +37,9 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("org.projectlombok:lombok:1.18.36")
 
+    compileOnly("net.citizensnpcs:citizensapi:2.0.37-SNAPSHOT")
+    compileOnly("de.oliver:FancyHolograms:2.4.1")
+    compileOnly("com.github.decentsoftware-eu:decentholograms:2.8.12")
     compileOnly("com.github.ElgarL:groupmanager:3.2")
     compileOnly("net.luckperms:api:5.4")
 
@@ -70,6 +75,18 @@ paper {
     provides = listOf("Vault")
 
     serverDependencies {
+        register("Citizens") {
+            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            required = false
+        }
+        register("DecentHolograms") {
+            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            required = false
+        }
+        register("FancyHolograms") {
+            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            required = false
+        }
         register("GroupManager") {
             load = PaperPluginDescription.RelativeLoadOrder.BEFORE
             required = false
