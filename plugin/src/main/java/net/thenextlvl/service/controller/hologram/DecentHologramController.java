@@ -4,6 +4,8 @@ import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.utils.items.HologramItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.thenextlvl.service.api.hologram.Capability;
+import net.thenextlvl.service.api.hologram.CapabilityException;
 import net.thenextlvl.service.api.hologram.Hologram;
 import net.thenextlvl.service.api.hologram.HologramController;
 import net.thenextlvl.service.api.hologram.HologramLine;
@@ -22,21 +24,30 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @NullMarked
 public class DecentHologramController implements HologramController {
+    private final EnumSet<Capability> capabilities = EnumSet.of(
+            Capability.BLOCK_LINES,
+            Capability.ENTITY_LINES,
+            Capability.ITEM_LINES,
+            Capability.TEXT_LINES,
+            Capability.MULTILINE
+    );
+
     @Override
-    public Hologram createHologram(String name, Location location, Collection<HologramLine<?>> lines) {
+    public Hologram createHologram(String name, Location location, Collection<HologramLine<?>> lines) throws CapabilityException {
         var hologram = new DecentHologram(DHAPI.createHologram(name, location, false));
         hologram.addLines(lines);
         return hologram;
     }
 
     @Override
-    public HologramLine<BlockData> createLine(BlockData block) {
+    public HologramLine<BlockData> createLine(BlockData block) throws CapabilityException {
         var item = ItemStack.of(block.getMaterial());
         var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
                 null, new Location(null, 0, 0, 0),
@@ -46,7 +57,7 @@ public class DecentHologramController implements HologramController {
     }
 
     @Override
-    public HologramLine<Component> createLine(Component text) {
+    public HologramLine<Component> createLine(Component text) throws CapabilityException {
         var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
                 null, new Location(null, 0, 0, 0),
                 LegacyComponentSerializer.legacyAmpersand().serialize(text)
@@ -55,7 +66,7 @@ public class DecentHologramController implements HologramController {
     }
 
     @Override
-    public HologramLine<EntityType> createLine(EntityType entity) {
+    public HologramLine<EntityType> createLine(EntityType entity) throws CapabilityException {
         var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
                 null, new Location(null, 0, 0, 0),
                 "#ENTITY:" + entity.name()
@@ -64,7 +75,7 @@ public class DecentHologramController implements HologramController {
     }
 
     @Override
-    public HologramLine<ItemStack> createLine(ItemStack itemStack) {
+    public HologramLine<ItemStack> createLine(ItemStack itemStack) throws CapabilityException {
         var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
                 null, new Location(null, 0, 0, 0),
                 "#ICON:" + HologramItem.fromItemStack(itemStack).getContent()
@@ -102,7 +113,22 @@ public class DecentHologramController implements HologramController {
     }
 
     @Override
+    public @Unmodifiable EnumSet<Capability> getCapabilities() {
+        return EnumSet.copyOf(capabilities);
+    }
+
+    @Override
     public String getName() {
         return "DecentHolograms";
+    }
+
+    @Override
+    public boolean hasCapabilities(Collection<Capability> capabilities) {
+        return this.capabilities.containsAll(capabilities);
+    }
+
+    @Override
+    public boolean hasCapability(Capability capability) {
+        return capabilities.contains(capability);
     }
 }

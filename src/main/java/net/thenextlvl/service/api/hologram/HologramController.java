@@ -37,5 +37,34 @@ public interface HologramController {
 
     Optional<Hologram> getHologram(String name);
 
+    /**
+     * Retrieves an unmodifiable set of all available capabilities supported by the hologram provider.
+     *
+     * @return an unmodifiable {@link EnumSet} containing the supported {@link Capability} values
+     */
+    @Unmodifiable
+    EnumSet<Capability> getCapabilities();
+
+    /**
+     * Retrieves the name of the hologram provider.
+     *
+     * @return the name of the hologram provider.
+     */
     String getName();
+
+    /**
+     * Checks whether all the specified capabilities are supported by the hologram provider.
+     *
+     * @param capabilities the collection of {@link Capability} instances to verify for support
+     * @return {@code true} if all the specified capabilities are supported; {@code false} otherwise
+     */
+    boolean hasCapabilities(Collection<Capability> capabilities);
+
+    /**
+     * Checks whether the specified capability is supported.
+     *
+     * @param capability the {@link Capability} to verify for support
+     * @return {@code true} if the given capability is supported; {@code false} otherwise
+     */
+    boolean hasCapability(Capability capability);
 }
