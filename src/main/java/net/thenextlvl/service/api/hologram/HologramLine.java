@@ -7,6 +7,19 @@ import org.jspecify.annotations.NullMarked;
 public interface HologramLine<T> extends Positioned {
     LineType getType();
 
+    /**
+     * Retrieves the display associated with this hologram line.
+     * This requires the capability {@link Capability#DISPLAY_BACKED}.
+     *
+     * @return an {@link Optional} containing the {@link HologramDisplay} if available, otherwise empty.
+     */
+    Optional<HologramDisplay> getDisplay();
+
+    /**
+     * Retrieves the content of the hologram line.
+     *
+     * @return the content of this hologram line
+     */
     T getContent();
 
     double getHeight();

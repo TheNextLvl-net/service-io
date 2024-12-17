@@ -1,5 +1,6 @@
 package net.thenextlvl.service.model.hologram.decent;
 
+import net.thenextlvl.service.api.hologram.HologramDisplay;
 import net.thenextlvl.service.api.hologram.HologramLine;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -7,12 +8,19 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.Optional;
+
 @NullMarked
 abstract class DecentHologramLine<T> implements HologramLine<T> {
     protected final eu.decentsoftware.holograms.api.holograms.HologramLine line;
 
     protected DecentHologramLine(eu.decentsoftware.holograms.api.holograms.HologramLine line) {
         this.line = line;
+    }
+
+    @Override
+    public Optional<HologramDisplay> getDisplay() {
+        return Optional.empty();
     }
 
     @Override

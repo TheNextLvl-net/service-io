@@ -1,6 +1,7 @@
 package net.thenextlvl.service.model.hologram.fancy;
 
 import de.oliver.fancyholograms.api.data.DisplayHologramData;
+import net.thenextlvl.service.api.hologram.HologramDisplay;
 import net.thenextlvl.service.api.hologram.HologramLine;
 import net.thenextlvl.service.api.hologram.LineType;
 import org.bukkit.Bukkit;
@@ -9,6 +10,8 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.joml.Vector3f;
 import org.jspecify.annotations.NullMarked;
+
+import java.util.Optional;
 
 @NullMarked
 abstract class FancyHologramLine<D extends DisplayHologramData, T> implements HologramLine<T> {
@@ -25,6 +28,11 @@ abstract class FancyHologramLine<D extends DisplayHologramData, T> implements Ho
             case ITEM -> LineType.ITEM;
             case BLOCK -> LineType.BLOCK;
         };
+    }
+
+    @Override
+    public Optional<HologramDisplay> getDisplay() {
+        return Optional.of(new FancyHologramDisplay(data));
     }
 
     @Override
