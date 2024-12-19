@@ -275,8 +275,8 @@ public class ServicePlugin extends JavaPlugin {
         addCustomChart(PermissionController.class, PermissionController::getName, "permission_provider");
     }
 
-    private <T> void addCustomChart(Class<T> service, Function<T, String> function, String name) {
+    private <T> void addCustomChart(Class<T> service, Function<T, String> function, String chartId) {
         var loaded = getServer().getServicesManager().load(service);
-        metrics.addCustomChart(new SimplePie(name, () -> loaded != null ? function.apply(loaded) : "None"));
+        metrics.addCustomChart(new SimplePie(chartId, () -> loaded != null ? function.apply(loaded) : "None"));
     }
 }
