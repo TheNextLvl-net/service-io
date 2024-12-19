@@ -15,6 +15,7 @@ import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.hologram.HologramController;
+import net.thenextlvl.service.api.npc.CharacterController;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.command.ServiceCommand;
 import net.thenextlvl.service.controller.chat.GroupManagerChatController;
@@ -273,6 +274,8 @@ public class ServicePlugin extends JavaPlugin {
         addCustomChart(ChatController.class, ChatController::getName, "chat_provider");
         addCustomChart(EconomyController.class, EconomyController::getName, "economy_provider");
         addCustomChart(PermissionController.class, PermissionController::getName, "permission_provider");
+        addCustomChart(HologramController.class, HologramController::getName, "hologram_provider");
+        addCustomChart(CharacterController.class, CharacterController::getName, "npc_provider");
     }
 
     private <T> void addCustomChart(Class<T> service, Function<T, String> function, String chartId) {
