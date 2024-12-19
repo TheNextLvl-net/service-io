@@ -10,7 +10,7 @@ public class PlayerInteractCharacterEvent extends CharacterEvent implements Canc
     private final Player player;
     private boolean cancelled;
 
-    public PlayerInteractCharacterEvent(Player player, Character character) {
+    public PlayerInteractCharacterEvent(Player player, Character<?> character) {
         super(character);
         this.player = player;
     }

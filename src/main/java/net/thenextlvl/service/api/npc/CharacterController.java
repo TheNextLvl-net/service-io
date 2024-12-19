@@ -14,20 +14,34 @@ import java.util.UUID;
 
 @NullMarked
 public interface CharacterController {
-    Character createNPC(String name, Location location, EntityType type);
+    <T extends Entity> Character<T> createNPC(String name, Class<T> type);
+
+    <T extends Entity> Character<T> createNPC(String name, EntityType type);
+
+    <T extends Entity> Character<T> spawnNPC(String name, Location location, Class<T> type);
+
+    <T extends Entity> Character<T> spawnNPC(String name, Location location, EntityType type);
+
+    <T extends Entity> Optional<Character<T>> getNPC(T entity);
+
+    Character<Player> createNPC(String name);
+
+    Character<Player> spawnNPC(String name, Location location);
 
     @Unmodifiable
-    List<Character> getNPCs();
+    List<Character<?>> getNPCs();
 
     @Unmodifiable
-    List<Character> getNPCs(Player player);
+    List<Character<?>> getNPCs(Player player);
 
     @Unmodifiable
-    List<Character> getNPCs(World world);
+    List<Character<?>> getNPCs(World world);
 
-    Optional<Character> getNPC(Entity entity);
+    Optional<Character<?>> getNPC(UUID uuid);
 
-    Optional<Character> getNPC(UUID uuid);
+    Optional<Character<Player>> getNPC(Player player);
+
+    String getName();
 
     boolean isNPC(Entity entity);
 }

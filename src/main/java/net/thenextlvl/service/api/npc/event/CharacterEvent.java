@@ -8,14 +8,14 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public class CharacterEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private final Character character;
+    private final Character<?> character;
 
-    public CharacterEvent(Character character) {
+    public CharacterEvent(Character<?> character) {
         super(!character.getServer().isPrimaryThread());
         this.character = character;
     }
 
-    public Character getCharacter() {
+    public Character<?> getCharacter() {
         return character;
     }
 
