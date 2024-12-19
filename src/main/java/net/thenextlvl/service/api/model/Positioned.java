@@ -3,13 +3,12 @@ package net.thenextlvl.service.api.model;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
-import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.NonNull;
 
 /**
  * The Positioned interface represents an object with a specific position and orientation within a world.
  * It provides methods to retrieve coordinates, rotation, and associated world and server information.
  */
-@NullMarked
 public interface Positioned {
     /**
      * Retrieves the location of the object.
@@ -23,6 +22,7 @@ public interface Positioned {
      *
      * @return the current {@link Server} instance.
      */
+    @NonNull
     Server getServer();
 
     /**

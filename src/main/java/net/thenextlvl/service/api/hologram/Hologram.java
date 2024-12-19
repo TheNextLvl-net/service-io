@@ -3,6 +3,7 @@ package net.thenextlvl.service.api.hologram;
 import net.thenextlvl.service.api.model.Persistable;
 import net.thenextlvl.service.api.model.Viewable;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -36,6 +37,12 @@ public interface Hologram extends Persistable, Viewable, Iterable<HologramLine<?
      */
     @Unmodifiable
     List<HologramLine<?>> getLines();
+
+    @Override
+    Location getLocation();
+
+    @Override
+    World getWorld();
 
     /**
      * Adds a single line to the hologram's content.

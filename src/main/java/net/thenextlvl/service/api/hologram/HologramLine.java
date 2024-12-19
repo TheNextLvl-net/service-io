@@ -1,6 +1,8 @@
 package net.thenextlvl.service.api.hologram;
 
 import net.thenextlvl.service.api.model.Positioned;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
@@ -19,6 +21,9 @@ public interface HologramLine<T> extends Positioned {
      */
     LineType getType();
 
+    @Override
+    Location getLocation();
+
     /**
      * Retrieves the display associated with this hologram line.
      * This requires the capability {@link Capability#DISPLAY_BACKED}.
@@ -26,6 +31,9 @@ public interface HologramLine<T> extends Positioned {
      * @return an {@link Optional} containing the {@link HologramDisplay} if available, otherwise empty.
      */
     Optional<HologramDisplay> getDisplay();
+
+    @Override
+    World getWorld();
 
     /**
      * Retrieves the content of the hologram line.
