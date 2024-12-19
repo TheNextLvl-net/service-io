@@ -18,6 +18,7 @@ import net.thenextlvl.service.api.hologram.HologramController;
 import net.thenextlvl.service.api.npc.CharacterController;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.command.ServiceCommand;
+import net.thenextlvl.service.controller.character.CitizensCharacterController;
 import net.thenextlvl.service.controller.chat.GroupManagerChatController;
 import net.thenextlvl.service.controller.chat.LuckPermsChatController;
 import net.thenextlvl.service.controller.group.GroupManagerGroupController;
@@ -59,6 +60,7 @@ public class ServicePlugin extends JavaPlugin {
     private @Nullable EconomyController economyController = null;
     private @Nullable GroupController groupController = null;
     private @Nullable HologramController hologramController = null;
+    private @Nullable CharacterController characterController = null;
 
     private @Nullable Permission vaultPermissionWrapper = null;
 
@@ -89,6 +91,7 @@ public class ServicePlugin extends JavaPlugin {
         loadGroupServices();
         loadChatServices();
         loadHologramServices();
+        loadNpcServices();
         loadEconomyServices();
 
         printServices();
@@ -144,6 +147,14 @@ public class ServicePlugin extends JavaPlugin {
         if (controller != null) this.hologramController = controller;
     }
 
+    private void loadNpcServices() {
+        hookNpcService("Citizens", () -> new CitizensCharacterController(this), ServicePriority.Highest);
+        // hookNpcService("FancyNpcs", () -> new CitizensCharacterController(this), ServicePriority.High);
+
+        var controller = getServer().getServicesManager().load(CharacterController.class);
+        if (controller != null) this.characterController = controller;
+    }
+
     private void loadEconomyServices() {
         var controller = getServer().getServicesManager().load(EconomyController.class);
         if (controller != null) this.economyController = controller;
@@ -193,6 +204,18 @@ public class ServicePlugin extends JavaPlugin {
             getComponentLogger().debug("Added {} as hologram provider ({})", name, priority.name());
         } catch (Exception e) {
             getComponentLogger().error("Failed to register {} as hologram provider - " +
+                                       "check to make sure you're using a compatible version!", name, e);
+        }
+    }
+
+    private void hookNpcService(String name, Callable<? extends CharacterController> callable, ServicePriority priority) {
+        try {
+            if (getServer().getPluginManager().getPlugin(name) == null) return;
+            var hook = callable.call();
+            getServer().getServicesManager().register(CharacterController.class, hook, this, priority);
+            getComponentLogger().debug("Added {} as npc provider ({})", name, priority.name());
+        } catch (Exception e) {
+            getComponentLogger().error("Failed to register {} as npc provider - " +
                                        "check to make sure you're using a compatible version!", name, e);
         }
     }
