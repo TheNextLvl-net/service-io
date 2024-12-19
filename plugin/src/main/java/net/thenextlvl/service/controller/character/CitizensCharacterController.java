@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,28 +31,55 @@ public class CitizensCharacterController implements CharacterController {
     }
 
     @Override
-    public Character createNPC(String name, Location location, EntityType type) {
-        var npc = CitizensAPI.getNPCRegistry().createNPC(type, name);
-        return new CitizensCharacter(npc);
+    public <T extends Entity> Character<T> createNPC(String name, Class<T> type) {
+        return createNPC(name, getType(type));
     }
 
     @Override
-    public @Unmodifiable List<Character> getNPCs() {
+    public <T extends Entity> Character<T> createNPC(String name, EntityType type) {
+        var npc = CitizensAPI.getNPCRegistry().createNPC(type, name);
+        return new CitizensCharacter<>(npc);
+    }
+
+    @Override
+    public <T extends Entity> Character<T> spawnNPC(String name, Location location, Class<T> type) {
+        return spawnNPC(name, location, getType(type));
+    }
+
+    @Override
+    public <T extends Entity> Character<T> spawnNPC(String name, Location location, EntityType type) {
+        var npc = CitizensAPI.getNPCRegistry().createNPC(type, name, location);
+        return new CitizensCharacter<>(npc);
+    }
+
+    @Override
+    public <T extends Entity> Optional<Character<T>> getNPC(T entity) {
+        return Optional.ofNullable(CitizensAPI.getNPCRegistry().getNPC(entity))
+                .map(CitizensCharacter::new);
+    }
+
+    private EntityType getType(Class<? extends Entity> type) {
+        return Arrays.stream(EntityType.values())
+                .filter(entityType -> type.equals(entityType.getEntityClass()))
+                .findAny().orElseThrow();
+    }
+
+    @Override
+    public @Unmodifiable List<Character<?>> getNPCs() {
+        return streamNPCs().map(CitizensCharacter::new)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    @Override
+    public @Unmodifiable List<Character<?>> getNPCs(Player player) {
         return streamNPCs()
+                .filter(character -> !character.isHiddenFrom(player))
                 .map(CitizensCharacter::new)
                 .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
-    public @Unmodifiable List<Character> getNPCs(Player player) {
-        return streamNPCs()
-                .filter(character -> !character.isHiddenFrom(player))
-                 .map(CitizensCharacter::new)
-                .collect(Collectors.toUnmodifiableList());
-    }
-
-    @Override
-    public @Unmodifiable List<Character> getNPCs(World world) {
+    public @Unmodifiable List<Character<?>> getNPCs(World world) {
         return streamNPCs()
                 .filter(character -> world.equals(character.getEntity().getWorld()))
                 .map(CitizensCharacter::new)
@@ -59,16 +87,32 @@ public class CitizensCharacterController implements CharacterController {
     }
 
     @Override
-    public Optional<Character> getNPC(Entity entity) {
-        return Optional.ofNullable(CitizensAPI.getNPCRegistry().getNPC(entity))
+    public Character<Player> createNPC(String name) {
+        return createNPC(name, Player.class);
+    }
+
+    @Override
+    public Character<Player> spawnNPC(String name, Location location) {
+        return spawnNPC(name, location, Player.class);
+    }
+
+    @Override
+    public Optional<Character<?>> getNPC(UUID uuid) {
+        return Optional.ofNullable(plugin.getServer().getEntity(uuid))
+                .map(CitizensAPI.getNPCRegistry()::getNPC)
                 .map(CitizensCharacter::new);
     }
 
     @Override
-    public Optional<Character> getNPC(UUID uuid) {
-        return Optional.ofNullable(plugin.getServer().getEntity(uuid))
-                .map(CitizensAPI.getNPCRegistry()::getNPC)
+    public Optional<Character<Player>> getNPC(Player player) {
+        return Optional.ofNullable(CitizensAPI.getNPCRegistry().getNPC(player))
+                .filter(npc -> npc.getEntity().getType().equals(EntityType.PLAYER))
                 .map(CitizensCharacter::new);
+    }
+
+    @Override
+    public String getName() {
+        return "Citizens";
     }
 
     @Override
