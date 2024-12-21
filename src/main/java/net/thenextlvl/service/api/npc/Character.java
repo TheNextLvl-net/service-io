@@ -20,13 +20,13 @@ public interface Character<T extends Entity> extends Persistable, Viewable {
 
     Component getDisplayName();
 
-    Optional<T> getEntity();
-
     EntityType getType();
 
     @Override
     @Nullable
     Location getLocation();
+
+    Optional<T> getEntity();
 
     @Override
     @Nullable
