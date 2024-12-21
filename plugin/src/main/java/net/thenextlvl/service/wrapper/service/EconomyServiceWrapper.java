@@ -12,7 +12,6 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -51,27 +50,26 @@ public class EconomyServiceWrapper implements EconomyController {
 
     @Override
     public CompletableFuture<@Unmodifiable Set<Account>> loadAccounts() {
-        return CompletableFuture.supplyAsync(() -> Arrays.stream(plugin.getServer().getOfflinePlayers())
-                .map(player -> tryGetAccount(player).join().orElse(null))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toUnmodifiableSet()));
+        return CompletableFuture.supplyAsync(this::getAccounts);
     }
 
     @Override
     public @Unmodifiable Set<Account> getAccounts() {
         return Arrays.stream(plugin.getServer().getOfflinePlayers())
-                .map(player -> getAccount(player).orElse(null))
-                .filter(Objects::nonNull)
+                .filter(economy::hasAccount)
+                .map(player -> new WrappedAccount(null, economy, player))
                 .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
     public Optional<Account> getAccount(OfflinePlayer player) {
+        if (!economy.hasAccount(player)) return Optional.empty();
         return Optional.of(new WrappedAccount(null, economy, player));
     }
 
     @Override
     public Optional<Account> getAccount(OfflinePlayer player, World world) {
+        if (!economy.hasAccount(player, world.getName())) return Optional.empty();
         return Optional.of(new WrappedAccount(world, economy, player));
     }
 
@@ -86,24 +84,24 @@ public class EconomyServiceWrapper implements EconomyController {
     }
 
     @Override
-    public CompletableFuture<Account> createAccount(OfflinePlayer player) throws IllegalStateException {
-        return CompletableFuture.completedFuture(economy.createPlayerAccount(player))
+    public CompletableFuture<Account> createAccount(OfflinePlayer player) {
+        return CompletableFuture.supplyAsync(() -> economy.createPlayerAccount(player))
                 .thenApply(account -> getAccount(player).orElseThrow());
     }
 
     @Override
-    public CompletableFuture<Account> createAccount(OfflinePlayer player, World world) throws IllegalStateException {
-        return CompletableFuture.completedFuture(economy.createPlayerAccount(player, world.getName()))
+    public CompletableFuture<Account> createAccount(OfflinePlayer player, World world) {
+        return CompletableFuture.supplyAsync(() -> economy.createPlayerAccount(player, world.getName()))
                 .thenApply(account -> getAccount(player, world).orElseThrow());
     }
 
     @Override
-    public CompletableFuture<Account> createAccount(UUID uuid) throws IllegalStateException {
+    public CompletableFuture<Account> createAccount(UUID uuid) {
         return createAccount(plugin.getServer().getOfflinePlayer(uuid));
     }
 
     @Override
-    public CompletableFuture<Account> createAccount(UUID uuid, World world) throws IllegalStateException {
+    public CompletableFuture<Account> createAccount(UUID uuid, World world) {
         return createAccount(plugin.getServer().getOfflinePlayer(uuid), world);
     }
 

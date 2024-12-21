@@ -12,7 +12,6 @@ import org.bukkit.World;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -27,7 +26,7 @@ public class BankServiceWrapper implements BankController {
 
     @Override
     public CompletableFuture<Bank> createBank(OfflinePlayer player, String name) throws IllegalStateException {
-        return CompletableFuture.completedFuture(economy.createBank(name, player))
+        return CompletableFuture.supplyAsync(() -> economy.createBank(name, player))
                 .thenApply(bank -> getBank(name).orElseThrow());
     }
 
@@ -63,12 +62,12 @@ public class BankServiceWrapper implements BankController {
 
     @Override
     public CompletableFuture<@Unmodifiable Set<Bank>> loadBanks() {
-        return CompletableFuture.completedFuture(getBanks());
+        return CompletableFuture.supplyAsync(this::getBanks);
     }
 
     @Override
     public CompletableFuture<@Unmodifiable Set<Bank>> loadBanks(World world) {
-        return CompletableFuture.completedFuture(getBanks(world));
+        return CompletableFuture.supplyAsync(() -> getBanks(world));
     }
 
     @Override
@@ -90,8 +89,7 @@ public class BankServiceWrapper implements BankController {
     @Override
     public @Unmodifiable Set<Bank> getBanks() {
         return economy.getBanks().stream()
-                .map(s -> getBank(s).orElse(null))
-                .filter(Objects::nonNull)
+                .map(bank -> new WrappedBank(bank, null, economy, plugin))
                 .collect(Collectors.toUnmodifiableSet());
     }
 
