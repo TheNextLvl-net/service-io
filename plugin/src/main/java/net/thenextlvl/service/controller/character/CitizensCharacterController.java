@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
@@ -28,7 +27,8 @@ import java.util.stream.StreamSupport;
 @NullMarked
 public class CitizensCharacterController implements CharacterController {
     private final EnumSet<CharacterCapability> capabilities = EnumSet.of(
-            CharacterCapability.NON_PLAYER_ENTITIES
+            CharacterCapability.NON_PLAYER_ENTITIES,
+            CharacterCapability.SERVER_ENTITIES
     );
     private final ServicePlugin plugin;
 
@@ -38,7 +38,7 @@ public class CitizensCharacterController implements CharacterController {
 
     @Override
     public <T extends Entity> Character<T> createNPC(String name, Class<T> type) {
-        return createNPC(name, getType(type));
+        return createNPC(name, plugin.getEntityTypeByClass(type));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class CitizensCharacterController implements CharacterController {
 
     @Override
     public <T extends Entity> Character<T> spawnNPC(String name, Location location, Class<T> type) {
-        return spawnNPC(name, location, getType(type));
+        return spawnNPC(name, location, plugin.getEntityTypeByClass(type));
     }
 
     @Override
@@ -62,12 +62,6 @@ public class CitizensCharacterController implements CharacterController {
     public <T extends Entity> Optional<Character<T>> getNPC(T entity) {
         return Optional.ofNullable(CitizensAPI.getNPCRegistry().getNPC(entity))
                 .map(CitizensCharacter::new);
-    }
-
-    private EntityType getType(Class<? extends Entity> type) {
-        return Arrays.stream(EntityType.values())
-                .filter(entityType -> type.equals(entityType.getEntityClass()))
-                .findAny().orElseThrow();
     }
 
     @Override
@@ -90,6 +84,14 @@ public class CitizensCharacterController implements CharacterController {
                 .filter(character -> world.equals(character.getEntity().getWorld()))
                 .map(CitizensCharacter::new)
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    @Override
+    public Optional<Character<?>> getNPC(String name) {
+        return streamNPCs()
+                .filter(npc -> name.equals(npc.getRawName()))
+                .<Character<?>>map(CitizensCharacter::new)
+                .findAny();
     }
 
     @Override

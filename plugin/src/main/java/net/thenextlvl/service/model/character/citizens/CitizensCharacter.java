@@ -2,14 +2,19 @@ package net.thenextlvl.service.model.character.citizens;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.trait.trait.MobType;
 import net.citizensnpcs.api.trait.trait.PlayerFilter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.thenextlvl.service.api.npc.Character;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -18,6 +23,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @NullMarked
@@ -147,6 +153,11 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
+    public void delete() {
+        npc.destroy();
+    }
+
+    @Override
     public double getX() {
         return getEntity().map(Entity::getX).orElse(0d);
     }
@@ -172,10 +183,30 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
+    public CompletableFuture<Boolean> teleportAsync(Location location) {
+        return CompletableFuture.supplyAsync(() -> {
+            npc.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+            return true;
+        });
+    }
+
+    @Override
+    public Component getDisplayName() {
+        return MiniMessage.miniMessage().deserialize(npc.getRawName());
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public Optional<T> getEntity() {
         return Optional.ofNullable(npc.getEntity())
                 .map(entity -> (T) entity);
+    }
+
+    @Override
+    public EntityType getType() {
+        return npc.getTraitOptional(MobType.class)
+                .transform(MobType::getType)
+                .or(EntityType.PLAYER);
     }
 
     @Override
@@ -194,19 +225,24 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public boolean spawn() {
-        var location = getLocation();
-        return location != null && spawn(location);
-    }
-
-    @Override
     public boolean spawn(Location location) {
         return npc.spawn(location);
     }
 
     @Override
-    public void remove() {
-        npc.destroy();
+    public boolean remove() {
+        return npc.despawn();
+    }
+
+    @Override
+    public boolean respawn() {
+        var location = getLocation();
+        return location != null && npc.despawn() && npc.spawn(location);
+    }
+
+    @Override
+    public void setDisplayName(Component displayName) {
+        npc.setName(MiniMessage.miniMessage().serialize(displayName));
     }
 
     @Override
