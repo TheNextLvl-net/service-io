@@ -15,8 +15,11 @@ import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.hologram.HologramController;
+import net.thenextlvl.service.api.npc.Character;
+import net.thenextlvl.service.api.npc.CharacterController;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.command.argument.BankArgumentType;
+import net.thenextlvl.service.command.argument.CharacterArgumentType;
 import net.thenextlvl.service.command.argument.ChatArgumentType;
 import net.thenextlvl.service.command.argument.EconomyArgumentType;
 import net.thenextlvl.service.command.argument.GroupArgumentType;
@@ -41,6 +44,7 @@ class ServiceConvertCommand {
         return Commands.literal("convert")
                 .requires(stack -> stack.getSender().hasPermission("service.convert"))
                 .then(Commands.literal("banks").then(banks()))
+                .then(Commands.literal("characters").then(characters()))
                 .then(Commands.literal("chat").then(chat()))
                 .then(Commands.literal("economy").then(economy()))
                 .then(Commands.literal("groups").then(groups()))
@@ -53,6 +57,13 @@ class ServiceConvertCommand {
                 .then(Commands.argument("target", new BankArgumentType(plugin, (context, controller) ->
                                 !context.getLastChild().getArgument("source", BankController.class).equals(controller)))
                         .executes(this::convertBanks));
+    }
+
+    private ArgumentBuilder<CommandSourceStack, ?> characters() {
+        return Commands.argument("source", new CharacterArgumentType(plugin, (c, e) -> true))
+                .then(Commands.argument("target", new CharacterArgumentType(plugin, (context, controller) ->
+                                !context.getLastChild().getArgument("source", CharacterController.class).equals(controller)))
+                        .executes(this::convertCharacters));
     }
 
     private ArgumentBuilder<CommandSourceStack, ?> chat() {
@@ -94,6 +105,10 @@ class ServiceConvertCommand {
         return convert(context, BankController.class, BankController::getName, new BankConverter());
     }
 
+    private int convertCharacters(CommandContext<CommandSourceStack> context) {
+        return convert(context, CharacterController.class, CharacterController::getName, new CharacterConverter());
+    }
+
     private int convertChat(CommandContext<CommandSourceStack> context) {
         return convert(context, ChatController.class, ChatController::getName, new ChatConverter());
     }
@@ -124,6 +139,31 @@ class ServiceConvertCommand {
                                 targetBank.setBalance(bank.getBalance());
                                 bank.getMembers().forEach(targetBank::addMember);
                             })));
+        }
+    }
+
+    private static final class CharacterConverter implements Converter<CharacterController> {
+
+        @Override
+        public CompletableFuture<Void> convert(CharacterController source, CharacterController target) {
+            return CompletableFuture.runAsync(() -> source.getNPCs().forEach(
+                    character -> convert(character, source, target)
+            ));
+        }
+
+        public CompletableFuture<Void> convert(Character<?> character, CharacterController source, CharacterController target) {
+            return CompletableFuture.runAsync(() -> target.getNPC(character.getName()).orElseGet(() -> {
+                var npc = target.createNPC(character.getName(), character.getType());
+                npc.setDamageable(character.isDamageable());
+                npc.setDisplayName(character.getDisplayName());
+                npc.setDisplayRange(character.getDisplayRange());
+                npc.setPersistent(character.isPersistent());
+                npc.setTablistEntryHidden(character.isTablistEntryHidden());
+                npc.setVisibleByDefault(character.isVisibleByDefault());
+                if (character.getLocation() != null) npc.spawn(character.getLocation());
+                character.addViewers(npc.getViewers());
+                return npc;
+            }));
         }
     }
 

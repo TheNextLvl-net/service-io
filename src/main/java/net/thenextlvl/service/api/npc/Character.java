@@ -7,48 +7,126 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Represents a character in a world that is associated with an entity and provides various
+ * functionalities such as spawning, despawning, teleportation, and state management.
+ *
+ * @param <T> the type of the entity associated with this character
+ */
 @NullMarked
 public interface Character<T extends Entity> extends Persistable, Viewable {
+    /**
+     * Asynchronously teleports the character to the specified location.
+     *
+     * @param location the {@code Location} to which the character will be teleported
+     * @return a {@code CompletableFuture} that resolves to {@code true} if the teleportation was
+     * successful, or {@code false} otherwise
+     */
     CompletableFuture<Boolean> teleportAsync(Location location);
 
+    /**
+     * Retrieves the display name of the character.
+     *
+     * @return the {@code Component} representing the display name of the character
+     */
     Component getDisplayName();
 
+    /**
+     * Retrieves the type of entity associated with the character.
+     *
+     * @return the entity type of the character
+     */
     EntityType getType();
 
     @Override
     @Nullable
     Location getLocation();
 
+    /**
+     * Retrieves the entity associated with the character.
+     *
+     * @return an {@code Optional} containing the associated entity, or an empty {@code Optional}
+     * if no entity is associated with the character.
+     */
     Optional<T> getEntity();
 
     @Override
     @Nullable
     World getWorld();
 
-    boolean isProtected();
+    /**
+     * Despawns the character, effectively removing it from the world or rendering it inactive.
+     *
+     * @return {@code true} if the character was successfully despawned, otherwise {@code false}
+     */
+    boolean despawn();
 
+    /**
+     * Checks if the character can take damage.
+     *
+     * @return {@code true} if the character is damageable, otherwise {@code false}
+     */
+    boolean isDamageable();
+
+    /**
+     * Checks if the character is currently spawned in the world.
+     *
+     * @return {@code true} if the character is spawned, otherwise {@code false}
+     */
     boolean isSpawned();
 
+    /**
+     * Checks whether the tablist entry for the character is currently hidden.
+     *
+     * @return {@code true} if the tablist entry is hidden, otherwise {@code false}
+     */
     boolean isTablistEntryHidden();
 
-    boolean remove();
-
+    /**
+     * Respawns the character, bringing it back to the world if it was previously despawned.
+     *
+     * @return {@code true} if the character was successfully respawned, otherwise {@code false}
+     */
     boolean respawn();
 
-    boolean spawn(@NonNull Location location);
+    /**
+     * Spawns the character at the specified location.
+     *
+     * @param location the {@code Location} where the character will be spawned
+     * @return {@code true} if the character was successfully spawned, otherwise {@code false}
+     */
+    boolean spawn(Location location);
 
-    void delete();
+    /**
+     * Permanently removes the character, rendering it inaccessible and removing all associated data.
+     * After invoking this method, the character can't be respawned or interacted with.
+     */
+    void remove();
 
+    /**
+     * Sets whether the character can take damage.
+     *
+     * @param damageable {@code true} if the character should be able to take damage, {@code false} otherwise
+     */
+    void setDamageable(boolean damageable);
+
+    /**
+     * Sets the display name for the character.
+     *
+     * @param displayName the {@code Component} representing the new display name to be set
+     */
     void setDisplayName(Component displayName);
 
-    void setProtected(boolean protect);
-
+    /**
+     * Sets the visibility state of the character's tablist entry.
+     *
+     * @param hidden {@code true} to hide the tablist entry, {@code false} to make it visible
+     */
     void setTablistEntryHidden(boolean hidden);
 }

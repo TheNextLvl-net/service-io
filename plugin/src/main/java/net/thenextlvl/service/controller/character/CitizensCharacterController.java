@@ -89,7 +89,7 @@ public class CitizensCharacterController implements CharacterController {
     @Override
     public Optional<Character<?>> getNPC(String name) {
         return streamNPCs()
-                .filter(npc -> name.equals(npc.getRawName()))
+                .filter(npc -> name.equals(npc.getName()))
                 .<Character<?>>map(CitizensCharacter::new)
                 .findAny();
     }

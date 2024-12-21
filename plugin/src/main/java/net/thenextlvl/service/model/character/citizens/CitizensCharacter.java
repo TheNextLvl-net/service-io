@@ -153,8 +153,18 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public void delete() {
+    public boolean isDamageable() {
+        return !npc.isProtected();
+    }
+
+    @Override
+    public void remove() {
         npc.destroy();
+    }
+
+    @Override
+    public void setDamageable(boolean damageable) {
+        npc.setProtected(!damageable);
     }
 
     @Override
@@ -210,11 +220,6 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public boolean isProtected() {
-        return npc.isProtected();
-    }
-
-    @Override
     public boolean isSpawned() {
         return npc.isSpawned();
     }
@@ -230,7 +235,7 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public boolean remove() {
+    public boolean despawn() {
         return npc.despawn();
     }
 
@@ -243,11 +248,6 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     @Override
     public void setDisplayName(Component displayName) {
         npc.setName(MiniMessage.miniMessage().serialize(displayName));
-    }
-
-    @Override
-    public void setProtected(boolean protect) {
-        npc.setProtected(protect);
     }
 
     @Override

@@ -66,9 +66,19 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     }
 
     @Override
-    public void delete() {
+    public boolean isDamageable() {
+        return false;
+    }
+
+    @Override
+    public void remove() {
         npc().removeForAll();
         FancyNpcsPlugin.get().getNpcManager().removeNpc(npc());
+    }
+
+    @Override
+    public void setDamageable(boolean damageable) {
+
     }
 
     @Override
@@ -102,11 +112,6 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     }
 
     @Override
-    public boolean isProtected() {
-        return true;
-    }
-
-    @Override
     public boolean isSpawned() {
         return true;
     }
@@ -124,7 +129,7 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     }
 
     @Override
-    public boolean remove() {
+    public boolean despawn() {
         npc().removeForAll();
         return true;
     }
@@ -139,10 +144,6 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     @Override
     public void setDisplayName(Component displayName) {
         npc().getData().setDisplayName(MiniMessage.miniMessage().serialize(displayName));
-    }
-
-    @Override
-    public void setProtected(boolean protect) {
     }
 
     @Override
