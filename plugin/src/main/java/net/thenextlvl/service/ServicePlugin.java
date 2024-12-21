@@ -19,6 +19,7 @@ import net.thenextlvl.service.api.npc.CharacterController;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.command.ServiceCommand;
 import net.thenextlvl.service.controller.character.CitizensCharacterController;
+import net.thenextlvl.service.controller.character.FancyCharacterController;
 import net.thenextlvl.service.controller.chat.GroupManagerChatController;
 import net.thenextlvl.service.controller.chat.LuckPermsChatController;
 import net.thenextlvl.service.controller.group.GroupManagerGroupController;
@@ -38,6 +39,8 @@ import net.thenextlvl.service.wrapper.service.EconomyServiceWrapper;
 import net.thenextlvl.service.wrapper.service.PermissionServiceWrapper;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -45,6 +48,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
@@ -149,7 +153,7 @@ public class ServicePlugin extends JavaPlugin {
 
     private void loadNpcServices() {
         hookNpcService("Citizens", () -> new CitizensCharacterController(this), ServicePriority.Highest);
-        // hookNpcService("FancyNpcs", () -> new CitizensCharacterController(this), ServicePriority.High);
+        hookNpcService("FancyNpcs", () -> new FancyCharacterController(this), ServicePriority.High);
 
         var controller = getServer().getServicesManager().load(CharacterController.class);
         if (controller != null) this.characterController = controller;
@@ -273,6 +277,7 @@ public class ServicePlugin extends JavaPlugin {
         var economy = economyController() != null ? economyController().getName() : null;
         var group = groupController() != null ? groupController().getName() : null;
         var hologram = hologramController() != null ? hologramController().getName() : null;
+        var character = characterController() != null ? characterController().getName() : null;
 
         var permission = permissionController().getName();
 
@@ -289,6 +294,9 @@ public class ServicePlugin extends JavaPlugin {
 
         if (hologram != null) getComponentLogger().info("Using {} as hologram provider", hologram);
         else getComponentLogger().info("Found no hologram provider");
+
+        if (character != null) getComponentLogger().info("Using {} as npc provider", character);
+        else getComponentLogger().info("Found no npc provider");
     }
 
     private void addCustomCharts() {
@@ -304,5 +312,11 @@ public class ServicePlugin extends JavaPlugin {
     private <T> void addCustomChart(Class<T> service, Function<T, String> function, String chartId) {
         var loaded = getServer().getServicesManager().load(service);
         metrics.addCustomChart(new SimplePie(chartId, () -> loaded != null ? function.apply(loaded) : "None"));
+    }
+
+    public EntityType getEntityTypeByClass(Class<? extends Entity> type) {
+        return Arrays.stream(EntityType.values())
+                .filter(entityType -> type.equals(entityType.getEntityClass()))
+                .findAny().orElseThrow();
     }
 }
