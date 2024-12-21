@@ -88,6 +88,10 @@ paper {
             load = PaperPluginDescription.RelativeLoadOrder.BEFORE
             required = false
         }
+        register("FancyNpcs") {
+            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            required = false
+        }
         register("GroupManager") {
             load = PaperPluginDescription.RelativeLoadOrder.BEFORE
             required = false
