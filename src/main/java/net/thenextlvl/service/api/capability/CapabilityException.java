@@ -1,4 +1,4 @@
-package net.thenextlvl.service.api.hologram;
+package net.thenextlvl.service.api.capability;
 
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -42,8 +42,8 @@ public class CapabilityException extends RuntimeException {
     /**
      * Retrieves the capability associated with this exception.
      *
-     * @return the {@link Capability} instance that caused this exception, representing
-     * a specific feature or limitation related to hologram functionality.
+     * @return the {@link Capability} instance that caused this exception,
+     * representing a specific feature or limitation.
      */
     public Capability getCapability() {
         return this.capability;

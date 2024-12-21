@@ -1,5 +1,6 @@
 package net.thenextlvl.service.api.hologram;
 
+import net.thenextlvl.service.api.capability.CapabilityException;
 import net.thenextlvl.service.api.model.Persistable;
 import net.thenextlvl.service.api.model.Viewable;
 import org.bukkit.Location;
@@ -47,26 +48,26 @@ public interface Hologram extends Persistable, Viewable, Iterable<HologramLine<?
     /**
      * Adds a single line to the hologram's content.
      * This method may only be used if the hologram supports the capability for multiple lines,
-     * as indicated by {@link Capability#MULTILINE}.
+     * as indicated by {@link HologramCapability#MULTILINE}.
      *
      * @param line the {@link HologramLine} to be added; this line represents a component
      *             of the hologram's visual content such as text, items, blocks, or entities
      * @return true if the line was successfully added, false otherwise
-     * @throws CapabilityException if the hologram doesn't support the {@link Capability#MULTILINE}
+     * @throws CapabilityException if the hologram doesn't support the {@link HologramCapability#MULTILINE}
      */
     boolean addLine(HologramLine<?> line) throws CapabilityException;
 
     /**
      * Inserts a hologram line at the specified index of the hologram.
      * The provided index determines the placement of the new line, shifting subsequent lines down by one position.
-     * This method requires the hologram to support the {@link Capability#MULTILINE} capability.
+     * This method requires the hologram to support the {@link HologramCapability#MULTILINE} capability.
      *
      * @param index the position at which to insert the hologram line; must be within
      *              the valid range of current hologram lines (zero-to-size inclusive)
      * @param line  the {@link HologramLine} to be added; this line represents a component
      *              of the hologram's visual content such as text, items, blocks, or entities
      * @return true if the line was successfully added at the specified index, false otherwise
-     * @throws CapabilityException if the hologram doesn't support the {@link Capability#MULTILINE}
+     * @throws CapabilityException if the hologram doesn't support the {@link HologramCapability#MULTILINE}
      *                             capability
      */
     boolean addLine(int index, HologramLine<?> line) throws CapabilityException;
@@ -74,34 +75,34 @@ public interface Hologram extends Persistable, Viewable, Iterable<HologramLine<?
     /**
      * Adds a collection of hologram lines to the hologram's content.
      * This method requires the hologram to support the capability for multiple lines,
-     * as indicated by {@link Capability#MULTILINE}.
+     * as indicated by {@link HologramCapability#MULTILINE}.
      *
      * @param lines the collection of {@link HologramLine} instances to be added; each line represents
      *              a distinct component of the hologram's visual content such as text, items, blocks,
      *              or entities
      * @return true if any line was added, false otherwise
-     * @throws CapabilityException if the hologram doesn't support the {@link Capability#MULTILINE} capability
+     * @throws CapabilityException if the hologram doesn't support the {@link HologramCapability#MULTILINE} capability
      */
     boolean addLines(Collection<HologramLine<?>> lines) throws CapabilityException;
 
     /**
      * Removes a specified hologram line from the hologram.
-     * This method requires the hologram to support the {@link Capability#MULTILINE} capability.
+     * This method requires the hologram to support the {@link HologramCapability#MULTILINE} capability.
      *
      * @param line the {@link HologramLine} to be removed; this line represents a component
      *             of the hologram's visual content such as text, items, blocks, or entities
      * @return true if the line was successfully removed, false otherwise
-     * @throws CapabilityException if the hologram doesn't support the {@link Capability#MULTILINE} capability
+     * @throws CapabilityException if the hologram doesn't support the {@link HologramCapability#MULTILINE} capability
      */
     boolean removeLine(HologramLine<?> line) throws CapabilityException;
 
     /**
      * Removes the hologram line at the specified index.
-     * This method requires the hologram to support the {@link Capability#MULTILINE} capability.
+     * This method requires the hologram to support the {@link HologramCapability#MULTILINE} capability.
      *
      * @param index the position of the line to remove; must be within the valid range of current hologram lines
      * @return true if the line was successfully removed, false otherwise
-     * @throws CapabilityException if the hologram doesn't support the {@link Capability#MULTILINE} capability
+     * @throws CapabilityException if the hologram doesn't support the {@link HologramCapability#MULTILINE} capability
      */
     boolean removeLine(int index) throws CapabilityException;
 

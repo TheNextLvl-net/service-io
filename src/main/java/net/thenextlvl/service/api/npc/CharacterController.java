@@ -1,5 +1,6 @@
 package net.thenextlvl.service.api.npc;
 
+import net.thenextlvl.service.api.capability.CapabilityProvider;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -8,12 +9,13 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @NullMarked
-public interface CharacterController {
+public interface CharacterController extends CapabilityProvider<CharacterCapability> {
     <T extends Entity> Character<T> createNPC(String name, Class<T> type);
 
     <T extends Entity> Character<T> createNPC(String name, EntityType type);
@@ -40,6 +42,10 @@ public interface CharacterController {
     Optional<Character<?>> getNPC(UUID uuid);
 
     Optional<Character<Player>> getNPC(Player player);
+
+    @Override
+    @Unmodifiable
+    EnumSet<CharacterCapability> getCapabilities();
 
     String getName();
 

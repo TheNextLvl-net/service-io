@@ -5,8 +5,8 @@ import de.oliver.fancyholograms.api.data.BlockHologramData;
 import de.oliver.fancyholograms.api.data.ItemHologramData;
 import de.oliver.fancyholograms.api.data.TextHologramData;
 import de.oliver.fancyholograms.api.data.property.Visibility;
-import net.thenextlvl.service.api.hologram.Capability;
-import net.thenextlvl.service.api.hologram.CapabilityException;
+import net.thenextlvl.service.api.hologram.HologramCapability;
+import net.thenextlvl.service.api.capability.CapabilityException;
 import net.thenextlvl.service.api.hologram.Hologram;
 import net.thenextlvl.service.api.hologram.HologramLine;
 import org.bukkit.Bukkit;
@@ -47,27 +47,27 @@ public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram holog
 
     @Override
     public boolean addLine(HologramLine<?> line) throws CapabilityException {
-        throw new CapabilityException("FancyHolograms does not support multiline holograms", Capability.MULTILINE);
+        throw new CapabilityException("FancyHolograms does not support multiline holograms", HologramCapability.MULTILINE);
     }
 
     @Override
     public boolean addLine(int index, HologramLine<?> line) throws CapabilityException {
-        throw new CapabilityException("FancyHolograms does not support multiline holograms", Capability.MULTILINE);
+        throw new CapabilityException("FancyHolograms does not support multiline holograms", HologramCapability.MULTILINE);
     }
 
     @Override
     public boolean addLines(Collection<HologramLine<?>> lines) throws CapabilityException {
-        throw new CapabilityException("FancyHolograms does not support multiline holograms", Capability.MULTILINE);
+        throw new CapabilityException("FancyHolograms does not support multiline holograms", HologramCapability.MULTILINE);
     }
 
     @Override
     public boolean removeLine(HologramLine<?> line) throws CapabilityException {
-        throw new CapabilityException("FancyHolograms does not support multiline holograms", Capability.MULTILINE);
+        throw new CapabilityException("FancyHolograms does not support multiline holograms", HologramCapability.MULTILINE);
     }
 
     @Override
     public boolean removeLine(int index) throws CapabilityException {
-        throw new CapabilityException("FancyHolograms does not support multiline holograms", Capability.MULTILINE);
+        throw new CapabilityException("FancyHolograms does not support multiline holograms", HologramCapability.MULTILINE);
     }
 
     @Override

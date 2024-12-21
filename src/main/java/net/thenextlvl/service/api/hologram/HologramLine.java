@@ -26,7 +26,7 @@ public interface HologramLine<T> extends Positioned {
 
     /**
      * Retrieves the display associated with this hologram line.
-     * This requires the capability {@link Capability#DISPLAY_BACKED}.
+     * This requires the capability {@link HologramCapability#DISPLAY_BACKED}.
      *
      * @return an {@link Optional} containing the {@link HologramDisplay} if available, otherwise empty.
      */

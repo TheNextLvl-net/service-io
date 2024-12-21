@@ -5,8 +5,8 @@ import de.oliver.fancyholograms.api.data.BlockHologramData;
 import de.oliver.fancyholograms.api.data.ItemHologramData;
 import de.oliver.fancyholograms.api.data.TextHologramData;
 import net.kyori.adventure.text.Component;
-import net.thenextlvl.service.api.hologram.Capability;
-import net.thenextlvl.service.api.hologram.CapabilityException;
+import net.thenextlvl.service.api.hologram.HologramCapability;
+import net.thenextlvl.service.api.capability.CapabilityException;
 import net.thenextlvl.service.api.hologram.Hologram;
 import net.thenextlvl.service.api.hologram.HologramController;
 import net.thenextlvl.service.api.hologram.HologramLine;
@@ -31,12 +31,12 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public class FancyHologramController implements HologramController {
-    private final EnumSet<Capability> capabilities = EnumSet.of(
-            Capability.BLOCK_LINES,
-            Capability.DISPLAY_BACKED,
-            Capability.ITEM_LINES,
-            Capability.MULTILINE_TEXT,
-            Capability.TEXT_LINES
+    private final EnumSet<HologramCapability> capabilities = EnumSet.of(
+            HologramCapability.BLOCK_LINES,
+            HologramCapability.DISPLAY_BACKED,
+            HologramCapability.ITEM_LINES,
+            HologramCapability.MULTILINE_TEXT,
+            HologramCapability.TEXT_LINES
     );
 
     @Override
@@ -61,7 +61,7 @@ public class FancyHologramController implements HologramController {
             }
             case ENTITY -> throw new CapabilityException(
                     "FancyHolograms does not support entity lines",
-                    Capability.ENTITY_LINES
+                    HologramCapability.ENTITY_LINES
             );
         };
         manager.addHologram(hologram);
@@ -88,7 +88,7 @@ public class FancyHologramController implements HologramController {
 
     @Override
     public HologramLine<EntityType> createLine(EntityType entity) throws CapabilityException {
-        throw new CapabilityException("FancyHolograms does not support entity lines", Capability.ENTITY_LINES);
+        throw new CapabilityException("FancyHolograms does not support entity lines", HologramCapability.ENTITY_LINES);
     }
 
     @Override
@@ -133,22 +133,22 @@ public class FancyHologramController implements HologramController {
     }
 
     @Override
-    public @Unmodifiable EnumSet<Capability> getCapabilities() {
-        return EnumSet.copyOf(capabilities);
-    }
-
-    @Override
     public String getName() {
         return "FancyHolograms";
     }
 
     @Override
-    public boolean hasCapabilities(Collection<Capability> capabilities) {
+    public @Unmodifiable EnumSet<HologramCapability> getCapabilities() {
+        return EnumSet.copyOf(this.capabilities);
+    }
+
+    @Override
+    public boolean hasCapabilities(Collection<HologramCapability> capabilities) {
         return this.capabilities.containsAll(capabilities);
     }
 
     @Override
-    public boolean hasCapability(Capability capability) {
+    public boolean hasCapability(HologramCapability capability) {
         return capabilities.contains(capability);
     }
 }

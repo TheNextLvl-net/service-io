@@ -4,9 +4,9 @@ import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.utils.items.HologramItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.thenextlvl.service.api.hologram.Capability;
-import net.thenextlvl.service.api.hologram.CapabilityException;
+import net.thenextlvl.service.api.capability.CapabilityException;
 import net.thenextlvl.service.api.hologram.Hologram;
+import net.thenextlvl.service.api.hologram.HologramCapability;
 import net.thenextlvl.service.api.hologram.HologramController;
 import net.thenextlvl.service.api.hologram.HologramLine;
 import net.thenextlvl.service.model.hologram.decent.DecentBlockHologramLine;
@@ -31,12 +31,12 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public class DecentHologramController implements HologramController {
-    private final EnumSet<Capability> capabilities = EnumSet.of(
-            Capability.BLOCK_LINES,
-            Capability.ENTITY_LINES,
-            Capability.ITEM_LINES,
-            Capability.TEXT_LINES,
-            Capability.MULTILINE
+    private final EnumSet<HologramCapability> capabilities = EnumSet.of(
+            HologramCapability.BLOCK_LINES,
+            HologramCapability.ENTITY_LINES,
+            HologramCapability.ITEM_LINES,
+            HologramCapability.TEXT_LINES,
+            HologramCapability.MULTILINE
     );
 
     @Override
@@ -113,22 +113,22 @@ public class DecentHologramController implements HologramController {
     }
 
     @Override
-    public @Unmodifiable EnumSet<Capability> getCapabilities() {
-        return EnumSet.copyOf(capabilities);
-    }
-
-    @Override
     public String getName() {
         return "DecentHolograms";
     }
 
     @Override
-    public boolean hasCapabilities(Collection<Capability> capabilities) {
+    public @Unmodifiable EnumSet<HologramCapability> getCapabilities() {
+        return EnumSet.copyOf(this.capabilities);
+    }
+
+    @Override
+    public boolean hasCapabilities(Collection<HologramCapability> capabilities) {
         return this.capabilities.containsAll(capabilities);
     }
 
     @Override
-    public boolean hasCapability(Capability capability) {
+    public boolean hasCapability(HologramCapability capability) {
         return capabilities.contains(capability);
     }
 }

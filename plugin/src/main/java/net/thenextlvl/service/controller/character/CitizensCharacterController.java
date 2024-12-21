@@ -4,6 +4,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.npc.Character;
+import net.thenextlvl.service.api.npc.CharacterCapability;
 import net.thenextlvl.service.api.npc.CharacterController;
 import net.thenextlvl.service.model.character.citizens.CitizensCharacter;
 import org.bukkit.Location;
@@ -15,6 +16,8 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,6 +27,9 @@ import java.util.stream.StreamSupport;
 
 @NullMarked
 public class CitizensCharacterController implements CharacterController {
+    private final EnumSet<CharacterCapability> capabilities = EnumSet.of(
+            CharacterCapability.NON_PLAYER_ENTITIES
+    );
     private final ServicePlugin plugin;
 
     public CitizensCharacterController(ServicePlugin plugin) {
@@ -123,5 +129,20 @@ public class CitizensCharacterController implements CharacterController {
     private static Stream<NPC> streamNPCs() {
         return StreamSupport.stream(CitizensAPI.getNPCRegistries().spliterator(), false)
                 .flatMap(iterable -> StreamSupport.stream(iterable.spliterator(), false));
+    }
+
+    @Override
+    public @Unmodifiable EnumSet<CharacterCapability> getCapabilities() {
+        return EnumSet.copyOf(this.capabilities);
+    }
+
+    @Override
+    public boolean hasCapabilities(Collection<CharacterCapability> capabilities) {
+        return this.capabilities.containsAll(capabilities);
+    }
+
+    @Override
+    public boolean hasCapability(CharacterCapability capability) {
+        return this.capabilities.contains(capability);
     }
 }

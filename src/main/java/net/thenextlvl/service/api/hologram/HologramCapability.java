@@ -1,7 +1,7 @@
 package net.thenextlvl.service.api.hologram;
 
 import net.kyori.adventure.key.Key;
-import net.kyori.adventure.key.Keyed;
+import net.thenextlvl.service.api.capability.Capability;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -20,7 +20,7 @@ import org.jspecify.annotations.NullMarked;
  * identifier for the capability.
  */
 @NullMarked
-public enum Capability implements Keyed {
+public enum HologramCapability implements Capability {
     /**
      * Represents the capability of using block-oriented lines within a hologram.
      * This capability determines whether holograms can include lines that
@@ -78,7 +78,7 @@ public enum Capability implements Keyed {
 
     private final Key key;
 
-    Capability(Key key) {
+    HologramCapability(Key key) {
         this.key = key;
     }
 

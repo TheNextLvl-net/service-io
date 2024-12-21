@@ -1,6 +1,8 @@
 package net.thenextlvl.service.api.hologram;
 
 import net.kyori.adventure.text.Component;
+import net.thenextlvl.service.api.capability.CapabilityException;
+import net.thenextlvl.service.api.capability.CapabilityProvider;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
@@ -24,7 +26,7 @@ import java.util.Optional;
  * exceptions if unsupported capabilities are used.
  */
 @NullMarked
-public interface HologramController {
+public interface HologramController extends CapabilityProvider<HologramCapability> {
     /**
      * Creates a new hologram with the specified name, location, and lines.
      * This method may throw a {@link CapabilityException} if the required capabilities
@@ -42,7 +44,7 @@ public interface HologramController {
     /**
      * Creates a new hologram line with block data as its content.
      * This method may throw a {@code CapabilityException} if the capability
-     * {@link Capability#BLOCK_LINES} is not available.
+     * {@link HologramCapability#BLOCK_LINES} is not available.
      *
      * @param block the {@code BlockData} to be used as the content of the hologram line
      * @return the created {@link HologramLine} instance containing the specified block data
@@ -53,7 +55,7 @@ public interface HologramController {
     /**
      * Creates a new hologram line with text content.
      * This method may throw a {@code CapabilityException} if the capability
-     * {@link Capability#TEXT_LINES} is not available.
+     * {@link HologramCapability#TEXT_LINES} is not available.
      *
      * @param text the {@code Component} to be displayed as the content of the hologram line
      * @return the created {@link HologramLine} instance containing the specified text content
@@ -64,7 +66,7 @@ public interface HologramController {
     /**
      * Creates a new hologram line with an entity as its content.
      * This method may throw a {@code CapabilityException} if the capability
-     * {@link Capability#ENTITY_LINES} is not available.
+     * {@link HologramCapability#ENTITY_LINES} is not available.
      *
      * @param entity the {@code EntityType} to be displayed as the content of the hologram line
      * @return the created {@code HologramLine} instance containing the specified entity type
@@ -75,7 +77,7 @@ public interface HologramController {
     /**
      * Creates a new hologram line with an item as its content.
      * This method may throw a {@code CapabilityException} if the capability
-     * {@link Capability#ITEM_LINES} is not available.
+     * {@link HologramCapability#ITEM_LINES} is not available.
      *
      * @param itemStack the {@code ItemStack} to be displayed as the content of the hologram line
      * @return the created {@link HologramLine} instance containing the specified itemStack
@@ -118,13 +120,9 @@ public interface HologramController {
      */
     Optional<Hologram> getHologram(String name);
 
-    /**
-     * Retrieves an unmodifiable set of all available capabilities supported by the hologram provider.
-     *
-     * @return an unmodifiable {@link EnumSet} containing the supported {@link Capability} values
-     */
+    @Override
     @Unmodifiable
-    EnumSet<Capability> getCapabilities();
+    EnumSet<HologramCapability> getCapabilities();
 
     /**
      * Retrieves the name of the hologram provider.
@@ -132,20 +130,4 @@ public interface HologramController {
      * @return the name of the hologram provider.
      */
     String getName();
-
-    /**
-     * Checks whether all the specified capabilities are supported by the hologram provider.
-     *
-     * @param capabilities the collection of {@link Capability} instances to verify for support
-     * @return {@code true} if all the specified capabilities are supported; {@code false} otherwise
-     */
-    boolean hasCapabilities(Collection<Capability> capabilities);
-
-    /**
-     * Checks whether the specified capability is supported.
-     *
-     * @param capability the {@link Capability} to verify for support
-     * @return {@code true} if the given capability is supported; {@code false} otherwise
-     */
-    boolean hasCapability(Capability capability);
 }
