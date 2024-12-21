@@ -7,6 +7,7 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public enum CharacterCapability implements Capability {
     NON_PLAYER_ENTITIES(Key.key("capability", "non_player_entities")),
+    SERVER_ENTITIES(Key.key("capability", "server_entities")),
     ;
     private final Key key;
 
