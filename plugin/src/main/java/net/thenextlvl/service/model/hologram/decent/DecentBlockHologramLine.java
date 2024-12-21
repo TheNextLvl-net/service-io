@@ -8,6 +8,9 @@ import org.bukkit.block.Skull;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
+import java.util.Objects;
 
 @NullMarked
 public class DecentBlockHologramLine extends DecentHologramLine<BlockData> {
@@ -40,5 +43,18 @@ public class DecentBlockHologramLine extends DecentHologramLine<BlockData> {
         var type = small ? "#SMALLHEAD:" : "#HEAD:";
         var item = ItemStack.of(content.getMaterial());
         line.setContent(type + HologramItem.fromItemStack(item));
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        DecentBlockHologramLine that = (DecentBlockHologramLine) o;
+        return small == that.small;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), small);
     }
 }

@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.joml.Vector3f;
 import org.jspecify.annotations.NullMarked;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @NullMarked
@@ -124,5 +125,17 @@ abstract class FancyHologramLine<D extends DisplayHologramData, T> implements Ho
     @Override
     public float getYaw() {
         return getLocation().getYaw();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        FancyHologramLine<?, ?> that = (FancyHologramLine<?, ?>) o;
+        return Objects.equals(data, that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(data);
     }
 }

@@ -218,4 +218,16 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     public void setTablistEntryHidden(boolean hidden) {
         npc.data().setPersistent(NPC.Metadata.REMOVE_FROM_TABLIST, hidden);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        CitizensCharacter<?> that = (CitizensCharacter<?>) o;
+        return Objects.equals(npc, that.npc);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(npc);
+    }
 }

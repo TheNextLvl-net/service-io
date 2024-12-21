@@ -7,7 +7,9 @@ import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @NullMarked
@@ -101,5 +103,17 @@ abstract class DecentHologramLine<T> implements HologramLine<T> {
     @Override
     public float getYaw() {
         return getLocation().getYaw();
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        DecentHologramLine<?> that = (DecentHologramLine<?>) o;
+        return Objects.equals(line, that.line);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(line);
     }
 }
