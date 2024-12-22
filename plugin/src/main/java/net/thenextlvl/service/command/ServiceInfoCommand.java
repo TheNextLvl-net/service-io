@@ -12,6 +12,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.thenextlvl.service.ServicePlugin;
+import net.thenextlvl.service.api.character.CharacterController;
 import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.bank.BankController;
@@ -34,6 +35,7 @@ public class ServiceInfoCommand {
     LiteralArgumentBuilder<CommandSourceStack> create() {
         return Commands.literal("info")
                 .then(Commands.literal("banks").executes(this::infoBanks))
+                .then(Commands.literal("characters").executes(this::infoCharacters))
                 .then(Commands.literal("chat").executes(this::infoChat))
                 .then(Commands.literal("economy").executes(this::infoEconomy))
                 .then(Commands.literal("groups").executes(this::infoGroups))
@@ -48,9 +50,11 @@ public class ServiceInfoCommand {
                 Placeholder.parsed("version", plugin.getPluginMeta().getVersion()));
 
         infoBanks(context);
+        infoCharacters(context);
         infoChat(context);
         infoEconomy(context);
         infoGroups(context);
+        infoHolograms(context);
         infoPermissions(context);
 
         return Command.SINGLE_SUCCESS;
@@ -63,6 +67,16 @@ public class ServiceInfoCommand {
         if (sendServiceInfo(sender, "Bank", bank != null ? bank.getName() : null, banks))
             return Command.SINGLE_SUCCESS;
         plugin.bundle().sendMessage(sender, "service.bank.none");
+        return 0;
+    }
+
+    private int infoCharacters(CommandContext<CommandSourceStack> context) {
+        var sender = context.getSource().getSender();
+        var character = plugin.getServer().getServicesManager().load(CharacterController.class);
+        var characters = getRegistrations(CharacterController.class, character, CharacterController::getName);
+        if (sendServiceInfo(sender, "Character", character != null ? character.getName() : null, characters))
+            return Command.SINGLE_SUCCESS;
+        plugin.bundle().sendMessage(sender, "service.character.none");
         return 0;
     }
 
