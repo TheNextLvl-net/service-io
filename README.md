@@ -36,28 +36,28 @@ seamlessly than ever before, ensuring smooth operation and flexibility without t
 
 ### Convert
 
-| Command                                        | Description                                                                              |
-|------------------------------------------------|------------------------------------------------------------------------------------------|
-| /service convert banks <source> <target>       | Convert all banks and bank accounts                                                      |
-| /service convert character <source> <target>   | Convert all npcs                                                                         |
-| /service convert chat <source> <target>        | Convert all chat data (prefixes, suffixes, display names...)                             |
-| /service convert economy <source> <target>     | Convert all economy data (accounts and balances)                                         |
-| /service convert groups <source> <target>      | Convert all group data (groups, prefixes, suffixes, display names, permissions, members) |
-| /service convert hologram <source> <target>    | Convert all holograms                                                                    |
-| /service convert permissions <source> <target> | Convert all permission data (users, permissions)                                         |
+| Command                                          | Description                                                                              |
+|--------------------------------------------------|------------------------------------------------------------------------------------------|
+| `/service convert banks <source> <target>`       | Convert all banks and bank accounts                                                      |
+| `/service convert character <source> <target>`   | Convert all npcs                                                                         |
+| `/service convert chat <source> <target>`        | Convert all chat data (prefixes, suffixes, display names...)                             |
+| `/service convert economy <source> <target>`     | Convert all economy data (accounts and balances)                                         |
+| `/service convert groups <source> <target>`      | Convert all group data (groups, prefixes, suffixes, display names, permissions, members) |
+| `/service convert holograms <source> <target>`   | Convert all holograms                                                                    |
+| `/service convert permissions <source> <target>` | Convert all permission data (users, permissions)                                         |
 
 ### Info
 
-| Command                   | Description                                        |
-|---------------------------|----------------------------------------------------|
-| /service info             | See all plugins that add any kind of functionality |
-| /service info banks       | See what bank provider plugins are installed       |
-| /service info characters  | See what npc provider plugins are installed        |
-| /service info chat        | See what chat provider plugins are installed       |
-| /service info economy     | See what economy provider plugins are installed    |
-| /service info groups      | See what group provider plugins are installed      |
-| /service info holograms   | See what hologram provider plugins are installed   |
-| /service info permissions | See what permission provider plugins are installed |
+| Command                     | Description                                        |
+|-----------------------------|----------------------------------------------------|
+| `/service info`             | See all plugins that add any kind of functionality |
+| `/service info banks`       | See what bank provider plugins are installed       |
+| `/service info characters`  | See what npc provider plugins are installed        |
+| `/service info chat`        | See what chat provider plugins are installed       |
+| `/service info economy`     | See what economy provider plugins are installed    |
+| `/service info groups`      | See what group provider plugins are installed      |
+| `/service info holograms`   | See what hologram provider plugins are installed   |
+| `/service info permissions` | See what permission provider plugins are installed |
 
 ## Permissions
 
