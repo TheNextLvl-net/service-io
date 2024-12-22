@@ -13,7 +13,7 @@ Metrics can be found [here](https://bstats.org/plugin/bukkit/TheNextLvl%20Servic
 
 [Download the plugin on Hangar](https://hangar.papermc.io/TheNextLvl/ServiceIO)
 
-## Why You should use ServiceIO?
+## Why should You use ServiceIO?
 
 ServiceIO is a cutting-edge alternative to Vault, designed to overcome the limitations of the outdated VaultAPI. While
 Vault still serves a purpose, it relies on deprecated and unsupported code, forcing developers to work with null-unsafe
@@ -75,7 +75,7 @@ To include the API in your Gradle project using Kotlin DSL, follow these steps:
 1. **Add the repository:** Include the `maven` repository in your `repositories` block.
 2. **Add the dependency:** Replace `<version>` with the actual version of the API.
 
-Here's an example configuration:
+Here is an example configuration:
 
 ```kts
 
@@ -93,29 +93,31 @@ To find the latest version:
 1. Visit the [repository link](https://repo.thenextlvl.net/#/releases/net/thenextlvl/services/service-io).
 2. Replace `<version>` in your dependency declaration with the latest version number listed.
 
-For example, if the latest version is **0.1.0**, your dependency would look like this:
+For example, if the latest version is **2.2.0**, your dependency would look like this:
 
 ```kts
 dependencies {
-    compileOnly("net.thenextlvl.services:service-io:0.1.0")
+    compileOnly("net.thenextlvl.services:service-io:2.2.0")
 }
 ```
 
-You can find both sources and javadocs on the repository<br/>
-Also you can download the docs from within your IDE
+You can find both sources and Javadocs on the repository<br/>
+Also, you can download the docs from within your IDE
 
 ### Implementing ServiceIO
 
 ServiceIO _loosely_ follows the Model View Controller (MVC) design pattern<br>
-At the moment there are following controllers:
+At the moment, there are the following controllers:
 
     BankController
+    CharacterController
     ChatController
     EconomyController
     GroupController
+    HologramController
     PermissionController
 
-Controllers are responsible for loading, retrieving, deleting and creating data
+Controllers are responsible for loading, retrieving, deleting, and creating data
 
 Example on how to access controllers:
 
