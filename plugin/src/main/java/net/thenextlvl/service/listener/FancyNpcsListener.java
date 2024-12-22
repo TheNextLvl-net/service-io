@@ -4,6 +4,7 @@ import de.oliver.fancynpcs.api.actions.ActionTrigger;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import net.thenextlvl.service.api.character.CharacterController;
 import net.thenextlvl.service.api.character.event.PlayerInteractCharacterEvent;
+import net.thenextlvl.service.api.character.event.PlayerInteractCharacterEvent.InteractionType;
 import net.thenextlvl.service.model.character.fancy.FancyCharacter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,8 +22,8 @@ public class FancyNpcsListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onNPCInteract(NpcInteractEvent event) {
         var interactionType = event.getInteractionType().equals(ActionTrigger.RIGHT_CLICK)
-                ? PlayerInteractCharacterEvent.InteractionType.RIGHT_CLICK
-                : PlayerInteractCharacterEvent.InteractionType.LEFT_CLICK;
+                ? event.getPlayer().isSneaking() ? InteractionType.SHIFT_RIGHT_CLICK : InteractionType.RIGHT_CLICK
+                : event.getPlayer().isSneaking() ? InteractionType.SHIFT_LEFT_CLICK : InteractionType.LEFT_CLICK;
         var interactEvent = new PlayerInteractCharacterEvent(
                 controller, new FancyCharacter<>(event.getNpc()),
                 event.getPlayer(), interactionType

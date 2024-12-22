@@ -28,7 +28,9 @@ public class CitizensListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onNPCRightClick(NPCRightClickEvent event) {
-        onNPCClick(event, InteractionType.RIGHT_CLICK);
+        onNPCClick(event, event.getClicker().isSneaking()
+                ? InteractionType.SHIFT_RIGHT_CLICK
+                : InteractionType.RIGHT_CLICK);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -46,7 +48,9 @@ public class CitizensListener implements Listener {
         if (!(event.getDamager() instanceof Player player)) return;
         var clickEvent = new NPCLeftClickEvent(event.getNPC(), player);
         clickEvent.setCancelled(event.isCancelled());
-        onNPCClick(clickEvent, InteractionType.LEFT_CLICK);
+        onNPCClick(clickEvent, event.getDamager().isSneaking()
+                ? InteractionType.SHIFT_LEFT_CLICK
+                : InteractionType.LEFT_CLICK);
         if (clickEvent.isCancelled()) event.setCancelled(true);
     }
 
