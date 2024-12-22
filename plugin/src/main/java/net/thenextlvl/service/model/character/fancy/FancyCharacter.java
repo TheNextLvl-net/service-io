@@ -66,7 +66,7 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     }
 
     @Override
-    public boolean isDamageable() {
+    public boolean isInvulnerable() {
         return false;
     }
 
@@ -79,11 +79,6 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     @Override
     public void setCollidable(boolean collidable) {
         npc().getData().setCollidable(collidable);
-    }
-
-    @Override
-    public void setDamageable(boolean damageable) {
-
     }
 
     @Override
@@ -169,6 +164,10 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     public void setDisplayName(Component displayName) {
         npc().getData().setDisplayName(MiniMessage.miniMessage().serialize(displayName));
         npc().updateForAll();
+    }
+
+    @Override
+    public void setInvulnerable(boolean invulnerable) {
     }
 
     @Override

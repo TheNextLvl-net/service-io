@@ -154,8 +154,8 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public boolean isDamageable() {
-        return !npc.isProtected();
+    public boolean isInvulnerable() {
+        return npc.isProtected();
     }
 
     @Override
@@ -166,11 +166,6 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     @Override
     public void setCollidable(boolean collidable) {
         npc.data().setPersistent(NPC.Metadata.COLLIDABLE, collidable);
-    }
-
-    @Override
-    public void setDamageable(boolean damageable) {
-        npc.setProtected(!damageable);
     }
 
     @Override
@@ -270,6 +265,11 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     @Override
     public void setDisplayName(Component displayName) {
         npc.setName(MiniMessage.miniMessage().serialize(displayName));
+    }
+
+    @Override
+    public void setInvulnerable(boolean invulnerable) {
+        npc.setProtected(invulnerable);
     }
 
     @Override
