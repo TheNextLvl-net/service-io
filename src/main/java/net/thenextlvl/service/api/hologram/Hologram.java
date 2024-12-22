@@ -47,8 +47,8 @@ public interface Hologram extends Persistable, Viewable, Iterable<HologramLine<?
 
     /**
      * Adds a single line to the hologram's content.
-     * This method may only be used if the hologram supports the capability for multiple lines,
-     * as indicated by {@link HologramCapability#MULTILINE}.
+     * <p>
+     * This method requires the hologram to support the {@link HologramCapability#MULTILINE} capability.
      *
      * @param line the {@link HologramLine} to be added; this line represents a component
      *             of the hologram's visual content such as text, items, blocks, or entities
@@ -60,6 +60,7 @@ public interface Hologram extends Persistable, Viewable, Iterable<HologramLine<?
     /**
      * Inserts a hologram line at the specified index of the hologram.
      * The provided index determines the placement of the new line, shifting subsequent lines down by one position.
+     * <p>
      * This method requires the hologram to support the {@link HologramCapability#MULTILINE} capability.
      *
      * @param index the position at which to insert the hologram line; must be within
@@ -74,8 +75,8 @@ public interface Hologram extends Persistable, Viewable, Iterable<HologramLine<?
 
     /**
      * Adds a collection of hologram lines to the hologram's content.
-     * This method requires the hologram to support the capability for multiple lines,
-     * as indicated by {@link HologramCapability#MULTILINE}.
+     * <p>
+     * This method requires the hologram to support the {@link HologramCapability#MULTILINE} capability.
      *
      * @param lines the collection of {@link HologramLine} instances to be added; each line represents
      *              a distinct component of the hologram's visual content such as text, items, blocks,
@@ -87,6 +88,7 @@ public interface Hologram extends Persistable, Viewable, Iterable<HologramLine<?
 
     /**
      * Removes a specified hologram line from the hologram.
+     * <p>
      * This method requires the hologram to support the {@link HologramCapability#MULTILINE} capability.
      *
      * @param line the {@link HologramLine} to be removed; this line represents a component

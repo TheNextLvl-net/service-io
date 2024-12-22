@@ -5,12 +5,10 @@ import net.thenextlvl.service.api.capability.Capability;
 import org.jspecify.annotations.NullMarked;
 
 /**
- * Enum representing the various capabilities a hologram might possess.
+ * An enum representing various capabilities a {@link Hologram} might possess.
  * <p>
- * Each capability indicates a specific feature or limitation in how holograms
- * can display content or interact with the system. These capabilities include
- * support for different line types, multiline features, and whether the hologram
- * is backed by display entities.
+ * Each capability indicates a specific feature or limitation
+ * in how holograms can be represented or interacted with.
  * <p>
  * The enum constant values represent specific capabilities that can be
  * queried or utilized to determine the functionality of particular hologram

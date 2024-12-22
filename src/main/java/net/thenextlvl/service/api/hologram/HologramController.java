@@ -29,6 +29,7 @@ import java.util.Optional;
 public interface HologramController extends CapabilityProvider<HologramCapability> {
     /**
      * Creates a new hologram with the specified name, location, and lines.
+     * <p>
      * This method may throw a {@link CapabilityException} if the required capabilities
      * to create the hologram with the specified lines aren't available.
      *
@@ -43,6 +44,7 @@ public interface HologramController extends CapabilityProvider<HologramCapabilit
 
     /**
      * Creates a new hologram line with block data as its content.
+     * <p>
      * This method may throw a {@code CapabilityException} if the capability
      * {@link HologramCapability#BLOCK_LINES} is not available.
      *
@@ -54,6 +56,7 @@ public interface HologramController extends CapabilityProvider<HologramCapabilit
 
     /**
      * Creates a new hologram line with text content.
+     * <p>
      * This method may throw a {@code CapabilityException} if the capability
      * {@link HologramCapability#TEXT_LINES} is not available.
      *
@@ -65,6 +68,7 @@ public interface HologramController extends CapabilityProvider<HologramCapabilit
 
     /**
      * Creates a new hologram line with an entity as its content.
+     * <p>
      * This method may throw a {@code CapabilityException} if the capability
      * {@link HologramCapability#ENTITY_LINES} is not available.
      *
@@ -76,6 +80,7 @@ public interface HologramController extends CapabilityProvider<HologramCapabilit
 
     /**
      * Creates a new hologram line with an item as its content.
+     * <p>
      * This method may throw a {@code CapabilityException} if the capability
      * {@link HologramCapability#ITEM_LINES} is not available.
      *
