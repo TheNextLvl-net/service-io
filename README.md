@@ -39,9 +39,11 @@ seamlessly than ever before, ensuring smooth operation and flexibility without t
 | Command                                        | Description                                                                              |
 |------------------------------------------------|------------------------------------------------------------------------------------------|
 | /service convert banks <source> <target>       | Convert all banks and bank accounts                                                      |
+| /service convert character <source> <target>   | Convert all npcs                                                                         |
 | /service convert chat <source> <target>        | Convert all chat data (prefixes, suffixes, display names...)                             |
 | /service convert economy <source> <target>     | Convert all economy data (accounts and balances)                                         |
 | /service convert groups <source> <target>      | Convert all group data (groups, prefixes, suffixes, display names, permissions, members) |
+| /service convert hologram <source> <target>    | Convert all holograms                                                                    |
 | /service convert permissions <source> <target> | Convert all permission data (users, permissions)                                         |
 
 ### Info
