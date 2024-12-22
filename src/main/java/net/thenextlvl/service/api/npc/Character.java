@@ -68,6 +68,13 @@ public interface Character<T extends Entity> extends Persistable, Viewable {
     boolean despawn();
 
     /**
+     * Checks if the character is collidable, meaning it can interact physically with other entities.
+     *
+     * @return {@code true} if the character is collidable, otherwise {@code false}
+     */
+    boolean isCollidable();
+
+    /**
      * Checks if the character can take damage.
      *
      * @return {@code true} if the character is damageable, otherwise {@code false}
@@ -104,10 +111,32 @@ public interface Character<T extends Entity> extends Persistable, Viewable {
     boolean spawn(Location location);
 
     /**
+     * Adjusts the character's orientation to face the given entity.
+     *
+     * @param entity the {@code Entity} that the character should face
+     */
+    void lookAt(Entity entity);
+
+    /**
+     * Adjusts the character's orientation to face the specified location.
+     *
+     * @param location the {@code Location} that the character should face
+     */
+    void lookAt(Location location);
+
+    /**
      * Permanently removes the character, rendering it inaccessible and removing all associated data.
      * After invoking this method, the character can't be respawned or interacted with.
      */
     void remove();
+
+    /**
+     * Sets whether the character is collidable, controlling its ability to physically interact
+     * with other entities in the world.
+     *
+     * @param collidable {@code true} to make the character collidable, allowing physical interactions
+     */
+    void setCollidable(boolean collidable);
 
     /**
      * Sets whether the character can take damage.

@@ -29,7 +29,7 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     public CompletableFuture<Boolean> teleportAsync(Location location) {
         return CompletableFuture.supplyAsync(() -> {
             npc().getData().setLocation(location);
-            npc().moveForAll();
+            npc().moveForAll(false);
             return true;
         });
     }
@@ -74,6 +74,11 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     public void remove() {
         npc().removeForAll();
         FancyNpcsPlugin.get().getNpcManager().removeNpc(npc());
+    }
+
+    @Override
+    public void setCollidable(boolean collidable) {
+        npc().getData().setCollidable(collidable);
     }
 
     @Override
@@ -124,14 +129,33 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     @Override
     public boolean spawn(Location location) {
         npc().getData().setLocation(location);
+        npc().getData().setSpawnEntity(true);
         npc().spawnForAll();
         return true;
     }
 
     @Override
+    public void lookAt(Entity entity) {
+        lookAt(entity.getLocation());
+    }
+
+    @Override
+    public void lookAt(Location target) {
+        var location = npc().getData().getLocation().clone();
+        var direction = location.setDirection(target.clone().subtract(location).toVector());
+        teleportAsync(direction);
+    }
+
+    @Override
     public boolean despawn() {
+        npc().getData().setSpawnEntity(false);
         npc().removeForAll();
         return true;
+    }
+
+    @Override
+    public boolean isCollidable() {
+        return npc().getData().isCollidable();
     }
 
     @Override
@@ -144,6 +168,7 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     @Override
     public void setDisplayName(Component displayName) {
         npc().getData().setDisplayName(MiniMessage.miniMessage().serialize(displayName));
+        npc().updateForAll();
     }
 
     @Override

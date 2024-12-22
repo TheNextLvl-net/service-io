@@ -27,6 +27,8 @@ import java.util.stream.StreamSupport;
 @NullMarked
 public class CitizensCharacterController implements CharacterController {
     private final EnumSet<CharacterCapability> capabilities = EnumSet.of(
+            CharacterCapability.EVENTS,
+            CharacterCapability.HEALTH,
             CharacterCapability.NON_PLAYER_ENTITIES,
             CharacterCapability.SERVER_ENTITIES
     );

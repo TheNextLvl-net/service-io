@@ -163,6 +163,11 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
+    public void setCollidable(boolean collidable) {
+        npc.data().setPersistent(NPC.Metadata.COLLIDABLE, collidable);
+    }
+
+    @Override
     public void setDamageable(boolean damageable) {
         npc.setProtected(!damageable);
     }
@@ -235,8 +240,23 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
+    public void lookAt(Entity entity) {
+        lookAt(entity.getLocation());
+    }
+
+    @Override
+    public void lookAt(Location location) {
+        npc.faceLocation(location);
+    }
+
+    @Override
     public boolean despawn() {
         return npc.despawn();
+    }
+
+    @Override
+    public boolean isCollidable() {
+        return npc.data().get(NPC.Metadata.COLLIDABLE, false);
     }
 
     @Override

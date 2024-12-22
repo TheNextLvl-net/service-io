@@ -29,6 +29,8 @@ import net.thenextlvl.service.controller.hologram.FancyHologramController;
 import net.thenextlvl.service.controller.permission.GroupManagerPermissionController;
 import net.thenextlvl.service.controller.permission.LuckPermsPermissionController;
 import net.thenextlvl.service.controller.permission.SuperPermsPermissionController;
+import net.thenextlvl.service.listener.CitizensListener;
+import net.thenextlvl.service.listener.FancyNpcsListener;
 import net.thenextlvl.service.version.PluginVersionChecker;
 import net.thenextlvl.service.wrapper.VaultChatServiceWrapper;
 import net.thenextlvl.service.wrapper.VaultEconomyServiceWrapper;
@@ -152,8 +154,8 @@ public class ServicePlugin extends JavaPlugin {
     }
 
     private void loadNpcServices() {
-        hookNpcService("Citizens", () -> new CitizensCharacterController(this), ServicePriority.Highest);
-        hookNpcService("FancyNpcs", () -> new FancyCharacterController(this), ServicePriority.High);
+        hookNpcService("Citizens", () -> new CitizensCharacterController(this), () -> new CitizensListener(this), ServicePriority.Highest);
+        hookNpcService("FancyNpcs", () -> new FancyCharacterController(this), () -> new FancyNpcsListener(this), ServicePriority.High);
 
         var controller = getServer().getServicesManager().load(CharacterController.class);
         if (controller != null) this.characterController = controller;
@@ -212,11 +214,11 @@ public class ServicePlugin extends JavaPlugin {
         }
     }
 
-    private void hookNpcService(String name, Callable<? extends CharacterController> callable, ServicePriority priority) {
+    private void hookNpcService(String name, Callable<? extends CharacterController> controller, Callable<? extends Listener> listener, ServicePriority priority) {
         try {
             if (getServer().getPluginManager().getPlugin(name) == null) return;
-            var hook = callable.call();
-            getServer().getServicesManager().register(CharacterController.class, hook, this, priority);
+            getServer().getPluginManager().registerEvents(listener.call(), this);
+            getServer().getServicesManager().register(CharacterController.class, controller.call(), this, priority);
             getComponentLogger().debug("Added {} as npc provider ({})", name, priority.name());
         } catch (Exception e) {
             getComponentLogger().error("Failed to register {} as npc provider - " +
@@ -282,7 +284,7 @@ public class ServicePlugin extends JavaPlugin {
         var permission = permissionController().getName();
 
         getComponentLogger().info("Using {} as permission provider", permission);
-        
+
         if (chat != null) getComponentLogger().info("Using {} as chat provider", chat);
         else getComponentLogger().info("Found no chat provider");
 
