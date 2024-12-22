@@ -51,10 +51,12 @@ seamlessly than ever before, ensuring smooth operation and flexibility without t
 | Command                   | Description                                        |
 |---------------------------|----------------------------------------------------|
 | /service info             | See all plugins that add any kind of functionality |
-| /service info bank        | See what bank provider plugins are installed       |
+| /service info banks       | See what bank provider plugins are installed       |
+| /service info characters  | See what npc provider plugins are installed        |
 | /service info chat        | See what chat provider plugins are installed       |
 | /service info economy     | See what economy provider plugins are installed    |
 | /service info groups      | See what group provider plugins are installed      |
+| /service info holograms   | See what hologram provider plugins are installed   |
 | /service info permissions | See what permission provider plugins are installed |
 
 ## Permissions
