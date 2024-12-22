@@ -154,9 +154,10 @@ public class ServicePlugin extends JavaPlugin {
         if (controller != null) this.hologramController = controller;
     }
 
+    @SuppressWarnings("Convert2MethodRef")
     private void loadNpcServices() {
-        hookNpcService("Citizens", () -> new CitizensCharacterController(this), CitizensListener::new, ServicePriority.Highest);
-        hookNpcService("FancyNpcs", () -> new FancyCharacterController(this), FancyNpcsListener::new, ServicePriority.High);
+        hookNpcService("Citizens", () -> new CitizensCharacterController(this), controller -> new CitizensListener(controller), ServicePriority.Highest);
+        hookNpcService("FancyNpcs", () -> new FancyCharacterController(this), controller -> new FancyNpcsListener(controller), ServicePriority.High);
 
         var controller = getServer().getServicesManager().load(CharacterController.class);
         if (controller != null) this.characterController = controller;
