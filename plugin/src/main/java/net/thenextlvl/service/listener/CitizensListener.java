@@ -71,6 +71,5 @@ public class CitizensListener implements Listener {
         );
         characterEvent.setCancelled(event.isCancelled());
         event.setCancelled(!characterEvent.callEvent());
-
     }
 }
