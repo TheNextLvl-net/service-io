@@ -50,6 +50,8 @@ public interface Character<T extends Entity> extends Persistable, Viewable {
 
     /**
      * Retrieves the entity associated with the character.
+     * <p>
+     * This method requires the provider to support the {@link CharacterCapability#ACTUAL_ENTITIES} capability.
      *
      * @return an {@code Optional} containing the associated entity, or an empty {@code Optional}
      * if no entity is associated with the character.
@@ -75,12 +77,13 @@ public interface Character<T extends Entity> extends Persistable, Viewable {
     boolean isCollidable();
 
     /**
-     * Checks if the character can take damage.
+     * Checks if the character is invulnerable.
+     * <p>
      * This method requires the provider to support the {@link CharacterCapability#HEALTH} capability.
      *
-     * @return {@code true} if the character is damageable, otherwise {@code false}
+     * @return {@code true} if the character is invulnerable, otherwise {@code false}
      */
-    boolean isDamageable();
+    boolean isInvulnerable();
 
     /**
      * Checks if the character is currently spawned in the world.
@@ -140,19 +143,20 @@ public interface Character<T extends Entity> extends Persistable, Viewable {
     void setCollidable(boolean collidable);
 
     /**
-     * Sets whether the character can take damage.
-     * This method requires the provider to support the {@link CharacterCapability#HEALTH} capability.
-     *
-     * @param damageable {@code true} if the character should be able to take damage, {@code false} otherwise
-     */
-    void setDamageable(boolean damageable);
-
-    /**
      * Sets the display name for the character.
      *
      * @param displayName the {@code Component} representing the new display name to be set
      */
     void setDisplayName(Component displayName);
+
+    /**
+     * Sets whether the character can take damage.
+     * <p>
+     * This method requires the provider to support the {@link CharacterCapability#HEALTH} capability.
+     *
+     * @param invulnerable {@code true} if the character should be invulnerable, {@code false} otherwise
+     */
+    void setInvulnerable(boolean invulnerable);
 
     /**
      * Sets the visibility state of the character's tablist entry.
