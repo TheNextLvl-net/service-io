@@ -15,7 +15,7 @@ import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.hologram.HologramController;
-import net.thenextlvl.service.api.npc.CharacterController;
+import net.thenextlvl.service.api.character.CharacterController;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.command.ServiceCommand;
 import net.thenextlvl.service.controller.character.CitizensCharacterController;

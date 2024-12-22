@@ -1,4 +1,4 @@
-package net.thenextlvl.service.api.npc;
+package net.thenextlvl.service.api.character;
 
 import net.thenextlvl.service.api.capability.CapabilityException;
 import net.thenextlvl.service.api.capability.CapabilityProvider;

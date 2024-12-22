@@ -1,7 +1,7 @@
-package net.thenextlvl.service.api.npc.event;
+package net.thenextlvl.service.api.character.event;
 
-import net.thenextlvl.service.api.npc.Character;
-import net.thenextlvl.service.api.npc.CharacterController;
+import net.thenextlvl.service.api.character.Character;
+import net.thenextlvl.service.api.character.CharacterController;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jspecify.annotations.NullMarked;

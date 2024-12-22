@@ -4,7 +4,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import core.paper.command.WrappedArgumentType;
 import net.thenextlvl.service.ServicePlugin;
-import net.thenextlvl.service.api.npc.CharacterController;
+import net.thenextlvl.service.api.character.CharacterController;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jspecify.annotations.NullMarked;
 

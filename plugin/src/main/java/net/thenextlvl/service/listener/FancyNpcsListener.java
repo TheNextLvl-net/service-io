@@ -2,8 +2,8 @@ package net.thenextlvl.service.listener;
 
 import de.oliver.fancynpcs.api.actions.ActionTrigger;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
-import net.thenextlvl.service.api.npc.CharacterController;
-import net.thenextlvl.service.api.npc.event.PlayerInteractCharacterEvent;
+import net.thenextlvl.service.api.character.CharacterController;
+import net.thenextlvl.service.api.character.event.PlayerInteractCharacterEvent;
 import net.thenextlvl.service.model.character.fancy.FancyCharacter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

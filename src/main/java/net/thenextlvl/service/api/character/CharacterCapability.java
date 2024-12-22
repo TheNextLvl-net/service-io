@@ -1,4 +1,4 @@
-package net.thenextlvl.service.api.npc;
+package net.thenextlvl.service.api.character;
 
 import net.kyori.adventure.key.Key;
 import net.thenextlvl.service.api.capability.Capability;
