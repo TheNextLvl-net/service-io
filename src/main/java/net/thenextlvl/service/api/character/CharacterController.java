@@ -25,12 +25,13 @@ import java.util.UUID;
 public interface CharacterController extends CapabilityProvider<CharacterCapability> {
     /**
      * Creates a character with the given name and entity type.
+     * <p>
      * This method may throw a {@code CapabilityException} if the capability
      * {@link CharacterCapability#NON_PLAYER_ENTITIES} is not available.
      *
-     * @param <T>      the type of the entity being created as an NPC
-     * @param name     the name to assign to the NPC
-     * @param type     the entity type of the NPC
+     * @param <T>  the type of the entity being created as an NPC
+     * @param name the name to assign to the NPC
+     * @param type the entity type of the NPC
      * @return the {@code Character} instance representing the created NPC
      * @throws CapabilityException if the operation is not supported due to capability limitations
      */
@@ -38,12 +39,13 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
 
     /**
      * Creates a character with the given name and entity type.
+     * <p>
      * This method may throw a {@code CapabilityException} if the capability
      * {@link CharacterCapability#NON_PLAYER_ENTITIES} is not available.
      *
-     * @param <T>      the type of the entity being created as an NPC
-     * @param name     the name to assign to the NPC
-     * @param type     the entity type of the NPC
+     * @param <T>  the type of the entity being created as an NPC
+     * @param name the name to assign to the NPC
+     * @param type the entity type of the NPC
      * @return the {@code Character} instance representing the created NPC
      * @throws CapabilityException if the operation is not supported due to capability limitations
      */
@@ -51,6 +53,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
 
     /**
      * Spawns a character at the specified location with the given name and entity type.
+     * <p>
      * This method may throw a {@code CapabilityException} if the capability
      * {@link CharacterCapability#NON_PLAYER_ENTITIES} is not available.
      *
@@ -65,6 +68,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
 
     /**
      * Spawns a character at the specified location with the given name and entity type.
+     * <p>
      * This method may throw a {@code CapabilityException} if the capability
      * {@link CharacterCapability#NON_PLAYER_ENTITIES} is not available.
      *
@@ -147,6 +151,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
 
     /**
      * Retrieves the character object represented by the specified player.
+     * <p>
      * This method requires the provider to support the {@link CharacterCapability#ACTUAL_ENTITIES} capability.
      *
      * @param player the player object for which to retrieve the character
