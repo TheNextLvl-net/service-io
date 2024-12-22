@@ -22,26 +22,22 @@ public class ChatServiceWrapper implements ChatController {
 
     @Override
     public CompletableFuture<ChatProfile> loadProfile(OfflinePlayer player) {
-        return getProfile(player).map(CompletableFuture::completedFuture)
-                .orElseGet(() -> CompletableFuture.completedFuture(null));
+        return CompletableFuture.supplyAsync(() -> new WrappedChatProfile(null, chat, player));
     }
 
     @Override
     public CompletableFuture<ChatProfile> loadProfile(OfflinePlayer player, World world) {
-        return getProfile(player, world).map(CompletableFuture::completedFuture)
-                .orElseGet(() -> CompletableFuture.completedFuture(null));
+        return CompletableFuture.supplyAsync(() -> new WrappedChatProfile(world, chat, player));
     }
 
     @Override
     public CompletableFuture<ChatProfile> loadProfile(UUID uuid) {
-        return getProfile(uuid).map(CompletableFuture::completedFuture)
-                .orElseGet(() -> CompletableFuture.completedFuture(null));
+        return loadProfile(plugin.getServer().getOfflinePlayer(uuid));
     }
 
     @Override
     public CompletableFuture<ChatProfile> loadProfile(UUID uuid, World world) {
-        return getProfile(uuid, world).map(CompletableFuture::completedFuture)
-                .orElseGet(() -> CompletableFuture.completedFuture(null));
+        return loadProfile(plugin.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override

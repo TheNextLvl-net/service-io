@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.util.TriState;
 import net.milkbowl.vault.permission.Permission;
 import net.thenextlvl.service.api.permission.PermissionHolder;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
@@ -20,16 +20,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class WrappedPermissionHolder implements PermissionHolder {
     private final @Nullable World world;
-    private final Player holder;
+    private final OfflinePlayer holder;
     private final Permission permission;
 
     @Override
     public @Unmodifiable Map<String, Boolean> getPermissions() {
-        return holder.getEffectivePermissions().stream()
+        var player = holder.getPlayer();
+        return player != null ? player.getEffectivePermissions().stream()
                 .collect(Collectors.toUnmodifiableMap(
                         PermissionAttachmentInfo::getPermission,
                         PermissionAttachmentInfo::getValue
-                ));
+                )) : Map.of();
     }
 
     @Override

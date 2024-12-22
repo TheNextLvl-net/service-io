@@ -14,15 +14,23 @@ import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.api.group.GroupController;
+import net.thenextlvl.service.api.hologram.HologramController;
+import net.thenextlvl.service.api.character.CharacterController;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.command.ServiceCommand;
+import net.thenextlvl.service.controller.character.CitizensCharacterController;
+import net.thenextlvl.service.controller.character.FancyCharacterController;
 import net.thenextlvl.service.controller.chat.GroupManagerChatController;
 import net.thenextlvl.service.controller.chat.LuckPermsChatController;
 import net.thenextlvl.service.controller.group.GroupManagerGroupController;
 import net.thenextlvl.service.controller.group.LuckPermsGroupController;
+import net.thenextlvl.service.controller.hologram.DecentHologramController;
+import net.thenextlvl.service.controller.hologram.FancyHologramController;
 import net.thenextlvl.service.controller.permission.GroupManagerPermissionController;
 import net.thenextlvl.service.controller.permission.LuckPermsPermissionController;
 import net.thenextlvl.service.controller.permission.SuperPermsPermissionController;
+import net.thenextlvl.service.listener.CitizensListener;
+import net.thenextlvl.service.listener.FancyNpcsListener;
 import net.thenextlvl.service.version.PluginVersionChecker;
 import net.thenextlvl.service.wrapper.VaultChatServiceWrapper;
 import net.thenextlvl.service.wrapper.VaultEconomyServiceWrapper;
@@ -33,15 +41,18 @@ import net.thenextlvl.service.wrapper.service.EconomyServiceWrapper;
 import net.thenextlvl.service.wrapper.service.PermissionServiceWrapper;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 
@@ -53,7 +64,10 @@ public class ServicePlugin extends JavaPlugin {
     private final Metrics metrics = new Metrics(this, 23083);
 
     private @Nullable ChatController chatController = null;
+    private @Nullable EconomyController economyController = null;
     private @Nullable GroupController groupController = null;
+    private @Nullable HologramController hologramController = null;
+    private @Nullable CharacterController characterController = null;
 
     private @Nullable Permission vaultPermissionWrapper = null;
 
@@ -83,6 +97,9 @@ public class ServicePlugin extends JavaPlugin {
         loadPermissionServices();
         loadGroupServices();
         loadChatServices();
+        loadHologramServices();
+        loadNpcServices();
+        loadEconomyServices();
 
         printServices();
 
@@ -128,6 +145,28 @@ public class ServicePlugin extends JavaPlugin {
         if (controller != null) this.permissionController = controller;
     }
 
+    @SuppressWarnings("Convert2MethodRef")
+    private void loadHologramServices() {
+        hookHologramService("DecentHolograms", () -> new DecentHologramController(), ServicePriority.Highest);
+        hookHologramService("FancyHolograms", () -> new FancyHologramController(), ServicePriority.High);
+
+        var controller = getServer().getServicesManager().load(HologramController.class);
+        if (controller != null) this.hologramController = controller;
+    }
+
+    private void loadNpcServices() {
+        hookNpcService("Citizens", () -> new CitizensCharacterController(this), CitizensListener::new, ServicePriority.Highest);
+        hookNpcService("FancyNpcs", () -> new FancyCharacterController(this), FancyNpcsListener::new, ServicePriority.High);
+
+        var controller = getServer().getServicesManager().load(CharacterController.class);
+        if (controller != null) this.characterController = controller;
+    }
+
+    private void loadEconomyServices() {
+        var controller = getServer().getServicesManager().load(EconomyController.class);
+        if (controller != null) this.economyController = controller;
+    }
+
     private void hookChatService(String name, Callable<? extends ChatController> callable, ServicePriority priority) {
         try {
             if (getServer().getPluginManager().getPlugin(name) == null) return;
@@ -160,6 +199,31 @@ public class ServicePlugin extends JavaPlugin {
             getComponentLogger().debug("Added {} as permission provider ({})", name, priority.name());
         } catch (Exception e) {
             getComponentLogger().error("Failed to register {} as permission provider - " +
+                                       "check to make sure you're using a compatible version!", name, e);
+        }
+    }
+
+    private void hookHologramService(String name, Callable<? extends HologramController> callable, ServicePriority priority) {
+        try {
+            if (getServer().getPluginManager().getPlugin(name) == null) return;
+            var hook = callable.call();
+            getServer().getServicesManager().register(HologramController.class, hook, this, priority);
+            getComponentLogger().debug("Added {} as hologram provider ({})", name, priority.name());
+        } catch (Exception e) {
+            getComponentLogger().error("Failed to register {} as hologram provider - " +
+                                       "check to make sure you're using a compatible version!", name, e);
+        }
+    }
+
+    private void hookNpcService(String name, Callable<? extends CharacterController> controller, Function<CharacterController, Listener> listener, ServicePriority priority) {
+        try {
+            if (getServer().getPluginManager().getPlugin(name) == null) return;
+            var provider = controller.call();
+            getServer().getPluginManager().registerEvents(listener.apply(provider), this);
+            getServer().getServicesManager().register(CharacterController.class, provider, this, priority);
+            getComponentLogger().debug("Added {} as npc provider ({})", name, priority.name());
+        } catch (Exception e) {
+            getComponentLogger().error("Failed to register {} as npc provider - " +
                                        "check to make sure you're using a compatible version!", name, e);
         }
     }
@@ -214,30 +278,29 @@ public class ServicePlugin extends JavaPlugin {
 
     private void printServices() {
         var chat = chatController() != null ? chatController().getName() : null;
+        var economy = economyController() != null ? economyController().getName() : null;
         var group = groupController() != null ? groupController().getName() : null;
+        var hologram = hologramController() != null ? hologramController().getName() : null;
+        var character = characterController() != null ? characterController().getName() : null;
+
         var permission = permissionController().getName();
 
-        if (chat == null && group == null) {
-            getComponentLogger().info("Found no chat and group provider");
-        } else if (chat == null) {
-            getComponentLogger().info("Found no chat provider");
-        } else if (group == null) {
-            getComponentLogger().info("Found no group provider");
-        }
+        getComponentLogger().info("Using {} as permission provider", permission);
 
-        if (Objects.equals(chat, group) && Objects.equals(chat, permission)) {
-            getComponentLogger().info("Using {} as chat, group and permission provider", chat);
-        } else if (chat != null && Objects.equals(chat, group)) {
-            getComponentLogger().info("Using {} as chat and group provider", chat);
-            getComponentLogger().info("Using {} as permission provider", permission);
-        } else if (Objects.equals(chat, permission)) {
-            getComponentLogger().info("Using {} as chat and permission provider", chat);
-            if (group != null) getComponentLogger().info("Using {} as group provider", group);
-        } else {
-            if (chat != null) getComponentLogger().info("Using {} as chat provider", chat);
-            if (group != null) getComponentLogger().info("Using {} as group provider", group);
-            getComponentLogger().info("Using {} as permission provider", permission);
-        }
+        if (chat != null) getComponentLogger().info("Using {} as chat provider", chat);
+        else getComponentLogger().info("Found no chat provider");
+
+        if (economy != null) getComponentLogger().info("Using {} as economy provider", economy);
+        else getComponentLogger().info("Found no economy provider");
+
+        if (group != null) getComponentLogger().info("Using {} as group provider", group);
+        else getComponentLogger().info("Found no group provider");
+
+        if (hologram != null) getComponentLogger().info("Using {} as hologram provider", hologram);
+        else getComponentLogger().info("Found no hologram provider");
+
+        if (character != null) getComponentLogger().info("Using {} as npc provider", character);
+        else getComponentLogger().info("Found no npc provider");
     }
 
     private void addCustomCharts() {
@@ -246,10 +309,18 @@ public class ServicePlugin extends JavaPlugin {
         addCustomChart(ChatController.class, ChatController::getName, "chat_provider");
         addCustomChart(EconomyController.class, EconomyController::getName, "economy_provider");
         addCustomChart(PermissionController.class, PermissionController::getName, "permission_provider");
+        addCustomChart(HologramController.class, HologramController::getName, "hologram_provider");
+        addCustomChart(CharacterController.class, CharacterController::getName, "npc_provider");
     }
 
-    private <T> void addCustomChart(Class<T> service, Function<T, String> function, String name) {
+    private <T> void addCustomChart(Class<T> service, Function<T, String> function, String chartId) {
         var loaded = getServer().getServicesManager().load(service);
-        metrics.addCustomChart(new SimplePie(name, () -> loaded != null ? function.apply(loaded) : "None"));
+        metrics.addCustomChart(new SimplePie(chartId, () -> loaded != null ? function.apply(loaded) : "None"));
+    }
+
+    public EntityType getEntityTypeByClass(Class<? extends Entity> type) {
+        return Arrays.stream(EntityType.values())
+                .filter(entityType -> type.equals(entityType.getEntityClass()))
+                .findAny().orElseThrow();
     }
 }
