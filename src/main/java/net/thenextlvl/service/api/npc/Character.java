@@ -76,6 +76,7 @@ public interface Character<T extends Entity> extends Persistable, Viewable {
 
     /**
      * Checks if the character can take damage.
+     * This method requires the provider to support the {@link CharacterCapability#HEALTH} capability.
      *
      * @return {@code true} if the character is damageable, otherwise {@code false}
      */
@@ -140,6 +141,7 @@ public interface Character<T extends Entity> extends Persistable, Viewable {
 
     /**
      * Sets whether the character can take damage.
+     * This method requires the provider to support the {@link CharacterCapability#HEALTH} capability.
      *
      * @param damageable {@code true} if the character should be able to take damage, {@code false} otherwise
      */

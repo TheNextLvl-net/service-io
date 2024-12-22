@@ -6,11 +6,11 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public enum CharacterCapability implements Capability {
-    EVENTS(Key.key("capability", "events")),
     HEALTH(Key.key("capability", "health")),
+    INTERACTIONS(Key.key("capability", "interactions")),
     NON_PLAYER_ENTITIES(Key.key("capability", "non_player_entities")),
-    SERVER_ENTITIES(Key.key("capability", "server_entities")),
-    ;
+    ACTUAL_ENTITIES(Key.key("capability", "actual_entities"));
+
     private final Key key;
 
     CharacterCapability(Key key) {

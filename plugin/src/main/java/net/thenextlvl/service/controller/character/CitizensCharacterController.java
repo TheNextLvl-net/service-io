@@ -27,10 +27,10 @@ import java.util.stream.StreamSupport;
 @NullMarked
 public class CitizensCharacterController implements CharacterController {
     private final EnumSet<CharacterCapability> capabilities = EnumSet.of(
-            CharacterCapability.EVENTS,
             CharacterCapability.HEALTH,
+            CharacterCapability.INTERACTIONS,
             CharacterCapability.NON_PLAYER_ENTITIES,
-            CharacterCapability.SERVER_ENTITIES
+            CharacterCapability.ACTUAL_ENTITIES
     );
     private final ServicePlugin plugin;
 
@@ -90,8 +90,7 @@ public class CitizensCharacterController implements CharacterController {
 
     @Override
     public Optional<Character<?>> getNPC(String name) {
-        return streamNPCs()
-                .filter(npc -> name.equals(npc.getName()))
+        return streamNPCs().filter(npc -> name.equals(npc.getRawName()))
                 .<Character<?>>map(CitizensCharacter::new)
                 .findAny();
     }

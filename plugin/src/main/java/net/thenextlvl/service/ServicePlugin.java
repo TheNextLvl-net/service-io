@@ -155,8 +155,8 @@ public class ServicePlugin extends JavaPlugin {
     }
 
     private void loadNpcServices() {
-        hookNpcService("Citizens", () -> new CitizensCharacterController(this), () -> new CitizensListener(this), ServicePriority.Highest);
-        hookNpcService("FancyNpcs", () -> new FancyCharacterController(this), () -> new FancyNpcsListener(this), ServicePriority.High);
+        hookNpcService("Citizens", () -> new CitizensCharacterController(this), CitizensListener::new, ServicePriority.Highest);
+        hookNpcService("FancyNpcs", () -> new FancyCharacterController(this), FancyNpcsListener::new, ServicePriority.High);
 
         var controller = getServer().getServicesManager().load(CharacterController.class);
         if (controller != null) this.characterController = controller;
@@ -215,11 +215,12 @@ public class ServicePlugin extends JavaPlugin {
         }
     }
 
-    private void hookNpcService(String name, Callable<? extends CharacterController> controller, Callable<? extends Listener> listener, ServicePriority priority) {
+    private void hookNpcService(String name, Callable<? extends CharacterController> controller, Function<CharacterController, Listener> listener, ServicePriority priority) {
         try {
             if (getServer().getPluginManager().getPlugin(name) == null) return;
-            getServer().getPluginManager().registerEvents(listener.call(), this);
-            getServer().getServicesManager().register(CharacterController.class, controller.call(), this, priority);
+            var provider = controller.call();
+            getServer().getPluginManager().registerEvents(listener.apply(provider), this);
+            getServer().getServicesManager().register(CharacterController.class, provider, this, priority);
             getComponentLogger().debug("Added {} as npc provider ({})", name, priority.name());
         } catch (Exception e) {
             getComponentLogger().error("Failed to register {} as npc provider - " +

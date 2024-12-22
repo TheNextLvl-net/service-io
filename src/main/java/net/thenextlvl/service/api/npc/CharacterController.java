@@ -147,7 +147,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
 
     /**
      * Retrieves the character object represented by the specified player.
-     * This method requires the provider to support the {@link CharacterCapability#SERVER_ENTITIES} capability.
+     * This method requires the provider to support the {@link CharacterCapability#ACTUAL_ENTITIES} capability.
      *
      * @param player the player object for which to retrieve the character
      * @return an {@code Optional} containing the NPC or empty if the player is not an NPC

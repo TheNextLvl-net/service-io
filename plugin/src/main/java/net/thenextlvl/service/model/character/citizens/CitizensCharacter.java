@@ -1,6 +1,7 @@
 package net.thenextlvl.service.model.character.citizens;
 
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
 import net.citizensnpcs.api.trait.trait.PlayerFilter;
@@ -199,10 +200,11 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
 
     @Override
     public CompletableFuture<Boolean> teleportAsync(Location location) {
-        return CompletableFuture.supplyAsync(() -> {
-            npc.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
-            return true;
-        });
+        return getEntity().map(entity -> entity.teleportAsync(location)).orElseGet(() ->
+                CompletableFuture.supplyAsync(() -> {
+                    npc.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+                    return true;
+                }));
     }
 
     @Override
@@ -262,7 +264,7 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     @Override
     public boolean respawn() {
         var location = getLocation();
-        return location != null && npc.despawn() && npc.spawn(location);
+        return location != null && npc.despawn(DespawnReason.PENDING_RESPAWN) && npc.spawn(location);
     }
 
     @Override

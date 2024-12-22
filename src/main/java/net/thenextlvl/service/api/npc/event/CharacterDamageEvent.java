@@ -1,6 +1,7 @@
 package net.thenextlvl.service.api.npc.event;
 
 import net.thenextlvl.service.api.npc.Character;
+import net.thenextlvl.service.api.npc.CharacterController;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.jspecify.annotations.NullMarked;
@@ -11,8 +12,9 @@ public class CharacterDamageEvent extends CharacterEvent implements Cancellable 
     private boolean cancelled;
     private double damage;
 
-    public CharacterDamageEvent(Character<?> character, EntityDamageEvent.DamageCause cause, double damage) {
-        super(character);
+    // requires CharacterCapability#HEALTH
+    public CharacterDamageEvent(CharacterController controller, Character<?> character, EntityDamageEvent.DamageCause cause, double damage) {
+        super(controller, character);
         this.cause = cause;
         this.damage = damage;
     }

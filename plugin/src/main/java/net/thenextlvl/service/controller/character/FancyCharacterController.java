@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @NullMarked
 public class FancyCharacterController implements CharacterController {
     private final EnumSet<CharacterCapability> capabilities = EnumSet.of(
-            CharacterCapability.EVENTS,
+            CharacterCapability.INTERACTIONS,
             CharacterCapability.NON_PLAYER_ENTITIES
     );
     private final ServicePlugin plugin;
