@@ -41,6 +41,7 @@ public class CitizensListener implements Listener {
         );
         damageEvent.setCancelled(event.isCancelled());
         event.setCancelled(!damageEvent.callEvent());
+        event.setDamage(damageEvent.getDamage());
 
         if (!(event.getDamager() instanceof Player player)) return;
         var clickEvent = new NPCLeftClickEvent(event.getNPC(), player);
