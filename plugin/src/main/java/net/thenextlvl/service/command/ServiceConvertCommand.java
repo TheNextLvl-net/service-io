@@ -154,9 +154,9 @@ class ServiceConvertCommand {
         public CompletableFuture<Void> convert(Character<?> character, CharacterController source, CharacterController target) {
             return CompletableFuture.runAsync(() -> target.getNPC(character.getName()).orElseGet(() -> {
                 var npc = target.createNPC(character.getName(), character.getType());
-                npc.setDamageable(character.isDamageable());
                 npc.setDisplayName(character.getDisplayName());
                 npc.setDisplayRange(character.getDisplayRange());
+                npc.setInvulnerable(character.isInvulnerable());
                 npc.setPersistent(character.isPersistent());
                 npc.setTablistEntryHidden(character.isTablistEntryHidden());
                 npc.setVisibleByDefault(character.isVisibleByDefault());
