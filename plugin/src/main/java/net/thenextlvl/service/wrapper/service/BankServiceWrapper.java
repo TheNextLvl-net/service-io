@@ -1,6 +1,5 @@
 package net.thenextlvl.service.wrapper.service;
 
-import lombok.RequiredArgsConstructor;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.thenextlvl.service.ServicePlugin;
@@ -9,6 +8,7 @@ import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.wrapper.service.model.WrappedBank;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -19,10 +19,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @NullMarked
-@RequiredArgsConstructor
 public class BankServiceWrapper implements BankController {
     private final Economy economy;
+    private final Plugin provider;
     private final ServicePlugin plugin;
+
+    public BankServiceWrapper(Economy economy, Plugin provider, ServicePlugin plugin) {
+        this.economy = economy;
+        this.plugin = plugin;
+        this.provider = provider;
+    }
 
     @Override
     public CompletableFuture<Bank> createBank(OfflinePlayer player, String name) throws IllegalStateException {
@@ -111,6 +117,11 @@ public class BankServiceWrapper implements BankController {
     @Override
     public Optional<Bank> getBank(UUID uuid, World world) {
         return Optional.empty();
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return provider;
     }
 
     @Override

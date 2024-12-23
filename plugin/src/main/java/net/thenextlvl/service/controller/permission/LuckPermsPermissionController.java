@@ -1,6 +1,5 @@
 package net.thenextlvl.service.controller.permission;
 
-import lombok.Getter;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.context.ImmutableContextSet;
@@ -9,6 +8,7 @@ import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.api.permission.PermissionHolder;
 import net.thenextlvl.service.model.permission.LuckPermsPermissionHolder;
 import org.bukkit.World;
+import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
@@ -18,7 +18,11 @@ import java.util.concurrent.CompletableFuture;
 @NullMarked
 public class LuckPermsPermissionController implements PermissionController {
     private final LuckPerms luckPerms = LuckPermsProvider.get();
-    private final @Getter String name = "LuckPerms";
+    private final Plugin plugin;
+
+    public LuckPermsPermissionController(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid) {
@@ -46,5 +50,15 @@ public class LuckPermsPermissionController implements PermissionController {
             var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
             return new LuckPermsPermissionHolder(user, context);
         });
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return plugin;
+    }
+
+    @Override
+    public String getName() {
+        return "LuckPerms";
     }
 }

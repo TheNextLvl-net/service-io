@@ -20,6 +20,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -130,6 +131,11 @@ public class FancyHologramController implements HologramController {
     public Optional<Hologram> getHologram(String name) {
         var manager = FancyHologramsPlugin.get().getHologramManager();
         return manager.getHologram(name).map(FancyHologram::new);
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return FancyHologramsPlugin.get().getPlugin();
     }
 
     @Override

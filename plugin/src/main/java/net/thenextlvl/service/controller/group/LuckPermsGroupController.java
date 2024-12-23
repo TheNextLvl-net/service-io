@@ -1,6 +1,5 @@
 package net.thenextlvl.service.controller.group;
 
-import lombok.Getter;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.context.ImmutableContextSet;
@@ -11,6 +10,7 @@ import net.thenextlvl.service.api.group.GroupHolder;
 import net.thenextlvl.service.model.group.LuckPermsGroup;
 import net.thenextlvl.service.model.permission.LuckPermsPermissionHolder;
 import org.bukkit.World;
+import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
@@ -22,7 +22,11 @@ import java.util.stream.Collectors;
 @NullMarked
 public class LuckPermsGroupController implements GroupController {
     private final LuckPerms luckPerms = LuckPermsProvider.get();
-    private final @Getter String name = "LuckPerms Groups";
+    private final Plugin plugin;
+
+    public LuckPermsGroupController(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public CompletableFuture<Group> createGroup(String name) {
@@ -143,5 +147,15 @@ public class LuckPermsGroupController implements GroupController {
         return luckPerms.getGroupManager().getLoadedGroups().stream()
                 .map(group -> new LuckPermsGroup(group, context, world))
                 .collect(Collectors.toUnmodifiableSet());
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return plugin;
+    }
+
+    @Override
+    public String getName() {
+        return "LuckPerms Groups";
     }
 }
