@@ -1,7 +1,5 @@
 package net.thenextlvl.service.wrapper.service.model;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.milkbowl.vault.economy.Economy;
 import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.bank.Bank;
@@ -19,12 +17,18 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @NullMarked
-@RequiredArgsConstructor
 public class WrappedBank implements Bank {
-    private final @Getter String name;
     private final @Nullable World world;
     private final Economy economy;
     private final ServicePlugin plugin;
+    private final String name;
+
+    public WrappedBank(String name, @Nullable World world, Economy economy, ServicePlugin plugin) {
+        this.name = name;
+        this.world = world;
+        this.economy = economy;
+        this.plugin = plugin;
+    }
 
     @Override
     public BigDecimal deposit(Number amount) {
@@ -68,6 +72,11 @@ public class WrappedBank implements Bank {
                 .filter(player -> economy.isBankMember(name, player).transactionSuccess())
                 .map(OfflinePlayer::getUniqueId)
                 .collect(Collectors.toUnmodifiableSet());
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override

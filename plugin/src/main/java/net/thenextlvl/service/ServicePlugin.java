@@ -2,8 +2,6 @@ package net.thenextlvl.service;
 
 import com.google.common.base.Preconditions;
 import core.i18n.file.ComponentBundle;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -57,9 +55,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.function.Function;
 
-@Getter
 @NullMarked
-@Accessors(fluent = true)
 public class ServicePlugin extends JavaPlugin {
     private final PluginVersionChecker versionChecker = new PluginVersionChecker(this);
     private final Metrics metrics = new Metrics(this, 23083);
@@ -82,7 +78,7 @@ public class ServicePlugin extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        versionChecker().checkVersion();
+        versionChecker.checkVersion();
         registerCommands();
     }
 
@@ -105,13 +101,17 @@ public class ServicePlugin extends JavaPlugin {
         addCustomCharts();
     }
 
+    public ComponentBundle bundle() {
+        return bundle;
+    }
+
     private void registerCommands() {
-        new ServiceCommand(this).register();
+        new ServiceCommand().register(this);
     }
 
     @Override
     public void onDisable() {
-        metrics().shutdown();
+        metrics.shutdown();
     }
 
     @SuppressWarnings("Convert2MethodRef")
@@ -154,7 +154,7 @@ public class ServicePlugin extends JavaPlugin {
     }
 
     private <T extends Controller> void hookService(String plugin, Class<T> type, Function<Plugin, ? extends T> controller,
-                                 Function<T, Listener> listener, ServicePriority priority) {
+                                                    Function<T, Listener> listener, ServicePriority priority) {
         var hook = hookService(plugin, type, controller, priority);
         if (hook != null) getServer().getPluginManager().registerEvents(listener.apply(hook), this);
     }
@@ -202,7 +202,7 @@ public class ServicePlugin extends JavaPlugin {
 
     private void loadVaultPermissionWrapper() {
         getServer().getServicesManager().getRegistrations(PermissionController.class).forEach(provider -> {
-            var wrapper = new VaultPermissionServiceWrapper(groupController(), provider.getProvider(), provider.getPlugin());
+            var wrapper = new VaultPermissionServiceWrapper(groupController, provider.getProvider(), provider.getPlugin());
             getServer().getServicesManager().register(Permission.class, wrapper, provider.getPlugin(), provider.getPriority());
         });
         this.vaultPermissionWrapper = getServer().getServicesManager().load(Permission.class);
@@ -216,9 +216,9 @@ public class ServicePlugin extends JavaPlugin {
     }
 
     private void loadVaultChatWrapper() {
-        if (chatController() == null) return;
-        Preconditions.checkNotNull(vaultPermissionWrapper(), "vault permission wrapper cannot be null");
-        var wrapper = new VaultChatServiceWrapper(vaultPermissionWrapper(), groupController(), chatController(), this);
+        if (chatController == null) return;
+        Preconditions.checkNotNull(vaultPermissionWrapper, "vault permission wrapper cannot be null");
+        var wrapper = new VaultChatServiceWrapper(vaultPermissionWrapper, groupController, chatController, this);
         getServer().getServicesManager().register(Chat.class, wrapper, this, ServicePriority.Highest);
     }
 

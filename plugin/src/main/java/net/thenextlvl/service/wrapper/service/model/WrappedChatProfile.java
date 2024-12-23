@@ -1,6 +1,5 @@
 package net.thenextlvl.service.wrapper.service.model;
 
-import lombok.RequiredArgsConstructor;
 import net.milkbowl.vault.chat.Chat;
 import net.thenextlvl.service.api.chat.ChatProfile;
 import org.bukkit.OfflinePlayer;
@@ -15,11 +14,16 @@ import java.util.Set;
 import java.util.function.Function;
 
 @NullMarked
-@RequiredArgsConstructor
 public class WrappedChatProfile implements ChatProfile {
     private final @Nullable World world;
     private final Chat chat;
     private final OfflinePlayer holder;
+
+    public WrappedChatProfile(@Nullable World world, Chat chat, OfflinePlayer holder) {
+        this.world = world;
+        this.chat = chat;
+        this.holder = holder;
+    }
 
     @Override
     public Optional<String> getDisplayName() {

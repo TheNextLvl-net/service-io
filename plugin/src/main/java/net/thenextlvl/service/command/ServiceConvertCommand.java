@@ -6,17 +6,16 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.thenextlvl.service.ServicePlugin;
+import net.thenextlvl.service.api.character.Character;
+import net.thenextlvl.service.api.character.CharacterController;
 import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.economy.Account;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.hologram.HologramController;
-import net.thenextlvl.service.api.character.Character;
-import net.thenextlvl.service.api.character.CharacterController;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.command.argument.BankArgumentType;
 import net.thenextlvl.service.command.argument.CharacterArgumentType;
@@ -35,10 +34,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 @NullMarked
-@RequiredArgsConstructor
 class ServiceConvertCommand {
     private final AtomicBoolean conversionRunning = new AtomicBoolean(false);
     private final ServicePlugin plugin;
+
+    ServiceConvertCommand(ServicePlugin plugin) {
+        this.plugin = plugin;
+    }
 
     LiteralArgumentBuilder<CommandSourceStack> create() {
         return Commands.literal("convert")
@@ -296,7 +298,6 @@ class ServiceConvertCommand {
         CompletableFuture<Void> convert(T source, T target);
     }
 
-    @RequiredArgsConstructor
     private abstract class PlayerConverter<T> implements Converter<T> {
         public abstract CompletableFuture<Void> convert(OfflinePlayer player, T source, T target);
 
