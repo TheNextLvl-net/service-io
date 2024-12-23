@@ -1,6 +1,7 @@
 package net.thenextlvl.service.api.hologram;
 
 import net.kyori.adventure.text.Component;
+import net.thenextlvl.service.api.Controller;
 import net.thenextlvl.service.api.capability.CapabilityException;
 import net.thenextlvl.service.api.capability.CapabilityProvider;
 import org.bukkit.Location;
@@ -26,7 +27,7 @@ import java.util.Optional;
  * exceptions if unsupported capabilities are used.
  */
 @NullMarked
-public interface HologramController extends CapabilityProvider<HologramCapability> {
+public interface HologramController extends CapabilityProvider<HologramCapability>, Controller {
     /**
      * Creates a new hologram with the specified name, location, and lines.
      * <p>
@@ -128,11 +129,4 @@ public interface HologramController extends CapabilityProvider<HologramCapabilit
     @Override
     @Unmodifiable
     EnumSet<HologramCapability> getCapabilities();
-
-    /**
-     * Retrieves the name of the hologram provider.
-     *
-     * @return the name of the hologram provider.
-     */
-    String getName();
 }

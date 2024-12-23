@@ -1,8 +1,8 @@
 package net.thenextlvl.service.api.economy;
 
+import net.thenextlvl.service.api.Controller;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
  * The AccountController interface provides methods to create, retrieve and delete accounts.
  */
 @NullMarked
-public interface EconomyController {
+public interface EconomyController extends Controller {
     /**
      * Formats the specified amount as a string.
      *
@@ -285,12 +285,4 @@ public interface EconomyController {
      * @return the number of fractional digits used for formatting currency amounts
      */
     int fractionalDigits();
-
-    /**
-     * Retrieves the name associated with the economy controller.
-     *
-     * @return the name of the economy controller.
-     */
-    @Contract(pure = true)
-    String getName();
 }

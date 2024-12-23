@@ -1,5 +1,6 @@
 package net.thenextlvl.service.api.group;
 
+import net.thenextlvl.service.api.Controller;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jetbrains.annotations.Contract;
@@ -17,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
  * Operations can be performed asynchronously using CompletableFutures.
  */
 @NullMarked
-public interface GroupController {
+public interface GroupController extends Controller {
     /**
      * Creates a new group with the given name.
      *
@@ -246,12 +247,4 @@ public interface GroupController {
      */
     @Unmodifiable
     Set<Group> getGroups(World world);
-
-    /**
-     * Retrieves the name associated with the permission controller.
-     *
-     * @return the name of the chat controller.
-     */
-    @Contract(pure = true)
-    String getName();
 }

@@ -1,5 +1,6 @@
 package net.thenextlvl.service.api.character;
 
+import net.thenextlvl.service.api.Controller;
 import net.thenextlvl.service.api.capability.CapabilityException;
 import net.thenextlvl.service.api.capability.CapabilityProvider;
 import org.bukkit.Location;
@@ -22,7 +23,7 @@ import java.util.UUID;
  * entities as NPCs, along with capability management.
  */
 @NullMarked
-public interface CharacterController extends CapabilityProvider<CharacterCapability> {
+public interface CharacterController extends CapabilityProvider<CharacterCapability>, Controller {
     /**
      * Creates a character with the given name and entity type.
      * <p>
@@ -162,13 +163,6 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
     @Override
     @Unmodifiable
     EnumSet<CharacterCapability> getCapabilities();
-
-    /**
-     * Retrieves the name associated with the character controller.
-     *
-     * @return the name of the character controller.
-     */
-    String getName();
 
     /**
      * Determines whether a given entity is a non-player character (NPC).
