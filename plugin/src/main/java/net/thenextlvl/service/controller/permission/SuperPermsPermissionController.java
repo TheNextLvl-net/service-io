@@ -1,6 +1,5 @@
 package net.thenextlvl.service.controller.permission;
 
-import lombok.RequiredArgsConstructor;
 import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.api.permission.PermissionHolder;
@@ -17,9 +16,12 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-@RequiredArgsConstructor
 public class SuperPermsPermissionController implements PermissionController {
     private final ServicePlugin plugin;
+
+    public SuperPermsPermissionController(ServicePlugin plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public CompletableFuture<PermissionHolder> loadPermissionHolder(OfflinePlayer player) {

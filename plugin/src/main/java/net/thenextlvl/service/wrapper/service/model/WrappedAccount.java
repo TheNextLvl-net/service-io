@@ -1,6 +1,5 @@
 package net.thenextlvl.service.wrapper.service.model;
 
-import lombok.RequiredArgsConstructor;
 import net.milkbowl.vault.economy.Economy;
 import net.thenextlvl.service.api.economy.Account;
 import org.bukkit.OfflinePlayer;
@@ -13,11 +12,16 @@ import java.util.Optional;
 import java.util.UUID;
 
 @NullMarked
-@RequiredArgsConstructor
 public class WrappedAccount implements Account {
     private final @Nullable World world;
     private final Economy economy;
     private final OfflinePlayer holder;
+
+    public WrappedAccount(@Nullable World world, Economy economy, OfflinePlayer holder) {
+        this.world = world;
+        this.economy = economy;
+        this.holder = holder;
+    }
 
     @Override
     public BigDecimal deposit(Number amount) {

@@ -2,16 +2,12 @@ package net.thenextlvl.service.command;
 
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
-import lombok.RequiredArgsConstructor;
 import net.thenextlvl.service.ServicePlugin;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-@RequiredArgsConstructor
 public class ServiceCommand {
-    private final ServicePlugin plugin;
-
-    public void register() {
+    public void register(ServicePlugin plugin) {
         var command = Commands.literal("service")
                 .requires(stack -> stack.getSender().hasPermission("service.command"))
                 .then(new ServiceInfoCommand(plugin).create())

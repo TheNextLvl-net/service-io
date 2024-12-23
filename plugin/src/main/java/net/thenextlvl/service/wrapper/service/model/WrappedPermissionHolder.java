@@ -1,6 +1,5 @@
 package net.thenextlvl.service.wrapper.service.model;
 
-import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.util.TriState;
 import net.milkbowl.vault.permission.Permission;
 import net.thenextlvl.service.api.permission.PermissionHolder;
@@ -17,11 +16,16 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @NullMarked
-@RequiredArgsConstructor
 public class WrappedPermissionHolder implements PermissionHolder {
     private final @Nullable World world;
     private final OfflinePlayer holder;
     private final Permission permission;
+
+    public WrappedPermissionHolder(@Nullable World world, OfflinePlayer holder, Permission permission) {
+        this.world = world;
+        this.holder = holder;
+        this.permission = permission;
+    }
 
     @Override
     public @Unmodifiable Map<String, Boolean> getPermissions() {

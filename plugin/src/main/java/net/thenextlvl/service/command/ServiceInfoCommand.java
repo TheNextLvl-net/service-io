@@ -5,7 +5,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
@@ -28,9 +27,12 @@ import java.util.List;
 import java.util.function.Function;
 
 @NullMarked
-@RequiredArgsConstructor
-public class ServiceInfoCommand {
+class ServiceInfoCommand {
     private final ServicePlugin plugin;
+
+    ServiceInfoCommand(ServicePlugin plugin) {
+        this.plugin = plugin;
+    }
 
     LiteralArgumentBuilder<CommandSourceStack> create() {
         return Commands.literal("info")
