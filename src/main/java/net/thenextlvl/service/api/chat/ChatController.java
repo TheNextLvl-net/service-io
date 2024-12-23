@@ -1,8 +1,8 @@
 package net.thenextlvl.service.api.chat;
 
+import net.thenextlvl.service.api.Controller;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
  * The ChatController interface provides methods to retrieve a chat profile of a player.
  */
 @NullMarked
-public interface ChatController {
+public interface ChatController extends Controller {
     /**
      * Loads the chat profile for the given OfflinePlayer.
      *
@@ -139,12 +139,4 @@ public interface ChatController {
      * @return an optional containing the chat profile, or empty.
      */
     Optional<ChatProfile> getProfile(UUID uuid, World world);
-
-    /**
-     * Retrieves the name associated with the permission controller.
-     *
-     * @return the name of the chat controller.
-     */
-    @Contract(pure = true)
-    String getName();
 }

@@ -7,6 +7,7 @@ import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.wrapper.service.model.WrappedAccount;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -21,11 +22,13 @@ import java.util.stream.Collectors;
 @NullMarked
 public class EconomyServiceWrapper implements EconomyController {
     private final Economy economy;
+    private final Plugin provider;
     private final ServicePlugin plugin;
 
-    public EconomyServiceWrapper(Economy economy, ServicePlugin plugin) {
+    public EconomyServiceWrapper(Economy economy, Plugin provider, ServicePlugin plugin) {
         this.economy = economy;
         this.plugin = plugin;
+        this.provider = provider;
     }
 
     @Override
@@ -138,6 +141,11 @@ public class EconomyServiceWrapper implements EconomyController {
     @Override
     public int fractionalDigits() {
         return economy.fractionalDigits();
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return provider;
     }
 
     @Override

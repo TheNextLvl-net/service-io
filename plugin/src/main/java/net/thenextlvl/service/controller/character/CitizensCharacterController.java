@@ -12,6 +12,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -117,6 +118,11 @@ public class CitizensCharacterController implements CharacterController {
         return Optional.ofNullable(CitizensAPI.getNPCRegistry().getNPC(player))
                 .filter(npc -> npc.getEntity().getType().equals(EntityType.PLAYER))
                 .map(CitizensCharacter::new);
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return CitizensAPI.getPlugin();
     }
 
     @Override

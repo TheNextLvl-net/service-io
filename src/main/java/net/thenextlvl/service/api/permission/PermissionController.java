@@ -1,8 +1,8 @@
 package net.thenextlvl.service.api.permission;
 
+import net.thenextlvl.service.api.Controller;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
  * @see PermissionHolder
  */
 @NullMarked
-public interface PermissionController {
+public interface PermissionController extends Controller {
     /**
      * Loads the {@code PermissionHolder} for the specified {@code OfflinePlayer} asynchronously.
      *
@@ -156,12 +156,4 @@ public interface PermissionController {
      * @see PermissionHolder
      */
     Optional<PermissionHolder> getPermissionHolder(UUID uuid, World world);
-
-    /**
-     * Retrieves the name associated with the permission controller.
-     *
-     * @return the name of the chat controller.
-     */
-    @Contract(pure = true)
-    String getName();
 }

@@ -1,8 +1,8 @@
 package net.thenextlvl.service.api.economy.bank;
 
+import net.thenextlvl.service.api.Controller;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -12,7 +12,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-public interface BankController {
+public interface BankController extends Controller {
     /**
      * Creates a bank for the specified player with the given name.
      *
@@ -307,12 +307,4 @@ public interface BankController {
      * @return an Optional containing the Bank associated with the UUID and world, or empty if not found
      */
     Optional<Bank> getBank(UUID uuid, World world);
-
-    /**
-     * Retrieves the name associated with the bank controller.
-     *
-     * @return the name of the bank controller.
-     */
-    @Contract(pure = true)
-    String getName();
 }

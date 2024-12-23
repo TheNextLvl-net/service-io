@@ -1,6 +1,7 @@
 package net.thenextlvl.service.controller.hologram;
 
 import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.DecentHologramsAPI;
 import eu.decentsoftware.holograms.api.utils.items.HologramItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -20,6 +21,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -110,6 +112,11 @@ public class DecentHologramController implements HologramController {
     public Optional<Hologram> getHologram(String name) {
         return Optional.ofNullable(DHAPI.getHologram(name))
                 .map(DecentHologram::new);
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return DecentHologramsAPI.get().getPlugin();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package net.thenextlvl.service.controller.group;
 
-import lombok.Getter;
 import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.group.GroupHolder;
@@ -10,6 +9,7 @@ import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 @NullMarked
 public class GroupManagerGroupController implements GroupController {
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
-    private final @Getter String name = "GroupManager Groups";
 
     @Override
     public CompletableFuture<Group> createGroup(String name) {
@@ -160,5 +159,15 @@ public class GroupManagerGroupController implements GroupController {
         var user = name != null ? holder.getUser(uuid.toString(), name) : holder.getUser(uuid.toString());
         if (user == null) return Optional.empty();
         return Optional.of(new GroupManagerPermissionHolder(user, holder));
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return groupManager;
+    }
+
+    @Override
+    public String getName() {
+        return "GroupManager Groups";
     }
 }

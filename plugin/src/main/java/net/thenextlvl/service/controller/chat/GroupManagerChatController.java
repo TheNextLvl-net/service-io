@@ -1,6 +1,5 @@
 package net.thenextlvl.service.controller.chat;
 
-import lombok.Getter;
 import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.chat.ChatProfile;
 import net.thenextlvl.service.model.chat.GroupManagerChatProfile;
@@ -8,6 +7,7 @@ import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -19,7 +19,6 @@ import java.util.concurrent.CompletableFuture;
 @NullMarked
 public class GroupManagerChatController implements ChatController {
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
-    private final @Getter String name = "GroupManager Chat";
 
     @Override
     public CompletableFuture<ChatProfile> loadProfile(OfflinePlayer player) {
@@ -77,5 +76,15 @@ public class GroupManagerChatController implements ChatController {
         if (holder == null) return Optional.empty();
         var user = name != null ? holder.getUser(uuid.toString(), name) : holder.getUser(uuid.toString());
         return user != null ? Optional.of(new GroupManagerChatProfile(user, holder)) : Optional.empty();
+    }
+
+    @Override
+    public Plugin getPlugin() {
+        return groupManager;
+    }
+
+    @Override
+    public String getName() {
+        return "GroupManager Chat";
     }
 }
