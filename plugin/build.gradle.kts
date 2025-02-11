@@ -26,7 +26,7 @@ repositories {
     mavenCentral()
     maven("https://jitpack.io")
     maven("https://maven.citizensnpcs.co/repo")
-    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.fancyplugins.de/releases")
     maven("https://repo.thenextlvl.net/releases")
 }
