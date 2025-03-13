@@ -1,0 +1,30 @@
+name: Incompatible plugin
+description: Report a plugin does not recognice ServiceIO as Vault
+labels:
+  - incompatibility
+assignees:
+  - NonSwag
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to submit an incompatible plugin to ServiceIO!
+        [our Discord server](https://thenextlvl.net/discord).
+
+  - type: input
+    attributes:
+      label: The name of the incompatible plugin
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Link to the plugin (GitHub, GitLab, Website, Discord...)
+      description: A link to the plugin in question
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Anything else?
+      description: You can provide additional context below.
