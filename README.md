@@ -32,6 +32,25 @@ economy but also for banks, permissions, chat, and groups. This eliminates the n
 conversion logic, saving time and effort. For server owners, this means the ability to switch out plugins more
 seamlessly than ever before, ensuring smooth operation and flexibility without the headaches of manual data migration.
 
+## Plugin support
+
+Natively supported plugins:
+
+- LuckPerms
+- GroupManager
+- FancyNpcs
+- FancyHolograms
+- DecentHolograms
+- Citizens
+
+### Incompatible Plugins
+
+You can find a list of all known incompatible plugins [here](https://github.com/TheNextLvl-net/service-io/issues/62).
+
+If you encounter a plugin that doesn't recognize ServiceIO as Vault and is not listed,<br>
+report it by creating a new issue
+[here](https://github.com/TheNextLvl-net/service-io/issues/new?template=incompatible_plugin.yml).
+
 ## Commands
 
 ### Convert
