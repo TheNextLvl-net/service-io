@@ -6,7 +6,7 @@ plugins {
     id("java")
 
     id("io.github.goooler.shadow") version "8.1.8"
-    id("io.papermc.hangar-publish-plugin") version "0.1.2"
+    id("io.papermc.hangar-publish-plugin") version "0.1.3"
     id("net.minecrell.plugin-yml.paper") version "0.6.0"
     id("com.modrinth.minotaur") version "2.+"
 }
