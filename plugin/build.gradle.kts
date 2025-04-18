@@ -37,7 +37,7 @@ dependencies {
     compileOnly("com.github.ElgarL:groupmanager:3.2")
     compileOnly("com.github.decentsoftware-eu:decentholograms:2.8.12")
     compileOnly("de.oliver:FancyHolograms:2.4.1")
-    compileOnly("de.oliver:FancyNpcs:2.4.1")
+    compileOnly("de.oliver:FancyNpcs:2.4.4")
     compileOnly("net.citizensnpcs:citizens-main:2.0.37-SNAPSHOT")
     compileOnly("net.luckperms:api:5.4")
 
