@@ -2,9 +2,7 @@ package net.thenextlvl.service;
 
 import com.google.common.base.Preconditions;
 import core.i18n.file.ComponentBundle;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.key.Key;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -42,7 +40,6 @@ import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
@@ -50,7 +47,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.function.Function;
@@ -67,14 +64,13 @@ public class ServicePlugin extends JavaPlugin {
 
     private PermissionController permissionController = new SuperPermsPermissionController(this);
 
-    private final ComponentBundle bundle = new ComponentBundle(new File(getDataFolder(), "translations"),
-            audience -> audience instanceof Player player ? player.locale() : Locale.US)
-            .register("service-io", Locale.US)
-            .register("service-io_german", Locale.GERMANY)
-            .miniMessage(bundle -> MiniMessage.builder().tags(TagResolver.resolver(
-                    Placeholder.component("prefix", bundle.component(Locale.US, "prefix")),
-                    TagResolver.standard()
-            )).build());
+    private final Key key = Key.key("service_io", "translations");
+    private final Path translations = getDataPath().resolve("translations");
+    private final ComponentBundle bundle = ComponentBundle.builder(key, translations)
+            .placeholder("prefix", "prefix")
+            .resource("service-io.properties", Locale.US)
+            .resource("service-io_german.properties", Locale.GERMANY)
+            .build();
 
     @Override
     public void onLoad() {
