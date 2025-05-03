@@ -20,6 +20,6 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
       - name: Publish with Gradle to Repository
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           arguments: publish
