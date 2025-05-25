@@ -39,7 +39,7 @@ dependencies {
     compileOnly("de.oliver:FancyHolograms:2.5.0")
     compileOnly("de.oliver:FancyNpcs:2.5.0")
     compileOnly("net.citizensnpcs:citizens-main:2.0.37-SNAPSHOT")
-    compileOnly("net.luckperms:api:5.4")
+    compileOnly("net.luckperms:api:5.5")
 
     implementation("com.github.MilkBowl:VaultAPI:1.7.1")
     implementation("net.thenextlvl.core:i18n:3.2.0")
