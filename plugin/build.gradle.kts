@@ -151,4 +151,7 @@ modrinth {
     gameVersions.set(versions)
     loaders.add("paper")
     loaders.add("folia")
+    dependencies {
+        optional.project("luckperms", "decentholograms", "fancynpcs", "fancyholograms")
+    }
 }
