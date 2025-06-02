@@ -145,7 +145,7 @@ hangarPublish { // docs - https://docs.papermc.io/misc/hangar-publishing
 
 modrinth {
     token.set(System.getenv("MODRINTH_TOKEN"))
-    projectId.set("") // todo: create project
+    projectId.set("MNPyHOe7")
     versionType = if (isRelease) "release" else "beta"
     uploadFile.set(tasks.shadowJar)
     gameVersions.set(versions)
