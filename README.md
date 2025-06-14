@@ -11,7 +11,7 @@ better performance, and seamless integration across plugins.
 
 Metrics can be found [here](https://bstats.org/plugin/bukkit/TheNextLvl%20ServiceIO/23083)
 
-[Download the plugin on Hangar](https://hangar.papermc.io/TheNextLvl/ServiceIO)
+[Download now](https://modrinth.com/project/MNPyHOe7#download)
 
 ## Why should You use ServiceIO?
 
