@@ -140,6 +140,12 @@ hangarPublish { // docs - https://docs.papermc.io/misc/hangar-publishing
         platforms.register(Platforms.PAPER) {
             jar.set(tasks.shadowJar.flatMap { it.archiveFile })
             platformVersions.set(versions)
+            dependencies {
+                url("LuckPerms", "https://modrinth.com/project/Vebnzrzj") { required.set(false) }
+                url("DecentHolograms", "https://modrinth.com/project/w02MKsTg") { required.set(false) }
+                hangar("FancyNpcs") { required.set(false) }
+                hangar("FancyHolograms") { required.set(false) }
+            }
         }
     }
 }
