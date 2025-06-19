@@ -1,6 +1,6 @@
 name: Feature request
 description: Suggest an idea for this project
-type: enhancement
+type: feature
 labels:
   - enhancement
 assignees:
