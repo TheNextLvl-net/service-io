@@ -1,4 +1,4 @@
-name: Hangar Publish
+name: Modrinth Publish
 on:
   release:
     types: [ prereleased, released ]
@@ -6,7 +6,7 @@ jobs:
   build:
     env:
       CHANGELOG: ${{ github.event.release.body }}
-      HANGAR_API_TOKEN: ${{ secrets.HANGAR_API_TOKEN }}
+      MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
@@ -18,5 +18,5 @@ jobs:
           java-version: 21
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-      - name: Publish with Gradle to Hangar
-        run: ./gradlew publishAllPublicationsToHangar
+      - name: Publish with Gradle to Modrinth
+        run: ./gradlew modrinth
