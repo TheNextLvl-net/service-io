@@ -1,5 +1,5 @@
 name: Incompatible plugin
-description: Report a plugin does not recognice ServiceIO as Vault
+description: Report a plugin does not recognize ServiceIO as Vault
 type: bug
 labels:
   - incompatibility
