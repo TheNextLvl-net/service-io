@@ -44,7 +44,7 @@ dependencies {
     implementation("com.github.MilkBowl:VaultAPI:1.7.1")
     implementation("net.thenextlvl.core:i18n:3.2.0")
     implementation("net.thenextlvl.core:paper:2.2.1")
-    implementation("org.bstats:bstats-bukkit:3.1.0")
+    implementation("org.bstats:bstats-bukkit:3.1.1-SNAPSHOT")
 
     implementation(rootProject)
 
