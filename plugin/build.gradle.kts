@@ -26,8 +26,9 @@ repositories {
     mavenCentral()
     maven("https://jitpack.io")
     maven("https://maven.citizensnpcs.co/repo")
-    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.alessiodp.com/releases")
     maven("https://repo.fancyplugins.de/releases")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.thenextlvl.net/releases")
 }
 
@@ -38,7 +39,7 @@ dependencies {
     compileOnly("com.github.decentsoftware-eu:decentholograms:2.9.3")
     compileOnly("de.oliver:FancyHolograms:2.6.0")
     compileOnly("de.oliver:FancyNpcs:2.6.0")
-    compileOnly("net.citizensnpcs:citizens-main:2.0.37-SNAPSHOT")
+    compileOnly("net.citizensnpcs:citizens-main:2.0.39-SNAPSHOT")
     compileOnly("net.luckperms:api:5.5")
 
     implementation("com.github.MilkBowl:VaultAPI:1.7.1")
