@@ -25,10 +25,10 @@ tasks.compileJava {
 repositories {
     mavenCentral()
     maven("https://jitpack.io")
-    maven("https://repo.alessiodp.com/releases")
     maven("https://maven.citizensnpcs.co/repo")
-    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.alessiodp.com/releases")
     maven("https://repo.fancyplugins.de/releases")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.thenextlvl.net/releases")
 }
 
