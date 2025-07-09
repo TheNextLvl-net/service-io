@@ -2,6 +2,8 @@ package net.thenextlvl.service;
 
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
+import io.papermc.paper.plugin.bootstrap.PluginProviderContext;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.ArrayList;
@@ -14,10 +16,16 @@ public class ServiceBootstrapper implements PluginBootstrap {
 
     @Override
     public void bootstrap(BootstrapContext context) {
-        if (COMPATIBILITY_MODE) enableCompatibilityMode(context);
     }
 
-    private void enableCompatibilityMode(BootstrapContext context) {
+    @Override
+    public JavaPlugin createPlugin(PluginProviderContext context) {
+        var plugin = PluginBootstrap.super.createPlugin(context);
+        if (COMPATIBILITY_MODE) enableCompatibilityMode(context);
+        return plugin;
+    }
+
+    private void enableCompatibilityMode(PluginProviderContext context) {
         var logger = context.getLogger();
         try {
             var meta = context.getConfiguration();
