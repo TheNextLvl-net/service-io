@@ -3,6 +3,7 @@ package net.thenextlvl.service;
 import com.google.common.base.Preconditions;
 import core.i18n.file.ComponentBundle;
 import net.kyori.adventure.key.Key;
+import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -43,7 +44,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -53,7 +53,7 @@ import java.util.Locale;
 import java.util.function.Function;
 
 @NullMarked
-public class ServicePlugin extends JavaPlugin {
+public class ServicePlugin extends Vault {
     private final PluginVersionChecker versionChecker = new PluginVersionChecker(this);
     private final Metrics metrics = new Metrics(this, 23083);
 
