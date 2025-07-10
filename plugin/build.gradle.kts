@@ -36,7 +36,7 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
 
     compileOnly("com.github.ElgarL:groupmanager:3.2")
-    compileOnly("com.github.decentsoftware-eu:decentholograms:2.9.4")
+    compileOnly("com.github.decentsoftware-eu:decentholograms:2.9.5")
     compileOnly("de.oliver:FancyHolograms:2.6.0")
     compileOnly("de.oliver:FancyNpcs:2.6.0")
     compileOnly("net.citizensnpcs:citizens-main:2.0.39-SNAPSHOT")
