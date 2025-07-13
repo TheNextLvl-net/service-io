@@ -104,7 +104,7 @@ public class ServicePlugin extends Vault {
     }
 
     private void registerPlaceholders() {
-        if (!getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) return;
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") == null) return;
         new ServiceBankPlaceholderExpansion(this).register();
         new ServiceChatPlaceholderExpansion(this).register();
         new ServiceEconomyPlaceholderExpansion(this).register();
