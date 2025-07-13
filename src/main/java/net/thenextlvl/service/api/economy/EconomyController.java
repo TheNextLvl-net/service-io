@@ -26,6 +26,13 @@ public interface EconomyController extends Controller {
     String format(Number amount);
 
     /**
+     * Retrieves the number of fractional digits used for formatting currency amounts.
+     *
+     * @return the number of fractional digits used for formatting currency amounts
+     */
+    int fractionalDigits();
+
+    /**
      * Retrieves the plural form of the currency name based on the provided locale.
      *
      * @param locale the locale for which to retrieve the plural currency name
@@ -278,11 +285,4 @@ public interface EconomyController extends Controller {
      * @return a CompletableFuture that will complete when the account is deleted
      */
     CompletableFuture<Boolean> deleteAccount(UUID uuid, World world);
-
-    /**
-     * Retrieves the number of fractional digits used for formatting currency amounts.
-     *
-     * @return the number of fractional digits used for formatting currency amounts
-     */
-    int fractionalDigits();
 }

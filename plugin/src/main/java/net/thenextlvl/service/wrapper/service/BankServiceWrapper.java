@@ -31,6 +31,16 @@ public class BankServiceWrapper implements BankController {
     }
 
     @Override
+    public String format(Number amount) {
+        return economy.format(amount.doubleValue());
+    }
+
+    @Override
+    public int fractionalDigits() {
+        return economy.fractionalDigits();
+    }
+
+    @Override
     public CompletableFuture<Bank> createBank(OfflinePlayer player, String name) throws IllegalStateException {
         return CompletableFuture.supplyAsync(() -> economy.createBank(name, player))
                 .thenApply(bank -> getBank(name).orElseThrow());

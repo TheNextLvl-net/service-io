@@ -14,6 +14,21 @@ import java.util.concurrent.CompletableFuture;
 @NullMarked
 public interface BankController extends Controller {
     /**
+     * Formats the specified amount as a string.
+     *
+     * @param amount the number amount to be formatted
+     * @return the formatted amount as a string
+     */
+    String format(Number amount);
+
+    /**
+     * Retrieves the number of fractional digits used for formatting currency amounts.
+     *
+     * @return the number of fractional digits used for formatting currency amounts
+     */
+    int fractionalDigits();
+
+    /**
      * Creates a bank for the specified player with the given name.
      *
      * @param player the owner of the bank (must be unique)
