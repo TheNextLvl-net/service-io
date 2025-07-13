@@ -29,11 +29,9 @@ import java.util.stream.Collectors;
 public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram hologram) implements Hologram {
     @Override
     public CompletableFuture<Boolean> teleportAsync(Location location) {
-        return CompletableFuture.supplyAsync(() -> {
-            hologram().getData().setLocation(location);
-            hologram().refreshForViewersInWorld();
-            return true;
-        });
+        hologram().getData().setLocation(location);
+        hologram().refreshForViewersInWorld();
+        return CompletableFuture.completedFuture(true);
     }
 
     @Override

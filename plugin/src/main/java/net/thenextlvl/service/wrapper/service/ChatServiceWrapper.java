@@ -28,12 +28,12 @@ public class ChatServiceWrapper implements ChatController {
 
     @Override
     public CompletableFuture<ChatProfile> loadProfile(OfflinePlayer player) {
-        return CompletableFuture.supplyAsync(() -> new WrappedChatProfile(null, chat, player));
+        return CompletableFuture.completedFuture(new WrappedChatProfile(null, chat, player));
     }
 
     @Override
     public CompletableFuture<ChatProfile> loadProfile(OfflinePlayer player, World world) {
-        return CompletableFuture.supplyAsync(() -> new WrappedChatProfile(world, chat, player));
+        return CompletableFuture.completedFuture(new WrappedChatProfile(world, chat, player));
     }
 
     @Override

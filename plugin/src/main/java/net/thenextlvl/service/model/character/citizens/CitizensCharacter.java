@@ -195,11 +195,10 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
 
     @Override
     public CompletableFuture<Boolean> teleportAsync(Location location) {
-        return getEntity().map(entity -> entity.teleportAsync(location)).orElseGet(() ->
-                CompletableFuture.supplyAsync(() -> {
-                    npc.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
-                    return true;
-                }));
+        return getEntity().map(entity -> entity.teleportAsync(location)).orElseGet(() -> {
+            npc.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
+            return CompletableFuture.completedFuture(true);
+        });
     }
 
     @Override

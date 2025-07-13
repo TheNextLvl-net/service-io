@@ -23,10 +23,8 @@ import java.util.stream.Collectors;
 public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram hologram) implements Hologram {
     @Override
     public CompletableFuture<Boolean> teleportAsync(Location location) {
-        return CompletableFuture.supplyAsync(() -> {
-            DHAPI.moveHologram(hologram(), location);
-            return true;
-        });
+        DHAPI.moveHologram(hologram(), location);
+        return CompletableFuture.completedFuture(true);
     }
 
     @Override

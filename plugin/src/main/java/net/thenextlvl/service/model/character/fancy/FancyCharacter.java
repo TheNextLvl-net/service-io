@@ -27,11 +27,9 @@ import java.util.stream.Collectors;
 public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> {
     @Override
     public CompletableFuture<Boolean> teleportAsync(Location location) {
-        return CompletableFuture.supplyAsync(() -> {
-            npc().getData().setLocation(location);
-            npc().moveForAll(false);
-            return true;
-        });
+        npc().getData().setLocation(location);
+        npc().moveForAll(false);
+        return CompletableFuture.completedFuture(true);
     }
 
     @Override

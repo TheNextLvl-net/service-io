@@ -53,7 +53,7 @@ public class EconomyServiceWrapper implements EconomyController {
 
     @Override
     public CompletableFuture<@Unmodifiable Set<Account>> loadAccounts() {
-        return CompletableFuture.supplyAsync(this::getAccounts);
+        return CompletableFuture.completedFuture(getAccounts());
     }
 
     @Override
@@ -88,13 +88,13 @@ public class EconomyServiceWrapper implements EconomyController {
 
     @Override
     public CompletableFuture<Account> createAccount(OfflinePlayer player) {
-        return CompletableFuture.supplyAsync(() -> economy.createPlayerAccount(player))
+        return CompletableFuture.completedFuture(economy.createPlayerAccount(player))
                 .thenApply(account -> getAccount(player).orElseThrow());
     }
 
     @Override
     public CompletableFuture<Account> createAccount(OfflinePlayer player, World world) {
-        return CompletableFuture.supplyAsync(() -> economy.createPlayerAccount(player, world.getName()))
+        return CompletableFuture.completedFuture(economy.createPlayerAccount(player, world.getName()))
                 .thenApply(account -> getAccount(player, world).orElseThrow());
     }
 
