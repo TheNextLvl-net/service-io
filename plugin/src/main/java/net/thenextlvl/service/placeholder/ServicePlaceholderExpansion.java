@@ -35,6 +35,11 @@ public abstract class ServicePlaceholderExpansion<T> extends PlaceholderExpansio
     }
 
     @Override
+    public boolean canRegister() {
+        return provider != null && super.canRegister();
+    }
+
+    @Override
     public final String getIdentifier() {
         return identifier;
     }
