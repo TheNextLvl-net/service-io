@@ -30,6 +30,7 @@ import net.thenextlvl.service.controller.permission.SuperPermsPermissionControll
 import net.thenextlvl.service.listener.CitizensListener;
 import net.thenextlvl.service.listener.FancyNpcsListener;
 import net.thenextlvl.service.placeholder.chat.ServiceChatPlaceholderExpansion;
+import net.thenextlvl.service.placeholder.economy.ServiceBankPlaceholderExpansion;
 import net.thenextlvl.service.placeholder.economy.ServiceEconomyPlaceholderExpansion;
 import net.thenextlvl.service.placeholder.group.ServiceGroupPlaceholderExpansion;
 import net.thenextlvl.service.version.PluginVersionChecker;
@@ -104,6 +105,7 @@ public class ServicePlugin extends Vault {
 
     private void registerPlaceholders() {
         if (!getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) return;
+        new ServiceBankPlaceholderExpansion(this).register();
         new ServiceChatPlaceholderExpansion(this).register();
         new ServiceEconomyPlaceholderExpansion(this).register();
         new ServiceGroupPlaceholderExpansion(this).register();
