@@ -8,6 +8,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -23,7 +24,10 @@ public abstract class ServicePlaceholderExpansion<T> extends PlaceholderExpansio
         this.plugin = plugin;
         this.identifier = identifier;
         this.provider = plugin.getServer().getServicesManager().load(providerClass);
-        if (provider != null) registerResolvers(provider);
+        if (provider == null) return;
+        registerResolvers(provider);
+        var name = provider.getClass().getSimpleName().toLowerCase(Locale.ROOT);
+        plugin.getComponentLogger().info("Registered placeholder expansion for '{}:{}'", identifier, name);
     }
 
     protected ServicePlaceholderExpansion(ServicePlugin plugin, Class<T> providerClass) {
