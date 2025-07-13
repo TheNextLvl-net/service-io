@@ -27,6 +27,7 @@ repositories {
     maven("https://jitpack.io")
     maven("https://maven.citizensnpcs.co/repo")
     maven("https://repo.alessiodp.com/releases")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.fancyplugins.de/releases")
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.thenextlvl.net/releases")
@@ -39,6 +40,7 @@ dependencies {
     compileOnly("com.github.decentsoftware-eu:decentholograms:2.9.4")
     compileOnly("de.oliver:FancyHolograms:2.6.0")
     compileOnly("de.oliver:FancyNpcs:2.6.0")
+    compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("net.citizensnpcs:citizens-main:2.0.39-SNAPSHOT")
     compileOnly("net.luckperms:api:5.5")
 
@@ -96,6 +98,10 @@ paper {
             required = false
         }
         register("LuckPerms") {
+            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            required = false
+        }
+        register("PlaceholderAPI") {
             load = PaperPluginDescription.RelativeLoadOrder.BEFORE
             required = false
         }

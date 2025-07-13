@@ -29,6 +29,9 @@ import net.thenextlvl.service.controller.permission.LuckPermsPermissionControlle
 import net.thenextlvl.service.controller.permission.SuperPermsPermissionController;
 import net.thenextlvl.service.listener.CitizensListener;
 import net.thenextlvl.service.listener.FancyNpcsListener;
+import net.thenextlvl.service.placeholder.chat.ServiceChatPlaceholderExpansion;
+import net.thenextlvl.service.placeholder.economy.ServiceEconomyPlaceholderExpansion;
+import net.thenextlvl.service.placeholder.group.ServiceGroupPlaceholderExpansion;
 import net.thenextlvl.service.version.PluginVersionChecker;
 import net.thenextlvl.service.wrapper.VaultChatServiceWrapper;
 import net.thenextlvl.service.wrapper.VaultEconomyServiceWrapper;
@@ -94,7 +97,16 @@ public class ServicePlugin extends Vault {
         loadVaultEconomyWrapper();
         loadVaultChatWrapper();
 
+        registerPlaceholders();
+
         addCustomCharts();
+    }
+
+    private void registerPlaceholders() {
+        if (!getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) return;
+        new ServiceChatPlaceholderExpansion(this).register();
+        new ServiceEconomyPlaceholderExpansion(this).register();
+        new ServiceGroupPlaceholderExpansion(this).register();
     }
 
     public ComponentBundle bundle() {
