@@ -30,49 +30,53 @@ public interface BankController extends Controller {
 
     /**
      * Creates a bank for the specified player with the given name.
+     * <p>
+     * Completes with an {@link IllegalStateException} if a similar bank already exists
      *
      * @param player the owner of the bank (must be unique)
      * @param name   the name of the bank (must be unique)
      * @return a CompletableFuture that completes with the created bank
-     * @throws IllegalStateException if a similar bank already exists
      */
-    default CompletableFuture<Bank> createBank(OfflinePlayer player, String name) throws IllegalStateException {
+    default CompletableFuture<Bank> createBank(OfflinePlayer player, String name) {
         return createBank(player.getUniqueId(), name);
     }
 
     /**
      * Creates a bank asynchronously with the specified player, name, and world.
+     * <p>
+     * Completes with an {@link IllegalStateException} if a similar bank already exists
      *
      * @param player the owner of the bank (must be unique)
      * @param name   the name of the bank (must be unique)
      * @param world  the world in which the bank is located
      * @return a CompletableFuture that completes with the created bank
-     * @throws IllegalStateException if a similar bank already exists
      */
-    default CompletableFuture<Bank> createBank(OfflinePlayer player, String name, World world) throws IllegalStateException {
+    default CompletableFuture<Bank> createBank(OfflinePlayer player, String name, World world) {
         return createBank(player.getUniqueId(), name, world);
     }
 
     /**
      * Creates a bank asynchronously with the specified UUID and name.
+     * <p>
+     * Completes with an {@link IllegalStateException} if a similar bank already exists
      *
      * @param uuid the UUID of the bank (must be unique)
      * @param name the name of the bank (must be unique)
      * @return a CompletableFuture that completes with the created bank
-     * @throws IllegalStateException if a similar bank already exists
      */
-    CompletableFuture<Bank> createBank(UUID uuid, String name) throws IllegalStateException;
+    CompletableFuture<Bank> createBank(UUID uuid, String name);
 
     /**
      * Creates a new bank with the provided UUID, name, and world.
+     * <p>
+     * Completes with an {@link IllegalStateException} if a similar bank already exists
      *
      * @param uuid  the UUID of the bank (must be unique)
      * @param name  the name of the bank (must be unique)
      * @param world the world in which the bank exists
      * @return a CompletableFuture that completes with the created bank
-     * @throws IllegalStateException if a similar bank already exists
      */
-    CompletableFuture<Bank> createBank(UUID uuid, String name, World world) throws IllegalStateException;
+    CompletableFuture<Bank> createBank(UUID uuid, String name, World world);
 
     /**
      * Loads a bank asynchronously with the specified player.

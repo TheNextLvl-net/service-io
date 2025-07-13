@@ -41,23 +41,23 @@ public class BankServiceWrapper implements BankController {
     }
 
     @Override
-    public CompletableFuture<Bank> createBank(OfflinePlayer player, String name) throws IllegalStateException {
-        return CompletableFuture.supplyAsync(() -> economy.createBank(name, player))
+    public CompletableFuture<Bank> createBank(OfflinePlayer player, String name) {
+        return CompletableFuture.completedFuture(economy.createBank(name, player))
                 .thenApply(bank -> getBank(name).orElseThrow());
     }
 
     @Override
-    public CompletableFuture<Bank> createBank(OfflinePlayer player, String name, World world) throws IllegalStateException {
+    public CompletableFuture<Bank> createBank(OfflinePlayer player, String name, World world) {
         return createBank(player, name);
     }
 
     @Override
-    public CompletableFuture<Bank> createBank(UUID uuid, String name) throws IllegalStateException {
+    public CompletableFuture<Bank> createBank(UUID uuid, String name) {
         return createBank(plugin.getServer().getOfflinePlayer(uuid), name);
     }
 
     @Override
-    public CompletableFuture<Bank> createBank(UUID uuid, String name, World world) throws IllegalStateException {
+    public CompletableFuture<Bank> createBank(UUID uuid, String name, World world) {
         return createBank(plugin.getServer().getOfflinePlayer(uuid), name, world);
     }
 
@@ -78,12 +78,12 @@ public class BankServiceWrapper implements BankController {
 
     @Override
     public CompletableFuture<@Unmodifiable Set<Bank>> loadBanks() {
-        return CompletableFuture.supplyAsync(this::getBanks);
+        return CompletableFuture.completedFuture(getBanks());
     }
 
     @Override
     public CompletableFuture<@Unmodifiable Set<Bank>> loadBanks(World world) {
-        return CompletableFuture.supplyAsync(() -> getBanks(world));
+        return CompletableFuture.completedFuture(getBanks(world));
     }
 
     @Override
