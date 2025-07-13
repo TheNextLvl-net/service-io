@@ -27,6 +27,7 @@ repositories {
     maven("https://jitpack.io")
     maven("https://maven.citizensnpcs.co/repo")
     maven("https://repo.alessiodp.com/releases")
+    maven("https://repo.codemc.org/repository/maven-public")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.fancyplugins.de/releases")
     maven("https://repo.papermc.io/repository/maven-public/")
@@ -45,6 +46,7 @@ dependencies {
     compileOnly("net.luckperms:api:5.5")
 
     implementation("com.github.MilkBowl:VaultAPI:1.7.1")
+    implementation("net.milkbowl.vault:VaultUnlockedAPI:2.14")
     implementation("net.thenextlvl.core:i18n:3.2.0")
     implementation("net.thenextlvl.core:paper:2.2.1")
     implementation("org.bstats:bstats-bukkit:3.1.1-SNAPSHOT")
@@ -74,7 +76,7 @@ paper {
     load = BukkitPluginDescription.PluginLoadOrder.STARTUP
 
     website = "https://thenextlvl.net"
-    provides = listOf("Vault")
+    provides = listOf("Vault", "VaultUnlocked")
 
     serverDependencies {
         register("Citizens") {
