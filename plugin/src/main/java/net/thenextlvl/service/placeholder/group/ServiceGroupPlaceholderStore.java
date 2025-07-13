@@ -4,14 +4,14 @@ import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.group.GroupHolder;
-import net.thenextlvl.service.placeholder.ServicePlaceholderExpansion;
+import net.thenextlvl.service.placeholder.api.PlaceholderStore;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.stream.Collectors;
 
 @NullMarked
-public class ServiceGroupPlaceholderExpansion extends ServicePlaceholderExpansion<GroupController> {
-    public ServiceGroupPlaceholderExpansion(ServicePlugin plugin) {
+public class ServiceGroupPlaceholderStore extends PlaceholderStore<GroupController> {
+    public ServiceGroupPlaceholderStore(ServicePlugin plugin) {
         super(plugin, GroupController.class);
     }
 

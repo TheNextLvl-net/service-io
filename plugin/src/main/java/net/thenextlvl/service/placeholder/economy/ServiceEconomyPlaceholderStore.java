@@ -3,14 +3,14 @@ package net.thenextlvl.service.placeholder.economy;
 import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.Account;
 import net.thenextlvl.service.api.economy.EconomyController;
-import net.thenextlvl.service.placeholder.ServicePlaceholderExpansion;
+import net.thenextlvl.service.placeholder.api.PlaceholderStore;
 import org.jspecify.annotations.NullMarked;
 
 import java.math.BigDecimal;
 
 @NullMarked
-public class ServiceEconomyPlaceholderExpansion extends ServicePlaceholderExpansion<EconomyController> {
-    public ServiceEconomyPlaceholderExpansion(ServicePlugin plugin) {
+public class ServiceEconomyPlaceholderStore extends PlaceholderStore<EconomyController> {
+    public ServiceEconomyPlaceholderStore(ServicePlugin plugin) {
         super(plugin, EconomyController.class);
     }
 

@@ -3,12 +3,12 @@ package net.thenextlvl.service.placeholder.chat;
 import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.model.Display;
-import net.thenextlvl.service.placeholder.ServicePlaceholderExpansion;
+import net.thenextlvl.service.placeholder.api.PlaceholderStore;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class ServiceChatPlaceholderExpansion extends ServicePlaceholderExpansion<ChatController> {
-    public ServiceChatPlaceholderExpansion(ServicePlugin plugin) {
+public class ServiceChatPlaceholderStore extends PlaceholderStore<ChatController> {
+    public ServiceChatPlaceholderStore(ServicePlugin plugin) {
         super(plugin, ChatController.class);
     }
 
