@@ -1,4 +1,4 @@
-package net.thenextlvl.service.placeholder;
+package net.thenextlvl.service.placeholder.api;
 
 import com.google.common.base.Preconditions;
 import org.bukkit.OfflinePlayer;

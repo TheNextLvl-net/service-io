@@ -29,10 +29,11 @@ import net.thenextlvl.service.controller.permission.LuckPermsPermissionControlle
 import net.thenextlvl.service.controller.permission.SuperPermsPermissionController;
 import net.thenextlvl.service.listener.CitizensListener;
 import net.thenextlvl.service.listener.FancyNpcsListener;
-import net.thenextlvl.service.placeholder.chat.ServiceChatPlaceholderExpansion;
-import net.thenextlvl.service.placeholder.economy.ServiceBankPlaceholderExpansion;
-import net.thenextlvl.service.placeholder.economy.ServiceEconomyPlaceholderExpansion;
-import net.thenextlvl.service.placeholder.group.ServiceGroupPlaceholderExpansion;
+import net.thenextlvl.service.placeholder.api.PlaceholderExpansionBuilder;
+import net.thenextlvl.service.placeholder.chat.ServiceChatPlaceholderStore;
+import net.thenextlvl.service.placeholder.economy.ServiceBankPlaceholderStore;
+import net.thenextlvl.service.placeholder.economy.ServiceEconomyPlaceholderStore;
+import net.thenextlvl.service.placeholder.group.ServiceGroupPlaceholderStore;
 import net.thenextlvl.service.version.PluginVersionChecker;
 import net.thenextlvl.service.wrapper.VaultChatServiceWrapper;
 import net.thenextlvl.service.wrapper.VaultEconomyServiceWrapper;
@@ -52,6 +53,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.function.Function;
@@ -105,10 +107,12 @@ public class ServicePlugin extends Vault {
 
     private void registerPlaceholders() {
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") == null) return;
-        new ServiceBankPlaceholderExpansion(this).register();
-        new ServiceChatPlaceholderExpansion(this).register();
-        new ServiceEconomyPlaceholderExpansion(this).register();
-        new ServiceGroupPlaceholderExpansion(this).register();
+        new PlaceholderExpansionBuilder(this)
+                .registerStore(new ServiceBankPlaceholderStore(this))
+                .registerStore(new ServiceChatPlaceholderStore(this))
+                .registerStore(new ServiceEconomyPlaceholderStore(this))
+                .registerStore(new ServiceGroupPlaceholderStore(this))
+                .register();
     }
 
     public ComponentBundle bundle() {

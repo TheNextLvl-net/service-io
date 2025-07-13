@@ -3,15 +3,15 @@ package net.thenextlvl.service.placeholder.economy;
 import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.bank.BankController;
-import net.thenextlvl.service.placeholder.ServicePlaceholderExpansion;
+import net.thenextlvl.service.placeholder.api.PlaceholderStore;
 import org.jspecify.annotations.NullMarked;
 
 import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class ServiceBankPlaceholderExpansion extends ServicePlaceholderExpansion<BankController> {
-    public ServiceBankPlaceholderExpansion(ServicePlugin plugin) {
+public class ServiceBankPlaceholderStore extends PlaceholderStore<BankController> {
+    public ServiceBankPlaceholderStore(ServicePlugin plugin) {
         super(plugin, BankController.class);
     }
 
