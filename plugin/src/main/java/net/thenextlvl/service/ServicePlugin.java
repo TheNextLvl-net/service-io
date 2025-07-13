@@ -33,6 +33,7 @@ import net.thenextlvl.service.placeholder.api.PlaceholderExpansionBuilder;
 import net.thenextlvl.service.placeholder.chat.ServiceChatPlaceholderStore;
 import net.thenextlvl.service.placeholder.economy.ServiceBankPlaceholderStore;
 import net.thenextlvl.service.placeholder.economy.ServiceEconomyPlaceholderStore;
+import net.thenextlvl.service.placeholder.economy.UnlockedEconomyPlaceholderStore;
 import net.thenextlvl.service.placeholder.group.ServiceGroupPlaceholderStore;
 import net.thenextlvl.service.version.PluginVersionChecker;
 import net.thenextlvl.service.wrapper.VaultChatServiceWrapper;
@@ -112,6 +113,15 @@ public class ServicePlugin extends Vault {
                 .registerStore(new ServiceChatPlaceholderStore(this))
                 .registerStore(new ServiceEconomyPlaceholderStore(this))
                 .registerStore(new ServiceGroupPlaceholderStore(this))
+                .register();
+        
+        var authors = new ArrayList<>(getPluginMeta().getAuthors());
+        authors.add("creatorfromhell");
+        
+        new PlaceholderExpansionBuilder(this, "vaultunlocked")
+                .setAuthors(authors)
+                .setVersion("2.13.1")
+                .registerStore(new UnlockedEconomyPlaceholderStore(this))
                 .register();
     }
 
