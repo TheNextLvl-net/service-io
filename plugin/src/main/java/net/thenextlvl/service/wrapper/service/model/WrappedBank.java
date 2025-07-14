@@ -2,6 +2,7 @@ package net.thenextlvl.service.wrapper.service.model;
 
 import net.milkbowl.vault.economy.Economy;
 import net.thenextlvl.service.ServicePlugin;
+import net.thenextlvl.service.api.economy.currency.Currency;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import org.bukkit.OfflinePlayer;
@@ -34,17 +35,17 @@ public class WrappedBank implements Bank {
     }
 
     @Override
-    public BigDecimal deposit(Number amount) {
+    public BigDecimal deposit(Number amount, Currency currency) {
         return new BigDecimal(economy.bankDeposit(name, amount.doubleValue()).balance);
     }
 
     @Override
-    public BigDecimal getBalance() {
+    public BigDecimal getBalance(Currency currency) {
         return new BigDecimal(economy.bankBalance(name).balance);
     }
 
     @Override
-    public BigDecimal withdraw(Number amount) {
+    public BigDecimal withdraw(Number amount, Currency currency) {
         return new BigDecimal(economy.bankWithdraw(name, amount.doubleValue()).balance);
     }
 
@@ -63,10 +64,11 @@ public class WrappedBank implements Bank {
     }
 
     @Override
-    public void setBalance(Number balance) {
-        var difference = balance.doubleValue() - getBalance().doubleValue();
-        if (difference > 0) deposit(difference);
-        else if (difference < 0) withdraw(-difference);
+    public void setBalance(Number balance, Currency currency) {
+        var difference = balance.doubleValue() - getBalance(currency).doubleValue();
+        if (difference > 0) deposit(difference, currency);
+        else if (difference < 0) withdraw(-difference, currency);
+    }
 
     @Override
     public BankController getController() {
