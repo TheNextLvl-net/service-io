@@ -3,6 +3,7 @@ package net.thenextlvl.service.wrapper.service.model;
 import net.milkbowl.vault.economy.Economy;
 import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.bank.Bank;
+import net.thenextlvl.service.api.economy.bank.BankController;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jetbrains.annotations.Unmodifiable;
@@ -18,12 +19,14 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public class WrappedBank implements Bank {
+    private final BankController controller;
     private final @Nullable World world;
     private final Economy economy;
     private final ServicePlugin plugin;
     private final String name;
 
-    public WrappedBank(String name, @Nullable World world, Economy economy, ServicePlugin plugin) {
+    public WrappedBank(BankController controller, String name, @Nullable World world, Economy economy, ServicePlugin plugin) {
+        this.controller = controller;
         this.name = name;
         this.world = world;
         this.economy = economy;
@@ -64,6 +67,10 @@ public class WrappedBank implements Bank {
         var difference = balance.doubleValue() - getBalance().doubleValue();
         if (difference > 0) deposit(difference);
         else if (difference < 0) withdraw(-difference);
+
+    @Override
+    public BankController getController() {
+        return controller;
     }
 
     @Override

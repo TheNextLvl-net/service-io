@@ -13,11 +13,13 @@ import java.util.UUID;
 
 @NullMarked
 public class WrappedAccount implements Account {
+    private final EconomyController controller;
     private final @Nullable World world;
     private final Economy economy;
     private final OfflinePlayer holder;
 
-    public WrappedAccount(@Nullable World world, Economy economy, OfflinePlayer holder) {
+    public WrappedAccount(EconomyController controller, @Nullable World world, Economy economy, OfflinePlayer holder) {
+        this.controller = controller;
         this.world = world;
         this.economy = economy;
         this.holder = holder;
@@ -25,6 +27,11 @@ public class WrappedAccount implements Account {
 
     @Override
     public BigDecimal deposit(Number amount) {
+    public CurrencyHolder getController() {
+        return controller;
+    }
+
+    @Override
         var response = economy.depositPlayer(holder, world != null ? world.getName() : null, amount.doubleValue());
         return new BigDecimal(response.balance);
     }
