@@ -1,5 +1,6 @@
 package net.thenextlvl.service.api.economy;
 
+import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import org.bukkit.World;
 import org.jspecify.annotations.NullMarked;
 
@@ -12,6 +13,13 @@ import java.util.UUID;
  */
 @NullMarked
 public interface Account extends Comparable<Account> {
+    /**
+     * Retrieves the associated {@code CurrencyHolder} for the account.
+     *
+     * @return the {@code CurrencyHolder} capable of managing currencies for the account
+     */
+    CurrencyHolder getController();
+
     /**
      * Deposits the specified amount into the account balance.
      *

@@ -1,6 +1,7 @@
 package net.thenextlvl.service.api.economy.bank;
 
 import net.thenextlvl.service.api.Controller;
+import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jetbrains.annotations.Unmodifiable;
@@ -12,22 +13,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-public interface BankController extends Controller {
-    /**
-     * Formats the specified amount as a string.
-     *
-     * @param amount the number amount to be formatted
-     * @return the formatted amount as a string
-     */
-    String format(Number amount);
-
-    /**
-     * Retrieves the number of fractional digits used for formatting currency amounts.
-     *
-     * @return the number of fractional digits used for formatting currency amounts
-     */
-    int fractionalDigits();
-
+public interface BankController extends Controller, CurrencyHolder {
     /**
      * Creates a bank for the specified player with the given name.
      * <p>
