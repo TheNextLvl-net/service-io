@@ -1,6 +1,7 @@
 package net.thenextlvl.service.wrapper.service.model;
 
 import net.milkbowl.vault.economy.Economy;
+import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -31,17 +32,17 @@ public class WrappedBank implements Bank {
     }
 
     @Override
-    public BigDecimal deposit(Number amount) {
+    public BigDecimal deposit(Number amount, Currency currency) {
         return new BigDecimal(economy.bankDeposit(name, amount.doubleValue()).balance);
     }
 
     @Override
-    public BigDecimal getBalance() {
+    public BigDecimal getBalance(Currency currency) {
         return new BigDecimal(economy.bankBalance(name).balance);
     }
 
     @Override
-    public BigDecimal withdraw(Number amount) {
+    public BigDecimal withdraw(Number amount, Currency currency) {
         return new BigDecimal(economy.bankWithdraw(name, amount.doubleValue()).balance);
     }
 
@@ -60,18 +61,18 @@ public class WrappedBank implements Bank {
     }
 
     @Override
-    public void setBalance(Number balance) {
-        var difference = balance.doubleValue() - getBalance().doubleValue();
-        if (difference > 0) deposit(difference);
-        else if (difference < 0) withdraw(-difference);
+    public void setBalance(Number balance, Currency currency) {
+        var difference = balance.doubleValue() - getBalance(currency).doubleValue();
+        if (difference > 0) deposit(difference, currency);
+        else if (difference < 0) withdraw(-difference, currency);
     }
 
     @Override
     public @Unmodifiable Set<UUID> getMembers() {
         return Arrays.stream(provider.getServer().getOfflinePlayers())
-            .filter(player -> economy.isBankMember(name, player).transactionSuccess())
-            .map(OfflinePlayer::getUniqueId)
-            .collect(Collectors.toUnmodifiableSet());
+                .filter(player -> economy.isBankMember(name, player).transactionSuccess())
+                .map(OfflinePlayer::getUniqueId)
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override

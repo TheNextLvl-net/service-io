@@ -1,5 +1,6 @@
 package net.thenextlvl.service.wrapper;
 
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.thenextlvl.service.api.economy.Account;
@@ -52,22 +53,25 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
 
     @Override
     public int fractionalDigits() {
-        return economyController.fractionalDigits();
+        return economyController.getDefaultCurrency().getFractionalDigits();
     }
 
     @Override
     public String format(double amount) {
-        return economyController.format(amount);
+        var format = economyController.getDefaultCurrency().format(amount, Locale.US);
+        return PlainTextComponentSerializer.plainText().serialize(format);
     }
 
     @Override
     public String currencyNamePlural() {
-        return economyController.getCurrencyNamePlural(Locale.US);
+        var name = economyController.getDefaultCurrency().getDisplayNamePlural(Locale.US);
+        return PlainTextComponentSerializer.plainText().serialize(name);
     }
 
     @Override
     public String currencyNameSingular() {
-        return economyController.getCurrencyNameSingular(Locale.US);
+        var name = economyController.getDefaultCurrency().getDisplayNameSingular(Locale.US);
+        return PlainTextComponentSerializer.plainText().serialize(name);
     }
 
     @Override
@@ -110,7 +114,7 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
     @Override
     public double getBalance(@Nullable OfflinePlayer player, @Nullable String worldName) {
         return getAccount(player, worldName)
-                .map(Account::getBalance)
+                .map(account -> account.getBalance(economyController.getDefaultCurrency()))
                 .map(Number::doubleValue)
                 .orElse(0.0);
     }
@@ -154,8 +158,8 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
     @Override
     public EconomyResponse withdrawPlayer(@Nullable OfflinePlayer player, @Nullable String worldName, double amount) {
         return getAccount(player, worldName).map(account -> {
-            var balance = account.getBalance();
-            var withdraw = account.withdraw(amount);
+            var balance = account.getBalance(economyController.getDefaultCurrency());
+            var withdraw = account.withdraw(amount, economyController.getDefaultCurrency());
             var responseType = amount != 0 && balance.equals(withdraw) ? FAILURE : SUCCESS;
             return new EconomyResponse(amount, withdraw.doubleValue(), responseType, null);
         }).orElseGet(() -> new EconomyResponse(amount, 0, FAILURE, null));
@@ -180,8 +184,8 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
     @Override
     public EconomyResponse depositPlayer(@Nullable OfflinePlayer player, @Nullable String worldName, double amount) {
         return getAccount(player, worldName).map(account -> {
-            var balance = account.getBalance();
-            var deposit = account.deposit(amount);
+            var balance = account.getBalance(economyController.getDefaultCurrency());
+            var deposit = account.deposit(amount, economyController.getDefaultCurrency());
             var responseType = amount != 0 && balance.equals(deposit) ? FAILURE : SUCCESS;
             return new EconomyResponse(amount, deposit.doubleValue(), responseType, null);
         }).orElseGet(() -> new EconomyResponse(amount, 0, FAILURE, null));
@@ -211,7 +215,8 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
     public EconomyResponse bankBalance(String name) {
         try {
             var bank = bankController().tryGetBank(name).join();
-            return new EconomyResponse(0, bank.getBalance().doubleValue(), SUCCESS, null);
+            var balance = bank.getBalance(economyController.getDefaultCurrency());
+            return new EconomyResponse(0, balance.doubleValue(), SUCCESS, null);
         } catch (Exception e) {
             return new EconomyResponse(0, 0, FAILURE, e.getMessage());
         }
@@ -221,7 +226,7 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
     public EconomyResponse bankHas(String name, double amount) {
         try {
             var bank = bankController().tryGetBank(name).join();
-            var balance = bank.getBalance().doubleValue();
+            var balance = bank.getBalance(economyController.getDefaultCurrency()).doubleValue();
             var response = balance >= amount ? SUCCESS : FAILURE;
             return new EconomyResponse(amount, balance, response, null);
         } catch (Exception e) {
@@ -233,7 +238,7 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
     public EconomyResponse bankWithdraw(String name, double amount) {
         try {
             var bank = bankController().tryGetBank(name).join();
-            var balance = bank.withdraw(amount).doubleValue();
+            var balance = bank.withdraw(amount, economyController.getDefaultCurrency()).doubleValue();
             var response = balance >= amount ? SUCCESS : FAILURE;
             return new EconomyResponse(amount, balance, response, null);
         } catch (Exception e) {
@@ -245,7 +250,7 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
     public EconomyResponse bankDeposit(String name, double amount) {
         try {
             var bank = bankController().tryGetBank(name).join();
-            var balance = bank.deposit(amount).doubleValue();
+            var balance = bank.deposit(amount, economyController.getDefaultCurrency()).doubleValue();
             var response = balance >= amount ? SUCCESS : FAILURE;
             return new EconomyResponse(amount, balance, response, null);
         } catch (Exception e) {
@@ -264,7 +269,8 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
         try {
             var bank = bankController().tryGetBank(name).join();
             var response = player != null && bank.getOwner().equals(player.getUniqueId()) ? SUCCESS : FAILURE;
-            return new EconomyResponse(0, bank.getBalance().doubleValue(), response, null);
+            var balance = bank.getBalance(economyController.getDefaultCurrency());
+            return new EconomyResponse(0, balance.doubleValue(), response, null);
         } catch (Exception e) {
             return new EconomyResponse(0, 0, FAILURE, e.getMessage());
         }
@@ -281,7 +287,8 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
         try {
             var bank = bankController().tryGetBank(name).join();
             var response = player != null && bank.isMember(player.getUniqueId()) ? SUCCESS : FAILURE;
-            return new EconomyResponse(0, bank.getBalance().doubleValue(), response, null);
+            var balance = bank.getBalance(economyController.getDefaultCurrency());
+            return new EconomyResponse(0, balance.doubleValue(), response, null);
         } catch (Exception e) {
             return new EconomyResponse(0, 0, FAILURE, e.getMessage());
         }
