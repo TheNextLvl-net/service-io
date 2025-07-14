@@ -66,6 +66,8 @@ final class ServiceConvertCommand extends BrigadierCommand {
                     bank.getWorld().map(world -> target.createBank(bank.getOwner(), bank.getName(), world))
                             .orElseGet(() -> target.createBank(bank.getOwner(), bank.getName()))
                             .thenAccept(targetBank -> {
+                                // todo: convert all currencies
+                                // todo: convert balance with currencies
                                 targetBank.setBalance(bank.getBalance());
                                 bank.getMembers().forEach(targetBank::addMember);
                             })));
