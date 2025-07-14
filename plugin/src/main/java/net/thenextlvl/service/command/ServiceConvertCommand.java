@@ -54,6 +54,12 @@ class ServiceConvertCommand {
                 .then(Commands.literal("permissions").then(permissions()));
     }
 
+    // todo: clean this whole mess up
+    //  create a proper conversion api
+    //  compare source and target and warn about potential data loss
+    //  implement proper error handling
+    //  add progress tracking
+
     private ArgumentBuilder<CommandSourceStack, ?> banks() {
         return Commands.argument("source", new BankArgumentType(plugin, (c, e) -> true))
                 .then(Commands.argument("target", new BankArgumentType(plugin, (context, controller) ->
@@ -138,6 +144,8 @@ class ServiceConvertCommand {
                     bank.getWorld().map(world -> target.createBank(bank.getOwner(), bank.getName(), world))
                             .orElseGet(() -> target.createBank(bank.getOwner(), bank.getName()))
                             .thenAccept(targetBank -> {
+                                // todo: convert all currencies
+                                // todo: convert balance with currencies
                                 targetBank.setBalance(bank.getBalance());
                                 bank.getMembers().forEach(targetBank::addMember);
                             })));
