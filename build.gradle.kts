@@ -17,6 +17,15 @@ tasks.compileJava {
     options.release.set(21)
 }
 
+tasks.test {
+    dependsOn(tasks.javadoc)
+}
+
+tasks.javadoc {
+    val options = options as StandardJavadocDocletOptions
+    options.tags("apiNote:a:API Note:", "implSpec:a:Implementation Requirements:")
+}
+
 repositories {
     mavenCentral()
     maven("https://repo.thenextlvl.net/releases")
