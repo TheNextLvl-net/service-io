@@ -5,6 +5,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.bank.BankController;
+import net.thenextlvl.service.api.economy.currency.Currency;
 import net.thenextlvl.service.wrapper.service.model.WrappedBank;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -23,21 +24,18 @@ public class BankServiceWrapper implements BankController {
     private final Economy economy;
     private final Plugin provider;
     private final ServicePlugin plugin;
+    private final Currency currency;
 
     public BankServiceWrapper(Economy economy, Plugin provider, ServicePlugin plugin) {
+        this.currency = new WrappedCurrency(economy);
         this.economy = economy;
         this.plugin = plugin;
         this.provider = provider;
     }
 
     @Override
-    public String format(Number amount) {
-        return economy.format(amount.doubleValue());
-    }
-
-    @Override
-    public int fractionalDigits() {
-        return economy.fractionalDigits();
+    public Currency getDefaultCurrency() {
+        return currency;
     }
 
     @Override
@@ -105,7 +103,7 @@ public class BankServiceWrapper implements BankController {
     @Override
     public @Unmodifiable Set<Bank> getBanks() {
         return economy.getBanks().stream()
-                .map(bank -> new WrappedBank(bank, null, economy, plugin))
+                .map(bank -> new WrappedBank(this, bank, null, economy, plugin))
                 .collect(Collectors.toUnmodifiableSet());
     }
 
@@ -116,7 +114,7 @@ public class BankServiceWrapper implements BankController {
 
     @Override
     public Optional<Bank> getBank(String name) {
-        return Optional.of(new WrappedBank(name, null, economy, plugin));
+        return Optional.of(new WrappedBank(this, name, null, economy, plugin));
     }
 
     @Override
