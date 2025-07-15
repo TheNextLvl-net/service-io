@@ -182,10 +182,11 @@ public interface EconomyController extends Controller, CurrencyHolder {
 
     /**
      * Creates an account for the specified player.
+     * <p>
+     * Completes with an {@link IllegalStateException} if a similar account already exists
      *
      * @param player the player for whom the account will be created
      * @return a CompletableFuture that will complete with the created account
-     * @throws IllegalStateException if a similar account already exists
      */
     @Contract("_ -> new")
     default CompletableFuture<Account> createAccount(OfflinePlayer player) {
@@ -194,6 +195,8 @@ public interface EconomyController extends Controller, CurrencyHolder {
 
     /**
      * Creates an account for the specified player in the specified world.
+     * <p>
+     * Completes with an {@link IllegalStateException} if a similar account already exists
      *
      * @param player the player for whom the account will be created
      * @param world  the world in which the player's account will be created
@@ -206,6 +209,8 @@ public interface EconomyController extends Controller, CurrencyHolder {
 
     /**
      * Creates an account with the given uuid.
+     * <p>
+     * Completes with an {@link IllegalStateException} if a similar account already exists
      *
      * @param uuid the uuid of the account to be created
      * @return a CompletableFuture that will complete with the created account
@@ -217,6 +222,8 @@ public interface EconomyController extends Controller, CurrencyHolder {
 
     /**
      * Creates an account with the given uuid and world.
+     * <p>
+     * Completes with an {@link IllegalStateException} if a similar account already exists
      *
      * @param uuid  the uuid of the account to be created
      * @param world the world in which the account will be created
@@ -269,49 +276,49 @@ public interface EconomyController extends Controller, CurrencyHolder {
      * Deletes the specified account.
      *
      * @param account the account to be deleted
-     * @return a CompletableFuture that will complete when the account is deleted
+     * @return a {@code CompletableFuture} completing with a boolean indicating whether the account was deleted
      */
     default CompletableFuture<Boolean> deleteAccount(Account account) {
         return deleteAccount(account.getOwner(), account.getWorld().orElse(null));
     }
 
     /**
-     * Deletes the account of the specified player.
+     * Deletes the account of the given player.
      *
      * @param player the player whose account will be deleted
-     * @return a CompletableFuture that will complete when the account is deleted
+     * @return a {@code CompletableFuture} completing with a boolean indicating whether the account was deleted
      */
     default CompletableFuture<Boolean> deleteAccount(OfflinePlayer player) {
         return deleteAccount(player, null);
     }
 
     /**
-     * Deletes the account of the specified player in the specified world.
+     * Deletes the account of the given player in the specified world.
      *
      * @param player the player whose account will be deleted
      * @param world  the world in which the player's account exists
-     * @return a CompletableFuture that will complete when the account is deleted
+     * @return a {@code CompletableFuture} completing with a boolean indicating whether the account was deleted
      */
     default CompletableFuture<Boolean> deleteAccount(OfflinePlayer player, @Nullable World world) {
         return deleteAccount(player.getUniqueId(), world);
     }
 
     /**
-     * Deletes the account with the specified uuid.
+     * Deletes the account of the given owner's UUID.
      *
      * @param uuid the uuid of the account to be deleted
-     * @return a CompletableFuture that will complete when the account is deleted
+     * @return a {@code CompletableFuture} completing with a boolean indicating whether the account was deleted
      */
     default CompletableFuture<Boolean> deleteAccount(UUID uuid) {
         return deleteAccount(uuid, null);
     }
 
     /**
-     * Deletes the account with the specified uuid in the specified world.
+     * Deletes the account of the given owner's uuid in the specified world.
      *
      * @param uuid  the uuid of the account to be deleted
      * @param world the world in which the account exists
-     * @return a CompletableFuture that will complete when the account is deleted
+     * @return a {@code CompletableFuture} completing with a boolean indicating whether the account was deleted
      */
     CompletableFuture<Boolean> deleteAccount(UUID uuid, @Nullable World world);
 

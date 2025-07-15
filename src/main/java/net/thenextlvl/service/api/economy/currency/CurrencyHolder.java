@@ -39,7 +39,8 @@ public interface CurrencyHolder {
     }
 
     /**
-     * Retrieves all currencies managed by the currency holder.
+     * Retrieves all currencies managed by the currency holder,
+     * including the {@link #getDefaultCurrency() default currency}.
      *
      * @return an unmodifiable set of currencies
      * @throws UnsupportedOperationException if {@link #hasMultiCurrencySupport()} is {@code false}
@@ -111,7 +112,7 @@ public interface CurrencyHolder {
     Currency getDefaultCurrency();
 
     /**
-     * Determines whether the economy controller supports multiple currencies.
+     * Determines whether the holder supports multiple currencies.
      *
      * @return {@code true} if multi-currency is supported, otherwise {@code false}
      * @implSpec If multiple currencies are supported, all respective methods have to be implemented.
