@@ -28,7 +28,7 @@ public interface Account extends Comparable<Account> {
      * @return the new balance after the deposit
      * @deprecated use {@link #deposit(Number, Currency)}
      */
-    @Deprecated(forRemoval = true, since = "2.4.0")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     default BigDecimal deposit(Number amount) {
         return deposit(amount, getController().getDefaultCurrency());
     }
@@ -48,7 +48,7 @@ public interface Account extends Comparable<Account> {
      * @return the balance of the account
      * @deprecated use {@link #getBalance(Currency)}
      */
-    @Deprecated(forRemoval = true, since = "2.4.0")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     default BigDecimal getBalance() {
         return getBalance(getController().getDefaultCurrency());
     }
@@ -62,7 +62,7 @@ public interface Account extends Comparable<Account> {
      * @return the new balance after the withdrawal
      * @deprecated use {@link #withdraw(Number, Currency)}
      */
-    @Deprecated(forRemoval = true, since = "2.4.0")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     default BigDecimal withdraw(Number amount) {
         return withdraw(amount, getController().getDefaultCurrency());
     }
@@ -99,7 +99,7 @@ public interface Account extends Comparable<Account> {
      * @deprecated use {@link #compareTo(Account, Currency)}
      */
     @Override
-    @Deprecated(forRemoval = true, since = "2.4.0")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     default int compareTo(Account account) {
         return compareTo(account, getController().getDefaultCurrency());
     }
@@ -122,7 +122,7 @@ public interface Account extends Comparable<Account> {
      * @param balance the new balance of the account
      * @deprecated use {@link #setBalance(Number, Currency)}
      */
-    @Deprecated(forRemoval = true, since = "2.4.0")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     default void setBalance(Number balance) {
         setBalance(balance, getController().getDefaultCurrency());
     }
