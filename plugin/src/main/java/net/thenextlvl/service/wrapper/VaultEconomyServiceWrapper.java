@@ -15,7 +15,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 import static net.milkbowl.vault.economy.EconomyResponse.ResponseType.FAILURE;
 import static net.milkbowl.vault.economy.EconomyResponse.ResponseType.SUCCESS;
@@ -213,49 +212,37 @@ public class VaultEconomyServiceWrapper implements Economy {
 
     @Override
     public EconomyResponse bankBalance(String name) {
-        try {
-            var bank = bankController().tryGetBank(name).get();
+        return bankController().tryGetBank(name).join().map(bank -> {
             var balance = bank.getBalance(economyController.getDefaultCurrency());
             return new EconomyResponse(0, balance.doubleValue(), SUCCESS, null);
-        } catch (InterruptedException | ExecutionException e) {
-            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
-        }
+        }).orElseGet(() -> new EconomyResponse(0, 0, FAILURE, null));
     }
 
     @Override
     public EconomyResponse bankHas(String name, double amount) {
-        try {
-            var bank = bankController().tryGetBank(name).get();
+        return bankController().tryGetBank(name).join().map(bank -> {
             var balance = bank.getBalance(economyController.getDefaultCurrency()).doubleValue();
             var response = balance >= amount ? SUCCESS : FAILURE;
             return new EconomyResponse(amount, balance, response, null);
-        } catch (InterruptedException | ExecutionException e) {
-            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
-        }
+        }).orElseGet(() -> new EconomyResponse(0, 0, FAILURE, null));
     }
 
     @Override
     public EconomyResponse bankWithdraw(String name, double amount) {
-        try {
-            var bank = bankController().tryGetBank(name).get();
+        return bankController().tryGetBank(name).join().map(bank -> {
             var balance = bank.withdraw(amount, economyController.getDefaultCurrency()).doubleValue();
             var response = balance >= amount ? SUCCESS : FAILURE;
             return new EconomyResponse(amount, balance, response, null);
-        } catch (InterruptedException | ExecutionException e) {
-            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
-        }
+        }).orElseGet(() -> new EconomyResponse(0, 0, FAILURE, null));
     }
 
     @Override
     public EconomyResponse bankDeposit(String name, double amount) {
-        try {
-            var bank = bankController().tryGetBank(name).get();
+        return bankController().tryGetBank(name).join().map(bank -> {
             var balance = bank.deposit(amount, economyController.getDefaultCurrency()).doubleValue();
             var response = balance >= amount ? SUCCESS : FAILURE;
             return new EconomyResponse(amount, balance, response, null);
-        } catch (InterruptedException | ExecutionException e) {
-            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
-        }
+        }).orElseGet(() -> new EconomyResponse(0, 0, FAILURE, null));
     }
 
     @Override
@@ -266,14 +253,11 @@ public class VaultEconomyServiceWrapper implements Economy {
 
     @Override
     public EconomyResponse isBankOwner(String name, OfflinePlayer player) {
-        try {
-            var bank = bankController().tryGetBank(name).get();
+        return bankController().tryGetBank(name).join().map(bank -> {
             var response = player != null && bank.getOwner().equals(player.getUniqueId()) ? SUCCESS : FAILURE;
             var balance = bank.getBalance(economyController.getDefaultCurrency());
             return new EconomyResponse(0, balance.doubleValue(), response, null);
-        } catch (InterruptedException | ExecutionException e) {
-            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
-        }
+        }).orElseGet(() -> new EconomyResponse(0, 0, FAILURE, null));
     }
 
     @Override
@@ -284,14 +268,11 @@ public class VaultEconomyServiceWrapper implements Economy {
 
     @Override
     public EconomyResponse isBankMember(String name, OfflinePlayer player) {
-        try {
-            var bank = bankController().tryGetBank(name).get();
+        return bankController().tryGetBank(name).join().map(bank -> {
             var response = player != null && bank.isMember(player.getUniqueId()) ? SUCCESS : FAILURE;
             var balance = bank.getBalance(economyController.getDefaultCurrency());
             return new EconomyResponse(0, balance.doubleValue(), response, null);
-        } catch (InterruptedException | ExecutionException e) {
-            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
-        }
+        }).orElseGet(() -> new EconomyResponse(0, 0, FAILURE, null));
     }
 
     @Override
