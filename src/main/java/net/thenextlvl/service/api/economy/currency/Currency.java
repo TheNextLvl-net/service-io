@@ -29,7 +29,6 @@ public interface Currency {
      * @param audience the audience whose locale is used to determine the singular display name
      * @return the singular display name as a {@code Component} for the audience's locale
      */
-    @ApiStatus.NonExtendable
     default Component getDisplayNameSingular(Audience audience) {
         return getDisplayNameSingular(audience.getOrDefault(Identity.LOCALE, Locale.US));
     }
@@ -51,7 +50,6 @@ public interface Currency {
      * @param audience the audience whose locale is used to determine the plural display name
      * @return the plural display name as a {@code Component} for the audience's locale
      */
-    @ApiStatus.NonExtendable
     default Component getDisplayNamePlural(Audience audience) {
         return getDisplayNamePlural(audience.getOrDefault(Identity.LOCALE, Locale.US));
     }
@@ -79,7 +77,6 @@ public interface Currency {
      * @return the formatted amount as a component
      * @see #format(Number, Locale)
      */
-    @ApiStatus.NonExtendable
     default Component format(Number amount, Audience audience) {
         return format(amount, audience.getOrDefault(Identity.LOCALE, Locale.US));
     }
