@@ -21,6 +21,8 @@ import java.util.UUID;
  * and interacting with non-player characters (NPCs).
  * It includes functionality for creating, spawning, retrieving, and checking
  * entities as NPCs, along with capability management.
+ *
+ * @since 2.2.0
  */
 @NullMarked
 public interface CharacterController extends CapabilityProvider<CharacterCapability>, Controller {

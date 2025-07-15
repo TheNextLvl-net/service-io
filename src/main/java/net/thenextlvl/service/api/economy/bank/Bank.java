@@ -13,6 +13,8 @@ import java.util.UUID;
  * The Bank interface represents a financial entity that can be owned and hold members.
  * It extends the Account interface, providing additional functionality specific
  * to banking, such as depositing or withdrawing money.
+ * 
+ * @since 1.0.0
  */
 @NullMarked
 public interface Bank extends Account {

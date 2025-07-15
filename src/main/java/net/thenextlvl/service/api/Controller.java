@@ -4,6 +4,12 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 
+/**
+ * The `Controller` interface provides methods to retrieve basic information
+ * about the controller, such as the associated plugin and name.
+ *
+ * @since 2.2.1
+ */
 @NullMarked
 public interface Controller {
     /**

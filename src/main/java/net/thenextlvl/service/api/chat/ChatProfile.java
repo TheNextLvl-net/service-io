@@ -8,6 +8,17 @@ import org.jspecify.annotations.NullMarked;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Represents a chat profile that provides information about a user involved in a chat system.
+ * <p>
+ * A ChatProfile contains metadata such as the display name, assigned groups, and primary group.
+ * It also allows querying or setting various information nodes related to the profile.
+ * <p>
+ * This interface extends the {@code InfoNode} and {@code Display} interfaces,
+ * inheriting functionalities related to generic information handling and display attributes.
+ *
+ * @since 1.0.0
+ */
 @NullMarked
 public interface ChatProfile extends InfoNode, Display {
     /**
