@@ -3,6 +3,8 @@ package net.thenextlvl.service.api.hologram;
 /**
  * Enumeration representing the different types of lines that can be part of a hologram.
  * Each line type corresponds to a specific kind of visual content that a hologram can display.
+ *
+ * @since 2.2.0
  */
 public enum LineType {
     /**

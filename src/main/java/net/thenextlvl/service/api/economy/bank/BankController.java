@@ -14,6 +14,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Represents a controller for managing banks tied to players and worlds.
+ *
+ * @since 1.0.0
+ */
 @NullMarked
 public interface BankController extends Controller, CurrencyHolder {
     /**
@@ -328,6 +333,7 @@ public interface BankController extends Controller, CurrencyHolder {
      * @return {@code true} if multi-world banking is supported, otherwise {@code false}
      * @implSpec If multiple worlds are not supported,
      * implementations must ignore world-specific parameters and only handle cases where the world parameter is null.
+     * @since 3.0.0
      */
     @Contract(pure = true)
     boolean hasMultiWorldSupport();

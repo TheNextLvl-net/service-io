@@ -11,6 +11,7 @@ import java.util.Optional;
  * Represents a line within a hologram which can have varying content types and positional attributes.
  *
  * @param <T> the type of content associated with the hologram line
+ * @since 2.2.0
  */
 @NullMarked
 public interface HologramLine<T> extends Positioned {

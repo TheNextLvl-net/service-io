@@ -9,6 +9,8 @@ import java.util.Optional;
 
 /**
  * The Display interface provides methods to manage display names, prefixes, and suffixes associated with an object.
+ *
+ * @since 1.0.0
  */
 @NullMarked
 public interface Display {

@@ -15,6 +15,8 @@ import java.util.concurrent.CompletableFuture;
  * The GroupController interface provides methods for managing groups and group holders.
  * It allows creating, loading, deleting, and retrieving groups and group holders.
  * Operations can be performed asynchronously using CompletableFutures.
+ *
+ * @since 1.0.0
  */
 @NullMarked
 public interface GroupController extends Controller {

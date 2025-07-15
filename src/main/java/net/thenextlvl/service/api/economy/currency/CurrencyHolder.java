@@ -13,6 +13,8 @@ import java.util.function.Consumer;
  * Represents an entity capable of handling currencies in an economy system.
  * This interface provides methods for formatting, retrieving, creating,
  * and deleting currencies, as well as determining support for multiple currencies.
+ *
+ * @since 3.0.0
  */
 public interface CurrencyHolder {
     /**
@@ -20,6 +22,7 @@ public interface CurrencyHolder {
      *
      * @param amount the number amount to be formatted
      * @return the formatted amount as a string
+     * @since 1.0.0
      * @deprecated use {@link Currency#format(Number, Locale)}
      */
     @Deprecated(forRemoval = true, since = "3.0.0")
@@ -31,6 +34,7 @@ public interface CurrencyHolder {
      * Retrieves the number of fractional digits used for formatting currency amounts.
      *
      * @return the number of fractional digits used for formatting currency amounts
+     * @since 1.0.0
      * @deprecated use {@link Currency#getFractionalDigits()}
      */
     @Deprecated(forRemoval = true, since = "3.0.0")
@@ -44,7 +48,6 @@ public interface CurrencyHolder {
      *
      * @return an unmodifiable set of currencies
      * @throws UnsupportedOperationException if {@link #hasMultiCurrencySupport()} is {@code false}
-     * @since 3.0.0
      */
     default @Unmodifiable Set<Currency> getCurrencies() {
         throw new UnsupportedOperationException("Not implemented yet");
@@ -56,7 +59,6 @@ public interface CurrencyHolder {
      * @param name the name of the currency to retrieve
      * @return an {@code Optional} containing the currency, or empty
      * @throws UnsupportedOperationException if {@link #hasMultiCurrencySupport()} is {@code false}
-     * @since 3.0.0
      */
     default Optional<Currency> getCurrency(String name) {
         throw new UnsupportedOperationException("Not implemented yet");
@@ -68,7 +70,6 @@ public interface CurrencyHolder {
      * @param name the name of the currency to check for existence
      * @return {@code true} if the currency exists, otherwise {@code false}
      * @throws UnsupportedOperationException if {@link #hasMultiCurrencySupport()} is {@code false}
-     * @since 3.0.0
      */
     default boolean hasCurrency(String name) {
         throw new UnsupportedOperationException("Not implemented yet");
@@ -83,7 +84,6 @@ public interface CurrencyHolder {
      * @param builder a consumer to configure the {@link Currency.Builder} for currency creation
      * @return an optional containing the created {@link Currency}, or empty
      * @throws UnsupportedOperationException if {@link #hasMultiCurrencySupport()} is {@code false}
-     * @since 3.0.0
      */
     @Contract("_, _ -> new")
     default Optional<Currency> createCurrency(String name, Consumer<Currency.Builder> builder) {
@@ -96,7 +96,6 @@ public interface CurrencyHolder {
      * @param name the name of the currency to delete
      * @return {@code true} if the currency was successfully deleted, otherwise {@code false}
      * @throws UnsupportedOperationException if {@link #hasMultiCurrencySupport()} is {@code false}
-     * @since 3.0.0
      */
     default boolean deleteCurrency(String name) {
         throw new UnsupportedOperationException("Not implemented yet");
@@ -106,7 +105,6 @@ public interface CurrencyHolder {
      * Retrieves the default currency for this economy controller.
      *
      * @return the default currency
-     * @since 3.0.0
      */
     @Contract(pure = true)
     Currency getDefaultCurrency();
@@ -121,7 +119,6 @@ public interface CurrencyHolder {
      * @see #getCurrencies()
      * @see #getCurrency(String)
      * @see #hasCurrency(String)
-     * @since 3.0.0
      */
     @Contract(pure = true)
     default boolean hasMultiCurrencySupport() {

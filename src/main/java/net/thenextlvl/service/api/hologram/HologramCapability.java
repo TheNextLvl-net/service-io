@@ -16,6 +16,8 @@ import org.jspecify.annotations.NullMarked;
  * <p>
  * Each capability is associated with a unique {@link Key} that acts as an
  * identifier for the capability.
+ *
+ * @since 2.2.0
  */
 @NullMarked
 public enum HologramCapability implements Capability {

@@ -13,6 +13,7 @@ import java.util.Set;
  * capabilities and provides mechanisms to check whether the provider supports individual or multiple capabilities.
  *
  * @param <T> the type of {@link Capability} supported by this provider
+ * @since 2.2.0
  */
 @NullMarked
 public interface CapabilityProvider<T extends Capability> {

@@ -11,6 +11,11 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+/**
+ * Represents a currency with support for localization, formatting, and symbolic representation.
+ *
+ * @since 3.0.0
+ */
 @NullMarked
 public interface Currency {
     /**
