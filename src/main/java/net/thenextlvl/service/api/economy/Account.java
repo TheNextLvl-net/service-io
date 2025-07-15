@@ -20,8 +20,8 @@ public interface Account extends Comparable<Account> {
      *
      * @return the {@code CurrencyHolder} capable of managing currencies for the account
      */
-    CurrencyHolder getController();
     @Contract(pure = true)
+    CurrencyHolder getHolder();
 
     /**
      * Deposits the specified amount into the account balance.
@@ -32,7 +32,7 @@ public interface Account extends Comparable<Account> {
      */
     @Deprecated(forRemoval = true, since = "3.0.0")
     default BigDecimal deposit(Number amount) {
-        return deposit(amount, getController().getDefaultCurrency());
+        return deposit(amount, getHolder().getDefaultCurrency());
     }
 
     /**
@@ -52,7 +52,7 @@ public interface Account extends Comparable<Account> {
      */
     @Deprecated(forRemoval = true, since = "3.0.0")
     default BigDecimal getBalance() {
-        return getBalance(getController().getDefaultCurrency());
+        return getBalance(getHolder().getDefaultCurrency());
     }
 
     BigDecimal getBalance(Currency currency);
@@ -66,7 +66,7 @@ public interface Account extends Comparable<Account> {
      */
     @Deprecated(forRemoval = true, since = "3.0.0")
     default BigDecimal withdraw(Number amount) {
-        return withdraw(amount, getController().getDefaultCurrency());
+        return withdraw(amount, getHolder().getDefaultCurrency());
     }
 
     /**
@@ -103,7 +103,7 @@ public interface Account extends Comparable<Account> {
     @Override
     @Deprecated(forRemoval = true, since = "3.0.0")
     default int compareTo(Account account) {
-        return compareTo(account, getController().getDefaultCurrency());
+        return compareTo(account, getHolder().getDefaultCurrency());
     }
 
     /**
@@ -126,7 +126,7 @@ public interface Account extends Comparable<Account> {
      */
     @Deprecated(forRemoval = true, since = "3.0.0")
     default void setBalance(Number balance) {
-        setBalance(balance, getController().getDefaultCurrency());
+        setBalance(balance, getHolder().getDefaultCurrency());
     }
 
     /**

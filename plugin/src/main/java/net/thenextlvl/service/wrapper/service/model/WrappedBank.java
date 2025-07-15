@@ -5,6 +5,7 @@ import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.currency.Currency;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.bank.BankController;
+import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jetbrains.annotations.Unmodifiable;
@@ -32,6 +33,11 @@ public class WrappedBank implements Bank {
         this.world = world;
         this.economy = economy;
         this.plugin = plugin;
+    }
+
+    @Override
+    public CurrencyHolder getHolder() {
+        return controller;
     }
 
     @Override
@@ -68,11 +74,6 @@ public class WrappedBank implements Bank {
         var difference = balance.doubleValue() - getBalance(currency).doubleValue();
         if (difference > 0) deposit(difference, currency);
         else if (difference < 0) withdraw(-difference, currency);
-    }
-
-    @Override
-    public BankController getController() {
-        return controller;
     }
 
     @Override
