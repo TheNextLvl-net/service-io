@@ -11,6 +11,8 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * The ChatController interface provides methods to retrieve a chat profile of a player.
+ *
+ * @since 1.0.0
  */
 @NullMarked
 public interface ChatController extends Controller {

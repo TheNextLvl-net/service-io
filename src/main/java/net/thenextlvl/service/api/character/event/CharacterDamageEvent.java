@@ -14,6 +14,8 @@ import org.jspecify.annotations.NullMarked;
  * the damage, and controlling whether the event should be cancelled.
  * <p>
  * This event will only be fired for providers that support the {@link CharacterCapability#HEALTH} capability.
+ *
+ * @since 2.2.0
  */
 @NullMarked
 public class CharacterDamageEvent extends CharacterEvent implements Cancellable {

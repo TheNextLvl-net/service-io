@@ -12,6 +12,8 @@ import java.util.UUID;
 
 /**
  * Account is an interface representing a financial account.
+ *
+ * @since 1.0.0
  */
 @NullMarked
 public interface Account extends Comparable<Account> {
@@ -19,6 +21,7 @@ public interface Account extends Comparable<Account> {
      * Retrieves the associated {@code CurrencyHolder} for the account.
      *
      * @return the {@code CurrencyHolder} capable of managing currencies for the account
+     * @since 3.0.0
      */
     @Contract(pure = true)
     CurrencyHolder getHolder();
@@ -41,6 +44,7 @@ public interface Account extends Comparable<Account> {
      * @param amount   the amount to be deposited
      * @param currency the currency that is being deposited
      * @return the new balance after the deposit
+     * @since 3.0.0
      */
     BigDecimal deposit(Number amount, Currency currency);
 
@@ -55,6 +59,13 @@ public interface Account extends Comparable<Account> {
         return getBalance(getHolder().getDefaultCurrency());
     }
 
+    /**
+     * Retrieves the balance of the account for the specified currency.
+     *
+     * @param currency the currency for which the balance is to be retrieved
+     * @return the balance of the account for the specified currency
+     * @since 3.0.0
+     */
     BigDecimal getBalance(Currency currency);
 
     /**
@@ -75,6 +86,7 @@ public interface Account extends Comparable<Account> {
      * @param amount   the amount to be withdrawn
      * @param currency the currency in which the withdrawal is to be made
      * @return the new balance after the withdrawal
+     * @since 3.0.0
      */
     BigDecimal withdraw(Number amount, Currency currency);
 
@@ -113,6 +125,7 @@ public interface Account extends Comparable<Account> {
      * @param currency the currency in which the balances should be compared
      * @return a negative integer, zero, or a positive integer if this account's balance
      * is less than, equal to, or greater than the specified account's balance
+     * @since 3.0.0
      */
     default int compareTo(Account account, Currency currency) {
         return getBalance(currency).compareTo(account.getBalance(currency));
@@ -134,6 +147,7 @@ public interface Account extends Comparable<Account> {
      *
      * @param balance  the new balance to be set
      * @param currency the currency of the balance
+     * @since 3.0.0
      */
     void setBalance(Number balance, Currency currency);
 }

@@ -18,6 +18,7 @@ import java.util.concurrent.CompletableFuture;
  * functionalities such as spawning, despawning, teleportation, and state management.
  *
  * @param <T> the type of the entity associated with this character
+ * @since 2.2.0
  */
 @NullMarked
 public interface Character<T extends Entity> extends Persistable, Viewable {

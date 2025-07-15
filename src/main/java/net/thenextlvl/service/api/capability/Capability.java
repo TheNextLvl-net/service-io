@@ -13,6 +13,8 @@ import net.kyori.adventure.key.Keyed;
  * <p>
  * Implementations of this interface can be used in conjunction with capability
  * providers or related systems to organize and query available functionalities.
+ *
+ * @since 2.2.0
  */
 public interface Capability extends Keyed {
 }

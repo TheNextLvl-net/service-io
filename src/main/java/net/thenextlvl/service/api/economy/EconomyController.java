@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
@@ -21,6 +20,8 @@ import java.util.concurrent.CompletableFuture;
 /**
  * EconomyController is an interface that provides methods for managing and interacting
  * with economic systems, such as currency formatting, account retrieval, and multi-currency support.
+ *
+ * @since 1.0.0
  */
 @NullMarked
 public interface EconomyController extends Controller, CurrencyHolder {
@@ -64,6 +65,7 @@ public interface EconomyController extends Controller, CurrencyHolder {
      *
      * @return a {@link CompletableFuture} that completes with an unmodifiable {@link Set} of {@link Account} objects
      * representing all available accounts
+     * @since 2.2.0
      */
     default CompletableFuture<@Unmodifiable Set<Account>> loadAccounts() {
         return loadAccounts(null);
@@ -82,6 +84,7 @@ public interface EconomyController extends Controller, CurrencyHolder {
      * Retrieves all the accounts that are currently loaded.
      *
      * @return an unmodifiable set of accounts
+     * @since 2.2.0
      */
     default @Unmodifiable Set<Account> getAccounts() {
         return getAccounts(null);
@@ -328,6 +331,7 @@ public interface EconomyController extends Controller, CurrencyHolder {
      * @return {@code true} if multi-world economy is supported, otherwise {@code false}
      * @implSpec If multiple worlds are not supported,
      * implementations must ignore world-specific parameters and only handle cases where the world parameter is null.
+     * @since 3.0.0
      */
     @Contract(pure = true)
     boolean hasMultiWorldSupport();

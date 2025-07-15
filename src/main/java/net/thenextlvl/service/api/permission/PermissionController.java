@@ -13,6 +13,7 @@ import java.util.concurrent.CompletableFuture;
  * The PermissionController interface represents a controller for managing permissions for players.
  *
  * @see PermissionHolder
+ * @since 1.0.0
  */
 @NullMarked
 public interface PermissionController extends Controller {
