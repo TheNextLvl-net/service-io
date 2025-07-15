@@ -4,6 +4,7 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Locale;
@@ -17,6 +18,7 @@ public interface Currency {
      *
      * @return the name of the currency as a string
      */
+    @Contract(pure = true)
     String getName();
 
     /**
@@ -112,6 +114,7 @@ public interface Currency {
          * @param locale the locale for which the singular display name is being set
          * @return the builder instance for chaining
          */
+        @Contract(value = "_, _ -> this", pure = true)
         Builder displayNameSingular(Component name, Locale locale);
 
         /**
@@ -120,6 +123,7 @@ public interface Currency {
          * @param locale the locale for which the singular display name should be retrieved
          * @return an {@code Optional} containing the singular display name as a {@code Component}, or empty
          */
+        @Contract(value = "_ -> new")
         Optional<Component> displayNameSingular(Locale locale);
 
         /**
@@ -129,6 +133,7 @@ public interface Currency {
          * @param locale the locale for which the plural display name is being set
          * @return the builder instance for chaining
          */
+        @Contract(value = "_, _ -> this", pure = true)
         Builder displayNamePlural(Component name, Locale locale);
 
         /**
@@ -137,6 +142,7 @@ public interface Currency {
          * @param locale the locale for which the plural display name should be retrieved
          * @return an {@code Optional} containing the plural display name as a {@code Component}, or empty
          */
+        @Contract(value = "_ -> new")
         Optional<Component> displayNamePlural(Locale locale);
 
         /**
@@ -145,6 +151,7 @@ public interface Currency {
          * @param symbol the symbol component to represent the currency
          * @return the builder instance for chaining
          */
+        @Contract(value = "_ -> this", pure = true)
         Builder symbol(Component symbol);
 
         /**
@@ -152,6 +159,7 @@ public interface Currency {
          *
          * @return an {@code Optional} containing the symbol as a {@code Component}, or empty
          */
+        @Contract(value = "-> new")
         Optional<Component> symbol();
 
         /**
@@ -164,6 +172,7 @@ public interface Currency {
          * @return the builder instance for chaining
          * @throws IllegalArgumentException if {@code fractionalDigits} is negative
          */
+        @Contract(value = "_ -> this")
         Builder fractionalDigits(int fractionalDigits) throws IllegalArgumentException;
 
         /**
@@ -174,6 +183,7 @@ public interface Currency {
          *
          * @return an {@code OptionalInt} containing the number of fractional digits, or empty
          */
+        @Contract(value = "-> new")
         OptionalInt fractionalDigits();
 
         /**
@@ -181,6 +191,7 @@ public interface Currency {
          *
          * @return the constructed {@link Currency} instance
          */
+        @Contract("-> new")
         @ApiStatus.OverrideOnly
         Currency build();
     }

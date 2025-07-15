@@ -1,6 +1,7 @@
 package net.thenextlvl.service.api.economy.currency;
 
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Locale;
@@ -83,6 +84,7 @@ public interface CurrencyHolder {
      * @throws UnsupportedOperationException if {@link #hasMultiCurrencySupport()} is {@code false}
      * @since 3.0.0
      */
+    @Contract("_, _ -> new")
     default Optional<Currency> createCurrency(String name, Consumer<Currency.Builder> builder) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -105,6 +107,7 @@ public interface CurrencyHolder {
      * @return the default currency
      * @since 3.0.0
      */
+    @Contract(pure = true)
     Currency getDefaultCurrency();
 
     /**
@@ -119,6 +122,7 @@ public interface CurrencyHolder {
      * @see #hasCurrency(String)
      * @since 3.0.0
      */
+    @Contract(pure = true)
     default boolean hasMultiCurrencySupport() {
         return false;
     }

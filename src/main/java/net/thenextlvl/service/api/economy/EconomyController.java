@@ -6,6 +6,7 @@ import net.thenextlvl.service.api.economy.currency.Currency;
 import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -167,6 +168,7 @@ public interface EconomyController extends Controller, CurrencyHolder {
      * @return a CompletableFuture that will complete with the created account
      * @throws IllegalStateException if a similar account already exists
      */
+    @Contract("_ -> new")
     default CompletableFuture<Account> createAccount(OfflinePlayer player) {
         return createAccount(player.getUniqueId());
     }
@@ -178,7 +180,8 @@ public interface EconomyController extends Controller, CurrencyHolder {
      * @param world  the world in which the player's account will be created
      * @return a CompletableFuture that will complete with the created account
      */
-    default CompletableFuture<Account> createAccount(OfflinePlayer player, World world) {
+    @Contract("_, _ -> new")
+    default CompletableFuture<Account> createAccount(OfflinePlayer player, @Nullable World world) {
         return createAccount(player.getUniqueId(), world);
     }
 
@@ -188,7 +191,10 @@ public interface EconomyController extends Controller, CurrencyHolder {
      * @param uuid the uuid of the account to be created
      * @return a CompletableFuture that will complete with the created account
      */
-    CompletableFuture<Account> createAccount(UUID uuid);
+    @Contract("_ -> new")
+    default CompletableFuture<Account> createAccount(UUID uuid) {
+        return createAccount(uuid, null);
+    }
 
     /**
      * Creates an account with the given uuid and world.
@@ -197,7 +203,8 @@ public interface EconomyController extends Controller, CurrencyHolder {
      * @param world the world in which the account will be created
      * @return a CompletableFuture that will complete with the created account
      */
-    CompletableFuture<Account> createAccount(UUID uuid, World world);
+    @Contract("_, _ -> new")
+    CompletableFuture<Account> createAccount(UUID uuid, @Nullable World world);
 
     /**
      * Loads the account for the specified player asynchronously.
