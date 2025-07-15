@@ -12,6 +12,7 @@ import net.thenextlvl.service.model.permission.LuckPermsPermissionHolder;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.Set;
@@ -29,124 +30,69 @@ public class LuckPermsGroupController implements GroupController {
     }
 
     @Override
-    public CompletableFuture<Group> createGroup(String name) {
-        return luckPerms.getGroupManager().createAndLoadGroup(name)
-                .thenApply(group -> new LuckPermsGroup(group, group.getQueryOptions(), null));
-    }
-
-    @Override
-    public CompletableFuture<Group> createGroup(String name, World world) {
+    public CompletableFuture<Group> createGroup(String name, @Nullable World world) {
         return luckPerms.getGroupManager().createAndLoadGroup(name).thenApply(group -> {
-            var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
-            return new LuckPermsGroup(group, context, null);
+            return new LuckPermsGroup(group, getOptions(world), null);
         });
     }
 
     @Override
-    public CompletableFuture<Group> loadGroup(String name) {
-        return luckPerms.getGroupManager().loadGroup(name).thenCompose(optional ->
-                optional.<Group>map(group -> new LuckPermsGroup(group, group.getQueryOptions(), null))
-                        .map(CompletableFuture::completedFuture)
-                        .orElse(CompletableFuture.completedFuture(null)));
-    }
-
-    @Override
-    public CompletableFuture<Group> loadGroup(String name, World world) {
-        return luckPerms.getGroupManager().loadGroup(name).thenCompose(optional -> optional.<Group>map(group -> {
-                    var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
-                    return new LuckPermsGroup(group, context, world);
-                })
+    public CompletableFuture<Group> loadGroup(String name, @Nullable World world) {
+        return luckPerms.getGroupManager().loadGroup(name).thenCompose(optional -> optional.<Group>map(group ->
+                        new LuckPermsGroup(group, getOptions(world), world))
                 .map(CompletableFuture::completedFuture)
                 .orElse(CompletableFuture.completedFuture(null)));
     }
 
     @Override
-    public CompletableFuture<GroupHolder> loadGroupHolder(UUID uuid) {
-        return luckPerms.getUserManager().loadUser(uuid).thenApply(user ->
-                new LuckPermsPermissionHolder(user, QueryOptions.defaultContextualOptions()));
-    }
-
-    @Override
-    public CompletableFuture<GroupHolder> loadGroupHolder(UUID uuid, World world) {
+    public CompletableFuture<GroupHolder> loadGroupHolder(UUID uuid, @Nullable World world) {
         return luckPerms.getUserManager().loadUser(uuid).thenApply(user -> {
-            var options = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
-            return new LuckPermsPermissionHolder(user, options);
+            return new LuckPermsPermissionHolder(user, getOptions(world));
         });
     }
 
     @Override
-    public CompletableFuture<Set<Group>> loadGroups() {
-        return luckPerms.getGroupManager().loadAllGroups().thenApply(unused -> getGroups());
-    }
-
-    @Override
-    public CompletableFuture<Set<Group>> loadGroups(World world) {
+    public CompletableFuture<Set<Group>> loadGroups(@Nullable World world) {
         return luckPerms.getGroupManager().loadAllGroups().thenApply(unused -> getGroups(world));
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteGroup(Group group) {
-        return !(group instanceof LuckPermsGroup luckPermsGroup) ? deleteGroup(group.getName())
-                : luckPerms.getGroupManager().deleteGroup(luckPermsGroup.group()).thenApply(none -> true);
+    public CompletableFuture<Boolean> deleteGroup(Group group, @Nullable World world) {
+        if (!(group instanceof LuckPermsGroup luckPermsGroup)) return CompletableFuture.completedFuture(false);
+        return luckPerms.getGroupManager().deleteGroup(luckPermsGroup.group()).thenApply(none -> true);
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteGroup(Group group, World world) {
-        return deleteGroup(group);
-    }
-
-    @Override
-    public CompletableFuture<Boolean> deleteGroup(String name) {
+    public CompletableFuture<Boolean> deleteGroup(String name, @Nullable World world) {
         return luckPerms.getGroupManager().loadGroup(name).thenApply(optional ->
                 optional.map(luckPerms.getGroupManager()::deleteGroup).isPresent());
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteGroup(String name, World world) {
-        return deleteGroup(name);
-    }
-
-    @Override
-    public Optional<Group> getGroup(String name) {
-        return Optional.ofNullable(luckPerms.getGroupManager().getGroup(name)).map(group ->
-                new LuckPermsGroup(group, group.getQueryOptions(), null));
-    }
-
-    @Override
-    public Optional<Group> getGroup(String name, World world) {
+    public Optional<Group> getGroup(String name, @Nullable World world) {
         return Optional.ofNullable(luckPerms.getGroupManager().getGroup(name)).map(group -> {
-            var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
-            return new LuckPermsGroup(group, context, null);
+            return new LuckPermsGroup(group, getOptions(world), null);
         });
     }
 
     @Override
-    public Optional<GroupHolder> getGroupHolder(UUID uuid) {
-        return Optional.ofNullable(luckPerms.getUserManager().getUser(uuid)).map(user ->
-                new LuckPermsPermissionHolder(user, QueryOptions.defaultContextualOptions()));
-    }
-
-    @Override
-    public Optional<GroupHolder> getGroupHolder(UUID uuid, World world) {
+    public Optional<GroupHolder> getGroupHolder(UUID uuid, @Nullable World world) {
         return Optional.ofNullable(luckPerms.getUserManager().getUser(uuid)).map(user -> {
-            var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
-            return new LuckPermsPermissionHolder(user, context);
+            return new LuckPermsPermissionHolder(user, getOptions(world));
         });
     }
 
     @Override
-    public Set<Group> getGroups() {
+    public Set<Group> getGroups(@Nullable World world) {
+        var options = getOptions(world);
         return luckPerms.getGroupManager().getLoadedGroups().stream()
-                .map(group -> new LuckPermsGroup(group, group.getQueryOptions(), null))
+                .map(group -> new LuckPermsGroup(group, options, world))
                 .collect(Collectors.toUnmodifiableSet());
     }
 
-    @Override
-    public Set<Group> getGroups(World world) {
-        var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
-        return luckPerms.getGroupManager().getLoadedGroups().stream()
-                .map(group -> new LuckPermsGroup(group, context, world))
-                .collect(Collectors.toUnmodifiableSet());
+    private QueryOptions getOptions(@Nullable World world) {
+        if (world == null) return luckPerms.getContextManager().getStaticQueryOptions();
+        return QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
     }
 
     @Override
