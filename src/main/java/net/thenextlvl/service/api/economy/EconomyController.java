@@ -28,7 +28,7 @@ public interface EconomyController extends Controller, CurrencyHolder {
      * @return the plural form of the currency name as a string
      * @deprecated use {@link Currency#getDisplayNamePlural(Locale)}
      */
-    @Deprecated(forRemoval = true, since = "2.4.0")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     default String getCurrencyNamePlural(Locale locale) {
         return PlainTextComponentSerializer.plainText().serialize(getDefaultCurrency().getDisplayNamePlural(locale));
     }
@@ -40,7 +40,7 @@ public interface EconomyController extends Controller, CurrencyHolder {
      * @return the name of the currency as a string
      * @deprecated use {@link Currency#getDisplayNameSingular(Locale)}
      */
-    @Deprecated(forRemoval = true, since = "2.4.0")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     default String getCurrencyNameSingular(Locale locale) {
         return PlainTextComponentSerializer.plainText().serialize(getDefaultCurrency().getDisplayNameSingular(locale));
     }
@@ -51,7 +51,7 @@ public interface EconomyController extends Controller, CurrencyHolder {
      * @return the currency symbol as a string
      * @deprecated use {@link Currency#getSymbol()}
      */
-    @Deprecated(forRemoval = true, since = "2.4.0")
+    @Deprecated(forRemoval = true, since = "3.0.0")
     default String getCurrencySymbol() {
         return PlainTextComponentSerializer.plainText().serialize(getDefaultCurrency().getSymbol());
     }
