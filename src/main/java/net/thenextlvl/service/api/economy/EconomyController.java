@@ -314,4 +314,14 @@ public interface EconomyController extends Controller, CurrencyHolder {
      * @return a CompletableFuture that will complete when the account is deleted
      */
     CompletableFuture<Boolean> deleteAccount(UUID uuid, @Nullable World world);
+
+    /**
+     * Determines whether the controller supports handling of multiple worlds.
+     *
+     * @return {@code true} if multi-world economy is supported, otherwise {@code false}
+     * @implSpec If multiple worlds are not supported,
+     * implementations must ignore world-specific parameters and only handle cases where the world parameter is null.
+     */
+    @Contract(pure = true)
+    boolean hasMultiWorldSupport();
 }
