@@ -12,7 +12,6 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -82,11 +81,6 @@ public class EconomyServiceWrapper implements EconomyController, Wrapper {
 
     @Override
     public CompletableFuture<Boolean> deleteAccount(UUID uuid, @Nullable World world) {
-        return CompletableFuture.completedFuture(false);
-    }
-
-    @Override
-    public CompletableFuture<Boolean> deleteAccounts(List<UUID> accounts, @Nullable World world) {
         return CompletableFuture.completedFuture(false);
     }
 
