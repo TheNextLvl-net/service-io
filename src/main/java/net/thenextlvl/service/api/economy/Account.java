@@ -3,6 +3,7 @@ package net.thenextlvl.service.api.economy;
 import net.thenextlvl.service.api.economy.currency.Currency;
 import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import org.bukkit.World;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 
 import java.math.BigDecimal;
@@ -20,6 +21,7 @@ public interface Account extends Comparable<Account> {
      * @return the {@code CurrencyHolder} capable of managing currencies for the account
      */
     CurrencyHolder getController();
+    @Contract(pure = true)
 
     /**
      * Deposits the specified amount into the account balance.

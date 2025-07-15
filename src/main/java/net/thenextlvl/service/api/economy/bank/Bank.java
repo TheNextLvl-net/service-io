@@ -2,6 +2,7 @@ package net.thenextlvl.service.api.economy.bank;
 
 import net.thenextlvl.service.api.economy.Account;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -28,6 +29,7 @@ public interface Bank extends Account {
      *
      * @return the name of the bank.
      */
+    @Contract(pure = true)
     String getName();
 
     /**
