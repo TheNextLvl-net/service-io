@@ -7,6 +7,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.Set;
@@ -26,7 +27,7 @@ public interface BankController extends Controller, CurrencyHolder {
      */
     @Contract("_, _ -> new")
     default CompletableFuture<Bank> createBank(OfflinePlayer player, String name) {
-        return createBank(player.getUniqueId(), name);
+        return createBank(player, name, null);
     }
 
     /**
@@ -53,8 +54,10 @@ public interface BankController extends Controller, CurrencyHolder {
      * @param name the name of the bank (must be unique)
      * @return a CompletableFuture that completes with the created bank
      */
-    CompletableFuture<Bank> createBank(UUID uuid, String name);
     @Contract("_, _ -> new")
+    default CompletableFuture<Bank> createBank(UUID uuid, String name) {
+        return createBank(uuid, name, null);
+    }
 
     /**
      * Creates a new bank with the provided UUID, name, and world.
@@ -66,8 +69,8 @@ public interface BankController extends Controller, CurrencyHolder {
      * @param world the world in which the bank exists
      * @return a CompletableFuture that completes with the created bank
      */
-    CompletableFuture<Bank> createBank(UUID uuid, String name, World world);
     @Contract("_, _, _ -> new")
+    CompletableFuture<Bank> createBank(UUID uuid, String name, @Nullable World world);
 
     /**
      * Loads a bank asynchronously with the specified player.
@@ -75,8 +78,8 @@ public interface BankController extends Controller, CurrencyHolder {
      * @param player the player for whom the bank should be loaded
      * @return a CompletableFuture that completes with the loaded bank
      */
-    default CompletableFuture<Bank> loadBank(OfflinePlayer player) {
-        return loadBank(player.getUniqueId());
+    default CompletableFuture<Optional<Bank>> loadBank(OfflinePlayer player) {
+        return loadBank(player, null);
     }
 
     /**
@@ -86,7 +89,7 @@ public interface BankController extends Controller, CurrencyHolder {
      * @param world  the world in which the bank is located
      * @return a CompletableFuture that completes with the loaded bank
      */
-    default CompletableFuture<Bank> loadBank(OfflinePlayer player, World world) {
+    default CompletableFuture<Optional<Bank>> loadBank(OfflinePlayer player, @Nullable World world) {
         return loadBank(player.getUniqueId(), world);
     }
 
@@ -96,7 +99,7 @@ public interface BankController extends Controller, CurrencyHolder {
      * @param name the name of the bank to be loaded
      * @return a CompletableFuture that completes with the loaded bank
      */
-    CompletableFuture<Bank> loadBank(String name);
+    CompletableFuture<Optional<Bank>> loadBank(String name);
 
     /**
      * Loads a bank asynchronously with the specified UUID.
@@ -104,7 +107,9 @@ public interface BankController extends Controller, CurrencyHolder {
      * @param uuid the UUID of the bank
      * @return a CompletableFuture that completes with the loaded bank
      */
-    CompletableFuture<Bank> loadBank(UUID uuid);
+    default CompletableFuture<Optional<Bank>> loadBank(UUID uuid) {
+        return loadBank(uuid, null);
+    }
 
     /**
      * Loads a bank asynchronously with the specified UUID and world.
@@ -113,14 +118,16 @@ public interface BankController extends Controller, CurrencyHolder {
      * @param world the world in which the bank is located
      * @return a CompletableFuture that completes with the loaded bank
      */
-    CompletableFuture<Bank> loadBank(UUID uuid, World world);
+    CompletableFuture<Optional<Bank>> loadBank(UUID uuid, @Nullable World world);
 
     /**
      * Retrieves a Set of all banks.
      *
      * @return a CompletableFuture that completes with a Set of all banks
      */
-    CompletableFuture<@Unmodifiable Set<Bank>> loadBanks();
+    default CompletableFuture<@Unmodifiable Set<Bank>> loadBanks() {
+        return loadBanks(null);
+    }
 
     /**
      * Retrieves a set of all banks in the specified world.
@@ -128,7 +135,7 @@ public interface BankController extends Controller, CurrencyHolder {
      * @param world the world from which to retrieve the banks
      * @return a CompletableFuture that completes with a Set of banks in the specified world
      */
-    CompletableFuture<@Unmodifiable Set<Bank>> loadBanks(World world);
+    CompletableFuture<@Unmodifiable Set<Bank>> loadBanks(@Nullable World world);
 
     /**
      * Tries to retrieve the {@link Bank} with the specified name.
@@ -137,10 +144,10 @@ public interface BankController extends Controller, CurrencyHolder {
      * @return a {@code CompletableFuture<Bank>} that completes with an {@code Optional<Bank>} containing the bank
      * associated with the name, or an empty Optional if not found
      */
-    default CompletableFuture<Bank> tryGetBank(String name) {
-        return getBank(name)
-                .map(CompletableFuture::completedFuture)
-                .orElseGet(() -> loadBank(name));
+    default CompletableFuture<Optional<Bank>> tryGetBank(String name) {
+        var bank = getBank(name);
+        if (bank.isEmpty()) return loadBank(name);
+        return CompletableFuture.completedFuture(bank);
     }
 
     /**
@@ -150,10 +157,8 @@ public interface BankController extends Controller, CurrencyHolder {
      * @return a CompletableFuture that completes with an Optional containing the Bank associated with
      * the player, or an empty Optional if not found
      */
-    default CompletableFuture<Bank> tryGetBank(OfflinePlayer player) {
-        return getBank(player)
-                .map(CompletableFuture::completedFuture)
-                .orElseGet(() -> loadBank(player));
+    default CompletableFuture<Optional<Bank>> tryGetBank(OfflinePlayer player) {
+        return tryGetBank(player, null);
     }
 
     /**
@@ -164,10 +169,8 @@ public interface BankController extends Controller, CurrencyHolder {
      * @return a CompletableFuture that completes with an Optional containing the Bank associated with
      * the player and world, or an empty Optional if not found
      */
-    default CompletableFuture<Bank> tryGetBank(OfflinePlayer player, World world) {
-        return getBank(player, world)
-                .map(CompletableFuture::completedFuture)
-                .orElseGet(() -> loadBank(player, world));
+    default CompletableFuture<Optional<Bank>> tryGetBank(OfflinePlayer player, @Nullable World world) {
+        return tryGetBank(player.getUniqueId(), world);
     }
 
     /**
@@ -177,10 +180,8 @@ public interface BankController extends Controller, CurrencyHolder {
      * @return a CompletableFuture that completes with an Optional containing the Bank associated with the UUID,
      * or an empty Optional if not found
      */
-    default CompletableFuture<Bank> tryGetBank(UUID uuid) {
-        return getBank(uuid)
-                .map(CompletableFuture::completedFuture)
-                .orElseGet(() -> loadBank(uuid));
+    default CompletableFuture<Optional<Bank>> tryGetBank(UUID uuid) {
+        return tryGetBank(uuid, null);
     }
 
     /**
@@ -191,10 +192,10 @@ public interface BankController extends Controller, CurrencyHolder {
      * @return a CompletableFuture that completes with an Optional containing the Bank associated with
      * the UUID and world, or an empty Optional if not found
      */
-    default CompletableFuture<Bank> tryGetBank(UUID uuid, World world) {
-        return getBank(uuid, world)
-                .map(CompletableFuture::completedFuture)
-                .orElseGet(() -> loadBank(uuid, world));
+    default CompletableFuture<Optional<Bank>> tryGetBank(UUID uuid, @Nullable World world) {
+        var bank = getBank(uuid, world);
+        if (bank.isEmpty()) return loadBank(uuid, world);
+        return CompletableFuture.completedFuture(bank);
     }
 
     /**
@@ -204,9 +205,7 @@ public interface BankController extends Controller, CurrencyHolder {
      * @return a CompletableFuture that completes with a boolean value indicating whether the deletion was successful
      */
     default CompletableFuture<Boolean> deleteBank(Bank bank) {
-        return bank.getWorld()
-                .map(world -> deleteBank(bank.getOwner(), world))
-                .orElseGet(() -> deleteBank(bank.getOwner()));
+        return deleteBank(bank.getOwner(), bank.getWorld().orElse(null));
     }
 
     /**
@@ -216,7 +215,7 @@ public interface BankController extends Controller, CurrencyHolder {
      * @return a CompletableFuture that completes with a boolean value indicating whether the deletion was successful
      */
     default CompletableFuture<Boolean> deleteBank(OfflinePlayer player) {
-        return deleteBank(player.getUniqueId());
+        return deleteBank(player, null);
     }
 
     /**
@@ -226,7 +225,7 @@ public interface BankController extends Controller, CurrencyHolder {
      * @param world  the world where the bank is located
      * @return a CompletableFuture that completes with a boolean value indicating whether the deletion was successful
      */
-    default CompletableFuture<Boolean> deleteBank(OfflinePlayer player, World world) {
+    default CompletableFuture<Boolean> deleteBank(OfflinePlayer player, @Nullable World world) {
         return deleteBank(player.getUniqueId(), world);
     }
 
@@ -244,7 +243,9 @@ public interface BankController extends Controller, CurrencyHolder {
      * @param uuid The UUID of the bank to be deleted.
      * @return A CompletableFuture that completes with a boolean value indicating whether the deletion was successful.
      */
-    CompletableFuture<Boolean> deleteBank(UUID uuid);
+    default CompletableFuture<Boolean> deleteBank(UUID uuid) {
+        return deleteBank(uuid, null);
+    }
 
     /**
      * Deletes a bank with the specified UUID in the given world.
@@ -253,15 +254,16 @@ public interface BankController extends Controller, CurrencyHolder {
      * @param world the world where the bank is located
      * @return a CompletableFuture that completes with a boolean value indicating whether the deletion was successful
      */
-    CompletableFuture<Boolean> deleteBank(UUID uuid, World world);
+    CompletableFuture<Boolean> deleteBank(UUID uuid, @Nullable World world);
 
     /**
      * Retrieves a set of all banks.
      *
      * @return a set of all banks
      */
-    @Unmodifiable
-    Set<Bank> getBanks();
+    default @Unmodifiable Set<Bank> getBanks() {
+        return getBanks(null);
+    }
 
     /**
      * Retrieves a set of all banks in the {@link World}.
@@ -270,7 +272,7 @@ public interface BankController extends Controller, CurrencyHolder {
      * @return a {@code Set<Bank>} containing all the banks in the world
      */
     @Unmodifiable
-    Set<Bank> getBanks(World world);
+    Set<Bank> getBanks(@Nullable World world);
 
     /**
      * Retrieves the {@link Bank} associated with the specified name.
@@ -287,7 +289,7 @@ public interface BankController extends Controller, CurrencyHolder {
      * @return an {@code Optional<Bank>} containing the bank associated with the player, or empty if not found
      */
     default Optional<Bank> getBank(OfflinePlayer player) {
-        return getBank(player.getUniqueId());
+        return getBank(player, null);
     }
 
     /**
@@ -297,7 +299,7 @@ public interface BankController extends Controller, CurrencyHolder {
      * @param world  the world the bank belongs to
      * @return an {@code Optional<Bank>} containing the bank associated with the player and world, or empty if not found
      */
-    default Optional<Bank> getBank(OfflinePlayer player, World world) {
+    default Optional<Bank> getBank(OfflinePlayer player, @Nullable World world) {
         return getBank(player.getUniqueId(), world);
     }
 
@@ -307,7 +309,9 @@ public interface BankController extends Controller, CurrencyHolder {
      * @param uuid the UUID of the bank's owner
      * @return an Optional containing the Bank associated with the UUID, or empty if not found
      */
-    Optional<Bank> getBank(UUID uuid);
+    default Optional<Bank> getBank(UUID uuid) {
+        return getBank(uuid, null);
+    }
 
     /**
      * Retrieves the {@link Bank} associated with the specified UUID and world.
@@ -316,5 +320,5 @@ public interface BankController extends Controller, CurrencyHolder {
      * @param world the world the bank belongs to
      * @return an Optional containing the Bank associated with the UUID and world, or empty if not found
      */
-    Optional<Bank> getBank(UUID uuid, World world);
+    Optional<Bank> getBank(UUID uuid, @Nullable World world);
 }
