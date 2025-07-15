@@ -4,6 +4,7 @@ import net.thenextlvl.service.api.Controller;
 import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -23,6 +24,7 @@ public interface BankController extends Controller, CurrencyHolder {
      * @param name   the name of the bank (must be unique)
      * @return a CompletableFuture that completes with the created bank
      */
+    @Contract("_, _ -> new")
     default CompletableFuture<Bank> createBank(OfflinePlayer player, String name) {
         return createBank(player.getUniqueId(), name);
     }
@@ -37,7 +39,8 @@ public interface BankController extends Controller, CurrencyHolder {
      * @param world  the world in which the bank is located
      * @return a CompletableFuture that completes with the created bank
      */
-    default CompletableFuture<Bank> createBank(OfflinePlayer player, String name, World world) {
+    @Contract("_, _, _ -> new")
+    default CompletableFuture<Bank> createBank(OfflinePlayer player, String name, @Nullable World world) {
         return createBank(player.getUniqueId(), name, world);
     }
 
@@ -51,6 +54,7 @@ public interface BankController extends Controller, CurrencyHolder {
      * @return a CompletableFuture that completes with the created bank
      */
     CompletableFuture<Bank> createBank(UUID uuid, String name);
+    @Contract("_, _ -> new")
 
     /**
      * Creates a new bank with the provided UUID, name, and world.
@@ -63,6 +67,7 @@ public interface BankController extends Controller, CurrencyHolder {
      * @return a CompletableFuture that completes with the created bank
      */
     CompletableFuture<Bank> createBank(UUID uuid, String name, World world);
+    @Contract("_, _, _ -> new")
 
     /**
      * Loads a bank asynchronously with the specified player.
