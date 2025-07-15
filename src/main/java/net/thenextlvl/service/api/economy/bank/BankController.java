@@ -321,4 +321,14 @@ public interface BankController extends Controller, CurrencyHolder {
      * @return an Optional containing the Bank associated with the UUID and world, or empty if not found
      */
     Optional<Bank> getBank(UUID uuid, @Nullable World world);
+
+    /**
+     * Determines whether the controller supports handling of multiple worlds.
+     *
+     * @return {@code true} if multi-world banking is supported, otherwise {@code false}
+     * @implSpec If multiple worlds are not supported,
+     * implementations must ignore world-specific parameters and only handle cases where the world parameter is null.
+     */
+    @Contract(pure = true)
+    boolean hasMultiWorldSupport();
 }
