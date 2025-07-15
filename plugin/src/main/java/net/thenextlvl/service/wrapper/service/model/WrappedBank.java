@@ -3,6 +3,7 @@ package net.thenextlvl.service.wrapper.service.model;
 import net.milkbowl.vault.economy.Economy;
 import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.bank.Bank;
+import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
@@ -29,6 +30,11 @@ public class WrappedBank implements Bank {
         this.world = world;
         this.economy = economy;
         this.provider = provider;
+    }
+
+    @Override
+    public CurrencyHolder getHolder() {
+        return controller;
     }
 
     @Override
