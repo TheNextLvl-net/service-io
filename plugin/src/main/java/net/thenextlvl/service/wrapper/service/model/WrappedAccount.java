@@ -29,7 +29,7 @@ public class WrappedAccount implements Account {
     }
 
     @Override
-    public CurrencyHolder getController() {
+    public CurrencyHolder getHolder() {
         return controller;
     }
 
