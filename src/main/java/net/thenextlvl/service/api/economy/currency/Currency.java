@@ -5,9 +5,11 @@ import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -45,7 +47,6 @@ public interface Currency {
      * @return the singular display name as a {@code Component} for the specified locale
      */
     Component getDisplayNameSingular(Locale locale);
-
 
     /**
      * Retrieves the plural display name component of the currency based on the audience's locale.
@@ -110,6 +111,15 @@ public interface Currency {
      */
     interface Builder {
         /**
+         * Retrieves a map containing the singular display names of the currency for various locales.
+         *
+         * @return an unmodifiable map of {@code Locale} and {@code Component} objects
+         * representing the singular display names of the currency.
+         */
+        @Unmodifiable
+        Map<Locale, Component> displayNamesSingular();
+
+        /**
          * Sets the singular display name of the currency for a specific locale.
          *
          * @param name   the singular display name component of the currency
@@ -127,6 +137,15 @@ public interface Currency {
          */
         @Contract(value = "_ -> new")
         Optional<Component> displayNameSingular(Locale locale);
+
+        /**
+         * Retrieves a map containing the plural display names of the currency for various locales.
+         *
+         * @return an unmodifiable map of {@code Locale} and {@code Component} objects
+         * representing the plural display names of the currency.
+         */
+        @Unmodifiable
+        Map<Locale, Component> displayNamesPlural();
 
         /**
          * Sets the plural display name of the currency for a specific locale.
