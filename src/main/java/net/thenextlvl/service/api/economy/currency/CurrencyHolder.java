@@ -77,16 +77,26 @@ public interface CurrencyHolder {
 
     /**
      * Creates a new currency by configuring a {@link Currency.Builder}.
-     * <p>
-     * If a currency with the same name already exists, this method returns empty.
      *
      * @param name    the name of the new currency
      * @param builder a consumer to configure the {@link Currency.Builder} for currency creation
-     * @return an optional containing the created {@link Currency}, or empty
+     * @return the newly created {@link Currency}
      * @throws UnsupportedOperationException if {@link #hasMultiCurrencySupport()} is {@code false}
+     * @throws IllegalArgumentException      if a currency with the same name already exists
      */
     @Contract("_, _ -> new")
-    default Optional<Currency> createCurrency(String name, Consumer<Currency.Builder> builder) {
+    default Currency createCurrency(String name, Consumer<Currency.Builder> builder) throws IllegalArgumentException {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    /**
+     * Adds a new currency to the currency holder.
+     *
+     * @param currency the {@code Currency} object to add
+     * @return {@code true} if the currency was successfully added, otherwise {@code false}
+     * @throws UnsupportedOperationException if {@link #hasMultiCurrencySupport()} is {@code false}
+     */
+    default boolean addCurrency(Currency currency) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

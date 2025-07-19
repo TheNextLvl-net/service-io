@@ -7,11 +7,13 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.function.Consumer;
 
 /**
  * Represents a currency with support for localization, formatting, and symbolic representation.
@@ -34,9 +36,9 @@ public interface Currency {
      * If the audience does not specify a locale, {@link Locale#US} is used.
      *
      * @param audience the audience whose locale is used to determine the singular display name
-     * @return the singular display name as a {@code Component} for the audience's locale
+     * @return an {@code Optional} containing the singular display name as a {@code Component} for the audience's locale, or empty
      */
-    default Component getDisplayNameSingular(Audience audience) {
+    default Optional<Component> getDisplayNameSingular(Audience audience) {
         return getDisplayNameSingular(audience.getOrDefault(Identity.LOCALE, Locale.US));
     }
 
@@ -44,9 +46,9 @@ public interface Currency {
      * Retrieves the singular display name component of the currency for the specified locale.
      *
      * @param locale the locale for which the singular display name should be retrieved
-     * @return the singular display name as a {@code Component} for the specified locale
+     * @return an {@code Optional} containing the singular display name as a {@code Component} for the specified locale, or empty
      */
-    Component getDisplayNameSingular(Locale locale);
+    Optional<Component> getDisplayNameSingular(Locale locale);
 
     /**
      * Retrieves the plural display name component of the currency based on the audience's locale.
@@ -54,9 +56,9 @@ public interface Currency {
      * If the audience does not specify a locale, {@link Locale#US} is used.
      *
      * @param audience the audience whose locale is used to determine the plural display name
-     * @return the plural display name as a {@code Component} for the audience's locale
+     * @return an {@code Optional} containing the plural display name as a {@code Component} for the audience's locale, or empty
      */
-    default Component getDisplayNamePlural(Audience audience) {
+    default Optional<Component> getDisplayNamePlural(Audience audience) {
         return getDisplayNamePlural(audience.getOrDefault(Identity.LOCALE, Locale.US));
     }
 
@@ -64,9 +66,9 @@ public interface Currency {
      * Retrieves the plural display name component of the currency for the specified locale.
      *
      * @param locale the locale for which the plural display name should be retrieved
-     * @return the plural display name as a {@code Component} for the specified locale
+     * @return an {@code Optional} containing the plural display name as a {@code Component} for the specified locale, or empty
      */
-    Component getDisplayNamePlural(Locale locale);
+    Optional<Component> getDisplayNamePlural(Locale locale);
 
     /**
      * Retrieves the currency symbol.
@@ -105,11 +107,43 @@ public interface Currency {
     int getFractionalDigits();
 
     /**
+     * Modifies the current configuration of the currency using the provided builder.
+     * The builder allows customization of various currency properties.
+     *
+     * @param consumer a {@code Consumer} that accepts a {@code Builder} instance to define customizations for the currency
+     */
+    void editCurrency(Consumer<Builder> consumer);
+
+    /**
+     * Converts the current {@code Currency} instance into a {@code Builder} for modification or reconstruction.
+     *
+     * @return a {@code Builder} instance initialized with the properties of the current {@code Currency}
+     */
+    @ApiStatus.OverrideOnly
+    Builder toBuilder();
+
+    /**
      * A builder interface for constructing instances of {@link Currency}.
      * The {@code Builder} allows for the configuration of currency properties such as
      * singular and plural display names, currency symbol, and fractional digits.
      */
     interface Builder {
+        /**
+         * Sets the name of the currency.
+         *
+         * @param name the name to be set
+         * @return the builder instance for method chaining
+         */
+        @Contract(value = "_ -> this")
+        Builder name(String name);
+        
+        /**
+         * Retrieves the name currently set on the builder.
+         *
+         * @return the name as a string, or {@code null} if not set
+         */
+        String name();
+        
         /**
          * Retrieves a map containing the singular display names of the currency for various locales.
          *
@@ -122,12 +156,12 @@ public interface Currency {
         /**
          * Sets the singular display name of the currency for a specific locale.
          *
+         * @param locale the locale for which the singular display name is being set, or {@code null} to remove
          * @param name   the singular display name component of the currency
-         * @param locale the locale for which the singular display name is being set
          * @return the builder instance for chaining
          */
-        @Contract(value = "_, _ -> this", pure = true)
-        Builder displayNameSingular(Component name, Locale locale);
+        @Contract(value = "_, _ -> this")
+        Builder displayNameSingular(Locale locale, @Nullable Component name);
 
         /**
          * Retrieves the singular display name component of the currency for the specified locale.
@@ -150,12 +184,12 @@ public interface Currency {
         /**
          * Sets the plural display name of the currency for a specific locale.
          *
+         * @param locale the locale for which the plural display name is being set, or {@code null} to remove
          * @param name   the plural display name component of the currency
-         * @param locale the locale for which the plural display name is being set
          * @return the builder instance for chaining
          */
-        @Contract(value = "_, _ -> this", pure = true)
-        Builder displayNamePlural(Component name, Locale locale);
+        @Contract(value = "_, _ -> this")
+        Builder displayNamePlural(Locale locale, @Nullable Component name);
 
         /**
          * Retrieves the plural display name component of the currency for the specified locale.
@@ -169,11 +203,11 @@ public interface Currency {
         /**
          * Sets the currency symbol as a {@code Component}.
          *
-         * @param symbol the symbol component to represent the currency
+         * @param symbol the symbol component to represent the currency, or {@code null} to remove
          * @return the builder instance for chaining
          */
-        @Contract(value = "_ -> this", pure = true)
-        Builder symbol(Component symbol);
+        @Contract(value = "_ -> this")
+        Builder symbol(@Nullable Component symbol);
 
         /**
          * Retrieves the currency symbol set on the {@code Builder}.
@@ -189,12 +223,12 @@ public interface Currency {
          * Fractional digits are generally used to specify the precision of the currency values,
          * for example, 2 fractional digits for most currencies such as USD (representing cents).
          *
-         * @param fractionalDigits the number of fractional digits to set (must be a non-negative integer)
+         * @param fractionalDigits the number of fractional digits to set (must be a non-negative integer), or {@code null} to remove
          * @return the builder instance for chaining
          * @throws IllegalArgumentException if {@code fractionalDigits} is negative
          */
         @Contract(value = "_ -> this")
-        Builder fractionalDigits(int fractionalDigits) throws IllegalArgumentException;
+        Builder fractionalDigits(@Nullable Integer fractionalDigits) throws IllegalArgumentException;
 
         /**
          * Retrieves the number of fractional digits set for the currency.

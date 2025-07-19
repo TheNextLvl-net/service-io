@@ -46,7 +46,9 @@ public interface Account extends Comparable<Account> {
      * @return the new balance after the deposit
      * @since 3.0.0
      */
-    BigDecimal deposit(Number amount, Currency currency);
+    default BigDecimal deposit(Number amount, Currency currency) {
+        return setBalance(getBalance(currency).add(BigDecimal.valueOf(amount.doubleValue())), currency);
+    }
 
     /**
      * Retrieves the balance of the account.
@@ -88,7 +90,9 @@ public interface Account extends Comparable<Account> {
      * @return the new balance after the withdrawal
      * @since 3.0.0
      */
-    BigDecimal withdraw(Number amount, Currency currency);
+    default BigDecimal withdraw(Number amount, Currency currency) {
+        return setBalance(getBalance(currency).subtract(BigDecimal.valueOf(amount.doubleValue())), currency);
+    }
 
     /**
      * Returns an optional containing the world associated with this account.
@@ -147,7 +151,8 @@ public interface Account extends Comparable<Account> {
      *
      * @param balance  the new balance to be set
      * @param currency the currency of the balance
+     * @return the new balance after the operation
      * @since 3.0.0
      */
-    void setBalance(Number balance, Currency currency);
+    BigDecimal setBalance(Number balance, Currency currency);
 }
