@@ -155,14 +155,14 @@ public interface Character<T extends Entity> extends Persistable, Viewable {
      * <p>
      * This method requires the provider to support the {@link CharacterCapability#HEALTH} capability.
      *
-     * @param invulnerable {@code true} if the character should be invulnerable, {@code false} otherwise
+     * @param invulnerable {@code true} if the character should be invulnerable, otherwise {@code false}
      */
     void setInvulnerable(boolean invulnerable);
 
     /**
      * Sets the visibility state of the character's tablist entry.
      *
-     * @param hidden {@code true} to hide the tablist entry, {@code false} to make it visible
+     * @param hidden {@code true} to hide the tablist entry, to make it visible {@code false}
      */
     void setTablistEntryHidden(boolean hidden);
 }
