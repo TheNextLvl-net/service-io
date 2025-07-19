@@ -212,7 +212,7 @@ public class ServicePlugin extends Vault {
             services.register(EconomyController.class, wrapper, economy.getPlugin(), economy.getPriority());
 
             if (!economy.getProvider().hasBankSupport()) return;
-            var banks = new BankServiceWrapper(economy.getProvider(), economy.getPlugin(), this);
+            var banks = new BankServiceWrapper(wrapper.getCurrencyHolder(), economy.getProvider(), economy.getPlugin(), this);
             services.register(BankController.class, banks, economy.getPlugin(), economy.getPriority());
         });
     }
