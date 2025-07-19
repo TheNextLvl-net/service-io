@@ -2,6 +2,7 @@ package net.thenextlvl.service.api.economy.bank;
 
 import net.thenextlvl.service.api.economy.Account;
 import org.bukkit.OfflinePlayer;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -12,6 +13,8 @@ import java.util.UUID;
  * The Bank interface represents a financial entity that can be owned and hold members.
  * It extends the Account interface, providing additional functionality specific
  * to banking, such as depositing or withdrawing money.
+ * 
+ * @since 1.0.0
  */
 @NullMarked
 public interface Bank extends Account {
@@ -28,6 +31,7 @@ public interface Bank extends Account {
      *
      * @return the name of the bank.
      */
+    @Contract(pure = true)
     String getName();
 
     /**
