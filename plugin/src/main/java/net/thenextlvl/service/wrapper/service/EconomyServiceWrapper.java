@@ -110,7 +110,7 @@ public class EconomyServiceWrapper implements EconomyController, Wrapper {
         private final Currency currency;
 
         private WrappedCurrencyHolder(Economy economy) {
-            this.currency = new WrappedCurrency(economy);
+            this.currency = new WrappedCurrency(this, economy);
         }
 
         @Override
