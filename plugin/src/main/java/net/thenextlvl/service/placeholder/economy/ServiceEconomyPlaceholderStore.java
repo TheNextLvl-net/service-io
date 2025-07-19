@@ -20,7 +20,7 @@ public class ServiceEconomyPlaceholderStore extends PlaceholderStore<EconomyCont
         // %serviceio_balance%
         registerResolver("balance", (provider, player, matcher) -> {
             return provider.getAccount(player)
-                    .map(account -> account.getBalance(provider.getDefaultCurrency()))
+                    .map(account -> account.getBalance(provider.getCurrencyHolder().getDefaultCurrency()))
                     .orElse(BigDecimal.ZERO)
                     .toPlainString();
         });
@@ -30,15 +30,15 @@ public class ServiceEconomyPlaceholderStore extends PlaceholderStore<EconomyCont
             var world = plugin.getServer().getWorld(matcher.group(1));
             if (world == null) return null;
             return provider.getAccount(player, world)
-                    .map(account -> account.getBalance(provider.getDefaultCurrency()))
+                    .map(account -> account.getBalance(provider.getCurrencyHolder().getDefaultCurrency()))
                     .orElse(BigDecimal.ZERO)
                     .toPlainString();
         });
 
         // %serviceio_balance_formatted%
         registerResolver("balance_formatted", (provider, player, matcher) -> {
-            var format = provider.getDefaultCurrency().format(provider.getAccount(player)
-                    .map(account -> account.getBalance(provider.getDefaultCurrency()))
+            var format = provider.getCurrencyHolder().getDefaultCurrency().format(provider.getAccount(player)
+                    .map(account -> account.getBalance(provider.getCurrencyHolder().getDefaultCurrency()))
                     .orElse(BigDecimal.ZERO), Locale.US);
             return PlainTextComponentSerializer.plainText().serialize(format);
         });
@@ -47,8 +47,8 @@ public class ServiceEconomyPlaceholderStore extends PlaceholderStore<EconomyCont
         registerResolver("balance_formatted_%s", (provider, player, matcher) -> {
             var world = plugin.getServer().getWorld(matcher.group(1));
             if (world == null) return null;
-            var format = provider.getDefaultCurrency().format(provider.getAccount(player, world)
-                    .map(account -> account.getBalance(provider.getDefaultCurrency()))
+            var format = provider.getCurrencyHolder().getDefaultCurrency().format(provider.getAccount(player, world)
+                    .map(account -> account.getBalance(provider.getCurrencyHolder().getDefaultCurrency()))
                     .orElse(BigDecimal.ZERO), Locale.US);
             return PlainTextComponentSerializer.plainText().serialize(format);
         });

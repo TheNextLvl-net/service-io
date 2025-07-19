@@ -1,9 +1,7 @@
 package net.thenextlvl.service.api.economy;
 
 import net.thenextlvl.service.api.economy.currency.Currency;
-import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import org.bukkit.World;
-import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 
 import java.math.BigDecimal;
@@ -16,28 +14,7 @@ import java.util.UUID;
  * @since 1.0.0
  */
 @NullMarked
-public interface Account extends Comparable<Account> {
-    /**
-     * Retrieves the associated {@code CurrencyHolder} for the account.
-     *
-     * @return the {@code CurrencyHolder} capable of managing currencies for the account
-     * @since 3.0.0
-     */
-    @Contract(pure = true)
-    CurrencyHolder getHolder();
-
-    /**
-     * Deposits the specified amount into the account balance.
-     *
-     * @param amount the amount to be deposited
-     * @return the new balance after the deposit
-     * @deprecated use {@link #deposit(Number, Currency)}
-     */
-    @Deprecated(forRemoval = true, since = "3.0.0")
-    default BigDecimal deposit(Number amount) {
-        return deposit(amount, getHolder().getDefaultCurrency());
-    }
-
+public interface Account {
     /**
      * Deposits the specified amount of the given currency into the account balance.
      *
@@ -51,17 +28,6 @@ public interface Account extends Comparable<Account> {
     }
 
     /**
-     * Retrieves the balance of the account.
-     *
-     * @return the balance of the account
-     * @deprecated use {@link #getBalance(Currency)}
-     */
-    @Deprecated(forRemoval = true, since = "3.0.0")
-    default BigDecimal getBalance() {
-        return getBalance(getHolder().getDefaultCurrency());
-    }
-
-    /**
      * Retrieves the balance of the account for the specified currency.
      *
      * @param currency the currency for which the balance is to be retrieved
@@ -69,18 +35,6 @@ public interface Account extends Comparable<Account> {
      * @since 3.0.0
      */
     BigDecimal getBalance(Currency currency);
-
-    /**
-     * Withdraws the specified amount from the account balance.
-     *
-     * @param amount the amount to be withdrawn
-     * @return the new balance after the withdrawal
-     * @deprecated use {@link #withdraw(Number, Currency)}
-     */
-    @Deprecated(forRemoval = true, since = "3.0.0")
-    default BigDecimal withdraw(Number amount) {
-        return withdraw(amount, getHolder().getDefaultCurrency());
-    }
 
     /**
      * Withdraws the specified amount of the given currency from the account balance.
@@ -109,20 +63,6 @@ public interface Account extends Comparable<Account> {
     UUID getOwner();
 
     /**
-     * Compares this account to the specified account based on their balance.
-     *
-     * @param account the account to be compared
-     * @return a negative integer, zero, or a positive integer if this account is
-     * less than, equal to, or greater than the specified account
-     * @deprecated use {@link #compareTo(Account, Currency)}
-     */
-    @Override
-    @Deprecated(forRemoval = true, since = "3.0.0")
-    default int compareTo(Account account) {
-        return compareTo(account, getHolder().getDefaultCurrency());
-    }
-
-    /**
      * Compares this account with another account based on their balances in the specified currency.
      *
      * @param account  the account to be compared
@@ -133,17 +73,6 @@ public interface Account extends Comparable<Account> {
      */
     default int compareTo(Account account, Currency currency) {
         return getBalance(currency).compareTo(account.getBalance(currency));
-    }
-
-    /**
-     * Sets the balance of the account to the specified value.
-     *
-     * @param balance the new balance of the account
-     * @deprecated use {@link #setBalance(Number, Currency)}
-     */
-    @Deprecated(forRemoval = true, since = "3.0.0")
-    default void setBalance(Number balance) {
-        setBalance(balance, getHolder().getDefaultCurrency());
     }
 
     /**

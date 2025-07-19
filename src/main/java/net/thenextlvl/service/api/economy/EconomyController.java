@@ -1,8 +1,6 @@
 package net.thenextlvl.service.api.economy;
 
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.thenextlvl.service.api.Controller;
-import net.thenextlvl.service.api.economy.currency.Currency;
 import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -11,7 +9,6 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -24,41 +21,14 @@ import java.util.concurrent.CompletableFuture;
  * @since 1.0.0
  */
 @NullMarked
-public interface EconomyController extends Controller, CurrencyHolder {
+public interface EconomyController extends Controller {
     /**
-     * Retrieves the plural form of the currency name based on the provided locale.
+     * Retrieves the {@code CurrencyHolder} associated with the economy controller.
      *
-     * @param locale the locale for which to retrieve the plural currency name
-     * @return the plural form of the currency name as a string
-     * @deprecated use {@link Currency#getDisplayNamePlural(Locale)}
+     * @return the {@code CurrencyHolder} instance that manages the defined currencies for the controller
      */
-    @Deprecated(forRemoval = true, since = "3.0.0")
-    default String getCurrencyNamePlural(Locale locale) {
-        return getDefaultCurrency().getDisplayNamePlural(locale).map(PlainTextComponentSerializer.plainText()::serialize).orElse("");
-    }
-
-    /**
-     * Retrieves the name of the currency associated with the specified locale.
-     *
-     * @param locale the locale for which to retrieve the currency name
-     * @return the name of the currency as a string
-     * @deprecated use {@link Currency#getDisplayNameSingular(Locale)}
-     */
-    @Deprecated(forRemoval = true, since = "3.0.0")
-    default String getCurrencyNameSingular(Locale locale) {
-        return getDefaultCurrency().getDisplayNameSingular(locale).map(PlainTextComponentSerializer.plainText()::serialize).orElse("");
-    }
-
-    /**
-     * Retrieves the currency symbol associated with the economy controller.
-     *
-     * @return the currency symbol as a string
-     * @deprecated use {@link Currency#getSymbol()}
-     */
-    @Deprecated(forRemoval = true, since = "3.0.0")
-    default String getCurrencySymbol() {
-        return PlainTextComponentSerializer.plainText().serialize(getDefaultCurrency().getSymbol());
-    }
+    @Contract(pure = true)
+    CurrencyHolder getCurrencyHolder();
 
     /**
      * Loads all accounts.
