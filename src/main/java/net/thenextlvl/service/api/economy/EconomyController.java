@@ -34,7 +34,7 @@ public interface EconomyController extends Controller, CurrencyHolder {
      */
     @Deprecated(forRemoval = true, since = "3.0.0")
     default String getCurrencyNamePlural(Locale locale) {
-        return PlainTextComponentSerializer.plainText().serialize(getDefaultCurrency().getDisplayNamePlural(locale));
+        return getDefaultCurrency().getDisplayNamePlural(locale).map(PlainTextComponentSerializer.plainText()::serialize).orElse("");
     }
 
     /**
@@ -46,7 +46,7 @@ public interface EconomyController extends Controller, CurrencyHolder {
      */
     @Deprecated(forRemoval = true, since = "3.0.0")
     default String getCurrencyNameSingular(Locale locale) {
-        return PlainTextComponentSerializer.plainText().serialize(getDefaultCurrency().getDisplayNameSingular(locale));
+        return getDefaultCurrency().getDisplayNameSingular(locale).map(PlainTextComponentSerializer.plainText()::serialize).orElse("");
     }
 
     /**
