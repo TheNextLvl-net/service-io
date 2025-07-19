@@ -1,4 +1,4 @@
-package net.thenextlvl.service.wrapper.service;
+package net.thenextlvl.service.wrapper.service.model;
 
 import net.kyori.adventure.text.Component;
 import net.milkbowl.vault.economy.Economy;
@@ -6,6 +6,8 @@ import net.thenextlvl.service.api.economy.currency.Currency;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Locale;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 @NullMarked
 public class WrappedCurrency implements Currency {
@@ -21,13 +23,13 @@ public class WrappedCurrency implements Currency {
     }
 
     @Override
-    public Component getDisplayNameSingular(Locale locale) {
-        return Component.text(economy.currencyNameSingular());
+    public Optional<Component> getDisplayNameSingular(Locale locale) {
+        return Optional.ofNullable(economy.currencyNameSingular()).map(Component::text);
     }
 
     @Override
-    public Component getDisplayNamePlural(Locale locale) {
-        return Component.text(economy.currencyNamePlural());
+    public Optional<Component> getDisplayNamePlural(Locale locale) {
+        return Optional.ofNullable(economy.currencyNamePlural()).map(Component::text);
     }
 
     @Override
@@ -43,5 +45,10 @@ public class WrappedCurrency implements Currency {
     @Override
     public int getFractionalDigits() {
         return economy.fractionalDigits();
+    }
+
+    @Override
+    public boolean editCurrency(Consumer<Builder> consumer) {
+        return false;
     }
 }

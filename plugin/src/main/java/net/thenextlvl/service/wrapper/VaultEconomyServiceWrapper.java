@@ -64,14 +64,14 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
 
     @Override
     public String currencyNamePlural() {
-        var name = economyController.getDefaultCurrency().getDisplayNamePlural(Locale.US);
-        return PlainTextComponentSerializer.plainText().serialize(name);
+        return economyController.getDefaultCurrency().getDisplayNamePlural(Locale.US)
+                .map(PlainTextComponentSerializer.plainText()::serialize).orElse("");
     }
 
     @Override
     public String currencyNameSingular() {
-        var name = economyController.getDefaultCurrency().getDisplayNameSingular(Locale.US);
-        return PlainTextComponentSerializer.plainText().serialize(name);
+        return economyController.getDefaultCurrency().getDisplayNameSingular(Locale.US)
+                .map(PlainTextComponentSerializer.plainText()::serialize).orElse("");
     }
 
     @Override
