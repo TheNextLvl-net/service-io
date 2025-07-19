@@ -6,6 +6,7 @@ import net.thenextlvl.service.api.economy.Account;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.currency.Currency;
 import net.thenextlvl.service.wrapper.service.model.WrappedAccount;
+import net.thenextlvl.service.wrapper.service.model.WrappedCurrency;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;

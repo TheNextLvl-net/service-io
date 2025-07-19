@@ -3,7 +3,6 @@ package net.thenextlvl.service.api.economy.currency;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
@@ -111,16 +110,9 @@ public interface Currency {
      * The builder allows customization of various currency properties.
      *
      * @param consumer a {@code Consumer} that accepts a {@code Builder} instance to define customizations for the currency
+     * @return {@code true} if the edit succeeded, otherwise {@code false}
      */
-    void editCurrency(Consumer<Builder> consumer);
-
-    /**
-     * Converts the current {@code Currency} instance into a {@code Builder} for modification or reconstruction.
-     *
-     * @return a {@code Builder} instance initialized with the properties of the current {@code Currency}
-     */
-    @ApiStatus.OverrideOnly
-    Builder toBuilder();
+    boolean editCurrency(Consumer<Builder> consumer);
 
     /**
      * A builder interface for constructing instances of {@link Currency}.
@@ -136,14 +128,14 @@ public interface Currency {
          */
         @Contract(value = "_ -> this")
         Builder name(String name);
-        
+
         /**
          * Retrieves the name currently set on the builder.
          *
          * @return the name as a string, or {@code null} if not set
          */
         String name();
-        
+
         /**
          * Retrieves a map containing the singular display names of the currency for various locales.
          *
@@ -240,14 +232,5 @@ public interface Currency {
          */
         @Contract(value = "-> new")
         OptionalInt fractionalDigits();
-
-        /**
-         * Builds and returns a {@link Currency} instance based on the properties set on the {@code Builder}.
-         *
-         * @return the constructed {@link Currency} instance
-         */
-        @Contract("-> new")
-        @ApiStatus.OverrideOnly
-        Currency build();
     }
 }

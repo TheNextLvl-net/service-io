@@ -62,9 +62,10 @@ public class WrappedAccount implements Account {
     }
 
     @Override
-    public void setBalance(Number balance, Currency currency) {
+    public BigDecimal setBalance(Number balance, Currency currency) {
         var difference = balance.doubleValue() - getBalance(currency).doubleValue();
-        if (difference > 0) deposit(difference, currency);
-        else if (difference < 0) withdraw(-difference, currency);
+        if (difference > 0) return deposit(difference, currency);
+        else if (difference < 0) return withdraw(-difference, currency);
+        return BigDecimal.ZERO;
     }
 }

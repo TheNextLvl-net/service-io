@@ -90,13 +90,17 @@ public interface CurrencyHolder {
     }
 
     /**
-     * Adds a new currency to the currency holder.
+     * Creates a new currency using the specified builder.
+     * <p>
+     * This method enables modifying existing currencies by utilizing a
+     * pre-configured builder to create a new currency.
      *
-     * @param currency the {@code Currency} object to add
-     * @return {@code true} if the currency was successfully added, otherwise {@code false}
+     * @param builder the {@link Currency.Builder} containing the configuration for the currency creation
+     * @return the newly created {@link Currency}
      * @throws UnsupportedOperationException if {@link #hasMultiCurrencySupport()} is {@code false}
+     * @throws IllegalArgumentException      if a currency with the same name already exists
      */
-    default boolean addCurrency(Currency currency) {
+    default Currency createCurrency(Currency.Builder builder) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
