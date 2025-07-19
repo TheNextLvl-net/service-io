@@ -3,6 +3,7 @@ package net.thenextlvl.service.wrapper.service.model;
 import net.kyori.adventure.text.Component;
 import net.milkbowl.vault.economy.Economy;
 import net.thenextlvl.service.api.economy.currency.Currency;
+import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -15,10 +16,17 @@ import java.util.function.Consumer;
 
 @NullMarked
 public class WrappedCurrency implements Currency {
+    private final CurrencyHolder holder;
     private final Economy economy;
 
-    public WrappedCurrency(Economy economy) {
+    public WrappedCurrency(CurrencyHolder holder, Economy economy) {
         this.economy = economy;
+        this.holder = holder;
+    }
+
+    @Override
+    public CurrencyHolder getHolder() {
+        return holder;
     }
 
     @Override

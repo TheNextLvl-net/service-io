@@ -85,12 +85,30 @@ public class BankServiceWrapper implements BankController {
 
     @Override
     public Optional<Bank> getBank(String name) {
+        if (!economy.getBanks().contains(name)) return Optional.empty();
         return Optional.of(new WrappedBank(name, null, economy, plugin));
     }
 
     @Override
+    public Optional<Bank> getBank(OfflinePlayer player, @Nullable World world) {
+        return economy.getBanks().stream().filter(bank ->
+                economy.isBankOwner(bank, player).transactionSuccess()
+        ).findAny().flatMap(this::getBank);
+    }
+
+    @Override
     public Optional<Bank> getBank(UUID uuid, @Nullable World world) {
-        return Optional.empty();
+        return getBank(plugin.getServer().getOfflinePlayer(uuid), world);
+    }
+
+    @Override
+    public boolean hasBank(OfflinePlayer player, @Nullable World world) {
+        return economy.getBanks().stream().anyMatch(bank -> economy.isBankOwner(bank, player).transactionSuccess());
+    }
+
+    @Override
+    public boolean hasBank(UUID uuid, @Nullable World world) {
+        return hasBank(plugin.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
