@@ -22,6 +22,14 @@ import java.util.function.Consumer;
 @NullMarked
 public interface Currency {
     /**
+     * Retrieves the {@code CurrencyHolder} associated with this currency.
+     *
+     * @return the {@code CurrencyHolder} instance that manages this currency
+     */
+    @Contract(pure = true)
+    CurrencyHolder getHolder();
+
+    /**
      * Retrieves the name of the currency.
      *
      * @return the name of the currency as a string
@@ -121,7 +129,7 @@ public interface Currency {
      * @return a {@code Builder} instance initialized with the properties of the current {@code Currency}
      */
     Builder toBuilder();
-    
+
     /**
      * A builder interface for constructing instances of {@link Currency}.
      * The {@code Builder} allows for the configuration of currency properties such as

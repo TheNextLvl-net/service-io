@@ -28,7 +28,7 @@ public interface BankController extends Controller {
      */
     @Contract(pure = true)
     CurrencyHolder getCurrencyHolder();
-    
+
     /**
      * Creates a bank for the specified player with the given name.
      * <p>
@@ -334,6 +334,46 @@ public interface BankController extends Controller {
      * @return an Optional containing the Bank associated with the UUID and world, or empty if not found
      */
     Optional<Bank> getBank(UUID uuid, @Nullable World world);
+
+    /**
+     * Checks if the specified player has a bank account.
+     *
+     * @param player the player to check for an associated bank account
+     * @return {@code true} if the player has a bank account, otherwise {@code false}
+     */
+    default boolean hasBank(OfflinePlayer player) {
+        return hasBank(player, null);
+    }
+
+    /**
+     * Checks if the specified player has a bank account in the given world.
+     *
+     * @param player the player to check for an associated bank account
+     * @param world  the world in which to check for the bank account
+     * @return {@code true} if the player has a bank account in the specified world, otherwise {@code false}
+     */
+    default boolean hasBank(OfflinePlayer player, @Nullable World world) {
+        return hasBank(player.getUniqueId(), world);
+    }
+
+    /**
+     * Checks if the specified uuid is associated with a bank account.
+     *
+     * @param uuid the uuid of a player to check for an associated bank account
+     * @return {@code true} if the uuid is associated with a bank account, otherwise {@code false}
+     */
+    default boolean hasBank(UUID uuid) {
+        return hasBank(uuid, null);
+    }
+
+    /**
+     * Checks if the specified uuid is associated with a bank account in the given world.
+     *
+     * @param uuid  the uuid of a player to check for an associated bank account
+     * @param world the world in which to check for the bank account
+     * @return {@code true} if the uuid is associated with a bank account in the specified world, otherwise {@code false}
+     */
+    boolean hasBank(UUID uuid, @Nullable World world);
 
     /**
      * Determines whether the controller supports handling of multiple worlds.
