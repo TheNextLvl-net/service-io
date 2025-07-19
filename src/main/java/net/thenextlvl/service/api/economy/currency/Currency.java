@@ -116,6 +116,13 @@ public interface Currency {
     boolean editCurrency(Consumer<Builder> consumer) throws IllegalArgumentException;
 
     /**
+     * Converts the current {@code Currency} instance into a {@code Builder} for modification or reconstruction.
+     *
+     * @return a {@code Builder} instance initialized with the properties of the current {@code Currency}
+     */
+    Builder toBuilder();
+    
+    /**
      * A builder interface for constructing instances of {@link Currency}.
      * The {@code Builder} allows for the configuration of currency properties such as
      * singular and plural display names, currency symbol, and fractional digits.
