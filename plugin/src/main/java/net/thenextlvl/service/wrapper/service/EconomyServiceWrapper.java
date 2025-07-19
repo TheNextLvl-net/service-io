@@ -5,6 +5,7 @@ import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.Account;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.currency.Currency;
+import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import net.thenextlvl.service.wrapper.service.model.WrappedAccount;
 import net.thenextlvl.service.wrapper.service.model.WrappedCurrency;
 import org.bukkit.OfflinePlayer;
@@ -23,16 +24,21 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public class EconomyServiceWrapper implements EconomyController {
-    private final Currency currency;
+    private final CurrencyHolder holder;
     private final Economy economy;
     private final Plugin provider;
     private final ServicePlugin plugin;
 
     public EconomyServiceWrapper(Economy economy, Plugin provider, ServicePlugin plugin) {
-        this.currency = new WrappedCurrency(economy);
+        this.holder = new WrappedCurrencyHolder(economy);
         this.economy = economy;
         this.plugin = plugin;
         this.provider = provider;
+    }
+
+    @Override
+    public CurrencyHolder getCurrencyHolder() {
+        return holder;
     }
 
     @Override
@@ -44,14 +50,14 @@ public class EconomyServiceWrapper implements EconomyController {
     public @Unmodifiable Set<Account> getAccounts(@Nullable World world) {
         return Arrays.stream(plugin.getServer().getOfflinePlayers())
                 .filter(player -> economy.hasAccount(player, world != null ? world.getName() : null))
-                .map(player -> new WrappedAccount(this, world, economy, player))
+                .map(player -> new WrappedAccount(world, economy, player))
                 .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
     public Optional<Account> getAccount(OfflinePlayer player, @Nullable World world) {
         if (!economy.hasAccount(player, world != null ? world.getName() : null)) return Optional.empty();
-        return Optional.of(new WrappedAccount(this, world, economy, player));
+        return Optional.of(new WrappedAccount(world, economy, player));
     }
 
     @Override
@@ -95,11 +101,6 @@ public class EconomyServiceWrapper implements EconomyController {
     }
 
     @Override
-    public Currency getDefaultCurrency() {
-        return currency;
-    }
-
-    @Override
     public Plugin getPlugin() {
         return provider;
     }
@@ -107,5 +108,18 @@ public class EconomyServiceWrapper implements EconomyController {
     @Override
     public String getName() {
         return economy.getName();
+    }
+
+    private static class WrappedCurrencyHolder implements CurrencyHolder {
+        private final Currency currency;
+
+        private WrappedCurrencyHolder(Economy economy) {
+            this.currency = new WrappedCurrency(economy);
+        }
+
+        @Override
+        public Currency getDefaultCurrency() {
+            return currency;
+        }
     }
 }

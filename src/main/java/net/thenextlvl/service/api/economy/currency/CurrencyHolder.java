@@ -1,10 +1,8 @@
 package net.thenextlvl.service.api.economy.currency;
 
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -17,31 +15,6 @@ import java.util.function.Consumer;
  * @since 3.0.0
  */
 public interface CurrencyHolder {
-    /**
-     * Formats the specified amount as a string.
-     *
-     * @param amount the number amount to be formatted
-     * @return the formatted amount as a string
-     * @since 1.0.0
-     * @deprecated use {@link Currency#format(Number, Locale)}
-     */
-    @Deprecated(forRemoval = true, since = "3.0.0")
-    default String format(Number amount) {
-        return PlainTextComponentSerializer.plainText().serialize(getDefaultCurrency().format(amount, Locale.US));
-    }
-
-    /**
-     * Retrieves the number of fractional digits used for formatting currency amounts.
-     *
-     * @return the number of fractional digits used for formatting currency amounts
-     * @since 1.0.0
-     * @deprecated use {@link Currency#getFractionalDigits()}
-     */
-    @Deprecated(forRemoval = true, since = "3.0.0")
-    default int fractionalDigits() {
-        return getDefaultCurrency().getFractionalDigits();
-    }
-
     /**
      * Retrieves all currencies managed by the currency holder,
      * including the {@link #getDefaultCurrency() default currency}.

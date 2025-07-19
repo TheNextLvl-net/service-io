@@ -20,7 +20,15 @@ import java.util.concurrent.CompletableFuture;
  * @since 1.0.0
  */
 @NullMarked
-public interface BankController extends Controller, CurrencyHolder {
+public interface BankController extends Controller {
+    /**
+     * Retrieves the {@code CurrencyHolder} associated with the economy controller.
+     *
+     * @return the {@code CurrencyHolder} instance that manages the defined currencies for the controller
+     */
+    @Contract(pure = true)
+    CurrencyHolder getCurrencyHolder();
+    
     /**
      * Creates a bank for the specified player with the given name.
      * <p>

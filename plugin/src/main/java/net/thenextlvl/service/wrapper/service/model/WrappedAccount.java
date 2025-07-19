@@ -3,8 +3,6 @@ package net.thenextlvl.service.wrapper.service.model;
 import net.milkbowl.vault.economy.Economy;
 import net.thenextlvl.service.api.economy.Account;
 import net.thenextlvl.service.api.economy.currency.Currency;
-import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
-import net.thenextlvl.service.api.economy.EconomyController;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jspecify.annotations.NullMarked;
@@ -16,21 +14,14 @@ import java.util.UUID;
 
 @NullMarked
 public class WrappedAccount implements Account {
-    private final EconomyController controller;
     private final @Nullable World world;
     private final Economy economy;
     private final OfflinePlayer holder;
 
-    public WrappedAccount(EconomyController controller, @Nullable World world, Economy economy, OfflinePlayer holder) {
-        this.controller = controller;
+    public WrappedAccount(@Nullable World world, Economy economy, OfflinePlayer holder) {
         this.world = world;
         this.economy = economy;
         this.holder = holder;
-    }
-
-    @Override
-    public CurrencyHolder getHolder() {
-        return controller;
     }
 
     @Override
