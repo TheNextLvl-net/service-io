@@ -105,6 +105,17 @@ public interface CurrencyHolder {
     }
 
     /**
+     * Deletes the specified currency.
+     *
+     * @param currency the currency to delete
+     * @return {@code true} if the currency was successfully deleted, otherwise {@code false}
+     * @throws UnsupportedOperationException if {@link #hasMultiCurrencySupport()} is {@code false}
+     */
+    default boolean deleteCurrency(Currency currency) {
+        return deleteCurrency(currency.getName());
+    }
+
+    /**
      * Deletes a currency with the specified name.
      *
      * @param name the name of the currency to delete
@@ -128,6 +139,7 @@ public interface CurrencyHolder {
      *
      * @return {@code true} if multi-currency is supported, otherwise {@code false}
      * @implSpec If multiple currencies are supported, all respective methods have to be implemented.
+     * @see #createCurrency(Currency.Builder)
      * @see #createCurrency(String, Consumer)
      * @see #deleteCurrency(String)
      * @see #getCurrencies()
