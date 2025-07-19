@@ -111,8 +111,9 @@ public interface Currency {
      *
      * @param consumer a {@code Consumer} that accepts a {@code Builder} instance to define customizations for the currency
      * @return {@code true} if the edit succeeded, otherwise {@code false}
+     * @throws IllegalArgumentException if a currency with the same name already exists
      */
-    boolean editCurrency(Consumer<Builder> consumer);
+    boolean editCurrency(Consumer<Builder> consumer) throws IllegalArgumentException;
 
     /**
      * A builder interface for constructing instances of {@link Currency}.
