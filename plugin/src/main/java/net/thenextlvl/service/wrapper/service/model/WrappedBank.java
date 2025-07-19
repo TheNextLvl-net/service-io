@@ -2,9 +2,9 @@ package net.thenextlvl.service.wrapper.service.model;
 
 import net.milkbowl.vault.economy.Economy;
 import net.thenextlvl.service.ServicePlugin;
-import net.thenextlvl.service.api.economy.currency.Currency;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.bank.BankController;
+import net.thenextlvl.service.api.economy.currency.Currency;
 import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -70,10 +70,12 @@ public class WrappedBank implements Bank {
     }
 
     @Override
-    public void setBalance(Number balance, Currency currency) {
-        var difference = balance.doubleValue() - getBalance(currency).doubleValue();
-        if (difference > 0) deposit(difference, currency);
-        else if (difference < 0) withdraw(-difference, currency);
+    public BigDecimal setBalance(Number balance, Currency currency) {
+        var current = getBalance(currency);
+        var difference = balance.doubleValue() - current.doubleValue();
+        if (difference > 0) return deposit(difference, currency);
+        else if (difference < 0) return withdraw(-difference, currency);
+        return current;
     }
 
     @Override
