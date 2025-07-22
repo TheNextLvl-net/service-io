@@ -71,6 +71,11 @@ public class WrappedBank implements Bank {
     }
 
     @Override
+    public boolean canHold(Currency currency) {
+        return false;
+    }
+
+    @Override
     public @Unmodifiable Set<UUID> getMembers() {
         return Arrays.stream(provider.getServer().getOfflinePlayers())
                 .filter(player -> economy.isBankMember(name, player).transactionSuccess())
@@ -101,5 +106,25 @@ public class WrappedBank implements Bank {
     @Override
     public boolean setOwner(UUID uuid) {
         return false;
+    }
+
+    @Override
+    public boolean canDeposit(OfflinePlayer player, Number amount, Currency currency) {
+        return economy.isBankOwner(getName(), player).transactionSuccess();
+    }
+
+    @Override
+    public boolean canDeposit(UUID uuid, Number amount, Currency currency) {
+        return canDeposit(plugin.getServer().getOfflinePlayer(uuid), amount, currency);
+    }
+
+    @Override
+    public boolean canWithdraw(OfflinePlayer player, Number amount, Currency currency) {
+        return economy.isBankOwner(getName(), player).transactionSuccess();
+    }
+
+    @Override
+    public boolean canWithdraw(UUID uuid, Number amount, Currency currency) {
+        return canWithdraw(plugin.getServer().getOfflinePlayer(uuid), amount, currency);
     }
 }
