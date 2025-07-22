@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "net.thenextlvl.services"
-version = "3.0.0-pre5"
+version = "3.0.0-pre6"
 
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(21)
