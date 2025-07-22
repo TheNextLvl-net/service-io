@@ -74,7 +74,12 @@ public interface CurrencyHolder {
      * @throws IllegalArgumentException      if a currency with the same name already exists
      */
     default Currency createCurrency(Currency.Builder builder) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return createCurrency(builder.name(), delegate -> {
+            builder.displayNamesPlural().forEach(delegate::displayNamePlural);
+            builder.displayNamesSingular().forEach(delegate::displayNameSingular);
+            builder.fractionalDigits().ifPresent(delegate::fractionalDigits);
+            builder.symbol().ifPresent(delegate::symbol);
+        });
     }
 
     /**
@@ -112,7 +117,6 @@ public interface CurrencyHolder {
      *
      * @return {@code true} if multi-currency is supported, otherwise {@code false}
      * @implSpec If multiple currencies are supported, all respective methods have to be implemented.
-     * @see #createCurrency(Currency.Builder)
      * @see #createCurrency(String, Consumer)
      * @see #deleteCurrency(String)
      * @see #getCurrencies()
