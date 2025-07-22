@@ -17,6 +17,8 @@ import java.util.UUID;
 public interface Account {
     /**
      * Deposits the specified amount of the given currency into the account balance.
+     * <p>
+     * Returns {@link BigDecimal#ZERO} if {@link #canHold(Currency)} returns {@code false}
      *
      * @param amount   the amount to be deposited
      * @param currency the currency that is being deposited
@@ -38,6 +40,8 @@ public interface Account {
 
     /**
      * Withdraws the specified amount of the given currency from the account balance.
+     * <p>
+     * Returns {@link BigDecimal#ZERO} if {@link #canHold(Currency)} returns {@code false}
      *
      * @param amount   the amount to be withdrawn
      * @param currency the currency in which the withdrawal is to be made
@@ -49,16 +53,16 @@ public interface Account {
     }
 
     /**
-     * Returns an optional containing the world associated with this account.
+     * Returns the world associated with this account.
      *
-     * @return an {@code Optional<World>} containing the world associated with this account, or empty
+     * @return an optional containing the world associated with this account, or empty
      */
     Optional<World> getWorld();
 
     /**
-     * Returns the UUID of the owner of this account.
+     * Returns the account owner's uuid.
      *
-     * @return the UUID of the owner
+     * @return the account owner's uuid
      */
     UUID getOwner();
 
@@ -77,10 +81,13 @@ public interface Account {
 
     /**
      * Sets the balance of the account to the specified value in the given currency.
+     * <p>
+     * Returns {@link BigDecimal#ZERO} if {@link #canHold(Currency)} returns {@code false}
      *
      * @param balance  the new balance to be set
      * @param currency the currency of the balance
      * @return the new balance after the operation
+     * @see #canHold(Currency)
      * @since 3.0.0
      */
     BigDecimal setBalance(Number balance, Currency currency);
