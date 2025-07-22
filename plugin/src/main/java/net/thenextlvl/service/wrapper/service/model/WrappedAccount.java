@@ -59,4 +59,9 @@ public class WrappedAccount implements Account {
         else if (difference < 0) return withdraw(-difference, currency);
         return BigDecimal.ZERO;
     }
+
+    @Override
+    public boolean canHold(Currency currency) {
+        return true;
+    }
 }

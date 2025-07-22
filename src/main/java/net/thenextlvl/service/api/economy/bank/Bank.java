@@ -109,4 +109,56 @@ public interface Bank extends Account {
      * @return {@code true} if the owner was successfully set, otherwise {@code false}
      */
     boolean setOwner(UUID uuid);
+
+    /**
+     * Checks whether the specified player can deposit the specified amount in the given currency.
+     * <p>
+     * Returns {@code false} if {@link #canHold(Currency)} returns {@code false}
+     *
+     * @param player   the player attempting to make the deposit
+     * @param amount   the amount being attempted to deposit
+     * @param currency the currency of the deposit
+     * @return {@code true} if the player can deposit the specified amount, otherwise {@code false}
+     */
+    default boolean canDeposit(OfflinePlayer player, Number amount, Currency currency) {
+        return canDeposit(player.getUniqueId(), amount, currency);
+    }
+
+    /**
+     * Checks whether the specified uuid can deposit the specified amount in the given currency.
+     * <p>
+     * Returns {@code false} if {@link #canHold(Currency)} returns {@code false}
+     *
+     * @param uuid     the uuid of the player attempting to make the deposit
+     * @param amount   the amount being attempted to deposit
+     * @param currency the currency of the deposit
+     * @return {@code true} if the player can deposit the specified amount, otherwise {@code false}
+     */
+    boolean canDeposit(UUID uuid, Number amount, Currency currency);
+
+    /**
+     * Checks whether the specified player can withdraw the specified amount in the given currency.
+     * <p>
+     * Returns {@code false} if {@link #canHold(Currency)} returns {@code false}
+     *
+     * @param player   the player attempting to make the withdrawal
+     * @param amount   the amount being attempted to withdraw
+     * @param currency the currency of the withdrawal
+     * @return {@code true} if the player can withdraw the specified amount, otherwise {@code false}
+     */
+    default boolean canWithdraw(OfflinePlayer player, Number amount, Currency currency) {
+        return canWithdraw(player.getUniqueId(), amount, currency);
+    }
+
+    /**
+     * Checks whether the specified uuid can withdraw the specified amount in the given currency.
+     * <p>
+     * Returns {@code false} if {@link #canHold(Currency)} returns {@code false}
+     *
+     * @param uuid     the UUID of the player attempting to make the withdrawal
+     * @param amount   the amount being attempted to withdraw
+     * @param currency the currency of the withdrawal
+     * @return {@code true} if the player can withdraw the specified amount, otherwise {@code false}
+     */
+    boolean canWithdraw(UUID uuid, Number amount, Currency currency);
 }

@@ -91,4 +91,12 @@ public interface Account {
      * @since 3.0.0
      */
     BigDecimal setBalance(Number balance, Currency currency);
+
+    /**
+     * Checks if the account can hold the specified currency.
+     *
+     * @param currency the currency to check support for
+     * @return {@code true} if the account can hold the specified currency, otherwise {@code false}
+     */
+    boolean canHold(Currency currency);
 }
