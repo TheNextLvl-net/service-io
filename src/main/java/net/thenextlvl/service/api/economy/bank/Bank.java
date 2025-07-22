@@ -119,6 +119,7 @@ public interface Bank extends Account {
      * @param amount   the amount being attempted to deposit
      * @param currency the currency of the deposit
      * @return {@code true} if the player can deposit the specified amount, otherwise {@code false}
+     * @since 3.0.0
      */
     default boolean canDeposit(OfflinePlayer player, Number amount, Currency currency) {
         return canDeposit(player.getUniqueId(), amount, currency);
@@ -133,6 +134,7 @@ public interface Bank extends Account {
      * @param amount   the amount being attempted to deposit
      * @param currency the currency of the deposit
      * @return {@code true} if the player can deposit the specified amount, otherwise {@code false}
+     * @since 3.0.0
      */
     boolean canDeposit(UUID uuid, Number amount, Currency currency);
 
@@ -145,6 +147,7 @@ public interface Bank extends Account {
      * @param amount   the amount being attempted to withdraw
      * @param currency the currency of the withdrawal
      * @return {@code true} if the player can withdraw the specified amount, otherwise {@code false}
+     * @since 3.0.0
      */
     default boolean canWithdraw(OfflinePlayer player, Number amount, Currency currency) {
         return canWithdraw(player.getUniqueId(), amount, currency);
@@ -159,6 +162,7 @@ public interface Bank extends Account {
      * @param amount   the amount being attempted to withdraw
      * @param currency the currency of the withdrawal
      * @return {@code true} if the player can withdraw the specified amount, otherwise {@code false}
+     * @since 3.0.0
      */
     boolean canWithdraw(UUID uuid, Number amount, Currency currency);
 }

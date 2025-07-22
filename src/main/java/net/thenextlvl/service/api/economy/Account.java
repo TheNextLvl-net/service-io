@@ -97,6 +97,7 @@ public interface Account {
      *
      * @param currency the currency to check support for
      * @return {@code true} if the account can hold the specified currency, otherwise {@code false}
+     * @since 3.0.0
      */
     boolean canHold(Currency currency);
 }
