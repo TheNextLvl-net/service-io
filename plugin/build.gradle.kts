@@ -46,7 +46,7 @@ dependencies {
     compileOnly("net.luckperms:api:5.5")
 
     implementation("com.github.MilkBowl:VaultAPI:1.7.1")
-    implementation("net.milkbowl.vault:VaultUnlockedAPI:2.14")
+    implementation("net.milkbowl.vault:VaultUnlockedAPI:2.15")
     implementation("net.thenextlvl.core:i18n:3.2.0")
     implementation("net.thenextlvl.core:paper:2.2.1")
     implementation("org.bstats:bstats-bukkit:3.1.1-SNAPSHOT")
