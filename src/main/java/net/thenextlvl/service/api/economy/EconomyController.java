@@ -1,75 +1,73 @@
 package net.thenextlvl.service.api.economy;
 
 import net.thenextlvl.service.api.Controller;
+import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * The AccountController interface provides methods to create, retrieve and delete accounts.
+ * EconomyController is an interface that provides methods for managing and interacting
+ * with economic systems, such as currency formatting, account retrieval, and multi-currency support.
+ *
+ * @since 1.0.0
  */
 @NullMarked
 public interface EconomyController extends Controller {
     /**
-     * Formats the specified amount as a string.
+     * Retrieves the {@code CurrencyHolder} associated with the economy controller.
      *
-     * @param amount the number amount to be formatted
-     * @return the formatted amount as a string
+     * @return the {@code CurrencyHolder} instance that manages the defined currencies for the controller
      */
-    String format(Number amount);
+    @Contract(pure = true)
+    CurrencyHolder getCurrencyHolder();
 
     /**
-     * Retrieves the number of fractional digits used for formatting currency amounts.
+     * Loads all accounts.
      *
-     * @return the number of fractional digits used for formatting currency amounts
+     * @return a {@link CompletableFuture} that completes with an unmodifiable {@link Set} of {@link Account} objects
+     * representing all available accounts
+     * @since 2.2.0
      */
-    int fractionalDigits();
+    default CompletableFuture<@Unmodifiable Set<Account>> loadAccounts() {
+        return loadAccounts(null);
+    }
 
     /**
-     * Retrieves the plural form of the currency name based on the provided locale.
+     * Loads all accounts associated with the specified world.
      *
-     * @param locale the locale for which to retrieve the plural currency name
-     * @return the plural form of the currency name as a string
+     * @param world the world for which the accounts are to be loaded
+     * @return a {@link CompletableFuture} that completes with an unmodifiable {@link Set} of {@link Account} objects
+     * representing all available accounts
      */
-    String getCurrencyNamePlural(Locale locale);
+    CompletableFuture<@Unmodifiable Set<Account>> loadAccounts(@Nullable World world);
 
     /**
-     * Retrieves the name of the currency associated with the specified locale.
+     * Retrieves all the accounts that are currently loaded.
      *
-     * @param locale the locale for which to retrieve the currency name
-     * @return the name of the currency as a string
+     * @return an unmodifiable set of accounts
+     * @since 2.2.0
      */
-    String getCurrencyNameSingular(Locale locale);
+    default @Unmodifiable Set<Account> getAccounts() {
+        return getAccounts(null);
+    }
 
     /**
-     * Retrieves the currency symbol associated with the economy controller.
+     * Retrieves all the accounts associated with the specified world that are currently loaded.
      *
-     * @return the currency symbol as a string
-     */
-    String getCurrencySymbol();
-
-    /**
-     * Loads all accounts asynchronously.
-     *
-     * @return a {@link CompletableFuture} that, when completed, will provide a {@link Set} of {@link Account} objects representing
-     * all the accounts available.
-     */
-    CompletableFuture<@Unmodifiable Set<Account>> loadAccounts();
-
-    /**
-     * Retrieves all the accounts currently available.
-     *
-     * @return a set of accounts
+     * @param world the world for which the accounts are to be retrieved
+     * @return an unmodifiable set of accounts for the given world
      */
     @Unmodifiable
-    Set<Account> getAccounts();
+    Set<Account> getAccounts(@Nullable World world);
 
     /**
      * Retrieve the account for the specified player.
@@ -78,7 +76,7 @@ public interface EconomyController extends Controller {
      * @return an optional containing the account, or empty
      */
     default Optional<Account> getAccount(OfflinePlayer player) {
-        return getAccount(player.getUniqueId());
+        return getAccount(player, null);
     }
 
     /**
@@ -88,7 +86,7 @@ public interface EconomyController extends Controller {
      * @param world  the world in which the account is located
      * @return an optional containing the account, or empty
      */
-    default Optional<Account> getAccount(OfflinePlayer player, World world) {
+    default Optional<Account> getAccount(OfflinePlayer player, @Nullable World world) {
         return getAccount(player.getUniqueId(), world);
     }
 
@@ -98,7 +96,9 @@ public interface EconomyController extends Controller {
      * @param uuid the uuid of the account to be retrieved
      * @return an optional containing the account, or empty
      */
-    Optional<Account> getAccount(UUID uuid);
+    default Optional<Account> getAccount(UUID uuid) {
+        return getAccount(uuid, null);
+    }
 
     /**
      * Retrieve the account for the specified uuid and world.
@@ -107,7 +107,7 @@ public interface EconomyController extends Controller {
      * @param world the world in which the account is located
      * @return an optional containing the account, or empty
      */
-    Optional<Account> getAccount(UUID uuid, World world);
+    Optional<Account> getAccount(UUID uuid, @Nullable World world);
 
     /**
      * Retrieve the account for the specified player or try to load it.
@@ -116,9 +116,7 @@ public interface EconomyController extends Controller {
      * @return a CompletableFuture that will complete with the retrieved account
      */
     default CompletableFuture<Optional<Account>> tryGetAccount(OfflinePlayer player) {
-        return getAccount(player)
-                .map(account -> CompletableFuture.completedFuture(Optional.of(account)))
-                .orElseGet(() -> loadAccount(player));
+        return tryGetAccount(player, null);
     }
 
     /**
@@ -128,10 +126,8 @@ public interface EconomyController extends Controller {
      * @param world  the world in which the account is located
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    default CompletableFuture<Optional<Account>> tryGetAccount(OfflinePlayer player, World world) {
-        return getAccount(player, world)
-                .map(account -> CompletableFuture.completedFuture(Optional.of(account)))
-                .orElseGet(() -> loadAccount(player, world));
+    default CompletableFuture<Optional<Account>> tryGetAccount(OfflinePlayer player, @Nullable World world) {
+        return tryGetAccount(player.getUniqueId(), world);
     }
 
     /**
@@ -141,9 +137,7 @@ public interface EconomyController extends Controller {
      * @return a CompletableFuture that will complete with the retrieved account
      */
     default CompletableFuture<Optional<Account>> tryGetAccount(UUID uuid) {
-        return getAccount(uuid)
-                .map(account -> CompletableFuture.completedFuture(Optional.of(account)))
-                .orElseGet(() -> loadAccount(uuid));
+        return tryGetAccount(uuid, null);
     }
 
     /**
@@ -153,7 +147,7 @@ public interface EconomyController extends Controller {
      * @param world the world in which the account is located
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    default CompletableFuture<Optional<Account>> tryGetAccount(UUID uuid, World world) {
+    default CompletableFuture<Optional<Account>> tryGetAccount(UUID uuid, @Nullable World world) {
         return getAccount(uuid, world)
                 .map(account -> CompletableFuture.completedFuture(Optional.of(account)))
                 .orElseGet(() -> loadAccount(uuid, world));
@@ -161,42 +155,55 @@ public interface EconomyController extends Controller {
 
     /**
      * Creates an account for the specified player.
+     * <p>
+     * Completes with an {@link IllegalStateException} if a similar account already exists
      *
      * @param player the player for whom the account will be created
      * @return a CompletableFuture that will complete with the created account
-     * @throws IllegalStateException if a similar account already exists
      */
+    @Contract("_ -> new")
     default CompletableFuture<Account> createAccount(OfflinePlayer player) {
-        return createAccount(player.getUniqueId());
+        return createAccount(player, null);
     }
 
     /**
      * Creates an account for the specified player in the specified world.
+     * <p>
+     * Completes with an {@link IllegalStateException} if a similar account already exists
      *
      * @param player the player for whom the account will be created
      * @param world  the world in which the player's account will be created
      * @return a CompletableFuture that will complete with the created account
      */
-    default CompletableFuture<Account> createAccount(OfflinePlayer player, World world) {
+    @Contract("_, _ -> new")
+    default CompletableFuture<Account> createAccount(OfflinePlayer player, @Nullable World world) {
         return createAccount(player.getUniqueId(), world);
     }
 
     /**
      * Creates an account with the given uuid.
+     * <p>
+     * Completes with an {@link IllegalStateException} if a similar account already exists
      *
      * @param uuid the uuid of the account to be created
      * @return a CompletableFuture that will complete with the created account
      */
-    CompletableFuture<Account> createAccount(UUID uuid);
+    @Contract("_ -> new")
+    default CompletableFuture<Account> createAccount(UUID uuid) {
+        return createAccount(uuid, null);
+    }
 
     /**
      * Creates an account with the given uuid and world.
+     * <p>
+     * Completes with an {@link IllegalStateException} if a similar account already exists
      *
      * @param uuid  the uuid of the account to be created
      * @param world the world in which the account will be created
      * @return a CompletableFuture that will complete with the created account
      */
-    CompletableFuture<Account> createAccount(UUID uuid, World world);
+    @Contract("_, _ -> new")
+    CompletableFuture<Account> createAccount(UUID uuid, @Nullable World world);
 
     /**
      * Loads the account for the specified player asynchronously.
@@ -205,7 +212,7 @@ public interface EconomyController extends Controller {
      * @return a CompletableFuture that will complete with the retrieved account
      */
     default CompletableFuture<Optional<Account>> loadAccount(OfflinePlayer player) {
-        return loadAccount(player.getUniqueId());
+        return loadAccount(player, null);
     }
 
     /**
@@ -215,7 +222,7 @@ public interface EconomyController extends Controller {
      * @param world  the world in which the account is located
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    default CompletableFuture<Optional<Account>> loadAccount(OfflinePlayer player, World world) {
+    default CompletableFuture<Optional<Account>> loadAccount(OfflinePlayer player, @Nullable World world) {
         return loadAccount(player.getUniqueId(), world);
     }
 
@@ -225,7 +232,9 @@ public interface EconomyController extends Controller {
      * @param uuid the uuid of the account to be retrieved
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    CompletableFuture<Optional<Account>> loadAccount(UUID uuid);
+    default CompletableFuture<Optional<Account>> loadAccount(UUID uuid) {
+        return loadAccount(uuid, null);
+    }
 
     /**
      * Loads the account for the specified uuid and world asynchronously.
@@ -234,55 +243,66 @@ public interface EconomyController extends Controller {
      * @param world the world in which the account is located
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    CompletableFuture<Optional<Account>> loadAccount(UUID uuid, World world);
+    CompletableFuture<Optional<Account>> loadAccount(UUID uuid, @Nullable World world);
 
     /**
      * Deletes the specified account.
      *
      * @param account the account to be deleted
-     * @return a CompletableFuture that will complete when the account is deleted
+     * @return a {@code CompletableFuture} completing with a boolean indicating whether the account was deleted
      */
     default CompletableFuture<Boolean> deleteAccount(Account account) {
-        return account.getWorld()
-                .map(world -> deleteAccount(account.getOwner(), world))
-                .orElseGet(() -> deleteAccount(account.getOwner()));
+        return deleteAccount(account.getOwner(), account.getWorld().orElse(null));
     }
 
     /**
-     * Deletes the account of the specified player.
+     * Deletes the account of the given player.
      *
      * @param player the player whose account will be deleted
-     * @return a CompletableFuture that will complete when the account is deleted
+     * @return a {@code CompletableFuture} completing with a boolean indicating whether the account was deleted
      */
     default CompletableFuture<Boolean> deleteAccount(OfflinePlayer player) {
-        return deleteAccount(player.getUniqueId());
+        return deleteAccount(player, null);
     }
 
     /**
-     * Deletes the account of the specified player in the specified world.
+     * Deletes the account of the given player in the specified world.
      *
      * @param player the player whose account will be deleted
      * @param world  the world in which the player's account exists
-     * @return a CompletableFuture that will complete when the account is deleted
+     * @return a {@code CompletableFuture} completing with a boolean indicating whether the account was deleted
      */
-    default CompletableFuture<Boolean> deleteAccount(OfflinePlayer player, World world) {
+    default CompletableFuture<Boolean> deleteAccount(OfflinePlayer player, @Nullable World world) {
         return deleteAccount(player.getUniqueId(), world);
     }
 
     /**
-     * Deletes the account with the specified uuid.
+     * Deletes the account of the given owner's UUID.
      *
      * @param uuid the uuid of the account to be deleted
-     * @return a CompletableFuture that will complete when the account is deleted
+     * @return a {@code CompletableFuture} completing with a boolean indicating whether the account was deleted
      */
-    CompletableFuture<Boolean> deleteAccount(UUID uuid);
+    default CompletableFuture<Boolean> deleteAccount(UUID uuid) {
+        return deleteAccount(uuid, null);
+    }
 
     /**
-     * Deletes the account with the specified uuid in the specified world.
+     * Deletes the account of the given owner's uuid in the specified world.
      *
      * @param uuid  the uuid of the account to be deleted
      * @param world the world in which the account exists
-     * @return a CompletableFuture that will complete when the account is deleted
+     * @return a {@code CompletableFuture} completing with a boolean indicating whether the account was deleted
      */
-    CompletableFuture<Boolean> deleteAccount(UUID uuid, World world);
+    CompletableFuture<Boolean> deleteAccount(UUID uuid, @Nullable World world);
+
+    /**
+     * Determines whether the controller supports handling of multiple worlds.
+     *
+     * @return {@code true} if multi-world economy is supported, otherwise {@code false}
+     * @implSpec If multiple worlds are not supported,
+     * implementations must ignore world-specific parameters and only handle cases where the world parameter is null.
+     * @since 3.0.0
+     */
+    @Contract(pure = true)
+    boolean hasMultiWorldSupport();
 }

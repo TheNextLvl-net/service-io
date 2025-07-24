@@ -10,6 +10,7 @@ import net.thenextlvl.service.model.permission.LuckPermsPermissionHolder;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -25,31 +26,22 @@ public class LuckPermsPermissionController implements PermissionController {
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid) {
-        return luckPerms.getUserManager().loadUser(uuid).thenApply(user ->
-                new LuckPermsPermissionHolder(user, QueryOptions.defaultContextualOptions()));
-    }
-
-    @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, World world) {
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, @Nullable World world) {
         return luckPerms.getUserManager().loadUser(uuid).thenApply(user -> {
-            var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
-            return new LuckPermsPermissionHolder(user, context);
+            return new LuckPermsPermissionHolder(user, getOptions(world));
         });
     }
 
     @Override
-    public Optional<PermissionHolder> getPermissionHolder(UUID uuid) {
-        return Optional.ofNullable(luckPerms.getUserManager().getUser(uuid))
-                .map(user -> new LuckPermsPermissionHolder(user, QueryOptions.defaultContextualOptions()));
-    }
-
-    @Override
-    public Optional<PermissionHolder> getPermissionHolder(UUID uuid, World world) {
+    public Optional<PermissionHolder> getPermissionHolder(UUID uuid, @Nullable World world) {
         return Optional.ofNullable(luckPerms.getUserManager().getUser(uuid)).map(user -> {
-            var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
-            return new LuckPermsPermissionHolder(user, context);
+            return new LuckPermsPermissionHolder(user, getOptions(world));
         });
+    }
+
+    private QueryOptions getOptions(@Nullable World world) {
+        if (world == null) return QueryOptions.defaultContextualOptions();
+        return QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
     }
 
     @Override
