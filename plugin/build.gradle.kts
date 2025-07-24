@@ -5,7 +5,7 @@ import net.minecrell.pluginyml.paper.PaperPluginDescription
 plugins {
     id("java")
 
-    id("com.gradleup.shadow") version "9.0.0-rc1"
+    id("com.gradleup.shadow") version "9.0.0-rc2"
     id("com.modrinth.minotaur") version "2.+"
     id("de.eldoria.plugin-yml.paper") version "0.7.1"
     id("io.papermc.hangar-publish-plugin") version "0.1.3"
@@ -35,18 +35,18 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.7-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
 
     compileOnly("com.github.ElgarL:groupmanager:3.2")
-    compileOnly("com.github.decentsoftware-eu:decentholograms:2.9.5")
-    compileOnly("de.oliver:FancyHolograms:2.6.0")
+    compileOnly("com.github.decentsoftware-eu:decentholograms:2.9.6")
+    compileOnly("de.oliver:FancyHolograms:2.7.0")
     compileOnly("de.oliver:FancyNpcs:2.6.0")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("net.citizensnpcs:citizens-main:2.0.39-SNAPSHOT")
     compileOnly("net.luckperms:api:5.5")
 
     implementation("com.github.MilkBowl:VaultAPI:1.7.1")
-    implementation("net.milkbowl.vault:VaultUnlockedAPI:2.14")
+    implementation("net.milkbowl.vault:VaultUnlockedAPI:2.15")
     implementation("net.thenextlvl.core:i18n:3.2.0")
     implementation("net.thenextlvl.core:paper:2.2.1")
     implementation("org.bstats:bstats-bukkit:3.1.1-SNAPSHOT")
