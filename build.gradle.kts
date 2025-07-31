@@ -38,11 +38,18 @@ dependencies {
 
 publishing {
     publications.create<MavenPublication>("maven") {
+        pom.url.set("https://thenextlvl.net/docs/serviceio")
+        pom.scm {
+            val repository = "TheNextLvl-net/service-io"
+            url.set("https://github.com/$repository")
+            connection.set("scm:git:git://github.com/$repository.git")
+            developerConnection.set("scm:git:ssh://github.com/$repository.git")
+        }
         from(components["java"])
     }
     repositories.maven {
-        val channel = if ((version as String).contains("-pre")) "snapshots" else "releases"
-        url = uri("https://repo.thenextlvl.net/$channel")
+        val branch = if (version.toString().contains("-pre")) "snapshots" else "releases"
+        url = uri("https://repo.thenextlvl.net/$branch")
         credentials {
             username = System.getenv("REPOSITORY_USER")
             password = System.getenv("REPOSITORY_TOKEN")
