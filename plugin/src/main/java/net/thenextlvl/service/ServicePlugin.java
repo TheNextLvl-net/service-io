@@ -87,23 +87,25 @@ public class ServicePlugin extends Vault {
 
     @Override
     public void onEnable() {
-        loadServicePermissionWrapper();
-        loadServiceEconomyWrapper();
-        loadServiceChatWrapper();
+        getServer().getGlobalRegionScheduler().execute(this, () -> {
+            loadServicePermissionWrapper();
+            loadServiceEconomyWrapper();
+            loadServiceChatWrapper();
 
-        loadPermissionServices();
-        loadGroupServices();
-        loadChatServices();
-        loadHologramServices();
-        loadNpcServices();
+            loadPermissionServices();
+            loadGroupServices();
+            loadChatServices();
+            loadHologramServices();
+            loadNpcServices();
 
-        loadVaultPermissionWrapper();
-        loadVaultEconomyWrapper();
-        loadVaultChatWrapper();
+            loadVaultPermissionWrapper();
+            loadVaultEconomyWrapper();
+            loadVaultChatWrapper();
 
-        registerPlaceholders();
+            registerPlaceholders();
 
-        addCustomCharts();
+            addCustomCharts();
+        });
     }
 
     private void registerPlaceholders() {
@@ -114,10 +116,10 @@ public class ServicePlugin extends Vault {
                 .registerStore(new ServiceEconomyPlaceholderStore(this))
                 .registerStore(new ServiceGroupPlaceholderStore(this))
                 .register();
-        
+
         var authors = new ArrayList<>(getPluginMeta().getAuthors());
         authors.add("creatorfromhell");
-        
+
         new PlaceholderExpansionBuilder(this, "vaultunlocked")
                 .setAuthors(authors)
                 .setVersion("2.13.1")
