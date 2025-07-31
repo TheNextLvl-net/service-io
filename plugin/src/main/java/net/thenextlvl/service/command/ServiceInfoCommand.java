@@ -138,10 +138,11 @@ class ServiceInfoCommand {
             .build();
 
     private <T> List<TextComponent> getRegistrations(Class<T> registration, @Nullable T loaded, Function<T, String> mapper) {
+        var name = loaded != null ? mapper.apply(loaded) : null;
         return plugin.getServer().getServicesManager().getRegistrations(registration).stream()
                 .map(RegisteredServiceProvider::getProvider)
-                .filter(controller -> controller != loaded)
                 .map(mapper)
+                .filter(provider -> !provider.equals(name))
                 .map(Component::text)
                 .toList();
     }
