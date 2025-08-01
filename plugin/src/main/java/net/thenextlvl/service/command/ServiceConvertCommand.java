@@ -54,6 +54,12 @@ class ServiceConvertCommand {
                 .then(Commands.literal("permissions").then(permissions()));
     }
 
+    // todo: clean this whole mess up
+    //  create a proper conversion api
+    //  compare source and target and warn about potential data loss
+    //  implement proper error handling
+    //  add progress tracking
+
     private ArgumentBuilder<CommandSourceStack, ?> banks() {
         return Commands.argument("source", new BankArgumentType(plugin, (c, e) -> true))
                 .then(Commands.argument("target", new BankArgumentType(plugin, (context, controller) ->
@@ -134,13 +140,17 @@ class ServiceConvertCommand {
     private final class BankConverter extends PlayerConverter<BankController> {
         @Override
         public CompletableFuture<Void> convert(OfflinePlayer player, BankController source, BankController target) {
-            return source.loadBanks().thenAccept(banks -> banks.forEach(bank ->
-                    bank.getWorld().map(world -> target.createBank(bank.getOwner(), bank.getName(), world))
-                            .orElseGet(() -> target.createBank(bank.getOwner(), bank.getName()))
-                            .thenAccept(targetBank -> {
-                                targetBank.setBalance(bank.getBalance());
-                                bank.getMembers().forEach(targetBank::addMember);
-                            })));
+            return CompletableFuture.completedFuture(null);
+            // todo: convert all currencies
+            // todo: convert balance with currencies
+            // fixme:
+            //  return source.loadBanks().thenAccept(banks -> banks.forEach(bank ->
+            //          bank.getWorld().map(world -> target.createBank(bank.getOwner(), bank.getName(), world))
+            //                  .orElseGet(() -> target.createBank(bank.getOwner(), bank.getName()))
+            //                  .thenAccept(targetBank -> {
+            //                      targetBank.setBalance(bank.getBalance());
+            //                      bank.getMembers().forEach(targetBank::addMember);
+            //                  })));
         }
     }
 
@@ -191,14 +201,16 @@ class ServiceConvertCommand {
         }
 
         public CompletableFuture<Void> convert(Account account, EconomyController source, EconomyController target) {
-            return account.getWorld().map(world -> target.tryGetAccount(account.getOwner(), world)
-                            .thenCompose(account1 -> account1.map(CompletableFuture::completedFuture)
-                                    .orElseGet(() -> target.createAccount(account.getOwner(), world)))
-                            .thenAccept(account1 -> account1.setBalance(account.getBalance())))
-                    .orElseGet(() -> target.tryGetAccount(account.getOwner())
-                            .thenCompose(account1 -> account1.map(CompletableFuture::completedFuture)
-                                    .orElseGet(() -> target.createAccount(account.getOwner())))
-                            .thenAccept(account1 -> account1.setBalance(account.getBalance())));
+            return CompletableFuture.completedFuture(null);
+            // fixme
+            //  return account.getWorld().map(world -> target.tryGetAccount(account.getOwner(), world)
+            //                  .thenCompose(account1 -> account1.map(CompletableFuture::completedFuture)
+            //                          .orElseGet(() -> target.createAccount(account.getOwner(), world)))
+            //                  .thenAccept(account1 -> account1.setBalance(account.getBalance())))
+            //          .orElseGet(() -> target.tryGetAccount(account.getOwner())
+            //                  .thenCompose(account1 -> account1.map(CompletableFuture::completedFuture)
+            //                          .orElseGet(() -> target.createAccount(account.getOwner())))
+            //                  .thenAccept(account1 -> account1.setBalance(account.getBalance())));
         }
     }
 
