@@ -38,6 +38,8 @@ dependencies {
 
 publishing {
     publications.create<MavenPublication>("maven") {
+        artifactId = "service-io"
+        groupId = "net.thenextlvl"
         pom.url.set("https://thenextlvl.net/docs/serviceio")
         pom.scm {
             val repository = "TheNextLvl-net/service-io"
