@@ -155,6 +155,7 @@ hangarPublish { // docs - https://docs.papermc.io/misc/hangar-publishing
                 url("DecentHolograms", "https://modrinth.com/project/w02MKsTg") { required.set(false) }
                 hangar("FancyNpcs") { required.set(false) }
                 hangar("FancyHolograms") { required.set(false) }
+                hangar("PlaceholderAPI") { required.set(false) }
             }
         }
     }
@@ -171,6 +172,6 @@ modrinth {
     loaders.add("paper")
     loaders.add("folia")
     dependencies {
-        optional.project("luckperms", "decentholograms", "fancynpcs", "fancyholograms")
+        optional.project("luckperms", "decentholograms", "fancynpcs", "fancyholograms", "placeholderapi")
     }
 }
