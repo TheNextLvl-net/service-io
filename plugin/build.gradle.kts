@@ -47,7 +47,11 @@ dependencies {
 
     implementation("com.github.MilkBowl:VaultAPI:1.7.1")
     implementation("net.milkbowl.vault:VaultUnlockedAPI:2.15")
-    implementation("net.thenextlvl.core:i18n:3.2.2")
+    implementation("net.thenextlvl.core:i18n:3.2.2") {
+        // todo: remove – temp solution until adventure is stable
+        exclude("net.kyori", "adventure-text-logger-slf4j")
+        exclude("net.kyori", "adventure-text-minimessage")
+    }
     implementation("net.thenextlvl.core:paper:2.3.1")
     implementation("org.bstats:bstats-bukkit:3.1.1-SNAPSHOT")
 
