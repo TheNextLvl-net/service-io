@@ -17,13 +17,7 @@ import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.hologram.HologramController;
 import net.thenextlvl.service.api.permission.PermissionController;
-import net.thenextlvl.service.command.argument.BankArgumentType;
-import net.thenextlvl.service.command.argument.CharacterArgumentType;
-import net.thenextlvl.service.command.argument.ChatArgumentType;
-import net.thenextlvl.service.command.argument.EconomyArgumentType;
-import net.thenextlvl.service.command.argument.GroupArgumentType;
-import net.thenextlvl.service.command.argument.HologramArgumentType;
-import net.thenextlvl.service.command.argument.PermissionArgumentType;
+import net.thenextlvl.service.command.argument.ControllerArgumentType;
 import org.bukkit.OfflinePlayer;
 import org.jspecify.annotations.NullMarked;
 
@@ -55,50 +49,50 @@ class ServiceConvertCommand {
     }
 
     private ArgumentBuilder<CommandSourceStack, ?> banks() {
-        return Commands.argument("source", new BankArgumentType(plugin, (c, e) -> true))
-                .then(Commands.argument("target", new BankArgumentType(plugin, (context, controller) ->
+        return Commands.argument("source", new ControllerArgumentType<>(plugin, BankController.class, (c, e) -> true))
+                .then(Commands.argument("target", new ControllerArgumentType<>(plugin, BankController.class, (context, controller) ->
                                 !context.getLastChild().getArgument("source", BankController.class).equals(controller)))
                         .executes(this::convertBanks));
     }
 
     private ArgumentBuilder<CommandSourceStack, ?> characters() {
-        return Commands.argument("source", new CharacterArgumentType(plugin, (c, e) -> true))
-                .then(Commands.argument("target", new CharacterArgumentType(plugin, (context, controller) ->
+        return Commands.argument("source", new ControllerArgumentType<>(plugin, CharacterController.class, (c, e) -> true))
+                .then(Commands.argument("target", new ControllerArgumentType<>(plugin, CharacterController.class, (context, controller) ->
                                 !context.getLastChild().getArgument("source", CharacterController.class).equals(controller)))
                         .executes(this::convertCharacters));
     }
 
     private ArgumentBuilder<CommandSourceStack, ?> chat() {
-        return Commands.argument("source", new ChatArgumentType(plugin, (c, e) -> true))
-                .then(Commands.argument("target", new ChatArgumentType(plugin, (context, controller) ->
+        return Commands.argument("source", new ControllerArgumentType<>(plugin, ChatController.class, (c, e) -> true))
+                .then(Commands.argument("target", new ControllerArgumentType<>(plugin, ChatController.class, (context, controller) ->
                                 !context.getLastChild().getArgument("source", ChatController.class).equals(controller)))
                         .executes(this::convertChat));
     }
 
     private ArgumentBuilder<CommandSourceStack, ?> economy() {
-        return Commands.argument("source", new EconomyArgumentType(plugin, (c, e) -> true))
-                .then(Commands.argument("target", new EconomyArgumentType(plugin, (context, controller) ->
+        return Commands.argument("source", new ControllerArgumentType<>(plugin, EconomyController.class, (c, e) -> true))
+                .then(Commands.argument("target", new ControllerArgumentType<>(plugin, EconomyController.class, (context, controller) ->
                                 !context.getLastChild().getArgument("source", EconomyController.class).equals(controller)))
                         .executes(this::convertEconomy));
     }
 
     private ArgumentBuilder<CommandSourceStack, ?> groups() {
-        return Commands.argument("source", new GroupArgumentType(plugin, (c, e) -> true))
-                .then(Commands.argument("target", new GroupArgumentType(plugin, (context, controller) ->
+        return Commands.argument("source", new ControllerArgumentType<>(plugin, GroupController.class, (c, e) -> true))
+                .then(Commands.argument("target", new ControllerArgumentType<>(plugin, GroupController.class, (context, controller) ->
                                 !context.getLastChild().getArgument("source", GroupController.class).equals(controller)))
                         .executes(this::convertGroups));
     }
 
     private ArgumentBuilder<CommandSourceStack, ?> holograms() {
-        return Commands.argument("source", new HologramArgumentType(plugin, (c, e) -> true))
-                .then(Commands.argument("target", new HologramArgumentType(plugin, (context, controller) ->
+        return Commands.argument("source", new ControllerArgumentType<>(plugin, HologramController.class, (c, e) -> true))
+                .then(Commands.argument("target", new ControllerArgumentType<>(plugin, HologramController.class, (context, controller) ->
                                 !context.getLastChild().getArgument("source", HologramController.class).equals(controller)))
                         .executes(this::convertHolograms));
     }
 
     private ArgumentBuilder<CommandSourceStack, ?> permissions() {
-        return Commands.argument("source", new PermissionArgumentType(plugin, (c, e) -> true))
-                .then(Commands.argument("target", new PermissionArgumentType(plugin, (context, controller) ->
+        return Commands.argument("source", new ControllerArgumentType<>(plugin, PermissionController.class, (c, e) -> true))
+                .then(Commands.argument("target", new ControllerArgumentType<>(plugin, PermissionController.class, (context, controller) ->
                                 !context.getLastChild().getArgument("source", PermissionController.class).equals(controller)))
                         .executes(this::convertPermissions));
     }
