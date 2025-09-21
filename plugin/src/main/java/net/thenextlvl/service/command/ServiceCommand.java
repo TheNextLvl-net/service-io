@@ -1,19 +1,22 @@
 package net.thenextlvl.service.command;
 
-import io.papermc.paper.command.brigadier.Commands;
-import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.thenextlvl.service.ServicePlugin;
+import net.thenextlvl.service.command.brigadier.BrigadierCommand;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class ServiceCommand {
-    public void register(ServicePlugin plugin) {
-        var command = Commands.literal("service")
-                .requires(stack -> stack.getSender().hasPermission("service.command"))
-                .then(new ServiceInfoCommand(plugin).create())
-                .then(new ServiceConvertCommand(plugin).create())
+public final class ServiceCommand extends BrigadierCommand {
+    private ServiceCommand(ServicePlugin plugin) {
+        super(plugin, "service", "service.command");
+    }
+
+    public static LiteralCommandNode<CommandSourceStack> create(ServicePlugin plugin) {
+        var command = new ServiceCommand(plugin);
+        return command.create()
+                .then(ServiceInfoCommand.create(plugin))
+                .then(ServiceConvertCommand.create(plugin))
                 .build();
-        plugin.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS.newHandler(event ->
-                event.registrar().register(command)));
     }
 }

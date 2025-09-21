@@ -8,6 +8,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.thenextlvl.service.ServicePlugin;
+import net.thenextlvl.service.api.Controller;
 import net.thenextlvl.service.api.character.Character;
 import net.thenextlvl.service.api.character.CharacterController;
 import net.thenextlvl.service.api.chat.ChatController;
@@ -18,6 +19,7 @@ import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.hologram.HologramController;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.command.argument.ControllerArgumentType;
+import net.thenextlvl.service.command.brigadier.BrigadierCommand;
 import org.bukkit.OfflinePlayer;
 import org.jspecify.annotations.NullMarked;
 
@@ -25,107 +27,39 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
 
 @NullMarked
-class ServiceConvertCommand {
+final class ServiceConvertCommand extends BrigadierCommand {
     private final AtomicBoolean conversionRunning = new AtomicBoolean(false);
-    private final ServicePlugin plugin;
 
-    ServiceConvertCommand(ServicePlugin plugin) {
-        this.plugin = plugin;
+    private ServiceConvertCommand(ServicePlugin plugin) {
+        super(plugin, "convert", "service.convert");
     }
 
-    LiteralArgumentBuilder<CommandSourceStack> create() {
-        return Commands.literal("convert")
-                .requires(stack -> stack.getSender().hasPermission("service.convert"))
-                .then(Commands.literal("banks").then(banks()))
-                .then(Commands.literal("characters").then(characters()))
-                .then(Commands.literal("chat").then(chat()))
-                .then(Commands.literal("economy").then(economy()))
-                .then(Commands.literal("groups").then(groups()))
-                .then(Commands.literal("holograms").then(holograms()))
-                .then(Commands.literal("permissions").then(permissions()));
+    public static LiteralArgumentBuilder<CommandSourceStack> create(ServicePlugin plugin) {
+        var command = new ServiceConvertCommand(plugin);
+        var banks = command.converter("banks", BankController.class, new BankConverter());
+        var characters = command.converter("characters", CharacterController.class, new CharacterConverter());
+        var chat = command.converter("chat", ChatController.class, new ChatConverter());
+        var economy = command.converter("economy", EconomyController.class, new EconomyConverter());
+        var groups = command.converter("groups", GroupController.class, new GroupConverter());
+        var holograms = command.converter("holograms", HologramController.class, new HologramConverter());
+        var permissions = command.converter("permissions", PermissionController.class, new PermissionConverter());
+        return command.create().then(banks).then(characters).then(chat).then(economy).then(groups).then(holograms).then(permissions);
     }
 
-    private ArgumentBuilder<CommandSourceStack, ?> banks() {
-        return Commands.argument("source", new ControllerArgumentType<>(plugin, BankController.class, (c, e) -> true))
-                .then(Commands.argument("target", new ControllerArgumentType<>(plugin, BankController.class, (context, controller) ->
-                                !context.getLastChild().getArgument("source", BankController.class).equals(controller)))
-                        .executes(this::convertBanks));
+    private <C extends Controller> LiteralArgumentBuilder<CommandSourceStack> converter(String name, Class<C> type, Converter<C> converter) {
+        return Commands.literal(name).then(converter(type, converter));
     }
 
-    private ArgumentBuilder<CommandSourceStack, ?> characters() {
-        return Commands.argument("source", new ControllerArgumentType<>(plugin, CharacterController.class, (c, e) -> true))
-                .then(Commands.argument("target", new ControllerArgumentType<>(plugin, CharacterController.class, (context, controller) ->
-                                !context.getLastChild().getArgument("source", CharacterController.class).equals(controller)))
-                        .executes(this::convertCharacters));
+    private <C extends Controller> ArgumentBuilder<CommandSourceStack, ?> converter(Class<C> type, Converter<C> converter) {
+        return Commands.argument("source", new ControllerArgumentType<>(plugin, type, (c, e) -> true))
+                .then(Commands.argument("target", new ControllerArgumentType<>(plugin, type, (context, controller) ->
+                                !context.getLastChild().getArgument("source", type).equals(controller)))
+                        .executes(context -> convert(context, type, converter)));
     }
 
-    private ArgumentBuilder<CommandSourceStack, ?> chat() {
-        return Commands.argument("source", new ControllerArgumentType<>(plugin, ChatController.class, (c, e) -> true))
-                .then(Commands.argument("target", new ControllerArgumentType<>(plugin, ChatController.class, (context, controller) ->
-                                !context.getLastChild().getArgument("source", ChatController.class).equals(controller)))
-                        .executes(this::convertChat));
-    }
-
-    private ArgumentBuilder<CommandSourceStack, ?> economy() {
-        return Commands.argument("source", new ControllerArgumentType<>(plugin, EconomyController.class, (c, e) -> true))
-                .then(Commands.argument("target", new ControllerArgumentType<>(plugin, EconomyController.class, (context, controller) ->
-                                !context.getLastChild().getArgument("source", EconomyController.class).equals(controller)))
-                        .executes(this::convertEconomy));
-    }
-
-    private ArgumentBuilder<CommandSourceStack, ?> groups() {
-        return Commands.argument("source", new ControllerArgumentType<>(plugin, GroupController.class, (c, e) -> true))
-                .then(Commands.argument("target", new ControllerArgumentType<>(plugin, GroupController.class, (context, controller) ->
-                                !context.getLastChild().getArgument("source", GroupController.class).equals(controller)))
-                        .executes(this::convertGroups));
-    }
-
-    private ArgumentBuilder<CommandSourceStack, ?> holograms() {
-        return Commands.argument("source", new ControllerArgumentType<>(plugin, HologramController.class, (c, e) -> true))
-                .then(Commands.argument("target", new ControllerArgumentType<>(plugin, HologramController.class, (context, controller) ->
-                                !context.getLastChild().getArgument("source", HologramController.class).equals(controller)))
-                        .executes(this::convertHolograms));
-    }
-
-    private ArgumentBuilder<CommandSourceStack, ?> permissions() {
-        return Commands.argument("source", new ControllerArgumentType<>(plugin, PermissionController.class, (c, e) -> true))
-                .then(Commands.argument("target", new ControllerArgumentType<>(plugin, PermissionController.class, (context, controller) ->
-                                !context.getLastChild().getArgument("source", PermissionController.class).equals(controller)))
-                        .executes(this::convertPermissions));
-    }
-
-    private int convertBanks(CommandContext<CommandSourceStack> context) {
-        return convert(context, BankController.class, BankController::getName, new BankConverter());
-    }
-
-    private int convertCharacters(CommandContext<CommandSourceStack> context) {
-        return convert(context, CharacterController.class, CharacterController::getName, new CharacterConverter());
-    }
-
-    private int convertChat(CommandContext<CommandSourceStack> context) {
-        return convert(context, ChatController.class, ChatController::getName, new ChatConverter());
-    }
-
-    private int convertEconomy(CommandContext<CommandSourceStack> context) {
-        return convert(context, EconomyController.class, EconomyController::getName, new EconomyConverter());
-    }
-
-    private int convertGroups(CommandContext<CommandSourceStack> context) {
-        return convert(context, GroupController.class, GroupController::getName, new GroupConverter());
-    }
-
-    private int convertHolograms(CommandContext<CommandSourceStack> context) {
-        return convert(context, HologramController.class, HologramController::getName, new HologramConverter());
-    }
-
-    private int convertPermissions(CommandContext<CommandSourceStack> context) {
-        return convert(context, PermissionController.class, PermissionController::getName, new PermissionConverter());
-    }
-
-    private final class BankConverter extends PlayerConverter<BankController> {
+    private static final class BankConverter extends PlayerConverter<BankController> {
         @Override
         public CompletableFuture<Void> convert(OfflinePlayer player, BankController source, BankController target) {
             return source.loadBanks().thenAccept(banks -> banks.forEach(bank ->
@@ -163,7 +97,7 @@ class ServiceConvertCommand {
         }
     }
 
-    private final class ChatConverter extends PlayerConverter<ChatController> {
+    private static final class ChatConverter extends PlayerConverter<ChatController> {
         @Override
         public CompletableFuture<Void> convert(OfflinePlayer player, ChatController source, ChatController target) {
             return source.tryGetProfile(player).thenAccept(profile -> target.tryGetProfile(player)
@@ -196,7 +130,7 @@ class ServiceConvertCommand {
         }
     }
 
-    private final class GroupConverter extends PlayerConverter<GroupController> {
+    private static final class GroupConverter extends PlayerConverter<GroupController> {
         @Override
         public CompletableFuture<Void> convert(OfflinePlayer player, GroupController source, GroupController target) {
             return source.tryGetGroupHolder(player).thenAccept(holder -> target.tryGetGroupHolder(player)
@@ -237,7 +171,7 @@ class ServiceConvertCommand {
         }
     }
 
-    private final class PermissionConverter extends PlayerConverter<PermissionController> {
+    private static final class PermissionConverter extends PlayerConverter<PermissionController> {
         @Override
         public CompletableFuture<Void> convert(OfflinePlayer player, PermissionController source, PermissionController target) {
             return source.tryGetPermissionHolder(player).thenAccept(holder -> target.tryGetPermissionHolder(player)
@@ -245,7 +179,7 @@ class ServiceConvertCommand {
         }
     }
 
-    private <T> int convert(CommandContext<CommandSourceStack> context, Class<T> controller, Function<T, String> name, Converter<T> converter) {
+    private <C extends Controller> int convert(CommandContext<CommandSourceStack> context, Class<C> type, Converter<C> converter) {
         var sender = context.getSource().getSender();
 
         if (conversionRunning.get()) {
@@ -253,8 +187,8 @@ class ServiceConvertCommand {
             return 0;
         }
 
-        var source = context.getArgument("source", controller);
-        var target = context.getArgument("target", controller);
+        var source = context.getArgument("source", type);
+        var target = context.getArgument("target", type);
 
         if (source.equals(target)) {
             plugin.bundle().sendMessage(sender, "service.convert.source-target");
@@ -263,8 +197,8 @@ class ServiceConvertCommand {
 
         plugin.getServer().getAsyncScheduler().runNow(plugin, scheduledTask -> {
             plugin.bundle().sendMessage(sender, "service.convert.start",
-                    Placeholder.parsed("source", name.apply(source)),
-                    Placeholder.parsed("target", name.apply(target)));
+                    Placeholder.parsed("source", source.getName()),
+                    Placeholder.parsed("target", target.getName()));
 
             var now = System.currentTimeMillis();
             conversionRunning.set(true);
@@ -288,16 +222,16 @@ class ServiceConvertCommand {
     }
 
     @FunctionalInterface
-    private interface Converter<T> {
-        CompletableFuture<Void> convert(T source, T target);
+    private interface Converter<C extends Controller> {
+        CompletableFuture<Void> convert(C source, C target);
     }
 
-    private abstract class PlayerConverter<T> implements Converter<T> {
-        public abstract CompletableFuture<Void> convert(OfflinePlayer player, T source, T target);
+    private static abstract class PlayerConverter<C extends Controller> implements Converter<C> {
+        public abstract CompletableFuture<Void> convert(OfflinePlayer player, C source, C target);
 
         @Override
-        public CompletableFuture<Void> convert(T source, T target) {
-            return CompletableFuture.allOf(Arrays.stream(plugin.getServer().getOfflinePlayers())
+        public CompletableFuture<Void> convert(C source, C target) {
+            return CompletableFuture.allOf(Arrays.stream(source.getPlugin().getServer().getOfflinePlayers())
                     .map(player -> convert(player, source, target))
                     .toArray(CompletableFuture[]::new));
         }

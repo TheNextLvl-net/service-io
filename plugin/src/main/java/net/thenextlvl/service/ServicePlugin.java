@@ -2,6 +2,7 @@ package net.thenextlvl.service;
 
 import com.google.common.base.Preconditions;
 import core.i18n.file.ComponentBundle;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
 import net.milkbowl.vault.Vault;
 import net.milkbowl.vault.chat.Chat;
@@ -132,7 +133,9 @@ public class ServicePlugin extends Vault {
     }
 
     private void registerCommands() {
-        new ServiceCommand().register(this);
+        getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS.newHandler(event -> {
+            event.registrar().register(ServiceCommand.create(this));
+        }));
     }
 
     @Override
