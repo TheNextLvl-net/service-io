@@ -7,6 +7,8 @@ import org.jspecify.annotations.Nullable;
  * An exception that indicates a problem related to a specific {@link Capability}.
  * This exception is typically thrown when there is an issue or unsupported operation
  * associated with a particular capability in the system.
+ *
+ * @since 2.2.0
  */
 @NullMarked
 public class CapabilityException extends RuntimeException {

@@ -12,6 +12,8 @@ import java.util.OptionalInt;
  * The Group interface represents a group entity that holds permissions and display attributes such as
  * a display name, prefix, and suffix. It provides methods to manage these attributes as well as the
  * group weight and associated world.
+ *
+ * @since 1.0.0
  */
 @NullMarked
 public interface Group extends PermissionHolder, Display {

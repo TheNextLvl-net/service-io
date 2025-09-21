@@ -19,6 +19,8 @@ import org.jspecify.annotations.NullMarked;
  * the interaction from proceeding by setting the event's cancelled state.
  * <p>
  * This event will only be fired for providers that support the {@link CharacterCapability#INTERACTIONS} capability.
+ *
+ * @since 2.2.0
  */
 @NullMarked
 public class PlayerInteractCharacterEvent extends CharacterEvent implements Cancellable {

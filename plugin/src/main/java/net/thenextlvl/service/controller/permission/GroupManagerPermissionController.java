@@ -4,6 +4,7 @@ import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.api.permission.PermissionHolder;
 import net.thenextlvl.service.model.permission.GroupManagerPermissionHolder;
 import org.anjocaido.groupmanager.GroupManager;
+import org.anjocaido.groupmanager.dataholder.OverloadedWorldHolder;
 import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
@@ -20,25 +21,18 @@ public class GroupManagerPermissionController implements PermissionController {
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
 
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid) {
-        var holder = groupManager.getWorldsHolder().getDefaultWorld();
-        return CompletableFuture.completedFuture(getHolder(holder, uuid).orElse(null));
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, @Nullable World world) {
+        return CompletableFuture.completedFuture(getHolder(getHolder(world), uuid).orElse(null));
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, World world) {
-        var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
-        return CompletableFuture.completedFuture(getHolder(holder, uuid).orElse(null));
+    public Optional<PermissionHolder> getPermissionHolder(UUID uuid, @Nullable World world) {
+        return getHolder(getHolder(world), uuid);
     }
 
-    @Override
-    public Optional<PermissionHolder> getPermissionHolder(UUID uuid) {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<PermissionHolder> getPermissionHolder(UUID uuid, World world) {
-        return Optional.empty();
+    private @Nullable OverloadedWorldHolder getHolder(@Nullable World world) {
+        if (world == null) return groupManager.getWorldsHolder().getDefaultWorld();
+        return groupManager.getWorldsHolder().getWorldData(world.getName());
     }
 
     private Optional<PermissionHolder> getHolder(@Nullable WorldDataHolder holder, UUID uuid) {
