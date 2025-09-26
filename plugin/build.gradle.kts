@@ -49,7 +49,7 @@ dependencies {
     implementation("net.milkbowl.vault:VaultUnlockedAPI:2.15")
     implementation("net.thenextlvl.core:i18n:3.2.2")
     implementation("net.thenextlvl.core:paper:2.3.1")
-    implementation("org.bstats:bstats-bukkit:3.1.1-SNAPSHOT")
+    implementation("org.bstats:bstats-bukkit:3.1.0")
 
     implementation(rootProject)
 
