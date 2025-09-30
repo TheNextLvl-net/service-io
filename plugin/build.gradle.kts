@@ -54,7 +54,7 @@ dependencies {
     implementation(rootProject)
 
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation(platform("org.junit:junit-bom:6.0.0-SNAPSHOT"))
+    testImplementation(platform("org.junit:junit-bom:6.0.0"))
 }
 
 tasks.shadowJar {
