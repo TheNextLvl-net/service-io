@@ -42,7 +42,7 @@ dependencies {
     compileOnly("de.oliver:FancyHolograms:2.7.0")
     compileOnly("de.oliver:FancyNpcs:2.7.0")
     compileOnly("me.clip:placeholderapi:2.11.6")
-    compileOnly("net.citizensnpcs:citizens-main:2.0.39-SNAPSHOT")
+    compileOnly("net.citizensnpcs:citizens-main:2.0.40-SNAPSHOT")
     compileOnly("net.luckperms:api:5.5")
 
     implementation("com.github.MilkBowl:VaultAPI:1.7.1")
