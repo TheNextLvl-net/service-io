@@ -7,21 +7,22 @@ import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.chat.ChatProfile;
 import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.group.GroupController;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 
+@NullMarked
 public class VaultChatServiceWrapper extends Chat {
     private final @Nullable GroupController groupController;
-    private final @NonNull ChatController chatController;
-    private final @NonNull ServicePlugin plugin;
+    private final ChatController chatController;
+    private final ServicePlugin plugin;
 
     public VaultChatServiceWrapper(
-            @NonNull Permission permission,
+            Permission permission,
             @Nullable GroupController groupController,
-            @NonNull ChatController chatController,
-            @NonNull ServicePlugin plugin
+            ChatController chatController,
+            ServicePlugin plugin
     ) {
         super(permission);
         this.groupController = groupController;
@@ -40,154 +41,152 @@ public class VaultChatServiceWrapper extends Chat {
     }
 
     @Override
-    public String getPlayerPrefix(String world, String player) {
+    public String getPlayerPrefix(@Nullable String world, String player) {
         return getProfile(world, player).flatMap(ChatProfile::getPrefix).orElse("");
     }
 
     @Override
-    public void setPlayerPrefix(String world, String player, String prefix) {
-        getProfile(world, player).map(profile -> profile.setPrefix(prefix));
+    public void setPlayerPrefix(@Nullable String world, String player, String prefix) {
+        getProfile(world, player).ifPresent(profile -> profile.setPrefix(prefix));
     }
 
     @Override
-    public String getPlayerSuffix(String world, String player) {
+    public String getPlayerSuffix(@Nullable String world, String player) {
         return getProfile(world, player).flatMap(ChatProfile::getSuffix).orElse("");
     }
 
     @Override
-    public void setPlayerSuffix(String world, String player, String suffix) {
+    public void setPlayerSuffix(@Nullable String world, String player, String suffix) {
         getProfile(world, player).map(profile -> profile.setSuffix(suffix));
     }
 
     @Override
-    public String getGroupPrefix(String worldName, String groupName) {
+    public String getGroupPrefix(@Nullable String worldName, String groupName) {
         return getGroup(worldName, groupName).flatMap(Group::getPrefix).orElse("");
     }
 
     @Override
-    public void setGroupPrefix(String world, String groupName, String prefix) {
-        getGroup(world, groupName).map(group -> group.setPrefix(prefix));
+    public void setGroupPrefix(@Nullable String world, String groupName, String prefix) {
+        getGroup(world, groupName).ifPresent(group -> group.setPrefix(prefix));
     }
 
     @Override
-    public String getGroupSuffix(String worldName, String groupName) {
+    public String getGroupSuffix(@Nullable String worldName, String groupName) {
         return getGroup(worldName, groupName).flatMap(Group::getSuffix).orElse("");
     }
 
     @Override
-    public void setGroupSuffix(String world, String groupName, String suffix) {
-        getGroup(world, groupName).map(group -> group.setSuffix(suffix));
+    public void setGroupSuffix(@Nullable String world, String groupName, String suffix) {
+        getGroup(world, groupName).ifPresent(group -> group.setSuffix(suffix));
     }
 
     @Override
-    public int getPlayerInfoInteger(String world, String player, String node, int defaultValue) {
+    public int getPlayerInfoInteger(@Nullable String world, String player, String node, int defaultValue) {
         return getProfile(world, player)
                 .flatMap(profile -> profile.intInfoNode(node))
                 .orElse(defaultValue);
     }
 
     @Override
-    public void setPlayerInfoInteger(String world, String player, String node, int value) {
+    public void setPlayerInfoInteger(@Nullable String world, String player, String node, int value) {
         getProfile(world, player).ifPresent(profile -> profile.setInfoNode(node, String.valueOf(value)));
     }
 
     @Override
-    public int getGroupInfoInteger(String worldName, String groupName, String node, int defaultValue) {
-        return getGroup(worldName, groupName)
+    public int getGroupInfoInteger(@Nullable String world, String groupName, String node, int defaultValue) {
+        return getGroup(world, groupName)
                 .flatMap(group -> group.intInfoNode(node))
                 .orElse(defaultValue);
     }
 
     @Override
-    public void setGroupInfoInteger(String world, String groupName, String node, int value) {
+    public void setGroupInfoInteger(@Nullable String world, String groupName, String node, int value) {
         getGroup(world, groupName).ifPresent(group -> group.setInfoNode(node, String.valueOf(value)));
     }
 
     @Override
-    public double getPlayerInfoDouble(String world, String player, String node, double defaultValue) {
+    public double getPlayerInfoDouble(@Nullable String world, String player, String node, double defaultValue) {
         return getProfile(world, player)
                 .flatMap(chatProfile -> chatProfile.doubleInfoNode(node))
                 .orElse(defaultValue);
     }
 
     @Override
-    public void setPlayerInfoDouble(String world, String player, String node, double value) {
+    public void setPlayerInfoDouble(@Nullable String world, String player, String node, double value) {
         setPlayerInfoString(world, player, node, String.valueOf(value));
     }
 
     @Override
-    public double getGroupInfoDouble(String world, String groupName, String node, double defaultValue) {
+    public double getGroupInfoDouble(@Nullable String world, String groupName, String node, double defaultValue) {
         return getGroup(world, groupName)
                 .flatMap(group -> group.doubleInfoNode(node))
                 .orElse(defaultValue);
     }
 
     @Override
-    public void setGroupInfoDouble(String world, String groupName, String node, double value) {
+    public void setGroupInfoDouble(@Nullable String world, String groupName, String node, double value) {
         setGroupInfoString(world, groupName, node, String.valueOf(value));
     }
 
     @Override
-    public boolean getPlayerInfoBoolean(String world, String player, String node, boolean defaultValue) {
+    public boolean getPlayerInfoBoolean(@Nullable String world, String player, String node, boolean defaultValue) {
         return getProfile(world, player)
                 .flatMap(chatProfile -> chatProfile.booleanInfoNode(node))
                 .orElse(defaultValue);
     }
 
     @Override
-    public void setPlayerInfoBoolean(String world, String player, String node, boolean value) {
+    public void setPlayerInfoBoolean(@Nullable String world, String player, String node, boolean value) {
         setPlayerInfoString(world, player, node, String.valueOf(value));
     }
 
     @Override
-    public boolean getGroupInfoBoolean(String world, String groupName, String node, boolean defaultValue) {
+    public boolean getGroupInfoBoolean(@Nullable String world, String groupName, String node, boolean defaultValue) {
         return getGroup(world, groupName)
                 .flatMap(group -> group.booleanInfoNode(node))
                 .orElse(defaultValue);
     }
 
     @Override
-    public void setGroupInfoBoolean(String world, String groupName, String node, boolean value) {
+    public void setGroupInfoBoolean(@Nullable String world, String groupName, String node, boolean value) {
         setGroupInfoString(world, groupName, node, String.valueOf(value));
     }
 
     @Override
-    public String getPlayerInfoString(String world, String player, String node, String defaultValue) {
+    public String getPlayerInfoString(@Nullable String world, String player, String node, String defaultValue) {
         return getProfile(world, player)
                 .flatMap(profile -> profile.getInfoNode(node))
                 .orElse(defaultValue);
     }
 
     @Override
-    public void setPlayerInfoString(String world, String player, String node, String value) {
+    public void setPlayerInfoString(@Nullable String world, String player, String node, String value) {
         getProfile(world, player).ifPresent(profile -> profile.setInfoNode(node, value));
     }
 
     @Override
-    public String getGroupInfoString(String world, String groupName, String node, String defaultValue) {
+    public String getGroupInfoString(@Nullable String world, String groupName, String node, String defaultValue) {
         return getGroup(world, groupName)
                 .flatMap(group -> group.getInfoNode(node))
                 .orElse(defaultValue);
     }
 
     @Override
-    public void setGroupInfoString(String world, String groupName, String node, String value) {
+    public void setGroupInfoString(@Nullable String world, String groupName, String node, String value) {
         getGroup(world, groupName).ifPresent(group -> group.setInfoNode(node, value));
     }
 
-    private Optional<ChatProfile> getProfile(String worldName, String name) {
-        return Optional.ofNullable(name).map(plugin.getServer()::getOfflinePlayerIfCached)
+    private Optional<ChatProfile> getProfile(@Nullable String worldName, String name) {
+        return Optional.ofNullable(plugin.getServer().getOfflinePlayerIfCached(name))
                 .flatMap(player -> Optional.ofNullable(worldName)
                         .map(plugin.getServer()::getWorld)
                         .map(world -> chatController.tryGetProfile(player, world).join()));
     }
 
-    private Optional<Group> getGroup(String worldName, String groupName) {
-        return groupName != null ? Optional.ofNullable(groupController)
-                .map(controller -> Optional.ofNullable(worldName)
-                        .map(plugin.getServer()::getWorld)
-                        .map(world -> controller.tryGetGroup(groupName, world).join())
-                        .orElseGet(() -> controller.tryGetGroup(groupName).join()))
-                : Optional.empty();
+    private Optional<Group> getGroup(@Nullable String worldName, String groupName) {
+        return Optional.ofNullable(groupController).map(controller -> Optional.ofNullable(worldName)
+                .map(plugin.getServer()::getWorld)
+                .map(world -> controller.tryGetGroup(groupName, world).join())
+                .orElseGet(() -> controller.tryGetGroup(groupName).join()));
     }
 }

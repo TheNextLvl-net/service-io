@@ -2,12 +2,14 @@ package net.thenextlvl.service.placeholder.api;
 
 import net.thenextlvl.service.ServicePlugin;
 import org.bukkit.OfflinePlayer;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+@NullMarked
 public abstract class PlaceholderStore<T> {
     private final Map<Pattern, PlaceholderResolver> resolvers = new HashMap<>();
     private final @Nullable T provider;
