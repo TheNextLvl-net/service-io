@@ -262,7 +262,7 @@ public class ServicePlugin extends Vault {
     }
 
     private <T> void addCustomChart(Class<T> service, Function<T, String> function, String chartId) {
-        var loaded = getServer().getServicesManager().load(service);
+        T loaded = getServer().getServicesManager().load(service);
         metrics.addCustomChart(new SimplePie(chartId, () -> loaded != null ? function.apply(loaded) : "None"));
     }
 
