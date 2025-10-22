@@ -9,6 +9,9 @@ import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.milkbowl.vault.chat.Chat;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.Controller;
 import net.thenextlvl.service.api.character.CharacterController;
@@ -25,6 +28,8 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 @NullMarked
 final class ServiceInfoCommand extends SimpleCommand {
@@ -62,10 +67,10 @@ final class ServiceInfoCommand extends SimpleCommand {
         return SINGLE_SUCCESS;
     }
 
-    private <C extends Controller> int info(CommandContext<CommandSourceStack> context, Class<C> type, String name, String none) {
+    private <C extends Controller, V> int info(CommandContext<CommandSourceStack> context, Class<C> type, @Nullable Class<V> vault, @Nullable Function<V, String> mapper, String name, String none) {
         var sender = context.getSource().getSender();
-        var service = plugin.getServer().getServicesManager().load(type);
-        var registrations = getRegistrations(type, service);
+        C service = plugin.getServer().getServicesManager().load(type);
+        var registrations = getRegistrations(type, service, vault, mapper);
         if (sendServiceInfo(sender, name, service != null ? service.getName() : null, registrations))
             return SINGLE_SUCCESS;
         plugin.bundle().sendMessage(sender, none);
@@ -73,31 +78,31 @@ final class ServiceInfoCommand extends SimpleCommand {
     }
 
     private int infoBanks(CommandContext<CommandSourceStack> context) {
-        return info(context, BankController.class, "Bank", "service.bank.none");
+        return info(context, BankController.class, null, null, "Bank", "service.bank.none");
     }
 
     private int infoCharacters(CommandContext<CommandSourceStack> context) {
-        return info(context, CharacterController.class, "Character", "service.character.none");
+        return info(context, CharacterController.class, null, null, "Character", "service.character.none");
     }
 
     private int infoChat(CommandContext<CommandSourceStack> context) {
-        return info(context, ChatController.class, "Chat", "service.chat.none");
+        return info(context, ChatController.class, Chat.class, Chat::getName, "Chat", "service.chat.none");
     }
 
     private int infoEconomy(CommandContext<CommandSourceStack> context) {
-        return info(context, EconomyController.class, "Economy", "service.economy.none");
+        return info(context, EconomyController.class, Economy.class, Economy::getName, "Economy", "service.economy.none");
     }
 
     private int infoGroups(CommandContext<CommandSourceStack> context) {
-        return info(context, GroupController.class, "Group", "service.group.none");
+        return info(context, GroupController.class, null, null, "Group", "service.group.none");
     }
 
     private int infoHolograms(CommandContext<CommandSourceStack> context) {
-        return info(context, HologramController.class, "Hologram", "service.hologram.none");
+        return info(context, HologramController.class, null, null, "Hologram", "service.hologram.none");
     }
 
     private int infoPermissions(CommandContext<CommandSourceStack> context) {
-        return info(context, PermissionController.class, "Permission", "service.permission.none");
+        return info(context, PermissionController.class, Permission.class, Permission::getName, "Permission", "service.permission.none");
     }
 
     private final JoinConfiguration separator = JoinConfiguration.builder()
@@ -105,12 +110,17 @@ final class ServiceInfoCommand extends SimpleCommand {
             .prefix(Component.text(" - ", NamedTextColor.DARK_GRAY))
             .build();
 
-    private <C extends Controller> List<TextComponent> getRegistrations(Class<C> registration, @Nullable C loaded) {
+    private <C extends Controller, V> List<TextComponent> getRegistrations(Class<C> registration, @Nullable C loaded, @Nullable Class<V> vault, @Nullable Function<V, String> mapper) {
         var name = loaded != null ? loaded.getName() : null;
-        return plugin.getServer().getServicesManager().getRegistrations(registration).stream()
+        var registrations = plugin.getServer().getServicesManager().getRegistrations(registration).stream()
                 .map(RegisteredServiceProvider::getProvider)
-                .map(Controller::getName)
+                .map(Controller::getName);
+        var vaultRegistrations = vault != null && mapper != null ? plugin.getServer().getServicesManager().getRegistrations(vault).stream()
+                .map(RegisteredServiceProvider::getProvider)
+                .map(mapper) : Stream.<String>empty();
+        return Stream.concat(registrations, vaultRegistrations)
                 .filter(provider -> !provider.equals(name))
+                .distinct()
                 .map(Component::text)
                 .toList();
     }
