@@ -2,11 +2,11 @@ package net.thenextlvl.service.wrapper;
 
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
-import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.chat.ChatProfile;
 import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.group.GroupController;
+import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -16,13 +16,13 @@ import java.util.Optional;
 public class VaultChatServiceWrapper extends Chat {
     private final @Nullable GroupController groupController;
     private final ChatController chatController;
-    private final ServicePlugin plugin;
+    private final Plugin plugin;
 
     public VaultChatServiceWrapper(
             Permission permission,
             @Nullable GroupController groupController,
             ChatController chatController,
-            ServicePlugin plugin
+            Plugin plugin
     ) {
         super(permission);
         this.groupController = groupController;

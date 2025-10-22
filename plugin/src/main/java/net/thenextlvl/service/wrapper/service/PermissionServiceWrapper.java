@@ -18,11 +18,9 @@ import java.util.concurrent.CompletableFuture;
 public class PermissionServiceWrapper implements PermissionController {
     private final Permission permission;
     private final Plugin provider;
-    private final ServicePlugin plugin;
 
-    public PermissionServiceWrapper(Permission permission, Plugin provider, ServicePlugin plugin) {
+    public PermissionServiceWrapper(Permission permission, Plugin provider) {
         this.permission = permission;
-        this.plugin = plugin;
         this.provider = provider;
     }
 
@@ -38,12 +36,12 @@ public class PermissionServiceWrapper implements PermissionController {
 
     @Override
     public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid) {
-        return loadPermissionHolder(plugin.getServer().getOfflinePlayer(uuid));
+        return loadPermissionHolder(provider.getServer().getOfflinePlayer(uuid));
     }
 
     @Override
     public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, World world) {
-        return loadPermissionHolder(plugin.getServer().getOfflinePlayer(uuid), world);
+        return loadPermissionHolder(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
@@ -58,12 +56,12 @@ public class PermissionServiceWrapper implements PermissionController {
 
     @Override
     public Optional<PermissionHolder> getPermissionHolder(UUID uuid) {
-        return getPermissionHolder(plugin.getServer().getOfflinePlayer(uuid));
+        return getPermissionHolder(provider.getServer().getOfflinePlayer(uuid));
     }
 
     @Override
     public Optional<PermissionHolder> getPermissionHolder(UUID uuid, World world) {
-        return getPermissionHolder(plugin.getServer().getOfflinePlayer(uuid), world);
+        return getPermissionHolder(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
