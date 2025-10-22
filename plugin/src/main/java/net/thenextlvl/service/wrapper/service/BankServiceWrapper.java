@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class BankServiceWrapper implements BankController {
+public class BankServiceWrapper implements BankController, Wrapper {
     private final Economy economy;
     private final Plugin provider;
 
@@ -134,6 +134,6 @@ public class BankServiceWrapper implements BankController {
 
     @Override
     public String getName() {
-        return economy.getName();
+        return economy.getName() + " Wrapper";
     }
 }

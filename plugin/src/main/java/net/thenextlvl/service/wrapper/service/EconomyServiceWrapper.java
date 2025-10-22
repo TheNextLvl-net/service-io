@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class EconomyServiceWrapper implements EconomyController {
+public class EconomyServiceWrapper implements EconomyController, Wrapper {
     private final Economy economy;
     private final Plugin provider;
 
@@ -148,6 +148,6 @@ public class EconomyServiceWrapper implements EconomyController {
 
     @Override
     public String getName() {
-        return economy.getName();
+        return economy.getName() + " Wrapper";
     }
 }

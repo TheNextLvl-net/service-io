@@ -13,7 +13,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.Optional;
 
 @NullMarked
-public class VaultChatServiceWrapper extends Chat {
+public class VaultChatServiceWrapper extends Chat implements Wrapper {
     private final @Nullable GroupController groupController;
     private final ChatController chatController;
     private final Plugin plugin;
@@ -32,7 +32,7 @@ public class VaultChatServiceWrapper extends Chat {
 
     @Override
     public String getName() {
-        return chatController.getName();
+        return chatController.getName() + " Wrapper";
     }
 
     @Override

@@ -14,7 +14,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.Optional;
 
 @NullMarked
-public class VaultPermissionServiceWrapper extends Permission {
+public class VaultPermissionServiceWrapper extends Permission implements Wrapper {
     private final @Nullable GroupController groupController;
     private final PermissionController permissionController;
 
@@ -30,7 +30,7 @@ public class VaultPermissionServiceWrapper extends Permission {
 
     @Override
     public String getName() {
-        return permissionController.getName();
+        return permissionController.getName() + " Wrapper";
     }
 
     @Override

@@ -19,7 +19,7 @@ import static net.milkbowl.vault.economy.EconomyResponse.ResponseType.FAILURE;
 import static net.milkbowl.vault.economy.EconomyResponse.ResponseType.SUCCESS;
 
 @NullMarked
-public class VaultEconomyServiceWrapper implements Economy {
+public class VaultEconomyServiceWrapper implements Economy, Wrapper {
     private final @Nullable BankController bankController;
     private final EconomyController economyController;
     private final Plugin plugin;
@@ -37,7 +37,7 @@ public class VaultEconomyServiceWrapper implements Economy {
 
     @Override
     public String getName() {
-        return economyController.getName();
+        return economyController.getName() + " Wrapper";
     }
 
     private BankController bankController() throws UnsupportedOperationException {

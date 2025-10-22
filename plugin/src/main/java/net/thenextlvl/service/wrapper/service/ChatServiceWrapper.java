@@ -15,7 +15,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-public class ChatServiceWrapper implements ChatController {
+public class ChatServiceWrapper implements ChatController, Wrapper {
     private final Plugin provider;
     private final Chat chat;
 
@@ -71,6 +71,6 @@ public class ChatServiceWrapper implements ChatController {
 
     @Override
     public String getName() {
-        return chat.getName();
+        return chat.getName() + " Wrapper";
     }
 }

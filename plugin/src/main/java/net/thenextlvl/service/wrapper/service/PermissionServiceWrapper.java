@@ -1,9 +1,9 @@
 package net.thenextlvl.service.wrapper.service;
 
 import net.milkbowl.vault.permission.Permission;
-import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.api.permission.PermissionHolder;
+import net.thenextlvl.service.wrapper.Wrapper;
 import net.thenextlvl.service.wrapper.service.model.WrappedPermissionHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -15,7 +15,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-public class PermissionServiceWrapper implements PermissionController {
+public class PermissionServiceWrapper implements PermissionController, Wrapper {
     private final Permission permission;
     private final Plugin provider;
 
@@ -71,6 +71,6 @@ public class PermissionServiceWrapper implements PermissionController {
 
     @Override
     public String getName() {
-        return permission.getName();
+        return permission.getName() + " Wrapper";
     }
 }
