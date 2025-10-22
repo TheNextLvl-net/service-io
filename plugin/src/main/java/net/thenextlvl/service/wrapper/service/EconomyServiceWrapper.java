@@ -1,9 +1,9 @@
 package net.thenextlvl.service.wrapper.service;
 
 import net.milkbowl.vault.economy.Economy;
-import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.Account;
 import net.thenextlvl.service.api.economy.EconomyController;
+import net.thenextlvl.service.wrapper.Wrapper;
 import net.thenextlvl.service.wrapper.service.model.WrappedAccount;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -20,14 +20,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class EconomyServiceWrapper implements EconomyController {
+public class EconomyServiceWrapper implements EconomyController, Wrapper {
     private final Economy economy;
     private final Plugin provider;
-    private final ServicePlugin plugin;
 
-    public EconomyServiceWrapper(Economy economy, Plugin provider, ServicePlugin plugin) {
+    public EconomyServiceWrapper(Economy economy, Plugin provider) {
         this.economy = economy;
-        this.plugin = plugin;
         this.provider = provider;
     }
 
@@ -58,7 +56,7 @@ public class EconomyServiceWrapper implements EconomyController {
 
     @Override
     public @Unmodifiable Set<Account> getAccounts() {
-        return Arrays.stream(plugin.getServer().getOfflinePlayers())
+        return Arrays.stream(provider.getServer().getOfflinePlayers())
                 .filter(economy::hasAccount)
                 .map(player -> new WrappedAccount(null, economy, player))
                 .collect(Collectors.toUnmodifiableSet());
@@ -78,12 +76,12 @@ public class EconomyServiceWrapper implements EconomyController {
 
     @Override
     public Optional<Account> getAccount(UUID uuid) {
-        return getAccount(plugin.getServer().getOfflinePlayer(uuid));
+        return getAccount(provider.getServer().getOfflinePlayer(uuid));
     }
 
     @Override
     public Optional<Account> getAccount(UUID uuid, World world) {
-        return getAccount(plugin.getServer().getOfflinePlayer(uuid), world);
+        return getAccount(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
@@ -100,12 +98,12 @@ public class EconomyServiceWrapper implements EconomyController {
 
     @Override
     public CompletableFuture<Account> createAccount(UUID uuid) {
-        return createAccount(plugin.getServer().getOfflinePlayer(uuid));
+        return createAccount(provider.getServer().getOfflinePlayer(uuid));
     }
 
     @Override
     public CompletableFuture<Account> createAccount(UUID uuid, World world) {
-        return createAccount(plugin.getServer().getOfflinePlayer(uuid), world);
+        return createAccount(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
@@ -120,12 +118,12 @@ public class EconomyServiceWrapper implements EconomyController {
 
     @Override
     public CompletableFuture<Optional<Account>> loadAccount(UUID uuid) {
-        return loadAccount(plugin.getServer().getOfflinePlayer(uuid));
+        return loadAccount(provider.getServer().getOfflinePlayer(uuid));
     }
 
     @Override
     public CompletableFuture<Optional<Account>> loadAccount(UUID uuid, World world) {
-        return loadAccount(plugin.getServer().getOfflinePlayer(uuid), world);
+        return loadAccount(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
@@ -150,6 +148,6 @@ public class EconomyServiceWrapper implements EconomyController {
 
     @Override
     public String getName() {
-        return economy.getName();
+        return economy.getName() + " Wrapper";
     }
 }

@@ -82,31 +82,31 @@ paper {
 
     serverDependencies {
         register("Citizens") {
-            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            load = PaperPluginDescription.RelativeLoadOrder.AFTER
             required = false
         }
         register("DecentHolograms") {
-            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            load = PaperPluginDescription.RelativeLoadOrder.AFTER
             required = false
         }
         register("FancyHolograms") {
-            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            load = PaperPluginDescription.RelativeLoadOrder.AFTER
             required = false
         }
         register("FancyNpcs") {
-            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            load = PaperPluginDescription.RelativeLoadOrder.AFTER
             required = false
         }
         register("GroupManager") {
-            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            load = PaperPluginDescription.RelativeLoadOrder.AFTER
             required = false
         }
         register("LuckPerms") {
-            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            load = PaperPluginDescription.RelativeLoadOrder.AFTER
             required = false
         }
         register("PlaceholderAPI") {
-            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            load = PaperPluginDescription.RelativeLoadOrder.AFTER
             required = false
         }
     }

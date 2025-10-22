@@ -2,9 +2,9 @@ package net.thenextlvl.service.wrapper.service;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
-import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.bank.BankController;
+import net.thenextlvl.service.wrapper.Wrapper;
 import net.thenextlvl.service.wrapper.service.model.WrappedBank;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -19,14 +19,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class BankServiceWrapper implements BankController {
+public class BankServiceWrapper implements BankController, Wrapper {
     private final Economy economy;
     private final Plugin provider;
-    private final ServicePlugin plugin;
 
-    public BankServiceWrapper(Economy economy, Plugin provider, ServicePlugin plugin) {
+    public BankServiceWrapper(Economy economy, Plugin provider) {
         this.economy = economy;
-        this.plugin = plugin;
         this.provider = provider;
     }
 
@@ -53,12 +51,12 @@ public class BankServiceWrapper implements BankController {
 
     @Override
     public CompletableFuture<Bank> createBank(UUID uuid, String name) {
-        return createBank(plugin.getServer().getOfflinePlayer(uuid), name);
+        return createBank(provider.getServer().getOfflinePlayer(uuid), name);
     }
 
     @Override
     public CompletableFuture<Bank> createBank(UUID uuid, String name, World world) {
-        return createBank(plugin.getServer().getOfflinePlayer(uuid), name, world);
+        return createBank(provider.getServer().getOfflinePlayer(uuid), name, world);
     }
 
     @Override
@@ -105,7 +103,7 @@ public class BankServiceWrapper implements BankController {
     @Override
     public @Unmodifiable Set<Bank> getBanks() {
         return economy.getBanks().stream()
-                .map(bank -> new WrappedBank(bank, null, economy, plugin))
+                .map(bank -> new WrappedBank(bank, null, economy, provider))
                 .collect(Collectors.toUnmodifiableSet());
     }
 
@@ -116,7 +114,7 @@ public class BankServiceWrapper implements BankController {
 
     @Override
     public Optional<Bank> getBank(String name) {
-        return Optional.of(new WrappedBank(name, null, economy, plugin));
+        return Optional.of(new WrappedBank(name, null, economy, provider));
     }
 
     @Override
@@ -136,6 +134,6 @@ public class BankServiceWrapper implements BankController {
 
     @Override
     public String getName() {
-        return economy.getName();
+        return economy.getName() + " Wrapper";
     }
 }

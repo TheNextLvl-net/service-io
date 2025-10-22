@@ -1,9 +1,9 @@
 package net.thenextlvl.service.wrapper.service;
 
 import net.milkbowl.vault.permission.Permission;
-import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.api.permission.PermissionHolder;
+import net.thenextlvl.service.wrapper.Wrapper;
 import net.thenextlvl.service.wrapper.service.model.WrappedPermissionHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -15,14 +15,12 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-public class PermissionServiceWrapper implements PermissionController {
+public class PermissionServiceWrapper implements PermissionController, Wrapper {
     private final Permission permission;
     private final Plugin provider;
-    private final ServicePlugin plugin;
 
-    public PermissionServiceWrapper(Permission permission, Plugin provider, ServicePlugin plugin) {
+    public PermissionServiceWrapper(Permission permission, Plugin provider) {
         this.permission = permission;
-        this.plugin = plugin;
         this.provider = provider;
     }
 
@@ -38,12 +36,12 @@ public class PermissionServiceWrapper implements PermissionController {
 
     @Override
     public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid) {
-        return loadPermissionHolder(plugin.getServer().getOfflinePlayer(uuid));
+        return loadPermissionHolder(provider.getServer().getOfflinePlayer(uuid));
     }
 
     @Override
     public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, World world) {
-        return loadPermissionHolder(plugin.getServer().getOfflinePlayer(uuid), world);
+        return loadPermissionHolder(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
@@ -58,12 +56,12 @@ public class PermissionServiceWrapper implements PermissionController {
 
     @Override
     public Optional<PermissionHolder> getPermissionHolder(UUID uuid) {
-        return getPermissionHolder(plugin.getServer().getOfflinePlayer(uuid));
+        return getPermissionHolder(provider.getServer().getOfflinePlayer(uuid));
     }
 
     @Override
     public Optional<PermissionHolder> getPermissionHolder(UUID uuid, World world) {
-        return getPermissionHolder(plugin.getServer().getOfflinePlayer(uuid), world);
+        return getPermissionHolder(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
@@ -73,6 +71,6 @@ public class PermissionServiceWrapper implements PermissionController {
 
     @Override
     public String getName() {
-        return permission.getName();
+        return permission.getName() + " Wrapper";
     }
 }

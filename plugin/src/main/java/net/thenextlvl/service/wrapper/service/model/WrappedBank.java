@@ -1,10 +1,10 @@
 package net.thenextlvl.service.wrapper.service.model;
 
 import net.milkbowl.vault.economy.Economy;
-import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -20,14 +20,14 @@ import java.util.stream.Collectors;
 public class WrappedBank implements Bank {
     private final @Nullable World world;
     private final Economy economy;
-    private final ServicePlugin plugin;
+    private final Plugin provider;
     private final String name;
 
-    public WrappedBank(String name, @Nullable World world, Economy economy, ServicePlugin plugin) {
+    public WrappedBank(String name, @Nullable World world, Economy economy, Plugin provider) {
         this.name = name;
         this.world = world;
         this.economy = economy;
-        this.plugin = plugin;
+        this.provider = provider;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class WrappedBank implements Bank {
 
     @Override
     public UUID getOwner() {
-        return Arrays.stream(plugin.getServer().getOfflinePlayers())
+        return Arrays.stream(provider.getServer().getOfflinePlayers())
                 .filter(player -> economy.isBankOwner(name, player).transactionSuccess())
                 .map(OfflinePlayer::getUniqueId)
                 .findAny()
@@ -68,10 +68,10 @@ public class WrappedBank implements Bank {
 
     @Override
     public @Unmodifiable Set<UUID> getMembers() {
-        return Arrays.stream(plugin.getServer().getOfflinePlayers())
-                .filter(player -> economy.isBankMember(name, player).transactionSuccess())
-                .map(OfflinePlayer::getUniqueId)
-                .collect(Collectors.toUnmodifiableSet());
+        return Arrays.stream(provider.getServer().getOfflinePlayers())
+            .filter(player -> economy.isBankMember(name, player).transactionSuccess())
+            .map(OfflinePlayer::getUniqueId)
+            .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
