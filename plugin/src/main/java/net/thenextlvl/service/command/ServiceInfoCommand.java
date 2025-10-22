@@ -50,7 +50,6 @@ final class ServiceInfoCommand extends SimpleCommand {
                 .executes(command);
     }
 
-
     @Override
     public int run(CommandContext<CommandSourceStack> context) {
         plugin.bundle().sendMessage(context.getSource().getSender(), "service.version",
@@ -115,7 +114,8 @@ final class ServiceInfoCommand extends SimpleCommand {
         var registrations = plugin.getServer().getServicesManager().getRegistrations(registration).stream()
                 .map(RegisteredServiceProvider::getProvider)
                 .map(Controller::getName);
-        var vaultRegistrations = vault != null && mapper != null ? plugin.getServer().getServicesManager().getRegistrations(vault).stream()
+        var vaultRegistrations = vault != null && mapper != null
+                ? plugin.getServer().getServicesManager().getRegistrations(vault).stream()
                 .map(RegisteredServiceProvider::getProvider)
                 .map(mapper) : Stream.<String>empty();
         return Stream.concat(registrations, vaultRegistrations)
