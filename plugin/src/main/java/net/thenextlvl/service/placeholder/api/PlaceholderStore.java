@@ -2,6 +2,10 @@ package net.thenextlvl.service.placeholder.api;
 
 import net.thenextlvl.service.ServicePlugin;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.ServiceRegisterEvent;
+import org.bukkit.event.server.ServiceUnregisterEvent;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -10,37 +14,39 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 @NullMarked
-public abstract class PlaceholderStore<T> {
-    private final Map<Pattern, PlaceholderResolver> resolvers = new HashMap<>();
-    private final @Nullable T provider;
-    
+public abstract class PlaceholderStore<T> implements Listener {
+    private final Map<Pattern, PlaceholderResolver<T>> resolvers = new HashMap<>();
+    private final Class<T> providerClass;
+    private @Nullable T provider;
+
     protected final ServicePlugin plugin;
 
     public PlaceholderStore(ServicePlugin plugin, Class<T> providerClass) {
         this.plugin = plugin;
-        this.provider = plugin.getServer().getServicesManager().load(providerClass);
-        if (provider == null) return;
-        registerResolvers(provider);
+        this.providerClass = providerClass;
+        updateServices();
+        registerResolvers();
         plugin.getComponentLogger().info("Registered placeholders for {} ({})",
-                provider.getClass().getSimpleName(), providerClass.getSimpleName());
+                providerClass.getSimpleName(), providerClass.getSimpleName());
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    public final void registerResolver(Pattern pattern, PlaceholderResolver resolver) {
+    private void registerResolver(Pattern pattern, PlaceholderResolver<T> resolver) {
         resolvers.put(pattern, resolver);
     }
 
-    protected final void registerResolver(String regex, PlaceholderResolver resolver) {
-        resolvers.put(Pattern.compile(regex.replace("%s", "([^{}_]+)")), resolver);
+    protected final void registerResolver(String regex, PlaceholderResolver<T> resolver) {
+        resolvers.put(Pattern.compile(regex.replace("%s", "([^{}]+)")), resolver);
     }
 
-    protected abstract void registerResolvers(T provider);
+    protected abstract void registerResolvers();
 
     public final @Nullable String resolve(OfflinePlayer player, String params) {
         try {
-            for (var entry : resolvers.entrySet()) {
+            if (provider != null) for (var entry : resolvers.entrySet()) {
                 var matcher = entry.getKey().matcher(params);
                 if (!matcher.matches()) continue;
-                return entry.getValue().resolve(player, matcher);
+                return entry.getValue().resolve(provider, player, matcher);
             }
             return null;
         } catch (Exception e) {
@@ -52,5 +58,19 @@ public abstract class PlaceholderStore<T> {
 
     public final boolean isEnabled() {
         return provider != null;
+    }
+
+    @EventHandler
+    public void onServiceRegister(ServiceRegisterEvent event) {
+        if (providerClass.isInstance(event.getProvider().getProvider())) updateServices();
+    }
+
+    @EventHandler
+    public void onServiceUnregister(ServiceUnregisterEvent event) {
+        if (providerClass.isInstance(event.getProvider().getProvider())) updateServices();
+    }
+
+    private void updateServices() {
+        this.provider = plugin.getServer().getServicesManager().load(providerClass);
     }
 }
