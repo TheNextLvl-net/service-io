@@ -46,7 +46,8 @@ public abstract class PlaceholderStore<T> implements Listener {
             if (provider != null) for (var entry : resolvers.entrySet()) {
                 var matcher = entry.getKey().matcher(params);
                 if (!matcher.matches()) continue;
-                return entry.getValue().resolve(provider, player, matcher);
+                var resolved = entry.getValue().resolve(provider, player, matcher);
+                if (resolved != null) return resolved;
             }
             return null;
         } catch (Exception e) {
