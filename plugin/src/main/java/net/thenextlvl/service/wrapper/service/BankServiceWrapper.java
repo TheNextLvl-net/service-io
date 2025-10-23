@@ -4,7 +4,9 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.bank.BankController;
+import net.thenextlvl.service.api.economy.currency.Currency;
 import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
+import net.thenextlvl.service.wrapper.Wrapper;
 import net.thenextlvl.service.wrapper.service.model.WrappedBank;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -30,6 +32,7 @@ public class BankServiceWrapper implements BankController, Wrapper {
         this.holder = holder;
         this.economy = economy;
         this.provider = provider;
+        this.currency = holder.getDefaultCurrency();
     }
 
     @Override
@@ -77,14 +80,14 @@ public class BankServiceWrapper implements BankController, Wrapper {
     @Override
     public @Unmodifiable Set<Bank> getBanks(@Nullable World world) {
         return world != null ? Set.of() : economy.getBanks().stream()
-                .map(bank -> new WrappedBank(bank, null, economy, plugin))
+                .map(bank -> new WrappedBank(bank, null, economy, provider))
                 .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
     public Optional<Bank> getBank(String name) {
         if (!economy.getBanks().contains(name)) return Optional.empty();
-        return Optional.of(new WrappedBank(this, name, null, economy, provider));
+        return Optional.of(new WrappedBank(name, null, economy, provider));
     }
 
     @Override
@@ -96,7 +99,7 @@ public class BankServiceWrapper implements BankController, Wrapper {
 
     @Override
     public Optional<Bank> getBank(UUID uuid, @Nullable World world) {
-        return getBank(plugin.getServer().getOfflinePlayer(uuid), world);
+        return getBank(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
@@ -106,7 +109,7 @@ public class BankServiceWrapper implements BankController, Wrapper {
 
     @Override
     public boolean hasBank(UUID uuid, @Nullable World world) {
-        return hasBank(plugin.getServer().getOfflinePlayer(uuid), world);
+        return hasBank(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override

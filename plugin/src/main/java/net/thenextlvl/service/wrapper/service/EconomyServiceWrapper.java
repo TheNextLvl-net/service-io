@@ -4,6 +4,8 @@ import net.milkbowl.vault.economy.Economy;
 import net.thenextlvl.service.api.economy.Account;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.currency.Currency;
+import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
+import net.thenextlvl.service.wrapper.Wrapper;
 import net.thenextlvl.service.wrapper.service.model.WrappedAccount;
 import net.thenextlvl.service.wrapper.service.model.WrappedCurrency;
 import org.bukkit.OfflinePlayer;
@@ -73,7 +75,7 @@ public class EconomyServiceWrapper implements EconomyController, Wrapper {
 
     @Override
     public CompletableFuture<Account> createAccount(UUID uuid, @Nullable World world) {
-        return createAccount(plugin.getServer().getOfflinePlayer(uuid), world);
+        return createAccount(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package net.thenextlvl.service.wrapper.service.model;
 
 import net.milkbowl.vault.economy.Economy;
-import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.currency.Currency;
 import org.bukkit.OfflinePlayer;
@@ -115,7 +114,7 @@ public class WrappedBank implements Bank {
 
     @Override
     public boolean canDeposit(UUID uuid, Number amount, Currency currency) {
-        return canDeposit(plugin.getServer().getOfflinePlayer(uuid), amount, currency);
+        return canDeposit(provider.getServer().getOfflinePlayer(uuid), amount, currency);
     }
 
     @Override
@@ -125,6 +124,6 @@ public class WrappedBank implements Bank {
 
     @Override
     public boolean canWithdraw(UUID uuid, Number amount, Currency currency) {
-        return canWithdraw(plugin.getServer().getOfflinePlayer(uuid), amount, currency);
+        return canWithdraw(provider.getServer().getOfflinePlayer(uuid), amount, currency);
     }
 }

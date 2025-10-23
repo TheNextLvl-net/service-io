@@ -12,6 +12,7 @@ import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -53,24 +54,24 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
 
     @Override
     public int fractionalDigits() {
-        return economyController.getDefaultCurrency().getFractionalDigits();
+        return economyController.getCurrencyHolder().getDefaultCurrency().getFractionalDigits();
     }
 
     @Override
     public String format(double amount) {
-        var format = economyController.getDefaultCurrency().format(amount, Locale.US);
+        var format = economyController.getCurrencyHolder().getDefaultCurrency().format(amount, Locale.US);
         return PlainTextComponentSerializer.plainText().serialize(format);
     }
 
     @Override
     public String currencyNamePlural() {
-        return economyController.getDefaultCurrency().getDisplayNamePlural(Locale.US)
+        return economyController.getCurrencyHolder().getDefaultCurrency().getDisplayNamePlural(Locale.US)
                 .map(PlainTextComponentSerializer.plainText()::serialize).orElse("");
     }
 
     @Override
     public String currencyNameSingular() {
-        return economyController.getDefaultCurrency().getDisplayNameSingular(Locale.US)
+        return economyController.getCurrencyHolder().getDefaultCurrency().getDisplayNameSingular(Locale.US)
                 .map(PlainTextComponentSerializer.plainText()::serialize).orElse("");
     }
 
@@ -114,7 +115,7 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
     @Override
     public double getBalance(@Nullable OfflinePlayer player, @Nullable String worldName) {
         return getAccount(player, worldName)
-                .map(account -> account.getBalance(economyController.getDefaultCurrency()))
+                .map(account -> account.getBalance(economyController.getCurrencyHolder().getDefaultCurrency()))
                 .map(Number::doubleValue)
                 .orElse(0.0);
     }
@@ -158,8 +159,8 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
     @Override
     public EconomyResponse withdrawPlayer(@Nullable OfflinePlayer player, @Nullable String worldName, double amount) {
         return getAccount(player, worldName).map(account -> {
-            var balance = account.getBalance(economyController.getDefaultCurrency());
-            var withdraw = account.withdraw(amount, economyController.getDefaultCurrency());
+            var balance = account.getBalance(economyController.getCurrencyHolder().getDefaultCurrency());
+            var withdraw = account.withdraw(amount, economyController.getCurrencyHolder().getDefaultCurrency());
             var responseType = amount != 0 && balance.equals(withdraw) ? FAILURE : SUCCESS;
             return new EconomyResponse(amount, withdraw.doubleValue(), responseType, null);
         }).orElseGet(() -> new EconomyResponse(amount, 0, FAILURE, null));
@@ -184,8 +185,8 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
     @Override
     public EconomyResponse depositPlayer(@Nullable OfflinePlayer player, @Nullable String worldName, double amount) {
         return getAccount(player, worldName).map(account -> {
-            var balance = account.getBalance(economyController.getDefaultCurrency());
-            var deposit = account.deposit(amount, economyController.getDefaultCurrency());
+            var balance = account.getBalance(economyController.getCurrencyHolder().getDefaultCurrency());
+            var deposit = account.deposit(amount, economyController.getCurrencyHolder().getDefaultCurrency());
             var responseType = amount != 0 && balance.equals(deposit) ? FAILURE : SUCCESS;
             return new EconomyResponse(amount, deposit.doubleValue(), responseType, null);
         }).orElseGet(() -> new EconomyResponse(amount, 0, FAILURE, null));
@@ -213,37 +214,28 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
 
     @Override
     public EconomyResponse bankBalance(String name) {
-        try {
-            var bank = bankController().tryGetBank(name).join();
-            var balance = bank.getBalance(economyController.getDefaultCurrency());
-            return new EconomyResponse(0, balance.doubleValue(), SUCCESS, null);
-        } catch (Exception e) {
-            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
-        }
+        return bankController().tryGetBank(name).join()
+                .map(bank -> bank.getBalance(economyController.getCurrencyHolder().getDefaultCurrency()))
+                .map(balance -> new EconomyResponse(0, balance.doubleValue(), SUCCESS, null))
+                .orElseGet(() -> new EconomyResponse(0, 0, FAILURE, "Bank not found"));
     }
 
     @Override
     public EconomyResponse bankHas(String name, double amount) {
-        try {
-            var bank = bankController().tryGetBank(name).join();
-            var balance = bank.getBalance(economyController.getDefaultCurrency()).doubleValue();
-            var response = balance >= amount ? SUCCESS : FAILURE;
-            return new EconomyResponse(amount, balance, response, null);
-        } catch (Exception e) {
-            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
-        }
+        return bankController().tryGetBank(name).join()
+                .map(bank -> bank.getBalance(economyController.getCurrencyHolder().getDefaultCurrency()))
+                .map(BigDecimal::doubleValue)
+                .map(balance -> new EconomyResponse(amount, balance, balance >= amount ? SUCCESS : FAILURE, null))
+                .orElseGet(() -> new EconomyResponse(0, 0, FAILURE, "Bank not found"));
     }
 
     @Override
     public EconomyResponse bankWithdraw(String name, double amount) {
-        try {
-            var bank = bankController().tryGetBank(name).join();
-            var balance = bank.withdraw(amount, economyController.getDefaultCurrency()).doubleValue();
-            var response = balance >= amount ? SUCCESS : FAILURE;
-            return new EconomyResponse(amount, balance, response, null);
-        } catch (Exception e) {
-            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
-        }
+        return bankController().tryGetBank(name).join()
+                .map(bank -> bank.withdraw(amount, economyController.getCurrencyHolder().getDefaultCurrency()))
+                .map(BigDecimal::doubleValue)
+                .map(balance -> new EconomyResponse(amount, balance, balance >= amount ? SUCCESS : FAILURE, null))
+                .orElseGet(() -> new EconomyResponse(0, 0, FAILURE, "Bank not found"));
     }
 
     @Override
