@@ -13,19 +13,19 @@ public class ServiceChatPlaceholderStore extends PlaceholderStore<ChatController
     }
 
     @Override
-    protected void registerResolvers(ChatController provider) {
+    protected void registerResolvers() {
         // %serviceio_prefix%
-        registerResolver("prefix", (player, matcher) -> {
+        registerResolver("prefix", (provider, player, matcher) -> {
             return provider.getProfile(player).flatMap(Display::getPrefix).orElse("");
         });
 
         // %serviceio_suffix%
-        registerResolver("suffix", (player, matcher) -> {
+        registerResolver("suffix", (provider, player, matcher) -> {
             return provider.getProfile(player).flatMap(Display::getSuffix).orElse("");
         });
 
         // %serviceio_displayname%
-        registerResolver("displayname", (player, matcher) -> {
+        registerResolver("displayname", (provider, player, matcher) -> {
             return provider.getProfile(player).flatMap(Display::getDisplayName).orElse(player.getName());
         });
     }

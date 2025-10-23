@@ -8,16 +8,16 @@ import org.jspecify.annotations.Nullable;
 import java.util.regex.Matcher;
 
 @NullMarked
-public interface PlaceholderResolver {
+public interface PlaceholderResolver<T> {
     @Nullable
-    String resolve(OfflinePlayer player, Matcher matcher) throws RuntimeException;
-    
+    String resolve(T provider, OfflinePlayer player, Matcher matcher) throws RuntimeException;
+
     @SafeVarargs
-    static PlaceholderResolver throwing(PlaceholderResolver resolver, Class<? extends RuntimeException>... ignored) {
+    static <T> PlaceholderResolver<T> throwing(PlaceholderResolver<T> resolver, Class<? extends RuntimeException>... ignored) {
         Preconditions.checkArgument(ignored.length > 0, "At least one exception class must be provided");
-        return (player, matcher) -> {
+        return (provider, player, matcher) -> {
             try {
-                return resolver.resolve(player, matcher);
+                return resolver.resolve(provider, player, matcher);
             } catch (RuntimeException exception) {
                 for (var clazz : ignored) {
                     if (clazz.isInstance(exception)) return null;

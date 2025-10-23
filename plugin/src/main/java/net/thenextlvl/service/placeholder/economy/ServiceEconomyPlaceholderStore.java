@@ -15,26 +15,26 @@ public class ServiceEconomyPlaceholderStore extends PlaceholderStore<EconomyCont
     }
 
     @Override
-    protected void registerResolvers(EconomyController provider) {
+    protected void registerResolvers() {
         // %serviceio_balance%
-        registerResolver("balance", (player, matcher) -> {
+        registerResolver("balance", (provider, player, matcher) -> {
             return provider.getAccount(player).map(Account::getBalance).orElse(BigDecimal.ZERO).toPlainString();
         });
 
         // %serviceio_balance_<world>%
-        registerResolver("balance_%s", (player, matcher) -> {
+        registerResolver("balance_%s", (provider, player, matcher) -> {
             var world = plugin.getServer().getWorld(matcher.group(1));
             if (world == null) return null;
             return provider.getAccount(player, world).map(Account::getBalance).orElse(BigDecimal.ZERO).toPlainString();
         });
 
         // %serviceio_balance_formatted%
-        registerResolver("balance_formatted", (player, matcher) -> {
+        registerResolver("balance_formatted", (provider, player, matcher) -> {
             return provider.format(provider.getAccount(player).map(Account::getBalance).orElse(BigDecimal.ZERO));
         });
 
-        // %serviceio_balance_formatted%
-        registerResolver("balance_formatted_%s", (player, matcher) -> {
+        // %serviceio_balance_formatted_<world>%
+        registerResolver("balance_formatted_%s", (provider, player, matcher) -> {
             var world = plugin.getServer().getWorld(matcher.group(1));
             if (world == null) return null;
             return provider.format(provider.getAccount(player, world).map(Account::getBalance).orElse(BigDecimal.ZERO));

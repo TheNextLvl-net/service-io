@@ -16,14 +16,14 @@ public class ServiceGroupPlaceholderStore extends PlaceholderStore<GroupControll
     }
 
     @Override
-    protected void registerResolvers(GroupController provider) {
+    protected void registerResolvers() {
         // %serviceio_group%
-        registerResolver("group", (player, matcher) -> {
+        registerResolver("group", (provider, player, matcher) -> {
             return provider.getGroupHolder(player).map(GroupHolder::getPrimaryGroup).orElse("");
         });
 
         // %serviceio_groups%
-        registerResolver("groups", (player, matcher) -> {
+        registerResolver("groups", (provider, player, matcher) -> {
             return provider.getGroupHolder(player).map(GroupHolder::getGroups).map(groups ->
                     groups.stream().map(Group::getName).collect(Collectors.joining(", "))
             ).orElse("");
