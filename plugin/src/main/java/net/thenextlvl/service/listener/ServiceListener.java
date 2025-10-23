@@ -43,7 +43,7 @@ public class ServiceListener implements Listener {
         var provider = event.getProvider().getProvider();
         var type = provider instanceof Controller ? "controller"
                 : provider instanceof Wrapper ? "service wrapper" : null;
-        if (type != null) plugin.getComponentLogger().debug("Unregistered {} for {} - {} ({})", type,
+        if (type != null) plugin.getComponentLogger().info("Unregistered {} for {} - {} ({})", type,
                 event.getProvider().getPlugin().getName(),
                 event.getProvider().getProvider().getClass().getName(),
                 event.getProvider().getPriority().name());
@@ -75,27 +75,27 @@ public class ServiceListener implements Listener {
     private void loadServicePermissionWrapper(RegisteredServiceProvider<Permission> provider) {
         var wrapper = new PermissionServiceWrapper(provider.getProvider(), provider.getPlugin());
         getServicesManager().register(PermissionController.class, wrapper, provider.getPlugin(), provider.getPriority());
-        plugin.getComponentLogger().warn("Registered permission service wrapper for {} - {} ({})",
+        plugin.getComponentLogger().info("Registered permission service wrapper for {} - {} ({})",
                 provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
     }
 
     private void loadServiceEconomyWrapper(RegisteredServiceProvider<Economy> provider) {
         var wrapper = new EconomyServiceWrapper(provider.getProvider(), provider.getPlugin());
         getServicesManager().register(EconomyController.class, wrapper, provider.getPlugin(), provider.getPriority());
-        plugin.getComponentLogger().warn("Registered economy service wrapper for {} - {} ({})",
+        plugin.getComponentLogger().info("Registered economy service wrapper for {} - {} ({})",
                 provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
 
         if (!provider.getProvider().hasBankSupport()) return;
         var banks = new BankServiceWrapper(provider.getProvider(), provider.getPlugin());
         getServicesManager().register(BankController.class, banks, provider.getPlugin(), provider.getPriority());
-        plugin.getComponentLogger().warn("Registered bank service wrapper for {} - {} ({})",
+        plugin.getComponentLogger().info("Registered bank service wrapper for {} - {} ({})",
                 provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
     }
 
     private void loadServiceChatWrapper(RegisteredServiceProvider<Chat> provider) {
         var wrapper = new ChatServiceWrapper(provider.getProvider(), provider.getPlugin());
         getServicesManager().register(ChatController.class, wrapper, provider.getPlugin(), provider.getPriority());
-        plugin.getComponentLogger().warn("Registered chat service wrapper for {} - {} ({})",
+        plugin.getComponentLogger().info("Registered chat service wrapper for {} - {} ({})",
                 provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
     }
 
@@ -103,14 +103,14 @@ public class ServiceListener implements Listener {
         var groupController = getServicesManager().load(GroupController.class);
         var wrapper = new VaultPermissionServiceWrapper(groupController, provider.getProvider(), provider.getPlugin());
         getServicesManager().register(Permission.class, wrapper, provider.getPlugin(), provider.getPriority());
-        plugin.getComponentLogger().warn("Registered vault permission wrapper for {} - {} ({})",
+        plugin.getComponentLogger().info("Registered vault permission wrapper for {} - {} ({})",
                 provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
     }
 
     private void loadVaultEconomyWrapper(RegisteredServiceProvider<EconomyController> provider) {
         var wrapper = new VaultEconomyServiceWrapper(provider.getProvider(), provider.getPlugin());
         getServicesManager().register(Economy.class, wrapper, provider.getPlugin(), provider.getPriority());
-        plugin.getComponentLogger().warn("Registered vault economy wrapper for {} - {} ({})",
+        plugin.getComponentLogger().info("Registered vault economy wrapper for {} - {} ({})",
                 provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
     }
 
@@ -125,7 +125,7 @@ public class ServiceListener implements Listener {
 
         var wrapper = new VaultChatServiceWrapper(permission, groupController, provider.getProvider(), provider.getPlugin());
         getServicesManager().register(Chat.class, wrapper, provider.getPlugin(), ServicePriority.Highest);
-        plugin.getComponentLogger().warn("Registered vault chat wrapper for {} - {} ({})",
+        plugin.getComponentLogger().info("Registered vault chat wrapper for {} - {} ({})",
                 provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
     }
 
