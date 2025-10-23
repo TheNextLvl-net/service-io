@@ -33,6 +33,7 @@ public class ServiceEconomyPlaceholderStore extends PlaceholderStore<EconomyCont
             return provider.format(provider.getAccount(player).map(Account::getBalance).orElse(BigDecimal.ZERO));
         });
 
+        // %serviceio_balance_formatted_<world>%
         registerResolver("balance_formatted_%s", (provider, player, matcher) -> {
             var world = plugin.getServer().getWorld(matcher.group(1));
             if (world == null) return null;
