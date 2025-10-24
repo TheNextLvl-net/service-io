@@ -240,14 +240,10 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
 
     @Override
     public EconomyResponse bankDeposit(String name, double amount) {
-        try {
-            var bank = bankController().tryGetBank(name).join();
-            var balance = bank.deposit(amount, economyController.getDefaultCurrency()).doubleValue();
-            var response = balance >= amount ? SUCCESS : FAILURE;
-            return new EconomyResponse(amount, balance, response, null);
-        } catch (Exception e) {
-            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
-        }
+        return bankController().tryGetBank(name).join()
+                .map(bank -> bank.deposit(amount, economyController.getCurrencyHolder().getDefaultCurrency()).doubleValue())
+                .map(balance -> new EconomyResponse(amount, balance, balance >= amount ? SUCCESS : FAILURE, null))
+                .orElseGet(() -> new EconomyResponse(0, 0, FAILURE, "Bank not found"));
     }
 
     @Override
@@ -258,14 +254,11 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
 
     @Override
     public EconomyResponse isBankOwner(String name, @Nullable OfflinePlayer player) {
-        try {
-            var bank = bankController().tryGetBank(name).join();
+        return bankController().tryGetBank(name).join().map(bank -> {
             var response = player != null && bank.getOwner().equals(player.getUniqueId()) ? SUCCESS : FAILURE;
-            var balance = bank.getBalance(economyController.getDefaultCurrency());
+            var balance = bank.getBalance(economyController.getCurrencyHolder().getDefaultCurrency());
             return new EconomyResponse(0, balance.doubleValue(), response, null);
-        } catch (Exception e) {
-            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
-        }
+        }).orElseGet(() -> new EconomyResponse(0, 0, FAILURE, "Bank not found"));
     }
 
     @Override
@@ -276,14 +269,11 @@ public class VaultEconomyServiceWrapper implements Economy, Wrapper {
 
     @Override
     public EconomyResponse isBankMember(String name, @Nullable OfflinePlayer player) {
-        try {
-            var bank = bankController().tryGetBank(name).join();
+        return bankController().tryGetBank(name).join().map(bank -> {
             var response = player != null && bank.isMember(player.getUniqueId()) ? SUCCESS : FAILURE;
-            var balance = bank.getBalance(economyController.getDefaultCurrency());
+            var balance = bank.getBalance(economyController.getCurrencyHolder().getDefaultCurrency());
             return new EconomyResponse(0, balance.doubleValue(), response, null);
-        } catch (Exception e) {
-            return new EconomyResponse(0, 0, FAILURE, e.getMessage());
-        }
+        }).orElseGet(() -> new EconomyResponse(0, 0, FAILURE, "Bank not found"));
     }
 
     @Override
