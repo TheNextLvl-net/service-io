@@ -3,6 +3,7 @@ package net.thenextlvl.service.api.economy;
 import net.thenextlvl.service.api.economy.currency.Currency;
 import org.bukkit.World;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -14,7 +15,17 @@ import java.util.UUID;
  * @since 1.0.0
  */
 @NullMarked
-public interface Account {
+public interface Account extends Comparable<Account> {
+    /**
+     * Deposits the specified amount into the account balance.
+     *
+     * @param amount the amount to be deposited
+     * @return the new balance after the deposit
+     */
+    default BigDecimal deposit(Number amount) {
+        return deposit(amount, null);
+    }
+
     /**
      * Deposits the specified amount of the given currency into the account balance.
      * <p>
@@ -25,9 +36,16 @@ public interface Account {
      * @return the new balance after the deposit
      * @since 3.0.0
      */
-    default BigDecimal deposit(Number amount, Currency currency) {
+    default BigDecimal deposit(Number amount, @Nullable Currency currency) {
         return setBalance(getBalance(currency).add(BigDecimal.valueOf(amount.doubleValue())), currency);
     }
+
+    /**
+     * Retrieves the balance of the account.
+     *
+     * @return the balance of the account
+     */
+    BigDecimal getBalance();
 
     /**
      * Retrieves the balance of the account for the specified currency.
@@ -36,7 +54,19 @@ public interface Account {
      * @return the balance of the account for the specified currency
      * @since 3.0.0
      */
-    BigDecimal getBalance(Currency currency);
+    default BigDecimal getBalance(@Nullable Currency currency) {
+        return getBalance();
+    }
+
+    /**
+     * Withdraws the specified amount from the account balance.
+     *
+     * @param amount the amount to be withdrawn
+     * @return the new balance after the withdrawal
+     */
+    default BigDecimal withdraw(Number amount) {
+        return withdraw(amount, null);
+    }
 
     /**
      * Withdraws the specified amount of the given currency from the account balance.
@@ -48,7 +78,7 @@ public interface Account {
      * @return the new balance after the withdrawal
      * @since 3.0.0
      */
-    default BigDecimal withdraw(Number amount, Currency currency) {
+    default BigDecimal withdraw(Number amount, @Nullable Currency currency) {
         return setBalance(getBalance(currency).subtract(BigDecimal.valueOf(amount.doubleValue())), currency);
     }
 
@@ -67,6 +97,18 @@ public interface Account {
     UUID getOwner();
 
     /**
+     * Compares this account to the specified account based on their balance.
+     *
+     * @param account the account to be compared
+     * @return a negative integer, zero, or a positive integer if this account is
+     * less than, equal to, or greater than the specified account
+     */
+    @Override
+    default int compareTo(Account account) {
+        return compareTo(account, null);
+    }
+
+    /**
      * Compares this account with another account based on their balances in the specified currency.
      *
      * @param account  the account to be compared
@@ -75,9 +117,16 @@ public interface Account {
      * is less than, equal to, or greater than the specified account's balance
      * @since 3.0.0
      */
-    default int compareTo(Account account, Currency currency) {
+    default int compareTo(Account account, @Nullable Currency currency) {
         return getBalance(currency).compareTo(account.getBalance(currency));
     }
+
+    /**
+     * Sets the balance of the account to the specified value.
+     *
+     * @param balance the new balance of the account
+     */
+    BigDecimal setBalance(Number balance);
 
     /**
      * Sets the balance of the account to the specified value in the given currency.
@@ -90,7 +139,9 @@ public interface Account {
      * @see #canHold(Currency)
      * @since 3.0.0
      */
-    BigDecimal setBalance(Number balance, Currency currency);
+    default BigDecimal setBalance(Number balance, @Nullable Currency currency) {
+        return setBalance(balance);
+    }
 
     /**
      * Checks if the account can hold the specified currency.
@@ -99,5 +150,7 @@ public interface Account {
      * @return {@code true} if the account can hold the specified currency, otherwise {@code false}
      * @since 3.0.0
      */
-    boolean canHold(Currency currency);
+    default boolean canHold(@Nullable Currency currency) {
+        return true;
+    }
 }
