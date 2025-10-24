@@ -2,6 +2,7 @@ package net.thenextlvl.service.api.economy.bank;
 
 import net.thenextlvl.service.api.Controller;
 import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
+import net.thenextlvl.service.api.economy.currency.SimpleCurrencyHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jetbrains.annotations.Contract;
@@ -27,7 +28,9 @@ public interface BankController extends Controller {
      * @return the {@code CurrencyHolder} instance that manages the defined currencies for the controller
      */
     @Contract(pure = true)
-    CurrencyHolder getCurrencyHolder();
+    default CurrencyHolder getCurrencyHolder() {
+        return SimpleCurrencyHolder.INSTANCE;
+    }
 
     /**
      * Creates a bank for the specified player with the given name.

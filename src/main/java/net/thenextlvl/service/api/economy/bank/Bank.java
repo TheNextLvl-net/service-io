@@ -136,7 +136,9 @@ public interface Bank extends Account {
      * @return {@code true} if the player can deposit the specified amount, otherwise {@code false}
      * @since 3.0.0
      */
-    boolean canDeposit(UUID uuid, Number amount, Currency currency);
+    default boolean canDeposit(UUID uuid, Number amount, Currency currency) {
+        return getOwner().equals(uuid) || isMember(uuid);
+    }
 
     /**
      * Checks whether the specified player can withdraw the specified amount in the given currency.
@@ -164,5 +166,7 @@ public interface Bank extends Account {
      * @return {@code true} if the player can withdraw the specified amount, otherwise {@code false}
      * @since 3.0.0
      */
-    boolean canWithdraw(UUID uuid, Number amount, Currency currency);
+    default boolean canWithdraw(UUID uuid, Number amount, Currency currency) {
+        return getOwner().equals(uuid);
+    }
 }

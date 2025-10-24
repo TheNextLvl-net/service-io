@@ -45,6 +45,11 @@ public class EconomyServiceWrapper implements EconomyController, Wrapper {
     }
 
     @Override
+    public @Unmodifiable Set<Account> getAccounts() {
+        return getAccounts(null);
+    }
+
+    @Override
     public @Unmodifiable Set<Account> getAccounts(@Nullable World world) {
         return Arrays.stream(provider.getServer().getOfflinePlayers())
                 .filter(player -> economy.hasAccount(player, world != null ? world.getName() : null))

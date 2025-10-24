@@ -32,18 +32,8 @@ public class WrappedBank implements Bank {
     }
 
     @Override
-    public BigDecimal deposit(Number amount, Currency currency) {
-        return new BigDecimal(economy.bankDeposit(name, amount.doubleValue()).balance);
-    }
-
-    @Override
-    public BigDecimal getBalance(Currency currency) {
+    public BigDecimal getBalance() {
         return new BigDecimal(economy.bankBalance(name).balance);
-    }
-
-    @Override
-    public BigDecimal withdraw(Number amount, Currency currency) {
-        return new BigDecimal(economy.bankWithdraw(name, amount.doubleValue()).balance);
     }
 
     @Override
@@ -61,17 +51,14 @@ public class WrappedBank implements Bank {
     }
 
     @Override
-    public BigDecimal setBalance(Number balance, Currency currency) {
-        var current = getBalance(currency);
-        var difference = balance.doubleValue() - current.doubleValue();
-        if (difference > 0) return deposit(difference, currency);
-        else if (difference < 0) return withdraw(-difference, currency);
-        return current;
-    }
-
-    @Override
-    public boolean canHold(Currency currency) {
-        return false;
+    public BigDecimal setBalance(Number balance) {
+        var difference = balance.doubleValue() - getBalance().doubleValue();
+        if (difference > 0) {
+            return new BigDecimal(economy.bankDeposit(name, difference).balance);
+        } else if (difference < 0) {
+            return new BigDecimal(economy.bankWithdraw(name, -difference).balance);
+        }
+        return BigDecimal.ZERO;
     }
 
     @Override

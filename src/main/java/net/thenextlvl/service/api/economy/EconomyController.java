@@ -1,5 +1,6 @@
 package net.thenextlvl.service.api.economy;
 
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.thenextlvl.service.api.Controller;
 import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import org.bukkit.OfflinePlayer;
@@ -9,10 +10,12 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * EconomyController is an interface that provides methods for managing and interacting
@@ -22,6 +25,67 @@ import java.util.concurrent.CompletableFuture;
  */
 @NullMarked
 public interface EconomyController extends Controller {
+    /**
+     * Formats the specified amount as a string.
+     *
+     * @param amount the number amount to be formatted
+     * @return the formatted amount as a string
+     * @deprecated Use {@link net.thenextlvl.service.api.economy.currency.Currency#format(Number, Locale)} instead
+     */
+    @Deprecated(forRemoval = true, since = "2.4.0")
+    default String format(Number amount) {
+        return PlainTextComponentSerializer.plainText().serialize(getCurrencyHolder().getDefaultCurrency().format(amount, Locale.getDefault()));
+    }
+
+    /**
+     * Retrieves the number of fractional digits used for formatting currency amounts.
+     *
+     * @return the number of fractional digits used for formatting currency amounts
+     */
+    @Deprecated(forRemoval = true, since = "2.4.0")
+    default int fractionalDigits() {
+        return getCurrencyHolder().getDefaultCurrency().getFractionalDigits();
+    }
+
+    /**
+     * Retrieves the plural form of the currency name based on the provided locale.
+     *
+     * @param locale the locale for which to retrieve the plural currency name
+     * @return the plural form of the currency name as a string
+     * @deprecated Use {@link net.thenextlvl.service.api.economy.currency.Currency#getDisplayNamePlural(Locale)} instead
+     */
+    @Deprecated(forRemoval = true, since = "2.4.0")
+    default String getCurrencyNamePlural(Locale locale) {
+        return getCurrencyHolder().getDefaultCurrency().getDisplayNamePlural(locale)
+                .map(PlainTextComponentSerializer.plainText()::serialize)
+                .orElse("");
+    }
+
+    /**
+     * Retrieves the name of the currency associated with the specified locale.
+     *
+     * @param locale the locale for which to retrieve the currency name
+     * @return the name of the currency as a string
+     * @deprecated Use {@link net.thenextlvl.service.api.economy.currency.Currency#getDisplayNameSingular(Locale)} instead
+     */
+    @Deprecated(forRemoval = true, since = "2.4.0")
+    default String getCurrencyNameSingular(Locale locale) {
+        return getCurrencyHolder().getDefaultCurrency().getDisplayNameSingular(locale)
+                .map(PlainTextComponentSerializer.plainText()::serialize)
+                .orElse("");
+    }
+
+    /**
+     * Retrieves the currency symbol associated with the economy controller.
+     *
+     * @return the currency symbol as a string
+     * @deprecated Use {@link net.thenextlvl.service.api.economy.currency.Currency#getSymbol()} instead
+     */
+    @Deprecated(forRemoval = true, since = "2.4.0")
+    default String getCurrencySymbol() {
+        return PlainTextComponentSerializer.plainText().serialize(getCurrencyHolder().getDefaultCurrency().getSymbol());
+    }
+
     /**
      * Retrieves the {@code CurrencyHolder} associated with the economy controller.
      *
@@ -54,20 +118,26 @@ public interface EconomyController extends Controller {
      * Retrieves all the accounts that are currently loaded.
      *
      * @return an unmodifiable set of accounts
+     * @see #getAccounts(World)
      * @since 2.2.0
      */
-    default @Unmodifiable Set<Account> getAccounts() {
-        return getAccounts(null);
-    }
+    @Unmodifiable
+    Set<Account> getAccounts();
 
     /**
      * Retrieves all the accounts associated with the specified world that are currently loaded.
      *
      * @param world the world for which the accounts are to be retrieved
      * @return an unmodifiable set of accounts for the given world
+     * @implSpec Implementations should override this method for performance reasons.
+     * @since 2.4.0
      */
     @Unmodifiable
-    Set<Account> getAccounts(@Nullable World world);
+    default Set<Account> getAccounts(@Nullable World world) {
+        return world != null ? getAccounts().stream().filter(account -> {
+            return account.getWorld().map(world::equals).orElse(false);
+        }).collect(Collectors.toUnmodifiableSet()) : getAccounts();
+    }
 
     /**
      * Retrieve the account for the specified player.
@@ -161,7 +231,6 @@ public interface EconomyController extends Controller {
      * @param player the player for whom the account will be created
      * @return a CompletableFuture that will complete with the created account
      */
-    @Contract("_ -> new")
     default CompletableFuture<Account> createAccount(OfflinePlayer player) {
         return createAccount(player, null);
     }
@@ -175,7 +244,6 @@ public interface EconomyController extends Controller {
      * @param world  the world in which the player's account will be created
      * @return a CompletableFuture that will complete with the created account
      */
-    @Contract("_, _ -> new")
     default CompletableFuture<Account> createAccount(OfflinePlayer player, @Nullable World world) {
         return createAccount(player.getUniqueId(), world);
     }
@@ -188,7 +256,6 @@ public interface EconomyController extends Controller {
      * @param uuid the uuid of the account to be created
      * @return a CompletableFuture that will complete with the created account
      */
-    @Contract("_ -> new")
     default CompletableFuture<Account> createAccount(UUID uuid) {
         return createAccount(uuid, null);
     }
@@ -202,7 +269,6 @@ public interface EconomyController extends Controller {
      * @param world the world in which the account will be created
      * @return a CompletableFuture that will complete with the created account
      */
-    @Contract("_, _ -> new")
     CompletableFuture<Account> createAccount(UUID uuid, @Nullable World world);
 
     /**
@@ -304,5 +370,7 @@ public interface EconomyController extends Controller {
      * @since 3.0.0
      */
     @Contract(pure = true)
-    boolean hasMultiWorldSupport();
+    default boolean hasMultiWorldSupport() {
+        return false;
+    }
 }

@@ -2,7 +2,6 @@ package net.thenextlvl.service.wrapper.service.model;
 
 import net.milkbowl.vault.economy.Economy;
 import net.thenextlvl.service.api.economy.Account;
-import net.thenextlvl.service.api.economy.currency.Currency;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jspecify.annotations.NullMarked;
@@ -25,21 +24,9 @@ public class WrappedAccount implements Account {
     }
 
     @Override
-    public BigDecimal deposit(Number amount, Currency currency) {
-        var response = economy.depositPlayer(holder, world != null ? world.getName() : null, amount.doubleValue());
-        return new BigDecimal(response.balance);
-    }
-
-    @Override
-    public BigDecimal getBalance(Currency currency) {
+    public BigDecimal getBalance() {
         var balance = economy.getBalance(holder, world != null ? world.getName() : null);
         return new BigDecimal(balance);
-    }
-
-    @Override
-    public BigDecimal withdraw(Number amount, Currency currency) {
-        var response = economy.withdrawPlayer(holder, world != null ? world.getName() : null, amount.doubleValue());
-        return new BigDecimal(response.balance);
     }
 
     @Override
@@ -53,15 +40,15 @@ public class WrappedAccount implements Account {
     }
 
     @Override
-    public BigDecimal setBalance(Number balance, Currency currency) {
-        var difference = balance.doubleValue() - getBalance(currency).doubleValue();
-        if (difference > 0) return deposit(difference, currency);
-        else if (difference < 0) return withdraw(-difference, currency);
+    public BigDecimal setBalance(Number balance) {
+        var difference = balance.doubleValue() - getBalance().doubleValue();
+        if (difference > 0) {
+            var response = economy.depositPlayer(holder, world != null ? world.getName() : null, difference);
+            return new BigDecimal(response.balance);
+        } else if (difference < 0) {
+            var response = economy.withdrawPlayer(holder, world != null ? world.getName() : null, -difference);
+            return new BigDecimal(response.balance);
+        }
         return BigDecimal.ZERO;
-    }
-
-    @Override
-    public boolean canHold(Currency currency) {
-        return true;
     }
 }
