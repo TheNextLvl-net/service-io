@@ -25,6 +25,8 @@ import java.util.Optional;
  * <p>
  * The controller ensures that capabilities of the hologram provider are respected and throws
  * exceptions if unsupported capabilities are used.
+ *
+ * @since 2.2.0
  */
 @NullMarked
 public interface HologramController extends CapabilityProvider<HologramCapability>, Controller {
