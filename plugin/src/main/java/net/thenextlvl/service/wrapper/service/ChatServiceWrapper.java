@@ -9,6 +9,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -25,42 +26,22 @@ public class ChatServiceWrapper implements ChatController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(OfflinePlayer player) {
-        return CompletableFuture.completedFuture(new WrappedChatProfile(null, chat, player));
-    }
-
-    @Override
-    public CompletableFuture<ChatProfile> loadProfile(OfflinePlayer player, World world) {
+    public CompletableFuture<ChatProfile> loadProfile(OfflinePlayer player, @Nullable World world) {
         return CompletableFuture.completedFuture(new WrappedChatProfile(world, chat, player));
     }
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(UUID uuid) {
-        return loadProfile(provider.getServer().getOfflinePlayer(uuid));
-    }
-
-    @Override
-    public CompletableFuture<ChatProfile> loadProfile(UUID uuid, World world) {
+    public CompletableFuture<ChatProfile> loadProfile(UUID uuid, @Nullable World world) {
         return loadProfile(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
-    public Optional<ChatProfile> getProfile(OfflinePlayer player) {
-        return Optional.of(new WrappedChatProfile(null, chat, player));
-    }
-
-    @Override
-    public Optional<ChatProfile> getProfile(OfflinePlayer player, World world) {
+    public Optional<ChatProfile> getProfile(OfflinePlayer player, @Nullable World world) {
         return Optional.of(new WrappedChatProfile(world, chat, player));
     }
 
     @Override
-    public Optional<ChatProfile> getProfile(UUID uuid) {
-        return getProfile(provider.getServer().getOfflinePlayer(uuid));
-    }
-
-    @Override
-    public Optional<ChatProfile> getProfile(UUID uuid, World world) {
+    public Optional<ChatProfile> getProfile(UUID uuid, @Nullable World world) {
         return getProfile(provider.getServer().getOfflinePlayer(uuid), world);
     }
 

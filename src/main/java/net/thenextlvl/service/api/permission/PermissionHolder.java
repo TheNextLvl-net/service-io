@@ -11,6 +11,8 @@ import java.util.Map;
  * The {@code PermissionHolder} interface represents an entity that holds permissions.
  * It extends the {@link InfoNode} interface.
  * It provides methods to check, add, and remove permissions for the holder.
+ *
+ * @since 1.0.0
  */
 @NullMarked
 public interface PermissionHolder extends InfoNode {

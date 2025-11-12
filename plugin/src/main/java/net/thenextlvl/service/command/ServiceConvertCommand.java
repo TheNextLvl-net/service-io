@@ -62,13 +62,17 @@ final class ServiceConvertCommand extends BrigadierCommand {
     private static final class BankConverter extends PlayerConverter<BankController> {
         @Override
         public CompletableFuture<Void> convert(OfflinePlayer player, BankController source, BankController target) {
-            return source.loadBanks().thenAccept(banks -> banks.forEach(bank ->
-                    bank.getWorld().map(world -> target.createBank(bank.getOwner(), bank.getName(), world))
-                            .orElseGet(() -> target.createBank(bank.getOwner(), bank.getName()))
-                            .thenAccept(targetBank -> {
-                                targetBank.setBalance(bank.getBalance());
-                                bank.getMembers().forEach(targetBank::addMember);
-                            })));
+            return CompletableFuture.completedFuture(null);
+            // todo: convert all currencies
+            // todo: convert balance with currencies
+            // fixme:
+            //  return source.loadBanks().thenAccept(banks -> banks.forEach(bank ->
+            //          bank.getWorld().map(world -> target.createBank(bank.getOwner(), bank.getName(), world))
+            //                  .orElseGet(() -> target.createBank(bank.getOwner(), bank.getName()))
+            //                  .thenAccept(targetBank -> {
+            //                      targetBank.setBalance(bank.getBalance());
+            //                      bank.getMembers().forEach(targetBank::addMember);
+            //                  })));
         }
     }
 
@@ -119,14 +123,16 @@ final class ServiceConvertCommand extends BrigadierCommand {
         }
 
         public CompletableFuture<Void> convert(Account account, EconomyController source, EconomyController target) {
-            return account.getWorld().map(world -> target.tryGetAccount(account.getOwner(), world)
-                            .thenCompose(account1 -> account1.map(CompletableFuture::completedFuture)
-                                    .orElseGet(() -> target.createAccount(account.getOwner(), world)))
-                            .thenAccept(account1 -> account1.setBalance(account.getBalance())))
-                    .orElseGet(() -> target.tryGetAccount(account.getOwner())
-                            .thenCompose(account1 -> account1.map(CompletableFuture::completedFuture)
-                                    .orElseGet(() -> target.createAccount(account.getOwner())))
-                            .thenAccept(account1 -> account1.setBalance(account.getBalance())));
+            return CompletableFuture.completedFuture(null);
+            // fixme
+            //  return account.getWorld().map(world -> target.tryGetAccount(account.getOwner(), world)
+            //                  .thenCompose(account1 -> account1.map(CompletableFuture::completedFuture)
+            //                          .orElseGet(() -> target.createAccount(account.getOwner(), world)))
+            //                  .thenAccept(account1 -> account1.setBalance(account.getBalance())))
+            //          .orElseGet(() -> target.tryGetAccount(account.getOwner())
+            //                  .thenCompose(account1 -> account1.map(CompletableFuture::completedFuture)
+            //                          .orElseGet(() -> target.createAccount(account.getOwner())))
+            //                  .thenAccept(account1 -> account1.setBalance(account.getBalance())));
         }
     }
 
