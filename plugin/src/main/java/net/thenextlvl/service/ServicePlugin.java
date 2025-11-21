@@ -1,6 +1,5 @@
 package net.thenextlvl.service;
 
-import dev.faststats.bukkit.BukkitMetrics;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
 import net.milkbowl.vault.Vault;
