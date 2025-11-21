@@ -1,9 +1,10 @@
 package net.thenextlvl.service;
 
-import core.i18n.file.ComponentBundle;
+import dev.faststats.bukkit.BukkitMetrics;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
 import net.milkbowl.vault.Vault;
+import net.thenextlvl.i18n.ComponentBundle;
 import net.thenextlvl.service.api.character.CharacterController;
 import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.economy.EconomyController;

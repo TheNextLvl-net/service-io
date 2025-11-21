@@ -49,8 +49,8 @@ dependencies {
     implementation("net.milkbowl.vault:VaultUnlockedAPI:2.15") {
         exclude("com.github.MilkBowl", "VaultAPI")
     }
-    implementation("net.thenextlvl.core:i18n:3.2.2")
     implementation("net.thenextlvl.core:paper:2.3.1")
+    implementation("net.thenextlvl:i18n:1.0.0")
     implementation("org.bstats:bstats-bukkit:3.1.0")
 
     implementation(rootProject)
