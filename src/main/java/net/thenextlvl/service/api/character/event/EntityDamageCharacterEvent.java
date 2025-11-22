@@ -15,6 +15,8 @@ import org.jspecify.annotations.NullMarked;
  * It can be used to inspect and modify the damage attributed to an entity's attack and to check the critical status.
  * <p>
  * This event will only be fired for providers that support the {@link CharacterCapability#HEALTH} capability.
+ *
+ * @since 2.2.0
  */
 @NullMarked
 public class EntityDamageCharacterEvent extends CharacterDamageEvent {
