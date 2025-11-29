@@ -1,5 +1,8 @@
 package net.thenextlvl.service;
 
+import dev.faststats.bukkit.BukkitMetrics;
+import dev.faststats.core.chart.Chart;
+import dev.faststats.core.chart.ChartId;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
 import net.milkbowl.vault.Vault;
@@ -23,6 +26,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.ServicePriority;
 import org.jspecify.annotations.NullMarked;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Locale;
@@ -41,6 +45,20 @@ public class ServicePlugin extends Vault {
             .resource("service-io_german.properties", Locale.GERMANY)
             .build();
 
+    private final dev.faststats.core.Metrics fastStats = BukkitMetrics.factory()
+            .addChart(createChart(BankController.class, BankController::getName, "bank_provider"))
+            .addChart(createChart(GroupController.class, GroupController::getName, "group_provider"))
+            .addChart(createChart(ChatController.class, ChatController::getName, "chat_provider"))
+            .addChart(createChart(EconomyController.class, EconomyController::getName, "economy_provider"))
+            .addChart(createChart(PermissionController.class, PermissionController::getName, "permission_provider"))
+            .addChart(createChart(HologramController.class, HologramController::getName, "hologram_provider"))
+            .addChart(createChart(CharacterController.class, CharacterController::getName, "npc_provider"))
+            .token("f7e1aef24e2f8fe48abfb84ccfae5163")
+            .create(this);
+
+    public ServicePlugin() throws IOException {
+    }
+
     @Override
     public void onLoad() {
         versionChecker.checkVersion();
@@ -57,6 +75,7 @@ public class ServicePlugin extends Vault {
     @Override
     public void onDisable() {
         metrics.shutdown();
+        fastStats.shutdown();
     }
 
     private void registerServices() {
@@ -92,6 +111,13 @@ public class ServicePlugin extends Vault {
     private <T> void addCustomChart(Class<T> service, Function<T, String> function, String chartId) {
         T loaded = getServer().getServicesManager().load(service);
         metrics.addCustomChart(new SimplePie(chartId, () -> loaded != null ? function.apply(loaded) : "None"));
+    }
+
+    private <T> Chart<String> createChart(Class<T> service, Function<T, String> function, @ChartId String chartId) {
+        return Chart.string(chartId, () -> {
+            T loaded = getServer().getServicesManager().load(service);
+            return loaded != null ? function.apply(loaded) : "None";
+        });
     }
 
     public EntityType getEntityTypeByClass(Class<? extends Entity> type) {
