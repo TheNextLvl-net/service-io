@@ -17,6 +17,7 @@ import org.jspecify.annotations.Nullable;
  *
  * @see Display
  * @see TextDisplay
+ * @since 2.2.0
  */
 public interface HologramDisplay {
     /**
