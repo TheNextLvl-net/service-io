@@ -42,7 +42,7 @@ dependencies {
     compileOnly("de.oliver:FancyHolograms:2.8.0")
     compileOnly("de.oliver:FancyNpcs:2.8.1")
     compileOnly("me.clip:placeholderapi:2.11.7")
-    compileOnly("net.citizensnpcs:citizens-main:2.0.40-SNAPSHOT")
+    compileOnly("net.citizensnpcs:citizens-main:2.0.41-SNAPSHOT")
     compileOnly("net.luckperms:api:5.5")
 
     implementation("net.thenextlvl:vault-api:1.7.1")
