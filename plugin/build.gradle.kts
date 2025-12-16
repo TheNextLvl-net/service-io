@@ -39,7 +39,7 @@ dependencies {
 
     compileOnly("com.github.ElgarL:groupmanager:3.2")
     compileOnly("com.github.decentsoftware-eu:decentholograms:2.9.9")
-    compileOnly("de.oliver:FancyHolograms:2.8.0")
+    compileOnly("de.oliver:FancyHolograms:2.9.0")
     compileOnly("de.oliver:FancyNpcs:2.8.1")
     compileOnly("me.clip:placeholderapi:2.11.7")
     compileOnly("net.citizensnpcs:citizens-main:2.0.41-SNAPSHOT")
