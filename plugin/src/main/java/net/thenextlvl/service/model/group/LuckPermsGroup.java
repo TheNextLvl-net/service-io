@@ -79,7 +79,7 @@ public record LuckPermsGroup(
     @Override
     public boolean setDisplayName(@Nullable String displayName) {
         if (displayName == null) {
-            group.data().clear(node -> node instanceof DisplayNameNode);
+            group.data().clear(DisplayNameNode.class::isInstance);
             return true;
         }
         var result = group().data().add(DisplayNameNode.builder(displayName).context(options().context()).build());
@@ -97,7 +97,7 @@ public record LuckPermsGroup(
     @Override
     public boolean setPrefix(@Nullable String prefix, int priority) {
         if (prefix == null) {
-            group.data().clear(node -> node instanceof PrefixNode);
+            group.data().clear(PrefixNode.class::isInstance);
             return true;
         }
         var result = group().data().add(PrefixNode.builder(prefix, priority).context(options().context()).build());
@@ -108,7 +108,7 @@ public record LuckPermsGroup(
     @Override
     public boolean setSuffix(@Nullable String suffix, int priority) {
         if (suffix == null) {
-            group.data().clear(node -> node instanceof SuffixNode);
+            group.data().clear(SuffixNode.class::isInstance);
             return true;
         }
         var result = group().data().add(SuffixNode.builder(suffix, priority).context(options().context()).build());
