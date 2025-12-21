@@ -26,7 +26,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.ServicePriority;
 import org.jspecify.annotations.NullMarked;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Locale;
@@ -55,9 +54,6 @@ public class ServicePlugin extends Vault {
             .addChart(createChart(CharacterController.class, CharacterController::getName, "npc_provider"))
             .token("f7e1aef24e2f8fe48abfb84ccfae5163")
             .create(this);
-
-    public ServicePlugin() throws IOException {
-    }
 
     @Override
     public void onLoad() {
