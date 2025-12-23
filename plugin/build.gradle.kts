@@ -49,7 +49,7 @@ dependencies {
     implementation("net.milkbowl.vault:VaultUnlockedAPI:2.15") {
         exclude("com.github.MilkBowl", "VaultAPI")
     }
-    implementation("dev.faststats.metrics:bukkit:0.5.3")
+    implementation("dev.faststats.metrics:bukkit:0.6.0")
     implementation("net.thenextlvl.version-checker:modrinth-paper:1.0.0")
     implementation("net.thenextlvl:i18n:1.1.0")
     implementation("org.bstats:bstats-bukkit:3.1.0")
