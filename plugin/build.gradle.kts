@@ -21,6 +21,7 @@ dependencies {
     implementation("net.thenextlvl:vault-api:1.7.1")
     implementation("net.milkbowl.vault:VaultUnlockedAPI:2.15") {
         exclude("com.github.MilkBowl", "VaultAPI")
+        exclude("org.jetbrains", "annotations")
     }
 
     implementation("net.thenextlvl.version-checker:modrinth-paper:1.0.0")
@@ -44,7 +45,7 @@ dependencies {
 }
 
 tasks.shadowJar {
-    relocate("org.bstats", "net.thenextlvl.services.bstats")
+    relocate("org.bstats", "net.thenextlvl.service.utils.bstats")
     archiveBaseName.set("service-io")
 }
 
