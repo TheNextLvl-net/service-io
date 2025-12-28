@@ -21,6 +21,7 @@ import net.thenextlvl.service.providers.superperms.SuperPermsPermissionControlle
 import net.thenextlvl.service.version.PluginVersionChecker;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.jspecify.annotations.NullMarked;
 
@@ -42,13 +43,13 @@ public class ServicePlugin extends Vault {
             .build();
 
     private final dev.faststats.core.Metrics fastStats = BukkitMetrics.factory()
-            .addChart(createChart(BankController.class, BankController::getName, "bank_provider"))
-            .addChart(createChart(GroupController.class, GroupController::getName, "group_provider"))
-            .addChart(createChart(ChatController.class, ChatController::getName, "chat_provider"))
-            .addChart(createChart(EconomyController.class, EconomyController::getName, "economy_provider"))
-            .addChart(createChart(PermissionController.class, PermissionController::getName, "permission_provider"))
-            .addChart(createChart(HologramController.class, HologramController::getName, "hologram_provider"))
-            .addChart(createChart(CharacterController.class, CharacterController::getName, "npc_provider"))
+            .addChart(createChart(BankController.class, BankController::getName, "bank_providers"))
+            .addChart(createChart(GroupController.class, GroupController::getName, "group_providers"))
+            .addChart(createChart(ChatController.class, ChatController::getName, "chat_providers"))
+            .addChart(createChart(EconomyController.class, EconomyController::getName, "economy_providers"))
+            .addChart(createChart(PermissionController.class, PermissionController::getName, "permission_providers"))
+            .addChart(createChart(HologramController.class, HologramController::getName, "hologram_providers"))
+            .addChart(createChart(CharacterController.class, CharacterController::getName, "npc_providers"))
             .token("f7e1aef24e2f8fe48abfb84ccfae5163")
             .create(this);
 
@@ -106,10 +107,12 @@ public class ServicePlugin extends Vault {
         metrics.addCustomChart(new SimplePie(chartId, () -> loaded != null ? function.apply(loaded) : "None"));
     }
 
-    private <T> Chart<String> createChart(Class<T> service, Function<T, String> function, @ChartId String chartId) {
-        return Chart.string(chartId, () -> {
-            T loaded = getServer().getServicesManager().load(service);
-            return loaded != null ? function.apply(loaded) : "None";
+    private <T> Chart<String[]> createChart(Class<T> service, Function<T, String> function, @ChartId String chartId) {
+        return Chart.stringArray(chartId, () -> {
+            return getServer().getServicesManager().getRegistrations(service).stream()
+                    .map(RegisteredServiceProvider::getProvider)
+                    .map(function)
+                    .toArray(String[]::new);
         });
     }
 }
