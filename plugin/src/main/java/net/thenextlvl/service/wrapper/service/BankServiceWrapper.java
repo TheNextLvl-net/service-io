@@ -4,6 +4,8 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.bank.BankController;
+import net.thenextlvl.service.api.economy.currency.Currency;
+import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import net.thenextlvl.service.wrapper.Wrapper;
 import net.thenextlvl.service.wrapper.service.model.WrappedBank;
 import org.bukkit.OfflinePlayer;
@@ -11,6 +13,7 @@ import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.Set;
@@ -20,67 +23,46 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public class BankServiceWrapper implements BankController, Wrapper {
+    private final CurrencyHolder holder;
     private final Economy economy;
     private final Plugin provider;
+    private final Currency currency;
 
-    public BankServiceWrapper(Economy economy, Plugin provider) {
+    public BankServiceWrapper(CurrencyHolder holder, Economy economy, Plugin provider) {
+        this.holder = holder;
         this.economy = economy;
         this.provider = provider;
+        this.currency = holder.getDefaultCurrency();
     }
 
     @Override
-    public String format(Number amount) {
-        return economy.format(amount.doubleValue());
+    public CurrencyHolder getCurrencyHolder() {
+        return holder;
     }
 
     @Override
-    public int fractionalDigits() {
-        return economy.fractionalDigits();
-    }
-
-    @Override
-    public CompletableFuture<Bank> createBank(OfflinePlayer player, String name) {
+    public CompletableFuture<Bank> createBank(OfflinePlayer player, String name, @Nullable World world) {
         return CompletableFuture.completedFuture(economy.createBank(name, player))
                 .thenApply(bank -> getBank(name).orElseThrow());
     }
 
     @Override
-    public CompletableFuture<Bank> createBank(OfflinePlayer player, String name, World world) {
-        return createBank(player, name);
-    }
-
-    @Override
-    public CompletableFuture<Bank> createBank(UUID uuid, String name) {
-        return createBank(provider.getServer().getOfflinePlayer(uuid), name);
-    }
-
-    @Override
-    public CompletableFuture<Bank> createBank(UUID uuid, String name, World world) {
+    public CompletableFuture<Bank> createBank(UUID uuid, String name, @Nullable World world) {
         return createBank(provider.getServer().getOfflinePlayer(uuid), name, world);
     }
 
     @Override
-    public CompletableFuture<Bank> loadBank(String name) {
-        return CompletableFuture.completedFuture(getBank(name).orElse(null));
+    public CompletableFuture<Optional<Bank>> loadBank(String name) {
+        return CompletableFuture.completedFuture(getBank(name));
     }
 
     @Override
-    public CompletableFuture<Bank> loadBank(UUID uuid) {
-        return CompletableFuture.completedFuture(getBank(uuid).orElse(null));
+    public CompletableFuture<Optional<Bank>> loadBank(UUID uuid, @Nullable World world) {
+        return CompletableFuture.completedFuture(getBank(uuid, world));
     }
 
     @Override
-    public CompletableFuture<Bank> loadBank(UUID uuid, World world) {
-        return CompletableFuture.completedFuture(getBank(uuid, world).orElse(null));
-    }
-
-    @Override
-    public CompletableFuture<@Unmodifiable Set<Bank>> loadBanks() {
-        return CompletableFuture.completedFuture(getBanks());
-    }
-
-    @Override
-    public CompletableFuture<@Unmodifiable Set<Bank>> loadBanks(World world) {
+    public CompletableFuture<@Unmodifiable Set<Bank>> loadBanks(@Nullable World world) {
         return CompletableFuture.completedFuture(getBanks(world));
     }
 
@@ -91,40 +73,48 @@ public class BankServiceWrapper implements BankController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteBank(UUID uuid) {
-        return deleteBank(getBank(uuid).orElseThrow().getName());
-    }
-
-    @Override
-    public CompletableFuture<Boolean> deleteBank(UUID uuid, World world) {
+    public CompletableFuture<Boolean> deleteBank(UUID uuid, @Nullable World world) {
         return deleteBank(getBank(uuid, world).orElseThrow().getName());
     }
 
     @Override
-    public @Unmodifiable Set<Bank> getBanks() {
-        return economy.getBanks().stream()
+    public @Unmodifiable Set<Bank> getBanks(@Nullable World world) {
+        return world != null ? Set.of() : economy.getBanks().stream()
                 .map(bank -> new WrappedBank(bank, null, economy, provider))
                 .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
-    public @Unmodifiable Set<Bank> getBanks(World world) {
-        return getBanks();
-    }
-
-    @Override
     public Optional<Bank> getBank(String name) {
+        if (!economy.getBanks().contains(name)) return Optional.empty();
         return Optional.of(new WrappedBank(name, null, economy, provider));
     }
 
     @Override
-    public Optional<Bank> getBank(UUID uuid) {
-        return Optional.empty();
+    public Optional<Bank> getBank(OfflinePlayer player, @Nullable World world) {
+        return economy.getBanks().stream().filter(bank ->
+                economy.isBankOwner(bank, player).transactionSuccess()
+        ).findAny().flatMap(this::getBank);
     }
 
     @Override
-    public Optional<Bank> getBank(UUID uuid, World world) {
-        return Optional.empty();
+    public Optional<Bank> getBank(UUID uuid, @Nullable World world) {
+        return getBank(provider.getServer().getOfflinePlayer(uuid), world);
+    }
+
+    @Override
+    public boolean hasBank(OfflinePlayer player, @Nullable World world) {
+        return economy.getBanks().stream().anyMatch(bank -> economy.isBankOwner(bank, player).transactionSuccess());
+    }
+
+    @Override
+    public boolean hasBank(UUID uuid, @Nullable World world) {
+        return hasBank(provider.getServer().getOfflinePlayer(uuid), world);
+    }
+
+    @Override
+    public boolean hasMultiWorldSupport() {
+        return false;
     }
 
     @Override

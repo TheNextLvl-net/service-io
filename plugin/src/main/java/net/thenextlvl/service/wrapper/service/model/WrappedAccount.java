@@ -24,21 +24,9 @@ public class WrappedAccount implements Account {
     }
 
     @Override
-    public BigDecimal deposit(Number amount) {
-        var response = economy.depositPlayer(holder, world != null ? world.getName() : null, amount.doubleValue());
-        return new BigDecimal(response.balance);
-    }
-
-    @Override
     public BigDecimal getBalance() {
         var balance = economy.getBalance(holder, world != null ? world.getName() : null);
         return new BigDecimal(balance);
-    }
-
-    @Override
-    public BigDecimal withdraw(Number amount) {
-        var response = economy.withdrawPlayer(holder, world != null ? world.getName() : null, amount.doubleValue());
-        return new BigDecimal(response.balance);
     }
 
     @Override
@@ -52,9 +40,15 @@ public class WrappedAccount implements Account {
     }
 
     @Override
-    public void setBalance(Number balance) {
+    public BigDecimal setBalance(Number balance) {
         var difference = balance.doubleValue() - getBalance().doubleValue();
-        if (difference > 0) deposit(difference);
-        else if (difference < 0) withdraw(-difference);
+        if (difference > 0) {
+            var response = economy.depositPlayer(holder, world != null ? world.getName() : null, difference);
+            return new BigDecimal(response.balance);
+        } else if (difference < 0) {
+            var response = economy.withdrawPlayer(holder, world != null ? world.getName() : null, -difference);
+            return new BigDecimal(response.balance);
+        }
+        return BigDecimal.ZERO;
     }
 }

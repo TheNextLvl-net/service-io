@@ -8,6 +8,8 @@ import org.jspecify.annotations.NonNull;
 /**
  * The Positioned interface represents an object with a specific position and orientation within a world.
  * It provides methods to retrieve coordinates, rotation, and associated world and server information.
+ *
+ * @since 2.2.0
  */
 public interface Positioned {
     /**

@@ -5,6 +5,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.Set;
@@ -15,6 +16,8 @@ import java.util.concurrent.CompletableFuture;
  * The GroupController interface provides methods for managing groups and group holders.
  * It allows creating, loading, deleting, and retrieving groups and group holders.
  * Operations can be performed asynchronously using CompletableFutures.
+ *
+ * @since 1.0.0
  */
 @NullMarked
 public interface GroupController extends Controller {
@@ -24,7 +27,9 @@ public interface GroupController extends Controller {
      * @param name the name of the group to create
      * @return a CompletableFuture that will complete with the created Group object
      */
-    CompletableFuture<Group> createGroup(String name);
+    default CompletableFuture<Group> createGroup(String name) {
+        return createGroup(name, null);
+    }
 
     /**
      * Creates a new group with the given name.
@@ -33,7 +38,7 @@ public interface GroupController extends Controller {
      * @param world the world the group should be created for
      * @return a CompletableFuture that will complete with the created Group object
      */
-    CompletableFuture<Group> createGroup(String name, World world);
+    CompletableFuture<Group> createGroup(String name, @Nullable World world);
 
     /**
      * Retrieves the group with the given name asynchronously.
@@ -41,7 +46,9 @@ public interface GroupController extends Controller {
      * @param name the name of the group to retrieve
      * @return a CompletableFuture that will complete with the retrieved Group object
      */
-    CompletableFuture<Group> loadGroup(String name);
+    default CompletableFuture<Group> loadGroup(String name) {
+        return loadGroup(name, null);
+    }
 
     /**
      * Loads a group asynchronously by its name and world.
@@ -50,7 +57,7 @@ public interface GroupController extends Controller {
      * @param world the world the group should be loaded from
      * @return a CompletableFuture that will complete with the loaded Group object
      */
-    CompletableFuture<Group> loadGroup(String name, World world);
+    CompletableFuture<Group> loadGroup(String name, @Nullable World world);
 
     /**
      * Loads the GroupHolder asynchronously associated with the specified player.
@@ -59,7 +66,7 @@ public interface GroupController extends Controller {
      * @return a CompletableFuture that will complete with the retrieved GroupHolder object
      */
     default CompletableFuture<GroupHolder> loadGroupHolder(OfflinePlayer player) {
-        return loadGroupHolder(player.getUniqueId());
+        return loadGroupHolder(player, null);
     }
 
     /**
@@ -69,7 +76,7 @@ public interface GroupController extends Controller {
      * @param world  the world from which to load the GroupHolder
      * @return a CompletableFuture that will complete with the retrieved GroupHolder object
      */
-    default CompletableFuture<GroupHolder> loadGroupHolder(OfflinePlayer player, World world) {
+    default CompletableFuture<GroupHolder> loadGroupHolder(OfflinePlayer player, @Nullable World world) {
         return loadGroupHolder(player.getUniqueId(), world);
     }
 
@@ -79,7 +86,9 @@ public interface GroupController extends Controller {
      * @param uuid the UUID of the player for whom to load the GroupHolder
      * @return a CompletableFuture that will complete with the retrieved GroupHolder object
      */
-    CompletableFuture<GroupHolder> loadGroupHolder(UUID uuid);
+    default CompletableFuture<GroupHolder> loadGroupHolder(UUID uuid) {
+        return loadGroupHolder(uuid, null);
+    }
 
     /**
      * Loads the GroupHolder asynchronously associated with the specified player's UUID and world.
@@ -88,39 +97,31 @@ public interface GroupController extends Controller {
      * @param world the world from which to load the GroupHolder
      * @return a CompletableFuture that will complete with the retrieved GroupHolder object
      */
-    CompletableFuture<GroupHolder> loadGroupHolder(UUID uuid, World world);
+    CompletableFuture<GroupHolder> loadGroupHolder(UUID uuid, @Nullable World world);
 
     default CompletableFuture<Group> tryGetGroup(String name) {
-        return getGroup(name)
-                .map(CompletableFuture::completedFuture)
-                .orElseGet(() -> loadGroup(name));
+        return tryGetGroup(name, null);
     }
 
-    default CompletableFuture<Group> tryGetGroup(String name, World world) {
+    default CompletableFuture<Group> tryGetGroup(String name, @Nullable World world) {
         return getGroup(name, world)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadGroup(name, world));
     }
 
     default CompletableFuture<GroupHolder> tryGetGroupHolder(OfflinePlayer player) {
-        return getGroupHolder(player)
-                .map(CompletableFuture::completedFuture)
-                .orElseGet(() -> loadGroupHolder(player));
+        return tryGetGroupHolder(player, null);
     }
 
-    default CompletableFuture<GroupHolder> tryGetGroupHolder(OfflinePlayer player, World world) {
-        return getGroupHolder(player, world)
-                .map(CompletableFuture::completedFuture)
-                .orElseGet(() -> loadGroupHolder(player, world));
+    default CompletableFuture<GroupHolder> tryGetGroupHolder(OfflinePlayer player, @Nullable World world) {
+        return tryGetGroupHolder(player.getUniqueId(), world);
     }
 
     default CompletableFuture<GroupHolder> tryGetGroupHolder(UUID uuid) {
-        return getGroupHolder(uuid)
-                .map(CompletableFuture::completedFuture)
-                .orElseGet(() -> loadGroupHolder(uuid));
+        return tryGetGroupHolder(uuid, null);
     }
 
-    default CompletableFuture<GroupHolder> tryGetGroupHolder(UUID uuid, World world) {
+    default CompletableFuture<GroupHolder> tryGetGroupHolder(UUID uuid, @Nullable World world) {
         return getGroupHolder(uuid, world)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadGroupHolder(uuid, world));
@@ -131,7 +132,9 @@ public interface GroupController extends Controller {
      *
      * @return a CompletableFuture that will complete with a set of groups
      */
-    CompletableFuture<@Unmodifiable Set<Group>> loadGroups();
+    default CompletableFuture<@Unmodifiable Set<Group>> loadGroups() {
+        return loadGroups(null);
+    }
 
     /**
      * Retrieves a set of groups asynchronously for the given world.
@@ -139,7 +142,7 @@ public interface GroupController extends Controller {
      * @param world the world for which to retrieve the groups
      * @return a CompletableFuture that will complete with a set of groups
      */
-    CompletableFuture<@Unmodifiable Set<Group>> loadGroups(World world);
+    CompletableFuture<@Unmodifiable Set<Group>> loadGroups(@Nullable World world);
 
     /**
      * Deletes the given group.
@@ -147,7 +150,9 @@ public interface GroupController extends Controller {
      * @param group the group to delete
      * @return a CompletableFuture that will complete when the group has been deleted
      */
-    CompletableFuture<Boolean> deleteGroup(Group group);
+    default CompletableFuture<Boolean> deleteGroup(Group group) {
+        return deleteGroup(group, null);
+    }
 
     /**
      * Deletes the given group.
@@ -156,7 +161,9 @@ public interface GroupController extends Controller {
      * @param world the world the group should be deleted from
      * @return a CompletableFuture that will complete when the group has been deleted
      */
-    CompletableFuture<Boolean> deleteGroup(Group group, World world);
+    default CompletableFuture<Boolean> deleteGroup(Group group, @Nullable World world) {
+        return deleteGroup(group.getName(), world);
+    }
 
     /**
      * Deletes the group with the given name.
@@ -164,7 +171,9 @@ public interface GroupController extends Controller {
      * @param name the name of the group to delete
      * @return a CompletableFuture that will complete when the group has been deleted
      */
-    CompletableFuture<Boolean> deleteGroup(String name);
+    default CompletableFuture<Boolean> deleteGroup(String name) {
+        return deleteGroup(name, null);
+    }
 
     /**
      * Deletes the group with the given name.
@@ -173,7 +182,7 @@ public interface GroupController extends Controller {
      * @param world the world the group should be deleted from
      * @return a CompletableFuture that will complete when the group has been deleted
      */
-    CompletableFuture<Boolean> deleteGroup(String name, World world);
+    CompletableFuture<Boolean> deleteGroup(String name, @Nullable World world);
 
     /**
      * Retrieves the group with the given name.
@@ -181,7 +190,9 @@ public interface GroupController extends Controller {
      * @param name the name of the group to retrieve
      * @return a CompletableFuture that will complete with the retrieved Group object
      */
-    Optional<Group> getGroup(String name);
+    default Optional<Group> getGroup(String name) {
+        return getGroup(name, null);
+    }
 
     /**
      * Retrieves the group with the given name.
@@ -190,7 +201,7 @@ public interface GroupController extends Controller {
      * @param world the world the group should be received from
      * @return a CompletableFuture that will complete with the retrieved Group object
      */
-    Optional<Group> getGroup(String name, World world);
+    Optional<Group> getGroup(String name, @Nullable World world);
 
     /**
      * Retrieves the GroupHolder associated with the given player.
@@ -199,7 +210,7 @@ public interface GroupController extends Controller {
      * @return a CompletableFuture that will complete with the retrieved GroupHolder object
      */
     default Optional<GroupHolder> getGroupHolder(OfflinePlayer player) {
-        return getGroupHolder(player.getUniqueId());
+        return getGroupHolder(player, null);
     }
 
     /**
@@ -209,7 +220,7 @@ public interface GroupController extends Controller {
      * @param world  the world the group holder should be received from
      * @return a CompletableFuture that will complete with the retrieved GroupHolder object
      */
-    default Optional<GroupHolder> getGroupHolder(OfflinePlayer player, World world) {
+    default Optional<GroupHolder> getGroupHolder(OfflinePlayer player, @Nullable World world) {
         return getGroupHolder(player.getUniqueId(), world);
     }
 
@@ -219,7 +230,9 @@ public interface GroupController extends Controller {
      * @param uuid the UUID of the player for which to retrieve the GroupHolder
      * @return a CompletableFuture that will complete with the retrieved GroupHolder object
      */
-    Optional<GroupHolder> getGroupHolder(UUID uuid);
+    default Optional<GroupHolder> getGroupHolder(UUID uuid) {
+        return getGroupHolder(uuid, null);
+    }
 
     /**
      * Retrieves the GroupHolder associated with the given UUID.
@@ -228,15 +241,16 @@ public interface GroupController extends Controller {
      * @param world the world the group holder should be received from
      * @return a CompletableFuture that will complete with the retrieved GroupHolder object
      */
-    Optional<GroupHolder> getGroupHolder(UUID uuid, World world);
+    Optional<GroupHolder> getGroupHolder(UUID uuid, @Nullable World world);
 
     /**
      * Retrieves all groups.
      *
      * @return A CompletableFuture that will complete with a collection of all the groups.
      */
-    @Unmodifiable
-    Set<Group> getGroups();
+    default @Unmodifiable Set<Group> getGroups() {
+        return getGroups(null);
+    }
 
     /**
      * Retrieves all groups.
@@ -245,5 +259,5 @@ public interface GroupController extends Controller {
      * @return A CompletableFuture that will complete with a collection of all the groups.
      */
     @Unmodifiable
-    Set<Group> getGroups(World world);
+    Set<Group> getGroups(@Nullable World world);
 }

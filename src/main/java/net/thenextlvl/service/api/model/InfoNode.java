@@ -10,6 +10,8 @@ import java.util.function.Function;
  * The InfoNode interface provides methods to retrieve, remove, and set information node values associated with keys.
  * An information node is a key-value pair where both key and value are stored as string but can be retrieved as any object.
  * The value is retrieved as an Optional, allowing for a null-safe operation.
+ *
+ * @since 1.0.0
  */
 @NullMarked
 public interface InfoNode {

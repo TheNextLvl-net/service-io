@@ -82,7 +82,7 @@ public record LuckPermsChatProfile(User user, QueryOptions options) implements C
     }
 
     private boolean unsetDisplayName() {
-        user().data().clear(options().context(), node -> node instanceof DisplayNameNode);
+        user().data().clear(options().context(), DisplayNameNode.class::isInstance);
         LuckPermsProvider.get().getUserManager().saveUser(user());
         return true;
     }

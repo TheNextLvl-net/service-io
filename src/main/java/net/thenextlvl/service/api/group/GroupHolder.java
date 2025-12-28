@@ -10,6 +10,8 @@ import java.util.Set;
  * The {@code GroupHolder} interface represents an entity that holds groups.
  * It extends the {@link PermissionHolder} interface.
  * It provides methods to retrieve and manipulate groups for the holder.
+ *
+ * @since 1.0.0
  */
 @NullMarked
 public interface GroupHolder extends PermissionHolder {
