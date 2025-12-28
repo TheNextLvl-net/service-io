@@ -10,21 +10,13 @@ plugins {
 }
 
 repositories {
-    maven("https://jitpack.io")
-    maven("https://maven.citizensnpcs.co/repo")
-    maven("https://repo.alessiodp.com/releases")
     maven("https://repo.codemc.org/repository/maven-public")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.fancyplugins.de/releases")
 }
 
 dependencies {
-    compileOnly("com.github.ElgarL:groupmanager:3.2")
-    compileOnly("com.github.decentsoftware-eu:decentholograms:2.9.9")
-    compileOnly("de.oliver:FancyNpcs:2.9.0")
     compileOnly("me.clip:placeholderapi:2.11.7")
-    compileOnly("net.citizensnpcs:citizens-main:2.0.41-SNAPSHOT")
-    compileOnly("net.luckperms:api:5.5")
 
     implementation("net.thenextlvl:vault-api:1.7.1")
     implementation("net.milkbowl.vault:VaultUnlockedAPI:2.15") {
@@ -37,8 +29,14 @@ dependencies {
     implementation("dev.faststats.metrics:bukkit:0.7.2")
     implementation("org.bstats:bstats-bukkit:3.1.0")
 
-    implementation(project(":fancy-holograms-v2"))
-    implementation(project(":fancy-holograms-v3"))
+    implementation(project(":providers:citizens"))
+    implementation(project(":providers:decent-holograms"))
+    implementation(project(":providers:fancy-holograms-v2"))
+    implementation(project(":providers:fancy-holograms-v3"))
+    implementation(project(":providers:fancy-npcs"))
+    implementation(project(":providers:group-manager"))
+    implementation(project(":providers:luckperms"))
+    implementation(project(":providers:superperms"))
     implementation(rootProject)
 
     testImplementation("org.junit.jupiter:junit-jupiter")

@@ -14,20 +14,17 @@ import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.hologram.HologramController;
 import net.thenextlvl.service.api.permission.PermissionController;
-import net.thenextlvl.service.command.ServiceCommand;
-import net.thenextlvl.service.controller.permission.SuperPermsPermissionController;
-import net.thenextlvl.service.listener.PluginListener;
-import net.thenextlvl.service.listener.ServiceListener;
+import net.thenextlvl.service.commands.ServiceCommand;
+import net.thenextlvl.service.listeners.PluginListener;
+import net.thenextlvl.service.listeners.ServiceListener;
+import net.thenextlvl.service.providers.superperms.SuperPermsPermissionController;
 import net.thenextlvl.service.version.PluginVersionChecker;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.ServicePriority;
 import org.jspecify.annotations.NullMarked;
 
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.function.Function;
 
@@ -114,11 +111,5 @@ public class ServicePlugin extends Vault {
             T loaded = getServer().getServicesManager().load(service);
             return loaded != null ? function.apply(loaded) : "None";
         });
-    }
-
-    public EntityType getEntityTypeByClass(Class<? extends Entity> type) {
-        return Arrays.stream(EntityType.values())
-                .filter(entityType -> type.equals(entityType.getEntityClass()))
-                .findAny().orElseThrow();
     }
 }

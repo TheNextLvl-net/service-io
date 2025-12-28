@@ -1,9 +1,8 @@
 package net.thenextlvl.service.placeholder.api;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import net.thenextlvl.service.ServicePlugin;
 import org.bukkit.OfflinePlayer;
-import org.jspecify.annotations.NullMarked;
+import org.bukkit.plugin.Plugin;import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -19,16 +18,13 @@ public class PlaceholderExpansionBuilder extends PlaceholderExpansion {
     private String author;
     private String version;
 
-    protected final ServicePlugin plugin;
-
-    public PlaceholderExpansionBuilder(ServicePlugin plugin, String identifier) {
+    public PlaceholderExpansionBuilder(Plugin plugin, String identifier) {
         this.author = String.join(", ", plugin.getPluginMeta().getAuthors());
         this.version = plugin.getPluginMeta().getVersion();
         this.identifier = identifier;
-        this.plugin = plugin;
     }
 
-    public PlaceholderExpansionBuilder(ServicePlugin plugin) {
+    public PlaceholderExpansionBuilder(Plugin plugin) {
         this(plugin, "serviceio");
     }
 

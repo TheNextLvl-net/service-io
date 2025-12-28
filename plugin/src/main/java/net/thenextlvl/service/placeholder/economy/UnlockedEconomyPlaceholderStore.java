@@ -2,9 +2,9 @@ package net.thenextlvl.service.placeholder.economy;
 
 import net.milkbowl.vault2.economy.AccountPermission;
 import net.milkbowl.vault2.economy.Economy;
-import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.placeholder.api.PlaceholderResolver;
 import net.thenextlvl.service.placeholder.api.PlaceholderStore;
+import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.UUID;
@@ -16,7 +16,7 @@ import java.util.UUID;
 public class UnlockedEconomyPlaceholderStore extends PlaceholderStore<Economy> {
     private static final String PLUGIN_NAME = "VaultUnlocked";
 
-    public UnlockedEconomyPlaceholderStore(ServicePlugin plugin) {
+    public UnlockedEconomyPlaceholderStore(Plugin plugin) {
         super(plugin, Economy.class);
     }
 

@@ -1,14 +1,14 @@
 package net.thenextlvl.service.placeholder.chat;
 
-import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.model.Display;
 import net.thenextlvl.service.placeholder.api.PlaceholderStore;
+import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public class ServiceChatPlaceholderStore extends PlaceholderStore<ChatController> {
-    public ServiceChatPlaceholderStore(ServicePlugin plugin) {
+    public ServiceChatPlaceholderStore(Plugin plugin) {
         super(plugin, ChatController.class);
     }
 

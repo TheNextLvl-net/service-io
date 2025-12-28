@@ -1,11 +1,11 @@
 package net.thenextlvl.service.placeholder.api;
 
-import net.thenextlvl.service.ServicePlugin;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServiceRegisterEvent;
 import org.bukkit.event.server.ServiceUnregisterEvent;
+import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -19,9 +19,9 @@ public abstract class PlaceholderStore<T> implements Listener {
     private final Class<T> providerClass;
     private @Nullable T provider;
 
-    protected final ServicePlugin plugin;
+    protected final Plugin plugin;
 
-    public PlaceholderStore(ServicePlugin plugin, Class<T> providerClass) {
+    public PlaceholderStore(Plugin plugin, Class<T> providerClass) {
         this.plugin = plugin;
         this.providerClass = providerClass;
         updateServices();

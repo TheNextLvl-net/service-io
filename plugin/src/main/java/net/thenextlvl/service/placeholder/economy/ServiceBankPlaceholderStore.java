@@ -1,9 +1,9 @@
 package net.thenextlvl.service.placeholder.economy;
 
-import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.placeholder.api.PlaceholderStore;
+import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.math.BigDecimal;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public class ServiceBankPlaceholderStore extends PlaceholderStore<BankController> {
-    public ServiceBankPlaceholderStore(ServicePlugin plugin) {
+    public ServiceBankPlaceholderStore(Plugin plugin) {
         super(plugin, BankController.class);
     }
 

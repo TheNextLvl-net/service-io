@@ -1,16 +1,16 @@
 package net.thenextlvl.service.placeholder.economy;
 
-import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.economy.Account;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.placeholder.api.PlaceholderStore;
+import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.math.BigDecimal;
 
 @NullMarked
 public class ServiceEconomyPlaceholderStore extends PlaceholderStore<EconomyController> {
-    public ServiceEconomyPlaceholderStore(ServicePlugin plugin) {
+    public ServiceEconomyPlaceholderStore(Plugin plugin) {
         super(plugin, EconomyController.class);
     }
 
