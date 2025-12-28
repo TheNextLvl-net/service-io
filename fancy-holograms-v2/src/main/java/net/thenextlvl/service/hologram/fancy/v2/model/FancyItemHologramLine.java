@@ -1,4 +1,4 @@
-package net.thenextlvl.service.model.hologram.fancy;
+package net.thenextlvl.service.hologram.fancy.v2.model;
 
 import de.oliver.fancyholograms.api.data.ItemHologramData;
 import org.bukkit.inventory.ItemStack;

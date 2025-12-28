@@ -1,20 +1,51 @@
 plugins {
     id("java")
-    id("java-library")
     id("maven-publish")
 }
 
-group = "net.thenextlvl.services"
-version = "2.3.3"
+val javaVersion = 21
 
-java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
-    withSourcesJar()
-    withJavadocJar()
+allprojects {
+    apply(plugin = "java")
+    apply(plugin = "java-library")
+
+    group = "net.thenextlvl.services"
+
+    extensions.configure<JavaPluginExtension> {
+        toolchain.languageVersion = JavaLanguageVersion.of(javaVersion)
+        withSourcesJar()
+        withJavadocJar()
+    }
+
+    tasks.compileJava {
+        options.release.set(javaVersion)
+    }
+
+    tasks.test {
+        dependsOn(tasks.javadoc)
+        useJUnitPlatform()
+        testLogging {
+            events("passed", "skipped", "failed")
+            showCauses = true
+            showExceptions = true
+        }
+    }
+
+    repositories {
+        mavenCentral()
+        maven("https://repo.thenextlvl.net/releases")
+        maven("https://repo.papermc.io/repository/maven-public/")
+    }
+
+    dependencies {
+        compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    }
 }
 
-tasks.compileJava {
-    options.release.set(21)
+subprojects {
+    dependencies {
+        compileOnly(rootProject)
+    }
 }
 
 tasks.test {
@@ -24,16 +55,6 @@ tasks.test {
 tasks.javadoc {
     val options = options as StandardJavadocDocletOptions
     options.tags("apiNote:a:API Note:", "implSpec:a:Implementation Requirements:")
-}
-
-repositories {
-    mavenCentral()
-    maven("https://repo.thenextlvl.net/releases")
-    maven("https://repo.papermc.io/repository/maven-public/")
-}
-
-dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
 }
 
 publishing {

@@ -1,6 +1,6 @@
-package net.thenextlvl.service.model.hologram.fancy;
+package net.thenextlvl.service.hologram.fancy.v3.model;
 
-import de.oliver.fancyholograms.api.data.BlockHologramData;
+import com.fancyinnovations.fancyholograms.api.data.BlockHologramData;
 import org.bukkit.block.data.BlockData;
 import org.jspecify.annotations.NullMarked;
 

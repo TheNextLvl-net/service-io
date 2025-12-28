@@ -4,3 +4,6 @@ plugins {
 
 rootProject.name = "service-io"
 include("plugin")
+
+include("fancy-holograms-v2")
+include("fancy-holograms-v3")

@@ -3,43 +3,24 @@ import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 import net.minecrell.pluginyml.paper.PaperPluginDescription
 
 plugins {
-    id("java")
-
     id("com.gradleup.shadow") version "9.3.0"
     id("com.modrinth.minotaur") version "2.+"
     id("de.eldoria.plugin-yml.paper") version "0.8.0"
     id("io.papermc.hangar-publish-plugin") version "0.1.4"
 }
 
-group = rootProject.group
-version = rootProject.version
-
-java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
-}
-
-tasks.compileJava {
-    options.release.set(21)
-}
-
 repositories {
-    mavenCentral()
     maven("https://jitpack.io")
     maven("https://maven.citizensnpcs.co/repo")
     maven("https://repo.alessiodp.com/releases")
     maven("https://repo.codemc.org/repository/maven-public")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.fancyplugins.de/releases")
-    maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://repo.thenextlvl.net/releases")
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
-
     compileOnly("com.github.ElgarL:groupmanager:3.2")
     compileOnly("com.github.decentsoftware-eu:decentholograms:2.9.9")
-    compileOnly("de.oliver:FancyHolograms:2.9.0")
     compileOnly("de.oliver:FancyNpcs:2.9.0")
     compileOnly("me.clip:placeholderapi:2.11.7")
     compileOnly("net.citizensnpcs:citizens-main:2.0.41-SNAPSHOT")
@@ -49,11 +30,15 @@ dependencies {
     implementation("net.milkbowl.vault:VaultUnlockedAPI:2.15") {
         exclude("com.github.MilkBowl", "VaultAPI")
     }
-    implementation("dev.faststats.metrics:bukkit:0.7.2")
+
     implementation("net.thenextlvl.version-checker:modrinth-paper:1.0.0")
     implementation("net.thenextlvl:i18n:1.1.0")
+
+    implementation("dev.faststats.metrics:bukkit:0.7.2")
     implementation("org.bstats:bstats-bukkit:3.1.0")
 
+    implementation(project(":fancy-holograms-v2"))
+    implementation(project(":fancy-holograms-v3"))
     implementation(rootProject)
 
     testImplementation("org.junit.jupiter:junit-jupiter")

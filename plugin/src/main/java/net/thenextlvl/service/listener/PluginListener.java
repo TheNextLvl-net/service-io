@@ -14,7 +14,6 @@ import net.thenextlvl.service.controller.chat.LuckPermsChatController;
 import net.thenextlvl.service.controller.group.GroupManagerGroupController;
 import net.thenextlvl.service.controller.group.LuckPermsGroupController;
 import net.thenextlvl.service.controller.hologram.DecentHologramController;
-import net.thenextlvl.service.controller.hologram.FancyHologramController;
 import net.thenextlvl.service.controller.permission.GroupManagerPermissionController;
 import net.thenextlvl.service.controller.permission.LuckPermsPermissionController;
 import net.thenextlvl.service.placeholder.api.PlaceholderExpansionBuilder;
@@ -74,10 +73,16 @@ public class PluginListener implements Listener {
                     HologramController.class,
                     plugin -> new DecentHologramController(),
                     ServicePriority.Highest);
-            case "FancyHolograms" -> hookService(event.getPlugin(),
-                    HologramController.class,
-                    plugin -> new FancyHologramController(),
-                    ServicePriority.High);
+            case "FancyHolograms" -> {
+                var version = event.getPlugin().getPluginMeta().getVersion();
+                if (version.startsWith("2")) hookService(event.getPlugin(), HologramController.class,
+                        plugin -> new net.thenextlvl.service.hologram.fancy.v2.controller.FancyHologramController(),
+                        ServicePriority.High);
+                else if (version.startsWith("3")) hookService(event.getPlugin(), HologramController.class,
+                        plugin -> new net.thenextlvl.service.hologram.fancy.v3.controller.FancyHologramController(),
+                        ServicePriority.High);
+                else plugin.getComponentLogger().warn("Unsupported FancyHolograms version {}", version);
+            }
         }
     }
 

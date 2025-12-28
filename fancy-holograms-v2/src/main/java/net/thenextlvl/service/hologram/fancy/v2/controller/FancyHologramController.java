@@ -1,4 +1,4 @@
-package net.thenextlvl.service.controller.hologram;
+package net.thenextlvl.service.hologram.fancy.v2.controller;
 
 import de.oliver.fancyholograms.api.FancyHologramsPlugin;
 import de.oliver.fancyholograms.api.data.BlockHologramData;
@@ -10,10 +10,10 @@ import net.thenextlvl.service.api.hologram.Hologram;
 import net.thenextlvl.service.api.hologram.HologramCapability;
 import net.thenextlvl.service.api.hologram.HologramController;
 import net.thenextlvl.service.api.hologram.HologramLine;
-import net.thenextlvl.service.model.hologram.fancy.FancyBlockHologramLine;
-import net.thenextlvl.service.model.hologram.fancy.FancyHologram;
-import net.thenextlvl.service.model.hologram.fancy.FancyItemHologramLine;
-import net.thenextlvl.service.model.hologram.fancy.FancyTextHologramLine;
+import net.thenextlvl.service.hologram.fancy.v2.model.FancyBlockHologramLine;
+import net.thenextlvl.service.hologram.fancy.v2.model.FancyHologram;
+import net.thenextlvl.service.hologram.fancy.v2.model.FancyItemHologramLine;
+import net.thenextlvl.service.hologram.fancy.v2.model.FancyTextHologramLine;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;

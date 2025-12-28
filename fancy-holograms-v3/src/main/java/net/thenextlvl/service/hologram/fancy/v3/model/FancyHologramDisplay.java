@@ -1,7 +1,7 @@
-package net.thenextlvl.service.model.hologram.fancy;
+package net.thenextlvl.service.hologram.fancy.v3.model;
 
-import de.oliver.fancyholograms.api.data.DisplayHologramData;
-import de.oliver.fancyholograms.api.data.TextHologramData;
+import com.fancyinnovations.fancyholograms.api.data.DisplayHologramData;
+import com.fancyinnovations.fancyholograms.api.data.TextHologramData;
 import net.thenextlvl.service.api.hologram.HologramDisplay;
 import org.bukkit.Color;
 import org.bukkit.entity.Display;
