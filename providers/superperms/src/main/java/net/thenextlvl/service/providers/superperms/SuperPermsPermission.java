@@ -1,14 +1,15 @@
 package net.thenextlvl.service.providers.superperms;
 
 import net.milkbowl.vault.permission.Permission;
-import net.thenextlvl.service.api.Wrappable;
+import net.thenextlvl.service.api.DoNotWrap;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 
-public class SuperPermsPermission extends Permission implements Wrappable {
+@DoNotWrap
+public class SuperPermsPermission extends Permission {
     private final Plugin plugin;
 
     public SuperPermsPermission(Plugin plugin) {
@@ -97,10 +98,5 @@ public class SuperPermsPermission extends Permission implements Wrappable {
 
     private Optional<Player> getPlayer(String player) {
         return Optional.ofNullable(plugin.getServer().getPlayer(player));
-    }
-
-    @Override
-    public boolean createWrapper() {
-        return false;
     }
 }

@@ -1,7 +1,7 @@
 package net.thenextlvl.service.providers.groupmanager;
 
 import net.milkbowl.vault.permission.Permission;
-import net.thenextlvl.service.api.Wrappable;
+import net.thenextlvl.service.api.DoNotWrap;
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.data.Group;
 import org.anjocaido.groupmanager.data.User;
@@ -13,7 +13,8 @@ import org.jspecify.annotations.Nullable;
 import java.util.HashSet;
 import java.util.Optional;
 
-public class GroupManagerPermission extends Permission implements Wrappable {
+@DoNotWrap
+public class GroupManagerPermission extends Permission {
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
 
     public GroupManagerPermission() {
@@ -152,10 +153,5 @@ public class GroupManagerPermission extends Permission implements Wrappable {
     @Override
     public boolean hasGroupSupport() {
         return true;
-    }
-
-    @Override
-    public boolean createWrapper() {
-        return false;
     }
 }
