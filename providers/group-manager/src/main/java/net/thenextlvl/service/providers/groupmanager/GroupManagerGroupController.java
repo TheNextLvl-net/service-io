@@ -1,5 +1,6 @@
 package net.thenextlvl.service.providers.groupmanager;
 
+import net.thenextlvl.service.api.DoNotWrap;
 import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.group.GroupHolder;

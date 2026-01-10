@@ -1,5 +1,6 @@
 package net.thenextlvl.service.providers.groupmanager;
 
+import net.thenextlvl.service.api.DoNotWrap;
 import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.chat.ChatProfile;
 import org.anjocaido.groupmanager.GroupManager;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+@DoNotWrap
 @NullMarked
 public class GroupManagerChatController implements ChatController {
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);

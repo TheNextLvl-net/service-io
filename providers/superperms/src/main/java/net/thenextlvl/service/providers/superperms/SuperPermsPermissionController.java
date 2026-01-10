@@ -1,5 +1,6 @@
 package net.thenextlvl.service.providers.superperms;
 
+import net.thenextlvl.service.api.DoNotWrap;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.bukkit.OfflinePlayer;
@@ -13,6 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+@DoNotWrap
 @NullMarked
 public class SuperPermsPermissionController implements PermissionController {
     private final Plugin plugin;

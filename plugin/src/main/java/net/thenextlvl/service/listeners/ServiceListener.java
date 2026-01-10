@@ -4,6 +4,7 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import net.thenextlvl.service.api.Controller;
+import net.thenextlvl.service.api.DoNotWrap;
 import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.bank.BankController;
@@ -54,21 +55,25 @@ public class ServiceListener implements Listener {
         loadWrapper(event.getProvider());
     }
 
-    @SuppressWarnings("unchecked")
-    private void loadWrapper(RegisteredServiceProvider<?> provider) {
-        if (provider.getProvider() instanceof Wrapper) return;
-        if (provider.getProvider() instanceof PermissionController) {
-            loadVaultPermissionWrapper((RegisteredServiceProvider<PermissionController>) provider);
-        } else if (provider.getProvider() instanceof Permission) {
-            loadServicePermissionWrapper((RegisteredServiceProvider<Permission>) provider);
-        } else if (provider.getProvider() instanceof EconomyController) {
-            loadVaultEconomyWrapper((RegisteredServiceProvider<EconomyController>) provider);
-        } else if (provider.getProvider() instanceof Economy) {
-            loadServiceEconomyWrapper((RegisteredServiceProvider<Economy>) provider);
-        } else if (provider.getProvider() instanceof ChatController) {
-            loadVaultChatWrapper((RegisteredServiceProvider<ChatController>) provider);
-        } else if (provider.getProvider() instanceof Chat) {
-            loadServiceChatWrapper((RegisteredServiceProvider<Chat>) provider);
+    @SuppressWarnings({"unchecked", "IfCanBeSwitch"})
+    private void loadWrapper(RegisteredServiceProvider<?> registered) {
+        var provider = registered.getProvider();
+        
+        if (provider.getClass().isAnnotationPresent(DoNotWrap.class)) return;
+        if (provider instanceof Wrapper) return;
+        
+        if (provider instanceof PermissionController) {
+            loadVaultPermissionWrapper((RegisteredServiceProvider<PermissionController>) registered);
+        } else if (provider instanceof Permission) {
+            loadServicePermissionWrapper((RegisteredServiceProvider<Permission>) registered);
+        } else if (provider instanceof EconomyController) {
+            loadVaultEconomyWrapper((RegisteredServiceProvider<EconomyController>) registered);
+        } else if (provider instanceof Economy) {
+            loadServiceEconomyWrapper((RegisteredServiceProvider<Economy>) registered);
+        } else if (provider instanceof ChatController) {
+            loadVaultChatWrapper((RegisteredServiceProvider<ChatController>) registered);
+        } else if (provider instanceof Chat) {
+            loadServiceChatWrapper((RegisteredServiceProvider<Chat>) registered);
         }
     }
 

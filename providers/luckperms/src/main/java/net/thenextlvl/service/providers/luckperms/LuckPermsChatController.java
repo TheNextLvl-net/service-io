@@ -4,6 +4,7 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.context.ImmutableContextSet;
 import net.luckperms.api.query.QueryOptions;
+import net.thenextlvl.service.api.DoNotWrap;
 import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.chat.ChatProfile;
 import org.bukkit.World;
@@ -14,6 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+@DoNotWrap
 @NullMarked
 public class LuckPermsChatController implements ChatController {
     private final LuckPerms luckPerms = LuckPermsProvider.get();
