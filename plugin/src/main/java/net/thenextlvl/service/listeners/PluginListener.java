@@ -1,5 +1,6 @@
 package net.thenextlvl.service.listeners;
 
+import net.milkbowl.vault.permission.Permission;
 import net.thenextlvl.service.api.Controller;
 import net.thenextlvl.service.api.character.CharacterController;
 import net.thenextlvl.service.api.chat.ChatController;
@@ -19,6 +20,7 @@ import net.thenextlvl.service.providers.fancyholograms.v3.FancyHologramControlle
 import net.thenextlvl.service.providers.fancynpcs.FancyCharacterController;
 import net.thenextlvl.service.providers.groupmanager.GroupManagerChatController;
 import net.thenextlvl.service.providers.groupmanager.GroupManagerGroupController;
+import net.thenextlvl.service.providers.groupmanager.GroupManagerPermission;
 import net.thenextlvl.service.providers.groupmanager.GroupManagerPermissionController;
 import net.thenextlvl.service.providers.luckperms.LuckPermsChatController;
 import net.thenextlvl.service.providers.luckperms.LuckPermsGroupController;
@@ -59,13 +61,14 @@ public class PluginListener implements Listener {
                     hookService(plugin, HologramController.class, () -> new DecentHologramController(), ServicePriority.Highest);
                 }),
                 Map.entry("FancyNpcs", plugin -> {
-                    hookService(plugin, CharacterController.class, () -> new FancyCharacterController(plugin), 
+                    hookService(plugin, CharacterController.class, () -> new FancyCharacterController(plugin),
                             controller -> new net.thenextlvl.service.providers.fancynpcs.FancyNpcsListener(controller), ServicePriority.High);
                 }),
                 Map.entry("GroupManager", plugin -> {
                     hookService(plugin, ChatController.class, () -> new GroupManagerChatController(), ServicePriority.Low);
                     hookService(plugin, GroupController.class, () -> new GroupManagerGroupController(), ServicePriority.Low);
                     hookService(plugin, PermissionController.class, () -> new GroupManagerPermissionController(), ServicePriority.Low);
+                    hook(plugin, Permission.class, () -> new GroupManagerPermission(), Permission::getName, ServicePriority.Low);
                 }),
                 Map.entry("FancyHolograms", plugin -> {
                     var version = plugin.getPluginMeta().getVersion();
@@ -116,10 +119,14 @@ public class PluginListener implements Listener {
     }
 
     private <T extends Controller> @Nullable T hookService(Plugin plugin, Class<T> type, Supplier<? extends T> controller, ServicePriority priority) {
+        return hook(plugin, type, controller, Controller::getName, priority);
+    }
+
+    private <T> @Nullable T hook(Plugin plugin, Class<T> type, Supplier<? extends T> controller, Function<T, String> name, ServicePriority priority) {
         try {
             var provider = controller.get();
             plugin.getServer().getServicesManager().register(type, provider, plugin, priority);
-            logger.info("Initialized support for {} as {} ({})", provider.getName(), type.getSimpleName(), priority.name());
+            logger.info("Initialized support for {} as {} ({})", name.apply(provider), type.getSimpleName(), priority.name());
             return provider;
         } catch (Exception e) {
             logger.error("Failed to add {} for {} - make sure you're using a compatible version!",

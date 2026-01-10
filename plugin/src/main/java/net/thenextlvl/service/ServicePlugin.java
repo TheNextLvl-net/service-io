@@ -6,6 +6,7 @@ import dev.faststats.core.chart.ChartId;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
 import net.milkbowl.vault.Vault;
+import net.milkbowl.vault.permission.Permission;
 import net.thenextlvl.i18n.ComponentBundle;
 import net.thenextlvl.service.api.character.CharacterController;
 import net.thenextlvl.service.api.chat.ChatController;
@@ -17,6 +18,7 @@ import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.commands.ServiceCommand;
 import net.thenextlvl.service.listeners.PluginListener;
 import net.thenextlvl.service.listeners.ServiceListener;
+import net.thenextlvl.service.providers.superperms.SuperPermsPermission;
 import net.thenextlvl.service.providers.superperms.SuperPermsPermissionController;
 import net.thenextlvl.service.version.PluginVersionChecker;
 import org.bstats.bukkit.Metrics;
@@ -73,6 +75,7 @@ public class ServicePlugin extends Vault {
     }
 
     private void registerServices() {
+        getServer().getServicesManager().register(Permission.class, new SuperPermsPermission(this), this, ServicePriority.Lowest);
         getServer().getServicesManager().register(PermissionController.class, new SuperPermsPermissionController(this), this, ServicePriority.Lowest);
         getComponentLogger().debug("Added SuperPerms as backup permission provider (Lowest)");
     }

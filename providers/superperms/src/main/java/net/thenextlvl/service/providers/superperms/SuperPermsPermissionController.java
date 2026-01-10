@@ -1,5 +1,6 @@
 package net.thenextlvl.service.providers.superperms;
 
+import net.thenextlvl.service.api.Wrappable;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.bukkit.OfflinePlayer;
@@ -14,7 +15,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-public class SuperPermsPermissionController implements PermissionController {
+public class SuperPermsPermissionController implements PermissionController, Wrappable {
     private final Plugin plugin;
 
     public SuperPermsPermissionController(Plugin plugin) {
@@ -63,5 +64,10 @@ public class SuperPermsPermissionController implements PermissionController {
     @Override
     public String getName() {
         return "SuperPerms";
+    }
+
+    @Override
+    public boolean createWrapper() {
+        return false;
     }
 }

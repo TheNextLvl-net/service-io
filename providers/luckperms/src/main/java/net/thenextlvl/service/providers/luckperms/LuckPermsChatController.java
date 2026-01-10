@@ -4,6 +4,7 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.context.ImmutableContextSet;
 import net.luckperms.api.query.QueryOptions;
+import net.thenextlvl.service.api.Wrappable;
 import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.chat.ChatProfile;
 import org.bukkit.World;
@@ -15,7 +16,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-public class LuckPermsChatController implements ChatController {
+public class LuckPermsChatController implements ChatController, Wrappable {
     private final LuckPerms luckPerms = LuckPermsProvider.get();
     private final Plugin plugin;
 
@@ -59,5 +60,10 @@ public class LuckPermsChatController implements ChatController {
     @Override
     public String getName() {
         return "LuckPerms Chat";
+    }
+
+    @Override
+    public boolean createWrapper() {
+        return false;
     }
 }

@@ -4,6 +4,7 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.context.ImmutableContextSet;
 import net.luckperms.api.query.QueryOptions;
+import net.thenextlvl.service.api.Wrappable;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.bukkit.World;
@@ -15,7 +16,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-public class LuckPermsPermissionController implements PermissionController {
+public class LuckPermsPermissionController implements PermissionController, Wrappable {
     private final LuckPerms luckPerms = LuckPermsProvider.get();
     private final Plugin plugin;
 
@@ -59,5 +60,10 @@ public class LuckPermsPermissionController implements PermissionController {
     @Override
     public String getName() {
         return "LuckPerms";
+    }
+
+    @Override
+    public boolean createWrapper() {
+        return false;
     }
 }

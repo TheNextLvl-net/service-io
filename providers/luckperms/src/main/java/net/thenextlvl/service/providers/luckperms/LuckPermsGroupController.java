@@ -4,6 +4,7 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.context.ImmutableContextSet;
 import net.luckperms.api.query.QueryOptions;
+import net.thenextlvl.service.api.Wrappable;
 import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.group.GroupHolder;
@@ -18,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class LuckPermsGroupController implements GroupController {
+public class LuckPermsGroupController implements GroupController, Wrappable {
     private final LuckPerms luckPerms = LuckPermsProvider.get();
     private final Plugin plugin;
 
@@ -155,5 +156,10 @@ public class LuckPermsGroupController implements GroupController {
     @Override
     public String getName() {
         return "LuckPerms Groups";
+    }
+
+    @Override
+    public boolean createWrapper() {
+        return false;
     }
 }

@@ -1,5 +1,6 @@
 package net.thenextlvl.service.providers.groupmanager;
 
+import net.thenextlvl.service.api.Wrappable;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.anjocaido.groupmanager.GroupManager;
@@ -15,7 +16,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-public class GroupManagerPermissionController implements PermissionController {
+public class GroupManagerPermissionController implements PermissionController, Wrappable {
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
 
     @Override
@@ -53,5 +54,10 @@ public class GroupManagerPermissionController implements PermissionController {
     @Override
     public String getName() {
         return "GroupManager";
+    }
+
+    @Override
+    public boolean createWrapper() {
+        return false;
     }
 }

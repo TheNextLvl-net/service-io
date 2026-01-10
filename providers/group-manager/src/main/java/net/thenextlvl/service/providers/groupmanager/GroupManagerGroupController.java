@@ -1,5 +1,6 @@
 package net.thenextlvl.service.providers.groupmanager;
 
+import net.thenextlvl.service.api.Wrappable;
 import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.group.GroupHolder;
@@ -19,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class GroupManagerGroupController implements GroupController {
+public class GroupManagerGroupController implements GroupController, Wrappable {
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
 
     @Override
@@ -167,5 +168,10 @@ public class GroupManagerGroupController implements GroupController {
     @Override
     public String getName() {
         return "GroupManager Groups";
+    }
+
+    @Override
+    public boolean createWrapper() {
+        return false;
     }
 }

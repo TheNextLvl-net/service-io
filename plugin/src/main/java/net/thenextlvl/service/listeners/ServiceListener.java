@@ -4,6 +4,7 @@ import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import net.thenextlvl.service.api.Controller;
+import net.thenextlvl.service.api.Wrappable;
 import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.bank.BankController;
@@ -56,6 +57,7 @@ public class ServiceListener implements Listener {
 
     @SuppressWarnings("unchecked")
     private void loadWrapper(RegisteredServiceProvider<?> provider) {
+        if (provider.getProvider() instanceof Wrappable wrappable && !wrappable.createWrapper()) return;
         if (provider.getProvider() instanceof Wrapper) return;
         if (provider.getProvider() instanceof PermissionController) {
             loadVaultPermissionWrapper((RegisteredServiceProvider<PermissionController>) provider);
