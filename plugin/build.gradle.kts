@@ -56,6 +56,7 @@ tasks.test {
 paper {
     name = "ServiceIO"
     main = "net.thenextlvl.service.ServicePlugin"
+    description = "A Vault replacement, providing services for various plugins"
     bootstrapper = "net.thenextlvl.service.ServiceBootstrapper"
     author = "NonSwag"
     apiVersion = "1.21"
