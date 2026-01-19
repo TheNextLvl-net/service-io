@@ -1,5 +1,6 @@
 package net.thenextlvl.service;
 
+import dev.faststats.core.ErrorTracker;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.bootstrap.PluginProviderContext;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @NullMarked
 public class ServiceBootstrapper implements PluginBootstrap {
+    public static final ErrorTracker ERROR_TRACKER = ErrorTracker.contextAware();
     public static final String ISSUES = "https://github.com/TheNextLvl-net/service-io/issues/new?template=bug_report.yml";
     public static final boolean COMPATIBILITY_MODE = Boolean.parseBoolean(System.getenv("COMPATIBILITY_MODE"));
 
@@ -47,6 +49,7 @@ public class ServiceBootstrapper implements PluginBootstrap {
         } catch (NoSuchFieldException | IllegalAccessException e) {
             logger.warn("Failed to initialize compatibility mode", e);
             logger.warn("Please look for similar issues or report this on GitHub: {}", ISSUES);
+            ERROR_TRACKER.trackError(e);
         }
     }
 }

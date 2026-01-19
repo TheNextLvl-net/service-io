@@ -52,6 +52,7 @@ public class ServicePlugin extends Vault {
             .addChart(createChart(PermissionController.class, PermissionController::getName, "permission_providers"))
             .addChart(createChart(HologramController.class, HologramController::getName, "hologram_providers"))
             .addChart(createChart(CharacterController.class, CharacterController::getName, "npc_providers"))
+            .errorTracker(ServiceBootstrapper.ERROR_TRACKER)
             .token("f7e1aef24e2f8fe48abfb84ccfae5163")
             .create(this);
 
