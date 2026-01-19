@@ -1,6 +1,7 @@
 package net.thenextlvl.service.listeners;
 
 import net.milkbowl.vault.permission.Permission;
+import net.thenextlvl.service.ServiceBootstrapper;
 import net.thenextlvl.service.api.Controller;
 import net.thenextlvl.service.api.character.CharacterController;
 import net.thenextlvl.service.api.chat.ChatController;
@@ -131,6 +132,7 @@ public class PluginListener implements Listener {
         } catch (Exception e) {
             logger.error("Failed to add {} for {} - make sure you're using a compatible version!",
                     type.getSimpleName(), plugin.getName(), e);
+            ServiceBootstrapper.ERROR_TRACKER.trackError(e);
             return null;
         }
     }
