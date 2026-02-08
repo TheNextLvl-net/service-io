@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("me.clip:placeholderapi:2.12.1")
+    compileOnly("me.clip:placeholderapi:2.12.2")
 
     implementation("net.thenextlvl:vault-api:1.7.1")
     implementation("net.milkbowl.vault:VaultUnlockedAPI:2.15") {
