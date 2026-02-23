@@ -31,8 +31,8 @@ public class EntityDamageCharacterEvent extends CharacterDamageEvent {
      * @param damage     the amount of damage dealt to the character
      * @param critical   whether the damage dealt is a critical hit
      */
-    public EntityDamageCharacterEvent(CharacterController controller, Character<?> character, Entity attacker,
-                                      EntityDamageEvent.DamageCause cause, double damage, boolean critical) {
+    public EntityDamageCharacterEvent(final CharacterController controller, final Character<?> character, final Entity attacker,
+                                      final EntityDamageEvent.DamageCause cause, final double damage, final boolean critical) {
         super(controller, character, cause, damage);
         this.attacker = attacker;
         this.critical = critical;

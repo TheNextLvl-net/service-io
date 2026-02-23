@@ -17,38 +17,38 @@ import java.util.concurrent.CompletableFuture;
 
 @DoNotWrap
 @NullMarked
-public class LuckPermsChatController implements ChatController {
+public final class LuckPermsChatController implements ChatController {
     private final LuckPerms luckPerms = LuckPermsProvider.get();
     private final Plugin plugin;
 
-    public LuckPermsChatController(Plugin plugin) {
+    public LuckPermsChatController(final Plugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(UUID uuid) {
+    public CompletableFuture<ChatProfile> loadProfile(final UUID uuid) {
         return luckPerms.getUserManager().loadUser(uuid).thenApply(user ->
                 new LuckPermsChatProfile(user, QueryOptions.defaultContextualOptions()));
     }
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(UUID uuid, World world) {
+    public CompletableFuture<ChatProfile> loadProfile(final UUID uuid, final World world) {
         return luckPerms.getUserManager().loadUser(uuid).thenApply(user -> {
-            var options = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
+            final var options = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
             return new LuckPermsChatProfile(user, options);
         });
     }
 
     @Override
-    public Optional<ChatProfile> getProfile(UUID uuid) {
+    public Optional<ChatProfile> getProfile(final UUID uuid) {
         return Optional.ofNullable(luckPerms.getUserManager().getUser(uuid)).map(user ->
                 new LuckPermsChatProfile(user, QueryOptions.defaultContextualOptions()));
     }
 
     @Override
-    public Optional<ChatProfile> getProfile(UUID uuid, World world) {
+    public Optional<ChatProfile> getProfile(final UUID uuid, final World world) {
         return Optional.ofNullable(luckPerms.getUserManager().getUser(uuid)).map(user -> {
-            var options = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
+            final var options = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
             return new LuckPermsChatProfile(user, options);
         });
     }

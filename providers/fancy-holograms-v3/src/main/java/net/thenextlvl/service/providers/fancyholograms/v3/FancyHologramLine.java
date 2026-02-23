@@ -18,7 +18,7 @@ import java.util.Optional;
 abstract class FancyHologramLine<D extends DisplayHologramData, T> implements HologramLine<T> {
     public final D data;
 
-    protected FancyHologramLine(D data) {
+    protected FancyHologramLine(final D data) {
         this.data = data;
     }
 
@@ -57,11 +57,11 @@ abstract class FancyHologramLine<D extends DisplayHologramData, T> implements Ho
     }
 
     @Override
-    public void setHeight(double height) {
+    public void setHeight(final double height) {
     }
 
     @Override
-    public void setOffsetX(double offsetX) {
+    public void setOffsetX(final double offsetX) {
         data.setTranslation(new Vector3f(
                 (float) offsetX,
                 (float) getOffsetY(),
@@ -70,7 +70,7 @@ abstract class FancyHologramLine<D extends DisplayHologramData, T> implements Ho
     }
 
     @Override
-    public void setOffsetY(double offsetY) {
+    public void setOffsetY(final double offsetY) {
         data.setTranslation(new Vector3f(
                 (float) getOffsetX(),
                 (float) offsetY,
@@ -79,7 +79,7 @@ abstract class FancyHologramLine<D extends DisplayHologramData, T> implements Ho
     }
 
     @Override
-    public void setOffsetZ(double offsetZ) {
+    public void setOffsetZ(final double offsetZ) {
         data.setTranslation(new Vector3f(
                 (float) getOffsetX(),
                 (float) getOffsetY(),
@@ -128,9 +128,9 @@ abstract class FancyHologramLine<D extends DisplayHologramData, T> implements Ho
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        FancyHologramLine<?, ?> that = (FancyHologramLine<?, ?>) o;
+        final FancyHologramLine<?, ?> that = (FancyHologramLine<?, ?>) o;
         return Objects.equals(data, that.data);
     }
 

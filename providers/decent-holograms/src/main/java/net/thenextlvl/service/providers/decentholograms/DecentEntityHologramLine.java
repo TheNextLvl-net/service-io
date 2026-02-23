@@ -6,8 +6,8 @@ import org.bukkit.entity.EntityType;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class DecentEntityHologramLine extends DecentHologramLine<EntityType> {
-    public DecentEntityHologramLine(HologramLine line) {
+public final class DecentEntityHologramLine extends DecentHologramLine<EntityType> {
+    public DecentEntityHologramLine(final HologramLine line) {
         super(line);
     }
 
@@ -22,7 +22,7 @@ public class DecentEntityHologramLine extends DecentHologramLine<EntityType> {
     }
 
     @Override
-    public void setContent(EntityType content) {
+    public void setContent(final EntityType content) {
         line.setContent("#ENTITY:" + content.name());
     }
 }

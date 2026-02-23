@@ -20,7 +20,7 @@ public interface ChatController extends Controller {
      * @param player The OfflinePlayer whose ChatProfile is to be retrieved.
      * @return a CompletableFuture that will complete with the chat profile
      */
-    default CompletableFuture<ChatProfile> loadProfile(OfflinePlayer player) {
+    default CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player) {
         return loadProfile(player.getUniqueId());
     }
 
@@ -31,7 +31,7 @@ public interface ChatController extends Controller {
      * @param world  The world for which the chat profile is requested.
      * @return A CompletableFuture that will complete with the chat profile.
      */
-    default CompletableFuture<ChatProfile> loadProfile(OfflinePlayer player, World world) {
+    default CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player, final World world) {
         return loadProfile(player.getUniqueId(), world);
     }
 
@@ -58,7 +58,7 @@ public interface ChatController extends Controller {
      * @param player The OfflinePlayer whose ChatProfile is to be retrieved.
      * @return a CompletableFuture that will complete with the chat profile
      */
-    default CompletableFuture<ChatProfile> tryGetProfile(OfflinePlayer player) {
+    default CompletableFuture<ChatProfile> tryGetProfile(final OfflinePlayer player) {
         return getProfile(player)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadProfile(player));
@@ -71,7 +71,7 @@ public interface ChatController extends Controller {
      * @param world  The world for which the chat profile is requested.
      * @return A CompletableFuture that will complete with the chat profile.
      */
-    default CompletableFuture<ChatProfile> tryGetProfile(OfflinePlayer player, World world) {
+    default CompletableFuture<ChatProfile> tryGetProfile(final OfflinePlayer player, final World world) {
         return getProfile(player, world)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadProfile(player, world));
@@ -83,7 +83,7 @@ public interface ChatController extends Controller {
      * @param uuid The UUID of the player whose ChatProfile is to be retrieved.
      * @return A CompletableFuture that will complete with the chat profile.
      */
-    default CompletableFuture<ChatProfile> tryGetProfile(UUID uuid) {
+    default CompletableFuture<ChatProfile> tryGetProfile(final UUID uuid) {
         return getProfile(uuid)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadProfile(uuid));
@@ -96,7 +96,7 @@ public interface ChatController extends Controller {
      * @param world The world for which the ChatProfile is requested.
      * @return A CompletableFuture that will complete with the chat profile.
      */
-    default CompletableFuture<ChatProfile> tryGetProfile(UUID uuid, World world) {
+    default CompletableFuture<ChatProfile> tryGetProfile(final UUID uuid, final World world) {
         return getProfile(uuid, world)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadProfile(uuid, world));
@@ -108,7 +108,7 @@ public interface ChatController extends Controller {
      * @param player The OfflinePlayer whose ChatProfile is to be retrieved.
      * @return an optional containing the chat profile, or empty.
      */
-    default Optional<ChatProfile> getProfile(OfflinePlayer player) {
+    default Optional<ChatProfile> getProfile(final OfflinePlayer player) {
         return getProfile(player.getUniqueId());
     }
 
@@ -119,7 +119,7 @@ public interface ChatController extends Controller {
      * @param world  The world for which the chat profile is requested.
      * @return an optional containing the chat profile, or empty.
      */
-    default Optional<ChatProfile> getProfile(OfflinePlayer player, World world) {
+    default Optional<ChatProfile> getProfile(final OfflinePlayer player, final World world) {
         return getProfile(player.getUniqueId(), world);
     }
 

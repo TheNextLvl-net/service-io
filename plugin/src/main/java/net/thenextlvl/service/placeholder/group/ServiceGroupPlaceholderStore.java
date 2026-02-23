@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public class ServiceGroupPlaceholderStore extends PlaceholderStore<GroupController> {
-    public ServiceGroupPlaceholderStore(Plugin plugin) {
+    public ServiceGroupPlaceholderStore(final Plugin plugin) {
         super(plugin, GroupController.class);
     }
 

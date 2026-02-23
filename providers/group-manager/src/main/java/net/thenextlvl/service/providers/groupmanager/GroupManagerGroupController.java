@@ -1,6 +1,5 @@
 package net.thenextlvl.service.providers.groupmanager;
 
-import net.thenextlvl.service.api.DoNotWrap;
 import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.group.GroupHolder;
@@ -20,50 +19,50 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class GroupManagerGroupController implements GroupController {
+public final class GroupManagerGroupController implements GroupController {
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
 
     @Override
-    public CompletableFuture<Group> createGroup(String name) {
-        var group = GroupManager.getGlobalGroups().newGroup(new org.anjocaido.groupmanager.data.Group(name));
+    public CompletableFuture<Group> createGroup(final String name) {
+        final var group = GroupManager.getGlobalGroups().newGroup(new org.anjocaido.groupmanager.data.Group(name));
         if (group != null) return CompletableFuture.completedFuture(new GroupManagerGroup(group));
         return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public CompletableFuture<Group> createGroup(String name, World world) {
-        var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
+    public CompletableFuture<Group> createGroup(final String name, final World world) {
+        final var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
         if (holder == null) return CompletableFuture.completedFuture(null);
         return CompletableFuture.completedFuture(new GroupManagerGroup(holder.createGroup(name)));
     }
 
     @Override
-    public CompletableFuture<Group> loadGroup(String name) {
+    public CompletableFuture<Group> loadGroup(final String name) {
         return CompletableFuture.completedFuture(getGroup(name).orElse(null));
     }
 
     @Override
-    public CompletableFuture<Group> loadGroup(String name, World world) {
+    public CompletableFuture<Group> loadGroup(final String name, final World world) {
         return CompletableFuture.completedFuture(getGroup(name, world).orElse(null));
     }
 
     @Override
-    public CompletableFuture<GroupHolder> loadGroupHolder(OfflinePlayer player) {
+    public CompletableFuture<GroupHolder> loadGroupHolder(final OfflinePlayer player) {
         return CompletableFuture.completedFuture(getGroupHolder(player).orElse(null));
     }
 
     @Override
-    public CompletableFuture<GroupHolder> loadGroupHolder(OfflinePlayer player, World world) {
+    public CompletableFuture<GroupHolder> loadGroupHolder(final OfflinePlayer player, final World world) {
         return CompletableFuture.completedFuture(getGroupHolder(player, world).orElse(null));
     }
 
     @Override
-    public CompletableFuture<GroupHolder> loadGroupHolder(UUID uuid) {
+    public CompletableFuture<GroupHolder> loadGroupHolder(final UUID uuid) {
         return CompletableFuture.completedFuture(getGroupHolder(uuid).orElse(null));
     }
 
     @Override
-    public CompletableFuture<GroupHolder> loadGroupHolder(UUID uuid, World world) {
+    public CompletableFuture<GroupHolder> loadGroupHolder(final UUID uuid, final World world) {
         return CompletableFuture.completedFuture(getGroupHolder(uuid, world).orElse(null));
     }
 
@@ -73,67 +72,67 @@ public class GroupManagerGroupController implements GroupController {
     }
 
     @Override
-    public CompletableFuture<Set<Group>> loadGroups(World world) {
+    public CompletableFuture<Set<Group>> loadGroups(final World world) {
         return CompletableFuture.completedFuture(getGroups(world));
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteGroup(Group group) {
+    public CompletableFuture<Boolean> deleteGroup(final Group group) {
         return deleteGroup(group.getName());
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteGroup(Group group, World world) {
+    public CompletableFuture<Boolean> deleteGroup(final Group group, final World world) {
         return deleteGroup(group.getName(), world);
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteGroup(String name) {
+    public CompletableFuture<Boolean> deleteGroup(final String name) {
         return CompletableFuture.completedFuture(GroupManager.getGlobalGroups().removeGroup(name));
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteGroup(String name, World world) {
-        var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
+    public CompletableFuture<Boolean> deleteGroup(final String name, final World world) {
+        final var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
         if (holder != null) CompletableFuture.completedFuture(holder.removeGroup(name));
         return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public Optional<Group> getGroup(String name) {
+    public Optional<Group> getGroup(final String name) {
         return Optional.ofNullable(GroupManager.getGlobalGroups().getGroup(name))
                 .map(GroupManagerGroup::new);
     }
 
     @Override
-    public Optional<Group> getGroup(String name, World world) {
-        var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
+    public Optional<Group> getGroup(final String name, final World world) {
+        final var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
         return Optional.ofNullable(holder)
                 .map(holder1 -> holder1.getGroup(name))
                 .map(GroupManagerGroup::new);
     }
 
     @Override
-    public Optional<GroupHolder> getGroupHolder(OfflinePlayer player) {
-        var holder = groupManager.getWorldsHolder().getDefaultWorld();
+    public Optional<GroupHolder> getGroupHolder(final OfflinePlayer player) {
+        final var holder = groupManager.getWorldsHolder().getDefaultWorld();
         return getHolder(holder, player.getUniqueId(), player.getName());
     }
 
     @Override
-    public Optional<GroupHolder> getGroupHolder(OfflinePlayer player, World world) {
-        var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
+    public Optional<GroupHolder> getGroupHolder(final OfflinePlayer player, final World world) {
+        final var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
         return getHolder(holder, player.getUniqueId(), player.getName());
     }
 
     @Override
-    public Optional<GroupHolder> getGroupHolder(UUID uuid) {
-        var holder = groupManager.getWorldsHolder().getDefaultWorld();
+    public Optional<GroupHolder> getGroupHolder(final UUID uuid) {
+        final var holder = groupManager.getWorldsHolder().getDefaultWorld();
         return getHolder(holder, uuid, null);
     }
 
     @Override
-    public Optional<GroupHolder> getGroupHolder(UUID uuid, World world) {
-        var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
+    public Optional<GroupHolder> getGroupHolder(final UUID uuid, final World world) {
+        final var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
         return getHolder(holder, uuid, null);
     }
 
@@ -145,17 +144,17 @@ public class GroupManagerGroupController implements GroupController {
     }
 
     @Override
-    public Set<Group> getGroups(World world) {
-        var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
+    public Set<Group> getGroups(final World world) {
+        final var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
         if (holder == null) return Set.of();
         return holder.getGroups().values().stream()
                 .map(GroupManagerGroup::new)
                 .collect(Collectors.toUnmodifiableSet());
     }
 
-    private Optional<GroupHolder> getHolder(@Nullable WorldDataHolder holder, UUID uuid, @Nullable String name) {
+    private Optional<GroupHolder> getHolder(@Nullable final WorldDataHolder holder, final UUID uuid, @Nullable final String name) {
         if (holder == null) return Optional.empty();
-        var user = name != null ? holder.getUser(uuid.toString(), name) : holder.getUser(uuid.toString());
+        final var user = name != null ? holder.getUser(uuid.toString(), name) : holder.getUser(uuid.toString());
         if (user == null) return Optional.empty();
         return Optional.of(new GroupManagerPermissionHolder(user, holder));
     }

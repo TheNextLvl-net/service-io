@@ -7,8 +7,8 @@ import net.thenextlvl.service.api.hologram.LineType;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class DecentTextHologramLine extends DecentHologramLine<Component> {
-    public DecentTextHologramLine(HologramLine line) {
+public final class DecentTextHologramLine extends DecentHologramLine<Component> {
+    public DecentTextHologramLine(final HologramLine line) {
         super(line);
     }
 
@@ -23,7 +23,7 @@ public class DecentTextHologramLine extends DecentHologramLine<Component> {
     }
 
     @Override
-    public void setContent(Component component) {
+    public void setContent(final Component component) {
         line.setContent(LegacyComponentSerializer.legacyAmpersand().serialize(component));
     }
 }

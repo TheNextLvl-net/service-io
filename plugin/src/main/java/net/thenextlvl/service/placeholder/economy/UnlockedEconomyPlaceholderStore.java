@@ -13,10 +13,10 @@ import java.util.UUID;
  * <a href="https://github.com/TheNewEconomy/VaultUnlocked/blob/master/src/net/milkbowl/vault/papi/EconomyPlaceholders.java">Source</a>
  */
 @NullMarked
-public class UnlockedEconomyPlaceholderStore extends PlaceholderStore<Economy> {
+public final class UnlockedEconomyPlaceholderStore extends PlaceholderStore<Economy> {
     private static final String PLUGIN_NAME = "VaultUnlocked";
 
-    public UnlockedEconomyPlaceholderStore(Plugin plugin) {
+    public UnlockedEconomyPlaceholderStore(final Plugin plugin) {
         super(plugin, Economy.class);
     }
 
@@ -24,20 +24,20 @@ public class UnlockedEconomyPlaceholderStore extends PlaceholderStore<Economy> {
     protected void registerResolvers() {
         // %vaultunlocked_balance_currency_<currency>%
         registerResolver("balance_currency_%s", (provider, player, matcher) -> {
-            var currency = decode(matcher.group(1));
+            final var currency = decode(matcher.group(1));
             return provider.balance(PLUGIN_NAME, player.getUniqueId(), "world", currency).toPlainString();
         });
 
         // %vaultunlocked_balance_currency_<currency>_world_<world>%
         registerResolver("balance_currency_%s_world_%s", (provider, player, matcher) -> {
-            var currency = decode(matcher.group(1));
-            var world = matcher.group(2);
+            final var currency = decode(matcher.group(1));
+            final var world = matcher.group(2);
             return provider.balance(PLUGIN_NAME, player.getUniqueId(), world, currency).toPlainString();
         });
 
         // %vaultunlocked_balance_<world>%
         registerResolver("balance_%s", (provider, player, matcher) -> {
-            var world = matcher.group(1);
+            final var world = matcher.group(1);
             return provider.balance(PLUGIN_NAME, player.getUniqueId(), world).toPlainString();
         });
 
@@ -48,20 +48,20 @@ public class UnlockedEconomyPlaceholderStore extends PlaceholderStore<Economy> {
 
         // %vaultunlocked_balanceformatted_currency_<currency>%
         registerResolver("balanceformatted_currency_%s", (provider, player, matcher) -> {
-            var currency = decode(matcher.group(1));
+            final var currency = decode(matcher.group(1));
             return provider.format(PLUGIN_NAME, provider.balance(PLUGIN_NAME, player.getUniqueId(), "world", currency));
         });
 
         // %vaultunlocked_balanceformatted_currency_<currency>_world_<world>%
         registerResolver("balanceformatted_currency_%s_world_%s", (provider, player, matcher) -> {
-            var currency = decode(matcher.group(1));
-            var world = matcher.group(2);
+            final var currency = decode(matcher.group(1));
+            final var world = matcher.group(2);
             return provider.format(PLUGIN_NAME, provider.balance(PLUGIN_NAME, player.getUniqueId(), world, currency));
         });
 
         // %vaultunlocked_balanceformatted_<world>% // doesn't exist in the original
         registerResolver("balanceformatted_%s", (provider, player, matcher) -> {
-            var world = matcher.group(1);
+            final var world = matcher.group(1);
             return provider.format(PLUGIN_NAME, provider.balance(PLUGIN_NAME, player.getUniqueId(), world));
         });
 
@@ -72,43 +72,43 @@ public class UnlockedEconomyPlaceholderStore extends PlaceholderStore<Economy> {
 
         // %vaultunlocked_account_<uuid>%
         registerResolver("account_%s", PlaceholderResolver.throwing((provider, player, matcher) -> {
-            var accountId = UUID.fromString(matcher.group(1));
+            final var accountId = UUID.fromString(matcher.group(1));
             return provider.balance(PLUGIN_NAME, accountId).toPlainString();
         }, IllegalArgumentException.class));
 
         // %vaultunlocked_account_<uuid>_currency_<currency>%
         registerResolver("account_%s_currency_%s", PlaceholderResolver.throwing((provider, player, matcher) -> {
-            var accountId = UUID.fromString(matcher.group(1));
-            var currency = decode(matcher.group(2));
+            final var accountId = UUID.fromString(matcher.group(1));
+            final var currency = decode(matcher.group(2));
             return provider.balance(PLUGIN_NAME, accountId, "world", currency).toPlainString();
         }, IllegalArgumentException.class));
 
         // %vaultunlocked_account_<uuid>_currency_<currency>_formatted%
         registerResolver("account_%s_currency_%s_formatted", PlaceholderResolver.throwing((provider, player, matcher) -> {
-            var accountId = UUID.fromString(matcher.group(1));
-            var currency = decode(matcher.group(2));
+            final var accountId = UUID.fromString(matcher.group(1));
+            final var currency = decode(matcher.group(2));
             return provider.format(PLUGIN_NAME, provider.balance(PLUGIN_NAME, accountId, "world", currency));
         }, IllegalArgumentException.class));
 
         // %vaultunlocked_account_<uuid>_currency_<currency>_world_<world>%
         registerResolver("account_%s_currency_%s_world_%s", PlaceholderResolver.throwing((provider, player, matcher) -> {
-            var accountId = UUID.fromString(matcher.group(1));
-            var currency = decode(matcher.group(2));
-            var world = matcher.group(3);
+            final var accountId = UUID.fromString(matcher.group(1));
+            final var currency = decode(matcher.group(2));
+            final var world = matcher.group(3);
             return provider.balance(PLUGIN_NAME, accountId, world, currency).toPlainString();
         }, IllegalArgumentException.class));
 
         // %vaultunlocked_account_<uuid>_currency_<currency>_world_<world>_formatted%
         registerResolver("account_%s_currency_%s_world_%s_formatted", PlaceholderResolver.throwing((provider, player, matcher) -> {
-            var accountId = UUID.fromString(matcher.group(1));
-            var currency = decode(matcher.group(2));
-            var world = matcher.group(3);
+            final var accountId = UUID.fromString(matcher.group(1));
+            final var currency = decode(matcher.group(2));
+            final var world = matcher.group(3);
             return provider.format(PLUGIN_NAME, provider.balance(PLUGIN_NAME, accountId, world, currency));
         }, IllegalArgumentException.class));
 
         registerResolver("can_%s_%s", PlaceholderResolver.throwing((provider, player, matcher) -> {
-            var accountId = UUID.fromString(matcher.group(2));
-            var permission = switch (matcher.group(1)) {
+            final var accountId = UUID.fromString(matcher.group(2));
+            final var permission = switch (matcher.group(1)) {
                 case "deposit" -> AccountPermission.DEPOSIT; // %vaultunlocked_can_deposit_<uuid>%
                 case "withdraw" -> AccountPermission.WITHDRAW; // %vaultunlocked_can_withdraw_<uuid>%
                 case "balance" -> AccountPermission.BALANCE; // %vaultunlocked_can_balance_<uuid>%

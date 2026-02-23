@@ -29,7 +29,7 @@ public abstract class CharacterEvent extends Event {
      * @param controller the character controller responsible for managing the character
      * @param character  the character instance involved in the event
      */
-    public CharacterEvent(CharacterController controller, Character<?> character) {
+    public CharacterEvent(final CharacterController controller, final Character<?> character) {
         super(!character.getServer().isPrimaryThread());
         this.controller = controller;
         this.character = character;

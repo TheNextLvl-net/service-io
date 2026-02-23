@@ -5,8 +5,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class FancyItemHologramLine extends FancyHologramLine<ItemHologramData, ItemStack> {
-    public FancyItemHologramLine(ItemHologramData data) {
+public final class FancyItemHologramLine extends FancyHologramLine<ItemHologramData, ItemStack> {
+    public FancyItemHologramLine(final ItemHologramData data) {
         super(data);
     }
 
@@ -16,7 +16,7 @@ public class FancyItemHologramLine extends FancyHologramLine<ItemHologramData, I
     }
 
     @Override
-    public void setContent(ItemStack content) {
+    public void setContent(final ItemStack content) {
         data.setItemStack(content);
     }
 }

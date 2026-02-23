@@ -7,8 +7,8 @@ import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class ServiceChatPlaceholderStore extends PlaceholderStore<ChatController> {
-    public ServiceChatPlaceholderStore(Plugin plugin) {
+public final class ServiceChatPlaceholderStore extends PlaceholderStore<ChatController> {
+    public ServiceChatPlaceholderStore(final Plugin plugin) {
         super(plugin, ChatController.class);
     }
 

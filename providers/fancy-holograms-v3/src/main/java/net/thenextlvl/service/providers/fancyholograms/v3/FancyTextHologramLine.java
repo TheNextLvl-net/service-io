@@ -9,8 +9,8 @@ import org.jspecify.annotations.NullMarked;
 import java.util.Arrays;
 
 @NullMarked
-public class FancyTextHologramLine extends FancyHologramLine<TextHologramData, Component> {
-    public FancyTextHologramLine(TextHologramData data) {
+public final class FancyTextHologramLine extends FancyHologramLine<TextHologramData, Component> {
+    public FancyTextHologramLine(final TextHologramData data) {
         super(data);
     }
 
@@ -22,8 +22,8 @@ public class FancyTextHologramLine extends FancyHologramLine<TextHologramData, C
     }
 
     @Override
-    public void setContent(Component content) {
-        var lines = MiniMessage.miniMessage().serialize(content).split("\\\\n|<newline>|<br>");
+    public void setContent(final Component content) {
+        final var lines = MiniMessage.miniMessage().serialize(content).split("\\\\n|<newline>|<br>");
         data.setText(Arrays.asList(lines));
     }
 }

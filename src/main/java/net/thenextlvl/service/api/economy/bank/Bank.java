@@ -36,7 +36,7 @@ public interface Bank extends Account {
      * @param player the OfflinePlayer object representing the player to be added as a member
      * @return true if the player was successfully added as a member, false otherwise
      */
-    default boolean addMember(OfflinePlayer player) {
+    default boolean addMember(final OfflinePlayer player) {
         return addMember(player.getUniqueId());
     }
 
@@ -54,7 +54,7 @@ public interface Bank extends Account {
      * @param player the OfflinePlayer object representing the player to check for membership
      * @return true if the player is a member of the bank, false otherwise
      */
-    default boolean isMember(OfflinePlayer player) {
+    default boolean isMember(final OfflinePlayer player) {
         return isMember(player.getUniqueId());
     }
 
@@ -72,7 +72,7 @@ public interface Bank extends Account {
      * @param player the OfflinePlayer object representing the player to be removed as a member
      * @return true if the member was successfully removed, false otherwise
      */
-    default boolean removeMember(OfflinePlayer player) {
+    default boolean removeMember(final OfflinePlayer player) {
         return removeMember(player.getUniqueId());
     }
 
@@ -90,7 +90,7 @@ public interface Bank extends Account {
      * @param player the OfflinePlayer object representing the player to be set as the owner
      * @return true if the player was successfully set as the owner, false otherwise
      */
-    default boolean setOwner(OfflinePlayer player) {
+    default boolean setOwner(final OfflinePlayer player) {
         return setOwner(player.getUniqueId());
     }
 

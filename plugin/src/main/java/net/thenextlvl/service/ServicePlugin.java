@@ -32,7 +32,7 @@ import java.util.Locale;
 import java.util.function.Function;
 
 @NullMarked
-public class ServicePlugin extends Vault {
+public final class ServicePlugin extends Vault {
     private final PluginVersionChecker versionChecker = new PluginVersionChecker(this);
     private final Metrics metrics = new Metrics(this, 23083);
 
@@ -106,12 +106,12 @@ public class ServicePlugin extends Vault {
         addCustomChart(CharacterController.class, CharacterController::getName, "npc_provider");
     }
 
-    private <T> void addCustomChart(Class<T> service, Function<T, String> function, String chartId) {
-        T loaded = getServer().getServicesManager().load(service);
+    private <T> void addCustomChart(final Class<T> service, final Function<T, String> function, final String chartId) {
+        final T loaded = getServer().getServicesManager().load(service);
         metrics.addCustomChart(new SimplePie(chartId, () -> loaded != null ? function.apply(loaded) : "None"));
     }
 
-    private <T> Chart<String[]> createChart(Class<T> service, Function<T, String> function, @ChartId String chartId) {
+    private <T> Chart<String[]> createChart(final Class<T> service, final Function<T, String> function, @ChartId final String chartId) {
         return Chart.stringArray(chartId, () -> {
             return getServer().getServicesManager().getRegistrations(service).stream()
                     .map(RegisteredServiceProvider::getProvider)

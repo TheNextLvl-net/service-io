@@ -86,7 +86,7 @@ public interface Display {
      * @param prefix The prefix to set for the object.
      * @return true if the prefix was successfully set, false otherwise.
      */
-    default boolean setPrefix(@Nullable String prefix) {
+    default boolean setPrefix(@Nullable final String prefix) {
         return setPrefix(prefix, 0);
     }
 
@@ -107,7 +107,7 @@ public interface Display {
      * @param suffix The suffix to set for the object.
      * @return true if the suffix was successfully set, false otherwise.
      */
-    default boolean setSuffix(@Nullable String suffix) {
+    default boolean setSuffix(@Nullable final String suffix) {
         return setSuffix(suffix, 0);
     }
 

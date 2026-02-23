@@ -15,52 +15,52 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-public class ChatServiceWrapper implements ChatController, Wrapper {
+public final class ChatServiceWrapper implements ChatController, Wrapper {
     private final Plugin provider;
     private final Chat chat;
 
-    public ChatServiceWrapper(Chat chat, Plugin provider) {
+    public ChatServiceWrapper(final Chat chat, final Plugin provider) {
         this.chat = chat;
         this.provider = provider;
     }
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(OfflinePlayer player) {
+    public CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player) {
         return CompletableFuture.completedFuture(new WrappedChatProfile(null, chat, player));
     }
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(OfflinePlayer player, World world) {
+    public CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player, final World world) {
         return CompletableFuture.completedFuture(new WrappedChatProfile(world, chat, player));
     }
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(UUID uuid) {
+    public CompletableFuture<ChatProfile> loadProfile(final UUID uuid) {
         return loadProfile(provider.getServer().getOfflinePlayer(uuid));
     }
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(UUID uuid, World world) {
+    public CompletableFuture<ChatProfile> loadProfile(final UUID uuid, final World world) {
         return loadProfile(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
-    public Optional<ChatProfile> getProfile(OfflinePlayer player) {
+    public Optional<ChatProfile> getProfile(final OfflinePlayer player) {
         return Optional.of(new WrappedChatProfile(null, chat, player));
     }
 
     @Override
-    public Optional<ChatProfile> getProfile(OfflinePlayer player, World world) {
+    public Optional<ChatProfile> getProfile(final OfflinePlayer player, final World world) {
         return Optional.of(new WrappedChatProfile(world, chat, player));
     }
 
     @Override
-    public Optional<ChatProfile> getProfile(UUID uuid) {
+    public Optional<ChatProfile> getProfile(final UUID uuid) {
         return getProfile(provider.getServer().getOfflinePlayer(uuid));
     }
 
     @Override
-    public Optional<ChatProfile> getProfile(UUID uuid, World world) {
+    public Optional<ChatProfile> getProfile(final UUID uuid, final World world) {
         return getProfile(provider.getServer().getOfflinePlayer(uuid), world);
     }
 

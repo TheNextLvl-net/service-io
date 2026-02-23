@@ -16,7 +16,7 @@ import java.util.Optional;
 abstract class DecentHologramLine<T> implements HologramLine<T> {
     protected final eu.decentsoftware.holograms.api.holograms.HologramLine line;
 
-    protected DecentHologramLine(eu.decentsoftware.holograms.api.holograms.HologramLine line) {
+    protected DecentHologramLine(final eu.decentsoftware.holograms.api.holograms.HologramLine line) {
         this.line = line;
     }
 
@@ -46,22 +46,22 @@ abstract class DecentHologramLine<T> implements HologramLine<T> {
     }
 
     @Override
-    public void setHeight(double height) {
+    public void setHeight(final double height) {
         line.setHeight(height);
     }
 
     @Override
-    public void setOffsetX(double offsetX) {
+    public void setOffsetX(final double offsetX) {
         line.setOffsetX(offsetX);
     }
 
     @Override
-    public void setOffsetY(double offsetY) {
+    public void setOffsetY(final double offsetY) {
         line.setOffsetY(offsetY);
     }
 
     @Override
-    public void setOffsetZ(double offsetZ) {
+    public void setOffsetZ(final double offsetZ) {
         line.setOffsetZ(offsetZ);
     }
 
@@ -106,9 +106,9 @@ abstract class DecentHologramLine<T> implements HologramLine<T> {
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
+    public boolean equals(@Nullable final Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        DecentHologramLine<?> that = (DecentHologramLine<?>) o;
+        final DecentHologramLine<?> that = (DecentHologramLine<?>) o;
         return Objects.equals(line, that.line);
     }
 

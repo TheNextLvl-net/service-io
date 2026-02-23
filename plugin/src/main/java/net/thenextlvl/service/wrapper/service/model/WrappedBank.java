@@ -17,13 +17,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class WrappedBank implements Bank {
+public final class WrappedBank implements Bank {
     private final @Nullable World world;
     private final Economy economy;
     private final Plugin provider;
     private final String name;
 
-    public WrappedBank(String name, @Nullable World world, Economy economy, Plugin provider) {
+    public WrappedBank(final String name, @Nullable final World world, final Economy economy, final Plugin provider) {
         this.name = name;
         this.world = world;
         this.economy = economy;
@@ -31,7 +31,7 @@ public class WrappedBank implements Bank {
     }
 
     @Override
-    public BigDecimal deposit(Number amount) {
+    public BigDecimal deposit(final Number amount) {
         return new BigDecimal(economy.bankDeposit(name, amount.doubleValue()).balance);
     }
 
@@ -41,7 +41,7 @@ public class WrappedBank implements Bank {
     }
 
     @Override
-    public BigDecimal withdraw(Number amount) {
+    public BigDecimal withdraw(final Number amount) {
         return new BigDecimal(economy.bankWithdraw(name, amount.doubleValue()).balance);
     }
 
@@ -60,8 +60,8 @@ public class WrappedBank implements Bank {
     }
 
     @Override
-    public void setBalance(Number balance) {
-        var difference = balance.doubleValue() - getBalance().doubleValue();
+    public void setBalance(final Number balance) {
+        final var difference = balance.doubleValue() - getBalance().doubleValue();
         if (difference > 0) deposit(difference);
         else if (difference < 0) withdraw(-difference);
     }
@@ -80,22 +80,22 @@ public class WrappedBank implements Bank {
     }
 
     @Override
-    public boolean addMember(UUID uuid) {
+    public boolean addMember(final UUID uuid) {
         return false;
     }
 
     @Override
-    public boolean isMember(UUID uuid) {
+    public boolean isMember(final UUID uuid) {
         return false;
     }
 
     @Override
-    public boolean removeMember(UUID uuid) {
+    public boolean removeMember(final UUID uuid) {
         return false;
     }
 
     @Override
-    public boolean setOwner(UUID uuid) {
+    public boolean setOwner(final UUID uuid) {
         return false;
     }
 }

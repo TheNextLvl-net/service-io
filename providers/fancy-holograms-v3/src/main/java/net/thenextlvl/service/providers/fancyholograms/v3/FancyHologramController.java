@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class FancyHologramController implements HologramController {
+public final class FancyHologramController implements HologramController {
     private final EnumSet<HologramCapability> capabilities = EnumSet.of(
             HologramCapability.BLOCK_LINES,
             HologramCapability.DISPLAY_BACKED,
@@ -37,22 +37,22 @@ public class FancyHologramController implements HologramController {
     );
 
     @Override
-    public Hologram createHologram(String name, Location location, Collection<HologramLine<?>> lines) throws CapabilityException {
-        var line = lines.iterator().next();
-        var manager = FancyHolograms.get().getHologramFactory();
-        var hologram = switch (line.getType()) {
+    public Hologram createHologram(final String name, final Location location, final Collection<HologramLine<?>> lines) throws CapabilityException {
+        final var line = lines.iterator().next();
+        final var manager = FancyHolograms.get().getHologramFactory();
+        final var hologram = switch (line.getType()) {
             case BLOCK -> {
-                var data = new BlockHologramData(name, location);
+                final var data = new BlockHologramData(name, location);
                 data.setBlock(((FancyBlockHologramLine) line).data.getBlock());
                 yield manager.apply(data);
             }
             case ITEM -> {
-                var data = new ItemHologramData(name, location);
+                final var data = new ItemHologramData(name, location);
                 data.setItemStack(((FancyItemHologramLine) line).data.getItemStack());
                 yield manager.apply(data);
             }
             case TEXT -> {
-                var data = new TextHologramData(name, location);
+                final var data = new TextHologramData(name, location);
                 data.setText(((FancyTextHologramLine) line).data.getText());
                 yield manager.apply(data);
             }
@@ -66,8 +66,8 @@ public class FancyHologramController implements HologramController {
     }
 
     @Override
-    public HologramLine<BlockData> createLine(BlockData block) {
-        var line = new FancyBlockHologramLine(new BlockHologramData(
+    public HologramLine<BlockData> createLine(final BlockData block) {
+        final var line = new FancyBlockHologramLine(new BlockHologramData(
                 "none", new Location(null, 0, 0, 0)
         ));
         line.setContent(block);
@@ -75,8 +75,8 @@ public class FancyHologramController implements HologramController {
     }
 
     @Override
-    public HologramLine<Component> createLine(Component text) {
-        var line = new FancyTextHologramLine(new TextHologramData(
+    public HologramLine<Component> createLine(final Component text) {
+        final var line = new FancyTextHologramLine(new TextHologramData(
                 "none", new Location(null, 0, 0, 0)
         ));
         line.setContent(text);
@@ -84,13 +84,13 @@ public class FancyHologramController implements HologramController {
     }
 
     @Override
-    public HologramLine<EntityType> createLine(EntityType entity) throws CapabilityException {
+    public HologramLine<EntityType> createLine(final EntityType entity) throws CapabilityException {
         throw new CapabilityException("FancyHolograms does not support entity lines", HologramCapability.ENTITY_LINES);
     }
 
     @Override
-    public HologramLine<ItemStack> createLine(ItemStack itemStack) {
-        var line = new FancyItemHologramLine(new ItemHologramData(
+    public HologramLine<ItemStack> createLine(final ItemStack itemStack) {
+        final var line = new FancyItemHologramLine(new ItemHologramData(
                 "none", new Location(null, 0, 0, 0)
         ));
         line.setContent(itemStack);
@@ -99,15 +99,15 @@ public class FancyHologramController implements HologramController {
 
     @Override
     public @Unmodifiable List<Hologram> getHolograms() {
-        var registry = FancyHolograms.get().getRegistry();
+        final var registry = FancyHolograms.get().getRegistry();
         return registry.getAll().stream()
                 .map(FancyHologram::new)
                 .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
-    public @Unmodifiable List<Hologram> getHolograms(Player player) {
-        var registry = FancyHolograms.get().getRegistry();
+    public @Unmodifiable List<Hologram> getHolograms(final Player player) {
+        final var registry = FancyHolograms.get().getRegistry();
         return registry.getAll().stream()
                 .filter(hologram -> hologram.isViewer(player))
                 .map(FancyHologram::new)
@@ -115,8 +115,8 @@ public class FancyHologramController implements HologramController {
     }
 
     @Override
-    public @Unmodifiable List<Hologram> getHolograms(World world) {
-        var registry = FancyHolograms.get().getRegistry();
+    public @Unmodifiable List<Hologram> getHolograms(final World world) {
+        final var registry = FancyHolograms.get().getRegistry();
         return registry.getAll().stream()
                 .filter(hologram -> world.equals(hologram.getData().getLocation().getWorld()))
                 .map(FancyHologram::new)
@@ -124,8 +124,8 @@ public class FancyHologramController implements HologramController {
     }
 
     @Override
-    public Optional<Hologram> getHologram(String name) {
-        var registry = FancyHolograms.get().getRegistry();
+    public Optional<Hologram> getHologram(final String name) {
+        final var registry = FancyHolograms.get().getRegistry();
         return registry.get(name).map(FancyHologram::new);
     }
 
@@ -145,12 +145,12 @@ public class FancyHologramController implements HologramController {
     }
 
     @Override
-    public boolean hasCapabilities(Collection<HologramCapability> capabilities) {
+    public boolean hasCapabilities(final Collection<HologramCapability> capabilities) {
         return this.capabilities.containsAll(capabilities);
     }
 
     @Override
-    public boolean hasCapability(HologramCapability capability) {
+    public boolean hasCapability(final HologramCapability capability) {
         return capabilities.contains(capability);
     }
 }

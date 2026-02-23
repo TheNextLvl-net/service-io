@@ -6,13 +6,13 @@ import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class PluginVersionChecker extends PaperModrinthVersionChecker<SemanticVersion> {
-    public PluginVersionChecker(Plugin plugin) {
+public final class PluginVersionChecker extends PaperModrinthVersionChecker<SemanticVersion> {
+    public PluginVersionChecker(final Plugin plugin) {
         super(plugin, "MNPyHOe7");
     }
 
     @Override
-    public SemanticVersion parseVersion(String version) {
+    public SemanticVersion parseVersion(final String version) {
         return SemanticVersion.parse(version);
     }
 }

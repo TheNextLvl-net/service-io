@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @NullMarked
 public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram hologram) implements Hologram {
     @Override
-    public CompletableFuture<Boolean> teleportAsync(Location location) {
+    public CompletableFuture<Boolean> teleportAsync(final Location location) {
         DHAPI.moveHologram(hologram(), location);
         return CompletableFuture.completedFuture(true);
     }
@@ -41,32 +41,32 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
     }
 
     @Override
-    public boolean addLine(HologramLine<?> line) {
-        if (!(line instanceof DecentHologramLine<?> decentLine)) return false;
+    public boolean addLine(final HologramLine<?> line) {
+        if (!(line instanceof final DecentHologramLine<?> decentLine)) return false;
         line.getLocation().setWorld(getWorld());
         return hologram().getPage(0).addLine(decentLine.line);
     }
 
     @Override
-    public boolean addLine(int index, HologramLine<?> line) {
-        if (!(line instanceof DecentHologramLine<?> decentLine)) return false;
+    public boolean addLine(final int index, final HologramLine<?> line) {
+        if (!(line instanceof final DecentHologramLine<?> decentLine)) return false;
         return hologram().getPage(0).insertLine(index, decentLine.line);
     }
 
     @Override
-    public boolean addLines(Collection<HologramLine<?>> lines) {
+    public boolean addLines(final Collection<HologramLine<?>> lines) {
         return lines.stream().map(this::addLine).reduce(false, Boolean::logicalOr);
     }
 
     @Override
-    public boolean removeLine(HologramLine<?> line) {
-        var index = getLines().indexOf(line);
+    public boolean removeLine(final HologramLine<?> line) {
+        final var index = getLines().indexOf(line);
         return index >= 0 && removeLine(index);
     }
 
     @Override
-    public boolean removeLine(int index) {
-        return hologram().getPage(0).removeLine(0) != null;
+    public boolean removeLine(final int index) {
+        return hologram().getPage(0).removeLine(index) != null;
     }
 
     @Override
@@ -102,7 +102,7 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
     }
 
     @Override
-    public void setPersistent(boolean persistent) {
+    public void setPersistent(final boolean persistent) {
         hologram().setSaveToFile(persistent);
     }
 
@@ -138,7 +138,7 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
     }
 
     @Override
-    public boolean addViewer(Player player) {
+    public boolean addViewer(final Player player) {
         if (hologram().isShowState(player)) return false;
         hologram().setShowPlayer(player);
         hologram().show(player, 0);
@@ -146,17 +146,17 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
     }
 
     @Override
-    public boolean addViewers(Collection<Player> players) {
+    public boolean addViewers(final Collection<Player> players) {
         return players.stream().map(this::addViewer).reduce(false, Boolean::logicalOr);
     }
 
     @Override
-    public boolean isTrackedBy(Player player) {
+    public boolean isTrackedBy(final Player player) {
         return hologram().isVisible(player);
     }
 
     @Override
-    public boolean canSee(Player player) {
+    public boolean canSee(final Player player) {
         return hologram().isShowState(player) && !hologram().isHideState(player) && hologram().canShow(player);
     }
 
@@ -166,7 +166,7 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
     }
 
     @Override
-    public boolean removeViewer(Player player) {
+    public boolean removeViewer(final Player player) {
         if (!isTrackedBy(player)) return false;
         hologram().removeShowPlayer(player);
         hologram().hide(player);
@@ -174,7 +174,7 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
     }
 
     @Override
-    public boolean removeViewers(Collection<Player> players) {
+    public boolean removeViewers(final Collection<Player> players) {
         return players.stream().map(this::removeViewer).reduce(false, Boolean::logicalOr);
     }
 
@@ -209,12 +209,12 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
     }
 
     @Override
-    public void setDisplayRange(double range) {
+    public void setDisplayRange(final double range) {
         hologram().setDisplayRange((int) range);
     }
 
     @Override
-    public void setVisibleByDefault(boolean visible) {
+    public void setVisibleByDefault(final boolean visible) {
         hologram().setDefaultVisibleState(visible);
     }
 }

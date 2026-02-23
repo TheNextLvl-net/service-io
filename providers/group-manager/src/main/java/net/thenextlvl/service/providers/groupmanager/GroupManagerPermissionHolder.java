@@ -25,7 +25,7 @@ public record GroupManagerPermissionHolder(User user, WorldDataHolder holder) im
     }
 
     @Override
-    public TriState checkPermission(String permission) {
+    public TriState checkPermission(final String permission) {
         return switch (holder().getPermissionsHandler().checkFullUserPermission(user(), permission).resultType) {
             case FOUND -> TriState.TRUE;
             case NEGATION, EXCEPTION -> TriState.FALSE;
@@ -34,18 +34,18 @@ public record GroupManagerPermissionHolder(User user, WorldDataHolder holder) im
     }
 
     @Override
-    public boolean addPermission(String permission) {
+    public boolean addPermission(final String permission) {
         return setPermission(permission, true);
     }
 
     @Override
-    public boolean removePermission(String permission) {
+    public boolean removePermission(final String permission) {
         return user().removePermission(permission);
     }
 
     @Override
-    public boolean setPermission(String permission, boolean value) {
-        var state = checkPermission(permission).toBoolean();
+    public boolean setPermission(final String permission, final boolean value) {
+        final var state = checkPermission(permission).toBoolean();
         if (state != null && state.equals(value)) return false;
         removePermission(value ? "-" + permission : permission);
         user().addPermission(!value ? "-" + permission : permission);
@@ -53,25 +53,25 @@ public record GroupManagerPermissionHolder(User user, WorldDataHolder holder) im
     }
 
     @Override
-    public <T> Optional<T> getInfoNode(String key, Function<@Nullable String, @Nullable T> mapper) {
+    public <T> Optional<T> getInfoNode(final String key, final Function<@Nullable String, @Nullable T> mapper) {
         return Optional.ofNullable(mapper.apply(user().getVariables().getVarString(key)));
     }
 
     @Override
-    public boolean removeInfoNode(String key) {
+    public boolean removeInfoNode(final String key) {
         if (!hasInfoNode(key)) return false;
         user().getVariables().removeVar(key);
         return true;
     }
 
     @Override
-    public boolean setInfoNode(String key, String value) {
+    public boolean setInfoNode(final String key, final String value) {
         user().getVariables().addVar(key, value);
         return true;
     }
 
     @Override
-    public boolean hasInfoNode(String key) {
+    public boolean hasInfoNode(final String key) {
         return user().getVariables().hasVar(key);
     }
 
@@ -89,53 +89,53 @@ public record GroupManagerPermissionHolder(User user, WorldDataHolder holder) im
     }
 
     @Override
-    public boolean addGroup(Group group) {
-        if (!(group instanceof GroupManagerGroup(var managerGroup)))
+    public boolean addGroup(final Group group) {
+        if (!(group instanceof GroupManagerGroup(final var managerGroup)))
             return addGroup(group.getName());
         return user().addSubGroup(managerGroup);
     }
 
     @Override
-    public boolean addGroup(String name) {
-        var group = holder().getGroup(name);
+    public boolean addGroup(final String name) {
+        final var group = holder().getGroup(name);
         return group != null && user().addSubGroup(group);
     }
 
     @Override
-    public boolean inGroup(Group group) {
+    public boolean inGroup(final Group group) {
         return inGroup(group.getName());
     }
 
     @Override
-    public boolean inGroup(String name) {
-        var handler = holder().getPermissionsHandler();
+    public boolean inGroup(final String name) {
+        final var handler = holder().getPermissionsHandler();
         return handler.hasGroupInInheritance(user().getGroup(), name);
     }
 
     @Override
-    public boolean removeGroup(Group group) {
-        if (!(group instanceof GroupManagerGroup(var managerGroup)))
+    public boolean removeGroup(final Group group) {
+        if (!(group instanceof GroupManagerGroup(final var managerGroup)))
             return removeGroup(group.getName());
         return user().removeSubGroup(managerGroup);
     }
 
     @Override
-    public boolean removeGroup(String name) {
-        var group = holder().getGroup(name);
+    public boolean removeGroup(final String name) {
+        final var group = holder().getGroup(name);
         return group != null && user().removeSubGroup(group);
     }
 
     @Override
-    public boolean setPrimaryGroup(Group group) {
-        if (!(group instanceof GroupManagerGroup(var managerGroup)))
+    public boolean setPrimaryGroup(final Group group) {
+        if (!(group instanceof GroupManagerGroup(final var managerGroup)))
             return setPrimaryGroup(group.getName());
         user().setGroup(managerGroup, true);
         return true;
     }
 
     @Override
-    public boolean setPrimaryGroup(String name) {
-        var group = holder().getGroup(name);
+    public boolean setPrimaryGroup(final String name) {
+        final var group = holder().getGroup(name);
         if (group != null) user().setGroup(group, true);
         return group != null;
     }

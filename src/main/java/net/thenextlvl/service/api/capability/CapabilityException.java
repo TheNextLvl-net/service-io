@@ -20,7 +20,7 @@ public class CapabilityException extends RuntimeException {
      * @param capability the {@link Capability} instance associated with this exception,
      *                   indicating the capability that caused the issue.
      */
-    public CapabilityException(String message, Capability capability) {
+    public CapabilityException(final String message, final Capability capability) {
         super(message);
         this.capability = capability;
     }
@@ -34,7 +34,7 @@ public class CapabilityException extends RuntimeException {
      * @param capability the {@link Capability} instance associated with this exception,
      *                   indicating the capability that caused the issue.
      */
-    public CapabilityException(String message, @Nullable Throwable cause, Capability capability) {
+    public CapabilityException(final String message, @Nullable final Throwable cause, final Capability capability) {
         super(message, cause);
         this.capability = capability;
     }

@@ -32,27 +32,27 @@ import java.util.concurrent.atomic.AtomicBoolean;
 final class ServiceConvertCommand extends BrigadierCommand {
     private final AtomicBoolean conversionRunning = new AtomicBoolean(false);
 
-    private ServiceConvertCommand(ServicePlugin plugin) {
+    private ServiceConvertCommand(final ServicePlugin plugin) {
         super(plugin, "convert", "service.convert");
     }
 
-    public static LiteralArgumentBuilder<CommandSourceStack> create(ServicePlugin plugin) {
-        var command = new ServiceConvertCommand(plugin);
-        var banks = command.converter("banks", BankController.class, new BankConverter());
-        var characters = command.converter("characters", CharacterController.class, new CharacterConverter());
-        var chat = command.converter("chat", ChatController.class, new ChatConverter());
-        var economy = command.converter("economy", EconomyController.class, new EconomyConverter());
-        var groups = command.converter("groups", GroupController.class, new GroupConverter());
-        var holograms = command.converter("holograms", HologramController.class, new HologramConverter());
-        var permissions = command.converter("permissions", PermissionController.class, new PermissionConverter());
+    public static LiteralArgumentBuilder<CommandSourceStack> create(final ServicePlugin plugin) {
+        final var command = new ServiceConvertCommand(plugin);
+        final var banks = command.converter("banks", BankController.class, new BankConverter());
+        final var characters = command.converter("characters", CharacterController.class, new CharacterConverter());
+        final var chat = command.converter("chat", ChatController.class, new ChatConverter());
+        final var economy = command.converter("economy", EconomyController.class, new EconomyConverter());
+        final var groups = command.converter("groups", GroupController.class, new GroupConverter());
+        final var holograms = command.converter("holograms", HologramController.class, new HologramConverter());
+        final var permissions = command.converter("permissions", PermissionController.class, new PermissionConverter());
         return command.create().then(banks).then(characters).then(chat).then(economy).then(groups).then(holograms).then(permissions);
     }
 
-    private <C extends Controller> LiteralArgumentBuilder<CommandSourceStack> converter(String name, Class<C> type, Converter<C> converter) {
+    private <C extends Controller> LiteralArgumentBuilder<CommandSourceStack> converter(final String name, final Class<C> type, final Converter<C> converter) {
         return Commands.literal(name).then(converter(type, converter));
     }
 
-    private <C extends Controller> ArgumentBuilder<CommandSourceStack, ?> converter(Class<C> type, Converter<C> converter) {
+    private <C extends Controller> ArgumentBuilder<CommandSourceStack, ?> converter(final Class<C> type, final Converter<C> converter) {
         return Commands.argument("source", new ControllerArgumentType<>(plugin, type, (c, e) -> true))
                 .then(Commands.argument("target", new ControllerArgumentType<>(plugin, type, (context, controller) ->
                                 !context.getLastChild().getArgument("source", type).equals(controller)))
@@ -61,7 +61,7 @@ final class ServiceConvertCommand extends BrigadierCommand {
 
     private static final class BankConverter extends PlayerConverter<BankController> {
         @Override
-        public CompletableFuture<Void> convert(OfflinePlayer player, BankController source, BankController target) {
+        public CompletableFuture<Void> convert(final OfflinePlayer player, final BankController source, final BankController target) {
             return source.loadBanks().thenAccept(banks -> banks.forEach(bank ->
                     bank.getWorld().map(world -> target.createBank(bank.getOwner(), bank.getName(), world))
                             .orElseGet(() -> target.createBank(bank.getOwner(), bank.getName()))
@@ -75,15 +75,15 @@ final class ServiceConvertCommand extends BrigadierCommand {
     private static final class CharacterConverter implements Converter<CharacterController> {
 
         @Override
-        public CompletableFuture<Void> convert(CharacterController source, CharacterController target) {
+        public CompletableFuture<Void> convert(final CharacterController source, final CharacterController target) {
             return CompletableFuture.runAsync(() -> source.getNPCs().forEach(
                     character -> convert(character, source, target)
             ));
         }
 
-        public CompletableFuture<Void> convert(Character<?> character, CharacterController source, CharacterController target) {
+        public CompletableFuture<Void> convert(final Character<?> character, final CharacterController source, final CharacterController target) {
             return CompletableFuture.runAsync(() -> target.getNPC(character.getName()).orElseGet(() -> {
-                var npc = target.createNPC(character.getName(), character.getType());
+                final var npc = target.createNPC(character.getName(), character.getType());
                 npc.setDisplayName(character.getDisplayName());
                 npc.setDisplayRange(character.getDisplayRange());
                 npc.setInvulnerable(character.isInvulnerable());
@@ -99,7 +99,7 @@ final class ServiceConvertCommand extends BrigadierCommand {
 
     private static final class ChatConverter extends PlayerConverter<ChatController> {
         @Override
-        public CompletableFuture<Void> convert(OfflinePlayer player, ChatController source, ChatController target) {
+        public CompletableFuture<Void> convert(final OfflinePlayer player, final ChatController source, final ChatController target) {
             return source.tryGetProfile(player).thenAccept(profile -> target.tryGetProfile(player)
                     .thenAccept(targetProfile -> {
                         profile.getPrefixes().forEach((priority, prefix) -> targetProfile.setPrefix(prefix, priority));
@@ -112,13 +112,13 @@ final class ServiceConvertCommand extends BrigadierCommand {
     private static final class EconomyConverter implements Converter<EconomyController> {
 
         @Override
-        public CompletableFuture<Void> convert(EconomyController source, EconomyController target) {
+        public CompletableFuture<Void> convert(final EconomyController source, final EconomyController target) {
             return source.loadAccounts().thenCompose(accounts -> CompletableFuture.allOf(accounts.stream()
                     .map(account -> convert(account, source, target))
                     .toArray(CompletableFuture[]::new)));
         }
 
-        public CompletableFuture<Void> convert(Account account, EconomyController source, EconomyController target) {
+        public CompletableFuture<Void> convert(final Account account, final EconomyController source, final EconomyController target) {
             return account.getWorld().map(world -> target.tryGetAccount(account.getOwner(), world)
                             .thenCompose(account1 -> account1.map(CompletableFuture::completedFuture)
                                     .orElseGet(() -> target.createAccount(account.getOwner(), world)))
@@ -132,7 +132,7 @@ final class ServiceConvertCommand extends BrigadierCommand {
 
     private static final class GroupConverter extends PlayerConverter<GroupController> {
         @Override
-        public CompletableFuture<Void> convert(OfflinePlayer player, GroupController source, GroupController target) {
+        public CompletableFuture<Void> convert(final OfflinePlayer player, final GroupController source, final GroupController target) {
             return source.tryGetGroupHolder(player).thenAccept(holder -> target.tryGetGroupHolder(player)
                     .thenAccept(targetHolder -> {
                         holder.getGroups().forEach(targetHolder::addGroup);
@@ -142,7 +142,7 @@ final class ServiceConvertCommand extends BrigadierCommand {
         }
 
         @Override
-        public CompletableFuture<Void> convert(GroupController source, GroupController target) {
+        public CompletableFuture<Void> convert(final GroupController source, final GroupController target) {
             source.loadGroups().thenAccept(groups -> groups.forEach(group -> group.getWorld()
                     .map(world -> target.createGroup(group.getName(), world))
                     .orElseGet(() -> target.createGroup(group.getName()))
@@ -159,9 +159,9 @@ final class ServiceConvertCommand extends BrigadierCommand {
 
     private static final class HologramConverter implements Converter<HologramController> {
         @Override
-        public CompletableFuture<Void> convert(HologramController source, HologramController target) {
+        public CompletableFuture<Void> convert(final HologramController source, final HologramController target) {
             return CompletableFuture.runAsync(() -> source.getHolograms().forEach(hologram -> {
-                var created = target.createHologram(hologram.getName(), hologram.getLocation(), hologram.getLines());
+                final var created = target.createHologram(hologram.getName(), hologram.getLocation(), hologram.getLines());
                 created.addViewers(hologram.getViewers());
                 created.setDisplayRange(hologram.getDisplayRange());
                 created.setPersistent(hologram.isPersistent());
@@ -173,22 +173,22 @@ final class ServiceConvertCommand extends BrigadierCommand {
 
     private static final class PermissionConverter extends PlayerConverter<PermissionController> {
         @Override
-        public CompletableFuture<Void> convert(OfflinePlayer player, PermissionController source, PermissionController target) {
+        public CompletableFuture<Void> convert(final OfflinePlayer player, final PermissionController source, final PermissionController target) {
             return source.tryGetPermissionHolder(player).thenAccept(holder -> target.tryGetPermissionHolder(player)
                     .thenAccept(targetHolder -> holder.getPermissions().forEach(targetHolder::setPermission)));
         }
     }
 
-    private <C extends Controller> int convert(CommandContext<CommandSourceStack> context, Class<C> type, Converter<C> converter) {
-        var sender = context.getSource().getSender();
+    private <C extends Controller> int convert(final CommandContext<CommandSourceStack> context, final Class<C> type, final Converter<C> converter) {
+        final var sender = context.getSource().getSender();
 
         if (conversionRunning.get()) {
             plugin.bundle().sendMessage(sender, "service.convert.running");
             return 0;
         }
 
-        var source = context.getArgument("source", type);
-        var target = context.getArgument("target", type);
+        final var source = context.getArgument("source", type);
+        final var target = context.getArgument("target", type);
 
         if (source.equals(target)) {
             plugin.bundle().sendMessage(sender, "service.convert.source-target");
@@ -200,19 +200,19 @@ final class ServiceConvertCommand extends BrigadierCommand {
                     Placeholder.parsed("source", source.getName()),
                     Placeholder.parsed("target", target.getName()));
 
-            var now = System.currentTimeMillis();
+            final var now = System.currentTimeMillis();
             conversionRunning.set(true);
 
             converter.convert(source, target).thenAccept(unused -> {
                 conversionRunning.set(false);
 
-                var time = new DecimalFormat("0.000").format((System.currentTimeMillis() - now) / 1000d);
+                final var time = new DecimalFormat("0.000").format((System.currentTimeMillis() - now) / 1000d);
                 plugin.bundle().sendMessage(sender, "service.convert.done", Placeholder.parsed("time", time));
 
             }).exceptionally(throwable -> {
                 conversionRunning.set(false);
 
-                var time = new DecimalFormat("0.000").format((System.currentTimeMillis() - now) / 1000d);
+                final var time = new DecimalFormat("0.000").format((System.currentTimeMillis() - now) / 1000d);
                 plugin.bundle().sendMessage(sender, "service.convert.failed", Placeholder.parsed("time", time));
                 plugin.getComponentLogger().error("Data conversion failed after {} seconds", time, throwable);
                 return null;
@@ -230,7 +230,7 @@ final class ServiceConvertCommand extends BrigadierCommand {
         public abstract CompletableFuture<Void> convert(OfflinePlayer player, C source, C target);
 
         @Override
-        public CompletableFuture<Void> convert(C source, C target) {
+        public CompletableFuture<Void> convert(final C source, final C target) {
             return CompletableFuture.allOf(Arrays.stream(source.getPlugin().getServer().getOfflinePlayers())
                     .map(player -> convert(player, source, target))
                     .toArray(CompletableFuture[]::new));

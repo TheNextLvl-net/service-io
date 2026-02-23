@@ -13,10 +13,10 @@ import org.jspecify.annotations.Nullable;
 import java.util.Objects;
 
 @NullMarked
-public class DecentBlockHologramLine extends DecentHologramLine<BlockData> {
+public final class DecentBlockHologramLine extends DecentHologramLine<BlockData> {
     private final boolean small;
 
-    public DecentBlockHologramLine(HologramLine line, boolean small) {
+    public DecentBlockHologramLine(final HologramLine line, final boolean small) {
         super(line);
         this.small = small;
     }
@@ -28,28 +28,28 @@ public class DecentBlockHologramLine extends DecentHologramLine<BlockData> {
 
     @Override
     public BlockData getContent() {
-        var item = line.getItem().parse(null);
+        final var item = line.getItem().parse(null);
         return item.getType().createBlockData(blockData -> {
-            if (!(blockData instanceof Skull skull)) return;
-            var data = item.getData(DataComponentTypes.PROFILE);
+            if (!(blockData instanceof final Skull skull)) return;
+            final var data = item.getData(DataComponentTypes.PROFILE);
             if (data == null) return;
-            var profile = getServer().createProfile(data.uuid(), data.name());
+            final var profile = getServer().createProfile(data.uuid(), data.name());
             skull.setPlayerProfile(profile);
         });
     }
 
     @Override
-    public void setContent(BlockData content) {
-        var type = small ? "#SMALLHEAD:" : "#HEAD:";
-        var item = ItemStack.of(content.getMaterial());
+    public void setContent(final BlockData content) {
+        final var type = small ? "#SMALLHEAD:" : "#HEAD:";
+        final var item = ItemStack.of(content.getMaterial());
         line.setContent(type + HologramItem.fromItemStack(item));
     }
 
     @Override
-    public boolean equals(@Nullable Object o) {
+    public boolean equals(@Nullable final Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        DecentBlockHologramLine that = (DecentBlockHologramLine) o;
+        final DecentBlockHologramLine that = (DecentBlockHologramLine) o;
         return small == that.small;
     }
 

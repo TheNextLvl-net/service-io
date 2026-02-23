@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class DecentHologramController implements HologramController {
+public final class DecentHologramController implements HologramController {
     private final EnumSet<HologramCapability> capabilities = EnumSet.of(
             HologramCapability.BLOCK_LINES,
             HologramCapability.ENTITY_LINES,
@@ -37,16 +37,16 @@ public class DecentHologramController implements HologramController {
     );
 
     @Override
-    public Hologram createHologram(String name, Location location, Collection<HologramLine<?>> lines) throws CapabilityException {
-        var hologram = new DecentHologram(DHAPI.createHologram(name, location, false));
+    public Hologram createHologram(final String name, final Location location, final Collection<HologramLine<?>> lines) throws CapabilityException {
+        final var hologram = new DecentHologram(DHAPI.createHologram(name, location, false));
         hologram.addLines(lines);
         return hologram;
     }
 
     @Override
-    public HologramLine<BlockData> createLine(BlockData block) throws CapabilityException {
-        var item = ItemStack.of(block.getMaterial());
-        var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
+    public HologramLine<BlockData> createLine(final BlockData block) throws CapabilityException {
+        final var item = ItemStack.of(block.getMaterial());
+        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
                 null, new Location(null, 0, 0, 0),
                 "#HEAD:" + HologramItem.fromItemStack(item).getContent()
         );
@@ -54,8 +54,8 @@ public class DecentHologramController implements HologramController {
     }
 
     @Override
-    public HologramLine<Component> createLine(Component text) throws CapabilityException {
-        var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
+    public HologramLine<Component> createLine(final Component text) throws CapabilityException {
+        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
                 null, new Location(null, 0, 0, 0),
                 LegacyComponentSerializer.legacyAmpersand().serialize(text)
         );
@@ -63,8 +63,8 @@ public class DecentHologramController implements HologramController {
     }
 
     @Override
-    public HologramLine<EntityType> createLine(EntityType entity) throws CapabilityException {
-        var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
+    public HologramLine<EntityType> createLine(final EntityType entity) throws CapabilityException {
+        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
                 null, new Location(null, 0, 0, 0),
                 "#ENTITY:" + entity.name()
         );
@@ -72,8 +72,8 @@ public class DecentHologramController implements HologramController {
     }
 
     @Override
-    public HologramLine<ItemStack> createLine(ItemStack itemStack) throws CapabilityException {
-        var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
+    public HologramLine<ItemStack> createLine(final ItemStack itemStack) throws CapabilityException {
+        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
                 null, new Location(null, 0, 0, 0),
                 "#ICON:" + HologramItem.fromItemStack(itemStack).getContent()
         );
@@ -88,7 +88,7 @@ public class DecentHologramController implements HologramController {
     }
 
     @Override
-    public @Unmodifiable List<Hologram> getHolograms(Player player) {
+    public @Unmodifiable List<Hologram> getHolograms(final Player player) {
         return eu.decentsoftware.holograms.api.holograms.Hologram.getCachedHolograms().stream()
                 .filter(hologram -> hologram.isVisible(player))
                 .map(DecentHologram::new)
@@ -96,7 +96,7 @@ public class DecentHologramController implements HologramController {
     }
 
     @Override
-    public @Unmodifiable List<Hologram> getHolograms(World world) {
+    public @Unmodifiable List<Hologram> getHolograms(final World world) {
         return eu.decentsoftware.holograms.api.holograms.Hologram.getCachedHolograms().stream()
                 .filter(hologram -> world.equals(hologram.getLocation().getWorld()))
                 .map(DecentHologram::new)
@@ -104,7 +104,7 @@ public class DecentHologramController implements HologramController {
     }
 
     @Override
-    public Optional<Hologram> getHologram(String name) {
+    public Optional<Hologram> getHologram(final String name) {
         return Optional.ofNullable(DHAPI.getHologram(name))
                 .map(DecentHologram::new);
     }
@@ -125,12 +125,12 @@ public class DecentHologramController implements HologramController {
     }
 
     @Override
-    public boolean hasCapabilities(Collection<HologramCapability> capabilities) {
+    public boolean hasCapabilities(final Collection<HologramCapability> capabilities) {
         return this.capabilities.containsAll(capabilities);
     }
 
     @Override
-    public boolean hasCapability(HologramCapability capability) {
+    public boolean hasCapability(final HologramCapability capability) {
         return capabilities.contains(capability);
     }
 }

@@ -38,7 +38,7 @@ public record LuckPermsGroup(
     }
 
     @Override
-    public Optional<String> getPrefix(int priority) {
+    public Optional<String> getPrefix(final int priority) {
         return Optional.ofNullable(getPrefixes().get(priority));
     }
 
@@ -53,7 +53,7 @@ public record LuckPermsGroup(
     }
 
     @Override
-    public Optional<String> getSuffix(int priority) {
+    public Optional<String> getSuffix(final int priority) {
         return Optional.ofNullable(getSuffixes().get(priority));
     }
 
@@ -78,41 +78,41 @@ public record LuckPermsGroup(
     }
 
     @Override
-    public boolean setDisplayName(@Nullable String displayName) {
+    public boolean setDisplayName(@Nullable final String displayName) {
         if (displayName == null) {
             group.data().clear(node -> node instanceof DisplayNameNode);
             return true;
         }
-        var result = group().data().add(DisplayNameNode.builder(displayName).context(options().context()).build());
+        final var result = group().data().add(DisplayNameNode.builder(displayName).context(options().context()).build());
         LuckPermsProvider.get().getGroupManager().saveGroup(group());
         return result.wasSuccessful();
     }
 
     @Override
-    public boolean setWeight(int weight) {
-        var result = group().data().add(WeightNode.builder(weight).context(options().context()).build());
+    public boolean setWeight(final int weight) {
+        final var result = group().data().add(WeightNode.builder(weight).context(options().context()).build());
         LuckPermsProvider.get().getGroupManager().saveGroup(group());
         return result.wasSuccessful();
     }
 
     @Override
-    public boolean setPrefix(@Nullable String prefix, int priority) {
+    public boolean setPrefix(@Nullable final String prefix, final int priority) {
         if (prefix == null) {
             group.data().clear(node -> node instanceof PrefixNode);
             return true;
         }
-        var result = group().data().add(PrefixNode.builder(prefix, priority).context(options().context()).build());
+        final var result = group().data().add(PrefixNode.builder(prefix, priority).context(options().context()).build());
         LuckPermsProvider.get().getGroupManager().saveGroup(group());
         return result.wasSuccessful();
     }
 
     @Override
-    public boolean setSuffix(@Nullable String suffix, int priority) {
+    public boolean setSuffix(@Nullable final String suffix, final int priority) {
         if (suffix == null) {
             group.data().clear(node -> node instanceof SuffixNode);
             return true;
         }
-        var result = group().data().add(SuffixNode.builder(suffix, priority).context(options().context()).build());
+        final var result = group().data().add(SuffixNode.builder(suffix, priority).context(options().context()).build());
         LuckPermsProvider.get().getGroupManager().saveGroup(group());
         return result.wasSuccessful();
     }
@@ -123,7 +123,7 @@ public record LuckPermsGroup(
     }
 
     @Override
-    public TriState checkPermission(String permission) {
+    public TriState checkPermission(final String permission) {
         return switch (group().getCachedData().getPermissionData(options()).checkPermission(permission)) {
             case Tristate.FALSE -> TriState.FALSE;
             case Tristate.TRUE -> TriState.TRUE;
@@ -132,46 +132,46 @@ public record LuckPermsGroup(
     }
 
     @Override
-    public boolean addPermission(String permission) {
+    public boolean addPermission(final String permission) {
         return setPermission(permission, true);
     }
 
     @Override
-    public boolean removePermission(String permission) {
-        var result = group().data().remove(Node.builder(permission).context(options().context()).build());
+    public boolean removePermission(final String permission) {
+        final var result = group().data().remove(Node.builder(permission).context(options().context()).build());
         LuckPermsProvider.get().getGroupManager().saveGroup(group());
         return result.wasSuccessful();
     }
 
     @Override
-    public boolean setPermission(String permission, boolean value) {
-        var result = group().data().add(Node.builder(permission).value(value).context(options().context()).build());
+    public boolean setPermission(final String permission, final boolean value) {
+        final var result = group().data().add(Node.builder(permission).value(value).context(options().context()).build());
         LuckPermsProvider.get().getGroupManager().saveGroup(group());
         return result.wasSuccessful();
     }
 
     @Override
-    public <T> Optional<T> getInfoNode(String key, Function<String, T> mapper) {
+    public <T> Optional<T> getInfoNode(final String key, final Function<String, T> mapper) {
         return group().getCachedData().getMetaData(options()).getMetaValue(key, mapper);
     }
 
     @Override
-    public boolean setInfoNode(String key, String value) {
-        var result = group().data().add(MetaNode.builder(key, value).context(options().context()).build());
+    public boolean setInfoNode(final String key, final String value) {
+        final var result = group().data().add(MetaNode.builder(key, value).context(options().context()).build());
         LuckPermsProvider.get().getGroupManager().saveGroup(group());
         return result.wasSuccessful();
     }
 
     @Override
-    public boolean removeInfoNode(String key) {
+    public boolean removeInfoNode(final String key) {
         group().data().clear(options().context(), node -> node.getKey().equals(key));
         LuckPermsProvider.get().getGroupManager().saveGroup(group());
         return true;
     }
 
     @Override
-    public boolean removeInfoNode(String key, String value) {
-        var result = group().data().remove(MetaNode.builder(key, value).context(options().context()).build());
+    public boolean removeInfoNode(final String key, final String value) {
+        final var result = group().data().remove(MetaNode.builder(key, value).context(options().context()).build());
         LuckPermsProvider.get().getGroupManager().saveGroup(group());
         return result.wasSuccessful();
     }

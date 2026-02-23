@@ -34,8 +34,8 @@ public class PlayerInteractCharacterEvent extends CharacterEvent implements Canc
      * @param player     the player performing the interaction
      * @param type       the type of interaction performed by the player
      */
-    public PlayerInteractCharacterEvent(CharacterController controller, Character<?> character,
-                                        Player player, InteractionType type) {
+    public PlayerInteractCharacterEvent(final CharacterController controller, final Character<?> character,
+                                        final Player player, final InteractionType type) {
         super(controller, character);
         this.player = player;
         this.type = type;
@@ -65,7 +65,7 @@ public class PlayerInteractCharacterEvent extends CharacterEvent implements Canc
     }
 
     @Override
-    public void setCancelled(boolean cancelled) {
+    public void setCancelled(final boolean cancelled) {
         this.cancelled = cancelled;
     }
 

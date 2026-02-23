@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @NullMarked
 public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> {
     @Override
-    public CompletableFuture<Boolean> teleportAsync(Location location) {
+    public CompletableFuture<Boolean> teleportAsync(final Location location) {
         npc().getData().setLocation(location);
         npc().moveForAll(false);
         return CompletableFuture.completedFuture(true);
@@ -59,7 +59,7 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
 
     @Override
     public @Nullable World getWorld() {
-        var location = getLocation();
+        final var location = getLocation();
         return location != null ? location.getWorld() : null;
     }
 
@@ -75,37 +75,37 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     }
 
     @Override
-    public void setCollidable(boolean collidable) {
+    public void setCollidable(final boolean collidable) {
         npc().getData().setCollidable(collidable);
     }
 
     @Override
     public double getX() {
-        var location = getLocation();
+        final var location = getLocation();
         return location != null ? location.getX() : 0;
     }
 
     @Override
     public double getY() {
-        var location = getLocation();
+        final var location = getLocation();
         return location != null ? location.getY() : 0;
     }
 
     @Override
     public double getZ() {
-        var location = getLocation();
+        final var location = getLocation();
         return location != null ? location.getZ() : 0;
     }
 
     @Override
     public float getPitch() {
-        var location = getLocation();
+        final var location = getLocation();
         return location != null ? location.getPitch() : 0;
     }
 
     @Override
     public float getYaw() {
-        var location = getLocation();
+        final var location = getLocation();
         return location != null ? location.getYaw() : 0;
     }
 
@@ -120,7 +120,7 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     }
 
     @Override
-    public boolean spawn(Location location) {
+    public boolean spawn(final Location location) {
         npc().getData().setLocation(location);
         npc().getData().setSpawnEntity(true);
         npc().spawnForAll();
@@ -128,14 +128,14 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     }
 
     @Override
-    public void lookAt(Entity entity) {
+    public void lookAt(final Entity entity) {
         lookAt(entity.getLocation());
     }
 
     @Override
-    public void lookAt(Location target) {
-        var location = npc().getData().getLocation().clone();
-        var direction = location.setDirection(target.clone().subtract(location).toVector());
+    public void lookAt(final Location target) {
+        final var location = npc().getData().getLocation().clone();
+        final var direction = location.setDirection(target.clone().subtract(location).toVector());
         teleportAsync(direction);
     }
 
@@ -159,17 +159,17 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     }
 
     @Override
-    public void setDisplayName(Component displayName) {
+    public void setDisplayName(final Component displayName) {
         npc().getData().setDisplayName(MiniMessage.miniMessage().serialize(displayName));
         npc().updateForAll();
     }
 
     @Override
-    public void setInvulnerable(boolean invulnerable) {
+    public void setInvulnerable(final boolean invulnerable) {
     }
 
     @Override
-    public void setTablistEntryHidden(boolean hidden) {
+    public void setTablistEntryHidden(final boolean hidden) {
         npc().getData().setShowInTab(!hidden);
     }
 
@@ -191,7 +191,7 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     }
 
     @Override
-    public void setPersistent(boolean persistent) {
+    public void setPersistent(final boolean persistent) {
         npc().setSaveToFile(persistent);
     }
 
@@ -211,35 +211,35 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     }
 
     @Override
-    public boolean addViewer(Player player) {
+    public boolean addViewer(final Player player) {
         if (!canSee(player)) return false;
         npc().spawn(player);
         return true;
     }
 
     @Override
-    public boolean addViewers(Collection<Player> players) {
+    public boolean addViewers(final Collection<Player> players) {
         return players.stream().map(this::addViewer).reduce(false, Boolean::logicalOr);
     }
 
     @Override
-    public boolean isTrackedBy(Player player) {
+    public boolean isTrackedBy(final Player player) {
         return npc().getIsVisibleForPlayer().containsKey(player.getUniqueId());
     }
 
     @Override
-    public boolean canSee(Player player) {
-        var plugin = FancyNpcsPlugin.get();
-        var visibilityDistance = plugin.getFancyNpcConfig().getVisibilityDistance();
+    public boolean canSee(final Player player) {
+        final var plugin = FancyNpcsPlugin.get();
+        final var visibilityDistance = plugin.getFancyNpcConfig().getVisibilityDistance();
 
         if (!npc().getData().isSpawnEntity()) return false;
         if (getLocation() == null) return false;
         if (!player.getWorld().equals(getWorld())) return false;
 
-        var distanceSquared = getLocation().distanceSquared(player.getLocation());
+        final var distanceSquared = getLocation().distanceSquared(player.getLocation());
         if (distanceSquared > visibilityDistance * visibilityDistance) return false;
 
-        var attribute = plugin.getAttributeManager().getAttributeByName(EntityType.PLAYER, "invisible");
+        final var attribute = plugin.getAttributeManager().getAttributeByName(EntityType.PLAYER, "invisible");
 
         return plugin.getFancyNpcConfig().isSkipInvisibleNpcs()
                && npc().getData().getAttributes().getOrDefault(attribute, "false").equalsIgnoreCase("true")
@@ -253,14 +253,14 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     }
 
     @Override
-    public boolean removeViewer(Player player) {
+    public boolean removeViewer(final Player player) {
         if (!isTrackedBy(player)) return false;
         npc().remove(player);
         return true;
     }
 
     @Override
-    public boolean removeViewers(Collection<Player> players) {
+    public boolean removeViewers(final Collection<Player> players) {
         return players.stream().map(this::removeViewer).reduce(false, Boolean::logicalOr);
     }
 
@@ -270,10 +270,10 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     }
 
     @Override
-    public void setDisplayRange(double range) {
+    public void setDisplayRange(final double range) {
     }
 
     @Override
-    public void setVisibleByDefault(boolean visible) {
+    public void setVisibleByDefault(final boolean visible) {
     }
 }

@@ -9,7 +9,7 @@ import org.jetbrains.annotations.ApiStatus;
  */
 @ApiStatus.Internal
 public class Vault extends JavaPlugin {
-    public double updateCheck(double currentVersion) {
+    public double updateCheck(final double currentVersion) {
         return currentVersion;
     }
 }

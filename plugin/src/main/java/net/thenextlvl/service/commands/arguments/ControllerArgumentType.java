@@ -20,14 +20,14 @@ public final class ControllerArgumentType<C extends Controller> implements Custo
     private final BiPredicate<CommandContext<?>, C> filter;
     private final Class<C> type;
 
-    public ControllerArgumentType(ServicePlugin plugin, Class<C> type, BiPredicate<CommandContext<?>, C> filter) {
+    public ControllerArgumentType(final ServicePlugin plugin, final Class<C> type, final BiPredicate<CommandContext<?>, C> filter) {
         this.filter = filter;
         this.plugin = plugin;
         this.type = type;
     }
 
     @Override
-    public C convert(String nativeType) {
+    public C convert(final String nativeType) {
         return plugin.getServer().getServicesManager()
                 .getRegistrations(type).stream()
                 .map(RegisteredServiceProvider::getProvider)
@@ -36,7 +36,7 @@ public final class ControllerArgumentType<C extends Controller> implements Custo
     }
 
     @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+    public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
         plugin.getServer().getServicesManager()
                 .getRegistrations(type).stream()
                 .map(RegisteredServiceProvider::getProvider)

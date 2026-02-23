@@ -58,7 +58,7 @@ public interface GroupController extends Controller {
      * @param player the player for whom to load the GroupHolder
      * @return a CompletableFuture that will complete with the retrieved GroupHolder object
      */
-    default CompletableFuture<GroupHolder> loadGroupHolder(OfflinePlayer player) {
+    default CompletableFuture<GroupHolder> loadGroupHolder(final OfflinePlayer player) {
         return loadGroupHolder(player.getUniqueId());
     }
 
@@ -69,7 +69,7 @@ public interface GroupController extends Controller {
      * @param world  the world from which to load the GroupHolder
      * @return a CompletableFuture that will complete with the retrieved GroupHolder object
      */
-    default CompletableFuture<GroupHolder> loadGroupHolder(OfflinePlayer player, World world) {
+    default CompletableFuture<GroupHolder> loadGroupHolder(final OfflinePlayer player, final World world) {
         return loadGroupHolder(player.getUniqueId(), world);
     }
 
@@ -90,37 +90,37 @@ public interface GroupController extends Controller {
      */
     CompletableFuture<GroupHolder> loadGroupHolder(UUID uuid, World world);
 
-    default CompletableFuture<Group> tryGetGroup(String name) {
+    default CompletableFuture<Group> tryGetGroup(final String name) {
         return getGroup(name)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadGroup(name));
     }
 
-    default CompletableFuture<Group> tryGetGroup(String name, World world) {
+    default CompletableFuture<Group> tryGetGroup(final String name, final World world) {
         return getGroup(name, world)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadGroup(name, world));
     }
 
-    default CompletableFuture<GroupHolder> tryGetGroupHolder(OfflinePlayer player) {
+    default CompletableFuture<GroupHolder> tryGetGroupHolder(final OfflinePlayer player) {
         return getGroupHolder(player)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadGroupHolder(player));
     }
 
-    default CompletableFuture<GroupHolder> tryGetGroupHolder(OfflinePlayer player, World world) {
+    default CompletableFuture<GroupHolder> tryGetGroupHolder(final OfflinePlayer player, final World world) {
         return getGroupHolder(player, world)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadGroupHolder(player, world));
     }
 
-    default CompletableFuture<GroupHolder> tryGetGroupHolder(UUID uuid) {
+    default CompletableFuture<GroupHolder> tryGetGroupHolder(final UUID uuid) {
         return getGroupHolder(uuid)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadGroupHolder(uuid));
     }
 
-    default CompletableFuture<GroupHolder> tryGetGroupHolder(UUID uuid, World world) {
+    default CompletableFuture<GroupHolder> tryGetGroupHolder(final UUID uuid, final World world) {
         return getGroupHolder(uuid, world)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadGroupHolder(uuid, world));
@@ -198,7 +198,7 @@ public interface GroupController extends Controller {
      * @param player the player for which to retrieve the GroupHolder
      * @return a CompletableFuture that will complete with the retrieved GroupHolder object
      */
-    default Optional<GroupHolder> getGroupHolder(OfflinePlayer player) {
+    default Optional<GroupHolder> getGroupHolder(final OfflinePlayer player) {
         return getGroupHolder(player.getUniqueId());
     }
 
@@ -209,7 +209,7 @@ public interface GroupController extends Controller {
      * @param world  the world the group holder should be received from
      * @return a CompletableFuture that will complete with the retrieved GroupHolder object
      */
-    default Optional<GroupHolder> getGroupHolder(OfflinePlayer player, World world) {
+    default Optional<GroupHolder> getGroupHolder(final OfflinePlayer player, final World world) {
         return getGroupHolder(player.getUniqueId(), world);
     }
 

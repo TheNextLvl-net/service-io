@@ -76,7 +76,7 @@ public enum HologramCapability implements Capability {
 
     private final Key key;
 
-    HologramCapability(Key key) {
+    HologramCapability(final Key key) {
         this.key = key;
     }
 

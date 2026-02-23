@@ -24,42 +24,42 @@ public record SuperPermsPermissionHolder(CommandSender sender) implements Permis
     }
 
     @Override
-    public TriState checkPermission(String permission) {
+    public TriState checkPermission(final String permission) {
         return sender.permissionValue(permission);
     }
 
     @Override
-    public boolean addPermission(String permission) {
+    public boolean addPermission(final String permission) {
         return false;
     }
 
     @Override
-    public boolean removePermission(String permission) {
+    public boolean removePermission(final String permission) {
         return false;
     }
 
     @Override
-    public boolean setPermission(String permission, boolean value) {
+    public boolean setPermission(final String permission, final boolean value) {
         return false;
     }
 
     @Override
-    public <T> Optional<T> getInfoNode(String key, Function<String, T> mapper) {
+    public <T> Optional<T> getInfoNode(final String key, final Function<String, T> mapper) {
         return Optional.empty();
     }
 
     @Override
-    public boolean removeInfoNode(String key) {
+    public boolean removeInfoNode(final String key) {
         return false;
     }
 
     @Override
-    public boolean removeInfoNode(String key, String value) {
+    public boolean removeInfoNode(final String key, final String value) {
         return false;
     }
 
     @Override
-    public boolean setInfoNode(String key, String value) {
+    public boolean setInfoNode(final String key, final String value) {
         return false;
     }
 }

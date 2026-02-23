@@ -28,7 +28,7 @@ public record GroupManagerChatProfile(User user, WorldDataHolder holder) impleme
     }
 
     @Override
-    public Optional<String> getPrefix(int priority) {
+    public Optional<String> getPrefix(final int priority) {
         return Optional.ofNullable(holder().getPermissionsHandler().getUserPrefix(user().getLastName()));
     }
 
@@ -43,7 +43,7 @@ public record GroupManagerChatProfile(User user, WorldDataHolder holder) impleme
     }
 
     @Override
-    public Optional<String> getSuffix(int priority) {
+    public Optional<String> getSuffix(final int priority) {
         return Optional.ofNullable(holder().getPermissionsHandler().getUserSuffix(user().getLastName()));
     }
 
@@ -62,42 +62,42 @@ public record GroupManagerChatProfile(User user, WorldDataHolder holder) impleme
     }
 
     @Override
-    public boolean setDisplayName(@Nullable String displayName) {
+    public boolean setDisplayName(@Nullable final String displayName) {
         return false;
     }
 
     @Override
-    public boolean setPrefix(@Nullable String prefix, int priority) {
+    public boolean setPrefix(@Nullable final String prefix, final int priority) {
         if (prefix == null) return removeInfoNode("prefix");
         return setInfoNode("prefix", prefix);
     }
 
     @Override
-    public boolean setSuffix(@Nullable String suffix, int priority) {
+    public boolean setSuffix(@Nullable final String suffix, final int priority) {
         if (suffix == null) return removeInfoNode("suffix");
         return setInfoNode("suffix", suffix);
     }
 
     @Override
-    public <T> Optional<T> getInfoNode(String key, Function<@Nullable String, @Nullable T> mapper) {
+    public <T> Optional<T> getInfoNode(final String key, final Function<@Nullable String, @Nullable T> mapper) {
         return Optional.ofNullable(mapper.apply(user().getVariables().getVarString(key)));
     }
 
     @Override
-    public boolean removeInfoNode(String key) {
+    public boolean removeInfoNode(final String key) {
         if (!hasInfoNode(key)) return false;
         user().getVariables().removeVar(key);
         return true;
     }
 
     @Override
-    public boolean setInfoNode(String key, String value) {
+    public boolean setInfoNode(final String key, final String value) {
         user().getVariables().addVar(key, value);
         return true;
     }
 
     @Override
-    public boolean hasInfoNode(String key) {
+    public boolean hasInfoNode(final String key) {
         return user().getVariables().hasVar(key);
     }
 }

@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @NullMarked
 public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram hologram) implements Hologram {
     @Override
-    public CompletableFuture<Boolean> teleportAsync(Location location) {
+    public CompletableFuture<Boolean> teleportAsync(final Location location) {
         hologram().getData().setLocation(location);
         hologram().refreshForViewersInWorld();
         return CompletableFuture.completedFuture(true);
@@ -44,27 +44,27 @@ public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram holog
     }
 
     @Override
-    public boolean addLine(HologramLine<?> line) throws CapabilityException {
+    public boolean addLine(final HologramLine<?> line) throws CapabilityException {
         throw new CapabilityException("FancyHolograms does not support multiline holograms", HologramCapability.MULTILINE);
     }
 
     @Override
-    public boolean addLine(int index, HologramLine<?> line) throws CapabilityException {
+    public boolean addLine(final int index, final HologramLine<?> line) throws CapabilityException {
         throw new CapabilityException("FancyHolograms does not support multiline holograms", HologramCapability.MULTILINE);
     }
 
     @Override
-    public boolean addLines(Collection<HologramLine<?>> lines) throws CapabilityException {
+    public boolean addLines(final Collection<HologramLine<?>> lines) throws CapabilityException {
         throw new CapabilityException("FancyHolograms does not support multiline holograms", HologramCapability.MULTILINE);
     }
 
     @Override
-    public boolean removeLine(HologramLine<?> line) throws CapabilityException {
+    public boolean removeLine(final HologramLine<?> line) throws CapabilityException {
         throw new CapabilityException("FancyHolograms does not support multiline holograms", HologramCapability.MULTILINE);
     }
 
     @Override
-    public boolean removeLine(int index) throws CapabilityException {
+    public boolean removeLine(final int index) throws CapabilityException {
         throw new CapabilityException("FancyHolograms does not support multiline holograms", HologramCapability.MULTILINE);
     }
 
@@ -101,7 +101,7 @@ public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram holog
     }
 
     @Override
-    public void setPersistent(boolean persistent) {
+    public void setPersistent(final boolean persistent) {
         hologram().getData().setPersistent(true);
     }
 
@@ -121,23 +121,23 @@ public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram holog
     }
 
     @Override
-    public boolean addViewer(Player player) {
+    public boolean addViewer(final Player player) {
         hologram().showHologram(player);
         return canSee(player);
     }
 
     @Override
-    public boolean addViewers(Collection<Player> players) {
+    public boolean addViewers(final Collection<Player> players) {
         return players.stream().map(this::addViewer).reduce(false, Boolean::logicalOr);
     }
 
     @Override
-    public boolean isTrackedBy(Player player) {
+    public boolean isTrackedBy(final Player player) {
         return hologram().isViewer(player);
     }
 
     @Override
-    public boolean canSee(Player player) {
+    public boolean canSee(final Player player) {
         return hologram().meetsVisibilityConditions(player);
     }
 
@@ -147,14 +147,14 @@ public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram holog
     }
 
     @Override
-    public boolean removeViewer(Player player) {
+    public boolean removeViewer(final Player player) {
         hologram().hideHologram(player);
         hologram().forceHideHologram(player);
         return canSee(player);
     }
 
     @Override
-    public boolean removeViewers(Collection<Player> players) {
+    public boolean removeViewers(final Collection<Player> players) {
         return players.stream().map(this::removeViewer).reduce(false, Boolean::logicalOr);
     }
 
@@ -164,12 +164,12 @@ public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram holog
     }
 
     @Override
-    public void setDisplayRange(double range) {
+    public void setDisplayRange(final double range) {
         hologram().getData().setVisibilityDistance((int) range);
     }
 
     @Override
-    public void setVisibleByDefault(boolean visible) {
+    public void setVisibleByDefault(final boolean visible) {
         hologram().getData().setVisibility(visible ? Visibility.ALL : Visibility.MANUAL);
     }
 

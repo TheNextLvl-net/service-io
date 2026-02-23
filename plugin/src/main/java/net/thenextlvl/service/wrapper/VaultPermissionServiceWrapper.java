@@ -14,14 +14,14 @@ import org.jspecify.annotations.Nullable;
 import java.util.Optional;
 
 @NullMarked
-public class VaultPermissionServiceWrapper extends Permission implements Wrapper {
+public final class VaultPermissionServiceWrapper extends Permission implements Wrapper {
     private final @Nullable GroupController groupController;
     private final PermissionController permissionController;
 
     public VaultPermissionServiceWrapper(
-            @Nullable GroupController groupController,
-            PermissionController permissionController,
-            Plugin plugin
+            @Nullable final GroupController groupController,
+            final PermissionController permissionController,
+            final Plugin plugin
     ) {
         this.groupController = groupController;
         this.permissionController = permissionController;
@@ -44,7 +44,7 @@ public class VaultPermissionServiceWrapper extends Permission implements Wrapper
     }
 
     @Override
-    public boolean playerHas(@Nullable String world, String player, String permission) {
+    public boolean playerHas(@Nullable final String world, final String player, final String permission) {
         return getPermissionHolder(player, world)
                 .map(holder -> holder.checkPermission(permission))
                 .map(TriState::toBoolean)
@@ -52,22 +52,22 @@ public class VaultPermissionServiceWrapper extends Permission implements Wrapper
     }
 
     @Override
-    public boolean playerAdd(@Nullable String world, String player, String permission) {
+    public boolean playerAdd(@Nullable final String world, final String player, final String permission) {
         return getPermissionHolder(player, world)
                 .map(holder -> holder.addPermission(permission))
                 .orElse(false);
     }
 
     @Override
-    public boolean playerRemove(@Nullable String world, String player, String permission) {
+    public boolean playerRemove(@Nullable final String world, final String player, final String permission) {
         return getPermissionHolder(player, world)
                 .map(holder -> holder.removePermission(permission))
                 .orElse(false);
     }
 
     @Override
-    public boolean groupHas(@Nullable String world, String groupName, String permission) {
-        var groupController = groupController();
+    public boolean groupHas(@Nullable final String world, final String groupName, final String permission) {
+        final var groupController = groupController();
         return Optional.ofNullable(world)
                 .map(getPlugin().getServer()::getWorld)
                 .flatMap(target -> groupController.getGroup(groupName, target)
@@ -78,8 +78,8 @@ public class VaultPermissionServiceWrapper extends Permission implements Wrapper
     }
 
     @Override
-    public boolean groupAdd(@Nullable String world, String groupName, String permission) {
-        var groupController = groupController();
+    public boolean groupAdd(@Nullable final String world, final String groupName, final String permission) {
+        final var groupController = groupController();
         return Optional.ofNullable(world)
                 .map(getPlugin().getServer()::getWorld)
                 .flatMap(target -> groupController.getGroup(groupName, target)
@@ -89,8 +89,8 @@ public class VaultPermissionServiceWrapper extends Permission implements Wrapper
     }
 
     @Override
-    public boolean groupRemove(@Nullable String world, String groupName, String permission) {
-        var groupController = groupController();
+    public boolean groupRemove(@Nullable final String world, final String groupName, final String permission) {
+        final var groupController = groupController();
         return Optional.ofNullable(world)
                 .map(getPlugin().getServer()::getWorld)
                 .flatMap(target -> groupController.getGroup(groupName, target)
@@ -100,28 +100,28 @@ public class VaultPermissionServiceWrapper extends Permission implements Wrapper
     }
 
     @Override
-    public boolean playerInGroup(@Nullable String world, String player, String group) {
+    public boolean playerInGroup(@Nullable final String world, final String player, final String group) {
         return getGroupHolder(player, world)
                 .map(holder -> holder.inGroup(group))
                 .orElse(false);
     }
 
     @Override
-    public boolean playerAddGroup(@Nullable String world, String player, String group) {
+    public boolean playerAddGroup(@Nullable final String world, final String player, final String group) {
         return getGroupHolder(player, world)
                 .map(holder -> holder.addGroup(group))
                 .orElse(false);
     }
 
     @Override
-    public boolean playerRemoveGroup(@Nullable String world, String player, String group) {
+    public boolean playerRemoveGroup(@Nullable final String world, final String player, final String group) {
         return getGroupHolder(player, world)
                 .map(holder -> holder.removeGroup(group))
                 .orElse(false);
     }
 
     @Override
-    public String[] getPlayerGroups(@Nullable String world, String player) {
+    public String[] getPlayerGroups(@Nullable final String world, final String player) {
         return getGroupHolder(player, world).map(holder ->
                         holder.getGroups().stream()
                                 .map(Group::getName)
@@ -130,7 +130,7 @@ public class VaultPermissionServiceWrapper extends Permission implements Wrapper
     }
 
     @Override
-    public String getPrimaryGroup(@Nullable String world, String player) {
+    public String getPrimaryGroup(@Nullable final String world, final String player) {
         return getGroupHolder(player, world)
                 .map(GroupHolder::getPrimaryGroup)
                 .orElse("");
@@ -153,7 +153,7 @@ public class VaultPermissionServiceWrapper extends Permission implements Wrapper
         throw new UnsupportedOperationException(getName() + " has no group support");
     }
 
-    private Optional<PermissionHolder> getPermissionHolder(@Nullable String player, @Nullable String world) {
+    private Optional<PermissionHolder> getPermissionHolder(@Nullable final String player, @Nullable final String world) {
         return Optional.ofNullable(player)
                 .map(getPlugin().getServer()::getOfflinePlayerIfCached)
                 .map(offline -> Optional.ofNullable(world)
@@ -162,8 +162,8 @@ public class VaultPermissionServiceWrapper extends Permission implements Wrapper
                         .orElseGet(() -> permissionController.loadPermissionHolder(offline).join()));
     }
 
-    private Optional<GroupHolder> getGroupHolder(@Nullable String player, @Nullable String world) {
-        var groupController = groupController();
+    private Optional<GroupHolder> getGroupHolder(@Nullable final String player, @Nullable final String world) {
+        final var groupController = groupController();
         return Optional.ofNullable(player)
                 .map(getPlugin().getServer()::getOfflinePlayerIfCached)
                 .map(offline -> Optional.ofNullable(world)

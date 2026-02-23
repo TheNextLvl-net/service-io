@@ -28,10 +28,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class CitizensCharacter<T extends Entity> implements Character<T> {
+public final class CitizensCharacter<T extends Entity> implements Character<T> {
     protected final NPC npc;
 
-    public CitizensCharacter(NPC npc) {
+    public CitizensCharacter(final NPC npc) {
         this.npc = npc;
     }
 
@@ -53,7 +53,7 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public void setPersistent(boolean persistent) {
+    public void setPersistent(final boolean persistent) {
         npc.data().setPersistent(NPC.Metadata.SHOULD_SAVE, persistent);
     }
 
@@ -76,7 +76,7 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public boolean addViewer(Player player) {
+    public boolean addViewer(final Player player) {
         return npc.getTraitOptional(PlayerFilter.class).toJavaUtil()
                 .filter(filter -> filter.isHidden(player))
                 .map(filter -> {
@@ -86,17 +86,17 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public boolean addViewers(Collection<Player> players) {
+    public boolean addViewers(final Collection<Player> players) {
         return players.stream().map(this::addViewer).reduce(false, Boolean::logicalOr);
     }
 
     @Override
-    public boolean isTrackedBy(Player player) {
+    public boolean isTrackedBy(final Player player) {
         return getEntity().map(entity -> entity.getTrackedBy().contains(player)).orElse(false);
     }
 
     @Override
-    public boolean canSee(Player player) {
+    public boolean canSee(final Player player) {
         return !npc.isHiddenFrom(player);
     }
 
@@ -106,7 +106,7 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public boolean removeViewer(Player player) {
+    public boolean removeViewer(final Player player) {
         return npc.getTraitOptional(PlayerFilter.class).toJavaUtil()
                 .filter(filter -> !filter.isHidden(player))
                 .map(filter -> {
@@ -116,7 +116,7 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public boolean removeViewers(Collection<Player> players) {
+    public boolean removeViewers(final Collection<Player> players) {
         return players.stream().map(this::removeViewer).reduce(false, Boolean::logicalOr);
     }
 
@@ -128,13 +128,13 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public void setDisplayRange(double range) {
+    public void setDisplayRange(final double range) {
         npc.getTraitOptional(PlayerFilter.class).toJavaUtil()
                 .ifPresent(filter -> filter.setApplyRange(range));
     }
 
     @Override
-    public void setVisibleByDefault(boolean visible) {
+    public void setVisibleByDefault(final boolean visible) {
         getEntity().ifPresent(entity -> entity.setVisibleByDefault(visible));
     }
 
@@ -164,7 +164,7 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public void setCollidable(boolean collidable) {
+    public void setCollidable(final boolean collidable) {
         npc.data().setPersistent(NPC.Metadata.COLLIDABLE, collidable);
     }
 
@@ -194,7 +194,7 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public CompletableFuture<Boolean> teleportAsync(Location location) {
+    public CompletableFuture<Boolean> teleportAsync(final Location location) {
         return getEntity().map(entity -> entity.teleportAsync(location)).orElseGet(() -> {
             npc.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
             return CompletableFuture.completedFuture(true);
@@ -231,17 +231,17 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public boolean spawn(Location location) {
+    public boolean spawn(final Location location) {
         return npc.spawn(location);
     }
 
     @Override
-    public void lookAt(Entity entity) {
+    public void lookAt(final Entity entity) {
         lookAt(entity.getLocation());
     }
 
     @Override
-    public void lookAt(Location location) {
+    public void lookAt(final Location location) {
         npc.faceLocation(location);
     }
 
@@ -257,29 +257,29 @@ public class CitizensCharacter<T extends Entity> implements Character<T> {
 
     @Override
     public boolean respawn() {
-        var location = getLocation();
+        final var location = getLocation();
         return location != null && npc.despawn(DespawnReason.PENDING_RESPAWN) && npc.spawn(location);
     }
 
     @Override
-    public void setDisplayName(Component displayName) {
+    public void setDisplayName(final Component displayName) {
         npc.setName(MiniMessage.miniMessage().serialize(displayName));
     }
 
     @Override
-    public void setInvulnerable(boolean invulnerable) {
+    public void setInvulnerable(final boolean invulnerable) {
         npc.setProtected(invulnerable);
     }
 
     @Override
-    public void setTablistEntryHidden(boolean hidden) {
+    public void setTablistEntryHidden(final boolean hidden) {
         npc.data().setPersistent(NPC.Metadata.REMOVE_FROM_TABLIST, hidden);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        CitizensCharacter<?> that = (CitizensCharacter<?>) o;
+        final CitizensCharacter<?> that = (CitizensCharacter<?>) o;
         return Objects.equals(npc, that.npc);
     }
 

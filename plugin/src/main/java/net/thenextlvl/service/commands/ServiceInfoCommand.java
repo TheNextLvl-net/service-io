@@ -33,12 +33,12 @@ import java.util.stream.Stream;
 
 @NullMarked
 final class ServiceInfoCommand extends SimpleCommand {
-    private ServiceInfoCommand(ServicePlugin plugin) {
+    private ServiceInfoCommand(final ServicePlugin plugin) {
         super(plugin, "info", "service.info");
     }
 
-    public static LiteralArgumentBuilder<CommandSourceStack> create(ServicePlugin plugin) {
-        var command = new ServiceInfoCommand(plugin);
+    public static LiteralArgumentBuilder<CommandSourceStack> create(final ServicePlugin plugin) {
+        final var command = new ServiceInfoCommand(plugin);
         return command.create()
                 .then(Commands.literal("banks").executes(command::infoBanks))
                 .then(Commands.literal("characters").executes(command::infoCharacters))
@@ -51,7 +51,7 @@ final class ServiceInfoCommand extends SimpleCommand {
     }
 
     @Override
-    public int run(CommandContext<CommandSourceStack> context) {
+    public int run(final CommandContext<CommandSourceStack> context) {
         plugin.bundle().sendMessage(context.getSource().getSender(), "service.version",
                 Placeholder.parsed("version", plugin.getPluginMeta().getVersion()));
 
@@ -66,41 +66,41 @@ final class ServiceInfoCommand extends SimpleCommand {
         return SINGLE_SUCCESS;
     }
 
-    private <C extends Controller, V> int info(CommandContext<CommandSourceStack> context, Class<C> type, @Nullable Class<V> vault, @Nullable Function<V, String> mapper, String name, String none) {
-        var sender = context.getSource().getSender();
-        C service = plugin.getServer().getServicesManager().load(type);
-        var registrations = getRegistrations(type, service, vault, mapper);
+    private <C extends Controller, V> int info(final CommandContext<CommandSourceStack> context, final Class<C> type, @Nullable final Class<V> vault, @Nullable final Function<V, String> mapper, final String name, final String none) {
+        final var sender = context.getSource().getSender();
+        final C service = plugin.getServer().getServicesManager().load(type);
+        final var registrations = getRegistrations(type, service, vault, mapper);
         if (sendServiceInfo(sender, name, service != null ? service.getName() : null, registrations))
             return SINGLE_SUCCESS;
         plugin.bundle().sendMessage(sender, none);
         return 0;
     }
 
-    private int infoBanks(CommandContext<CommandSourceStack> context) {
+    private int infoBanks(final CommandContext<CommandSourceStack> context) {
         return info(context, BankController.class, null, null, "Bank", "service.bank.none");
     }
 
-    private int infoCharacters(CommandContext<CommandSourceStack> context) {
+    private int infoCharacters(final CommandContext<CommandSourceStack> context) {
         return info(context, CharacterController.class, null, null, "Character", "service.character.none");
     }
 
-    private int infoChat(CommandContext<CommandSourceStack> context) {
+    private int infoChat(final CommandContext<CommandSourceStack> context) {
         return info(context, ChatController.class, Chat.class, Chat::getName, "Chat", "service.chat.none");
     }
 
-    private int infoEconomy(CommandContext<CommandSourceStack> context) {
+    private int infoEconomy(final CommandContext<CommandSourceStack> context) {
         return info(context, EconomyController.class, Economy.class, Economy::getName, "Economy", "service.economy.none");
     }
 
-    private int infoGroups(CommandContext<CommandSourceStack> context) {
+    private int infoGroups(final CommandContext<CommandSourceStack> context) {
         return info(context, GroupController.class, null, null, "Group", "service.group.none");
     }
 
-    private int infoHolograms(CommandContext<CommandSourceStack> context) {
+    private int infoHolograms(final CommandContext<CommandSourceStack> context) {
         return info(context, HologramController.class, null, null, "Hologram", "service.hologram.none");
     }
 
-    private int infoPermissions(CommandContext<CommandSourceStack> context) {
+    private int infoPermissions(final CommandContext<CommandSourceStack> context) {
         return info(context, PermissionController.class, Permission.class, Permission::getName, "Permission", "service.permission.none");
     }
 
@@ -109,12 +109,12 @@ final class ServiceInfoCommand extends SimpleCommand {
             .prefix(Component.text(" - ", NamedTextColor.DARK_GRAY))
             .build();
 
-    private <C extends Controller, V> List<TextComponent> getRegistrations(Class<C> registration, @Nullable C loaded, @Nullable Class<V> vault, @Nullable Function<V, String> mapper) {
-        var name = loaded != null ? loaded.getName() : null;
-        var registrations = plugin.getServer().getServicesManager().getRegistrations(registration).stream()
+    private <C extends Controller, V> List<TextComponent> getRegistrations(final Class<C> registration, @Nullable final C loaded, @Nullable final Class<V> vault, @Nullable final Function<V, String> mapper) {
+        final var name = loaded != null ? loaded.getName() : null;
+        final var registrations = plugin.getServer().getServicesManager().getRegistrations(registration).stream()
                 .map(RegisteredServiceProvider::getProvider)
                 .map(Controller::getName);
-        var vaultRegistrations = vault != null && mapper != null
+        final var vaultRegistrations = vault != null && mapper != null
                 ? plugin.getServer().getServicesManager().getRegistrations(vault).stream()
                 .map(RegisteredServiceProvider::getProvider)
                 .map(mapper) : Stream.<String>empty();
@@ -125,7 +125,7 @@ final class ServiceInfoCommand extends SimpleCommand {
                 .toList();
     }
 
-    private boolean sendServiceInfo(CommandSender sender, String type, @Nullable String provider, List<TextComponent> registrations) {
+    private boolean sendServiceInfo(final CommandSender sender, final String type, @Nullable final String provider, final List<TextComponent> registrations) {
         if (provider != null) plugin.bundle().sendMessage(sender, "service.provider.name",
                 Placeholder.parsed("provider", provider), Placeholder.parsed("type", type));
         if (!registrations.isEmpty()) plugin.bundle().sendMessage(sender, "service.provider.registrations",

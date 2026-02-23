@@ -38,8 +38,8 @@ public interface InfoNode {
      * @param value the value of the information node to be removed
      * @return true if the information node was successfully removed, false otherwise
      */
-    default boolean removeInfoNode(String key, String value) {
-        var infoNode = getInfoNode(key).orElse(null);
+    default boolean removeInfoNode(final String key, final String value) {
+        final var infoNode = getInfoNode(key).orElse(null);
         if (!value.equals(infoNode)) return false;
         return removeInfoNode(key);
     }
@@ -59,7 +59,7 @@ public interface InfoNode {
      * @param key the key to retrieve the value for
      * @return an {@code Optional<Boolean>} containing the information node value if it exists
      */
-    default Optional<Boolean> booleanInfoNode(String key) {
+    default Optional<Boolean> booleanInfoNode(final String key) {
         return getInfoNode(key, Boolean::parseBoolean);
     }
 
@@ -69,7 +69,7 @@ public interface InfoNode {
      * @param key the key to retrieve the value for
      * @return an {@code Optional<String>} containing the information node value if it exists
      */
-    default Optional<String> getInfoNode(String key) {
+    default Optional<String> getInfoNode(final String key) {
         return getInfoNode(key, Function.identity());
     }
 
@@ -80,7 +80,7 @@ public interface InfoNode {
      * @return an {@code OptionalDouble} containing the information node value if it exists
      * @throws NumberFormatException if the value associated with the key cannot be parsed into a double
      */
-    default Optional<Double> doubleInfoNode(String key) throws NumberFormatException {
+    default Optional<Double> doubleInfoNode(final String key) throws NumberFormatException {
         return getInfoNode(key, s -> s != null ? Double.parseDouble(s) : null);
     }
 
@@ -91,7 +91,7 @@ public interface InfoNode {
      * @return an {@code OptionalInt} containing the information node value if it exists
      * @throws NumberFormatException if the value associated with the key cannot be parsed into an integer
      */
-    default Optional<Integer> intInfoNode(String key) throws NumberFormatException {
+    default Optional<Integer> intInfoNode(final String key) throws NumberFormatException {
         return getInfoNode(key, s -> s != null ? Integer.parseInt(s) : null);
     }
 
@@ -101,7 +101,7 @@ public interface InfoNode {
      * @param key the key to check for existence
      * @return true if the key exists in the information nodes, false otherwise
      */
-    default boolean hasInfoNode(String key) {
+    default boolean hasInfoNode(final String key) {
         return getInfoNode(key).isPresent();
     }
 }

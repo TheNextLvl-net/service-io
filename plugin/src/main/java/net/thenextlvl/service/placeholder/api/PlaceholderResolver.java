@@ -13,13 +13,13 @@ public interface PlaceholderResolver<T> {
     String resolve(T provider, OfflinePlayer player, Matcher matcher) throws RuntimeException;
 
     @SafeVarargs
-    static <T> PlaceholderResolver<T> throwing(PlaceholderResolver<T> resolver, Class<? extends RuntimeException>... ignored) {
+    static <T> PlaceholderResolver<T> throwing(final PlaceholderResolver<T> resolver, final Class<? extends RuntimeException>... ignored) {
         Preconditions.checkArgument(ignored.length > 0, "At least one exception class must be provided");
         return (provider, player, matcher) -> {
             try {
                 return resolver.resolve(provider, player, matcher);
-            } catch (RuntimeException exception) {
-                for (var clazz : ignored) {
+            } catch (final RuntimeException exception) {
+                for (final var clazz : ignored) {
                     if (clazz.isInstance(exception)) return null;
                 }
                 throw exception;

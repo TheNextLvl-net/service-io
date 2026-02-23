@@ -8,12 +8,12 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public final class ServiceCommand extends BrigadierCommand {
-    private ServiceCommand(ServicePlugin plugin) {
+    private ServiceCommand(final ServicePlugin plugin) {
         super(plugin, "service", "service.command");
     }
 
-    public static LiteralCommandNode<CommandSourceStack> create(ServicePlugin plugin) {
-        var command = new ServiceCommand(plugin);
+    public static LiteralCommandNode<CommandSourceStack> create(final ServicePlugin plugin) {
+        final var command = new ServiceCommand(plugin);
         return command.create()
                 .then(ServiceInfoCommand.create(plugin))
                 .then(ServiceConvertCommand.create(plugin))

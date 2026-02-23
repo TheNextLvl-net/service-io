@@ -11,42 +11,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NullMarked
-public class ServiceBootstrapper implements PluginBootstrap {
+public final class ServiceBootstrapper implements PluginBootstrap {
     public static final ErrorTracker ERROR_TRACKER = ErrorTracker.contextAware();
     public static final String ISSUES = "https://github.com/TheNextLvl-net/service-io/issues/new?template=bug_report.yml";
     public static final boolean COMPATIBILITY_MODE = Boolean.parseBoolean(System.getenv("COMPATIBILITY_MODE"));
 
     @Override
-    public void bootstrap(BootstrapContext context) {
+    public void bootstrap(final BootstrapContext context) {
     }
 
     @Override
-    public JavaPlugin createPlugin(PluginProviderContext context) {
-        var plugin = PluginBootstrap.super.createPlugin(context);
+    public JavaPlugin createPlugin(final PluginProviderContext context) {
+        final var plugin = PluginBootstrap.super.createPlugin(context);
         if (COMPATIBILITY_MODE) enableCompatibilityMode(context);
         return plugin;
     }
 
-    private void enableCompatibilityMode(PluginProviderContext context) {
-        var logger = context.getLogger();
+    private void enableCompatibilityMode(final PluginProviderContext context) {
+        final var logger = context.getLogger();
         try {
-            var meta = context.getConfiguration();
+            final var meta = context.getConfiguration();
 
-            var metaClass = meta.getClass();
-            var name = metaClass.getDeclaredField("name");
-            var provides = metaClass.getDeclaredField("provides");
+            final var metaClass = meta.getClass();
+            final var name = metaClass.getDeclaredField("name");
+            final var provides = metaClass.getDeclaredField("provides");
 
             name.trySetAccessible();
             provides.trySetAccessible();
 
-            var providedPlugins = new ArrayList<>(meta.getProvidedPlugins());
+            final var providedPlugins = new ArrayList<>(meta.getProvidedPlugins());
             providedPlugins.remove("Vault");
             providedPlugins.add(meta.getName());
 
             name.set(meta, "Vault");
             provides.set(meta, List.copyOf(providedPlugins));
             logger.info("Enabled compatibility mode, only use this if you really need to.");
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        } catch (final NoSuchFieldException | IllegalAccessException e) {
             logger.warn("Failed to initialize compatibility mode", e);
             logger.warn("Please look for similar issues or report this on GitHub: {}", ISSUES);
             ERROR_TRACKER.trackError(e);

@@ -12,32 +12,32 @@ import java.util.Optional;
 import java.util.UUID;
 
 @NullMarked
-public class WrappedAccount implements Account {
+public final class WrappedAccount implements Account {
     private final @Nullable World world;
     private final Economy economy;
     private final OfflinePlayer holder;
 
-    public WrappedAccount(@Nullable World world, Economy economy, OfflinePlayer holder) {
+    public WrappedAccount(@Nullable final World world, final Economy economy, final OfflinePlayer holder) {
         this.world = world;
         this.economy = economy;
         this.holder = holder;
     }
 
     @Override
-    public BigDecimal deposit(Number amount) {
-        var response = economy.depositPlayer(holder, world != null ? world.getName() : null, amount.doubleValue());
+    public BigDecimal deposit(final Number amount) {
+        final var response = economy.depositPlayer(holder, world != null ? world.getName() : null, amount.doubleValue());
         return new BigDecimal(response.balance);
     }
 
     @Override
     public BigDecimal getBalance() {
-        var balance = economy.getBalance(holder, world != null ? world.getName() : null);
+        final var balance = economy.getBalance(holder, world != null ? world.getName() : null);
         return new BigDecimal(balance);
     }
 
     @Override
-    public BigDecimal withdraw(Number amount) {
-        var response = economy.withdrawPlayer(holder, world != null ? world.getName() : null, amount.doubleValue());
+    public BigDecimal withdraw(final Number amount) {
+        final var response = economy.withdrawPlayer(holder, world != null ? world.getName() : null, amount.doubleValue());
         return new BigDecimal(response.balance);
     }
 
@@ -52,8 +52,8 @@ public class WrappedAccount implements Account {
     }
 
     @Override
-    public void setBalance(Number balance) {
-        var difference = balance.doubleValue() - getBalance().doubleValue();
+    public void setBalance(final Number balance) {
+        final var difference = balance.doubleValue() - getBalance().doubleValue();
         if (difference > 0) deposit(difference);
         else if (difference < 0) withdraw(-difference);
     }

@@ -29,7 +29,7 @@ public class CharacterDamageEvent extends CharacterEvent implements Cancellable 
      * @param cause      the cause of the damage
      * @param damage     the amount of damage dealt to the character
      */
-    public CharacterDamageEvent(CharacterController controller, Character<?> character, EntityDamageEvent.DamageCause cause, double damage) {
+    public CharacterDamageEvent(final CharacterController controller, final Character<?> character, final EntityDamageEvent.DamageCause cause, final double damage) {
         super(controller, character);
         this.cause = cause;
         this.damage = damage;
@@ -58,7 +58,7 @@ public class CharacterDamageEvent extends CharacterEvent implements Cancellable 
      *
      * @param damage the new damage value to be set
      */
-    public void setDamage(double damage) {
+    public void setDamage(final double damage) {
         this.damage = damage;
     }
 
@@ -68,7 +68,7 @@ public class CharacterDamageEvent extends CharacterEvent implements Cancellable 
     }
 
     @Override
-    public void setCancelled(boolean cancelled) {
+    public void setCancelled(final boolean cancelled) {
         this.cancelled = cancelled;
     }
 }

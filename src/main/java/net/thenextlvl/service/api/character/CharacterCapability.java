@@ -53,7 +53,7 @@ public enum CharacterCapability implements Capability {
 
     private final Key key;
 
-    CharacterCapability(Key key) {
+    CharacterCapability(final Key key) {
         this.key = key;
     }
 

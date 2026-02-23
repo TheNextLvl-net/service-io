@@ -23,30 +23,30 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class FancyCharacterController implements CharacterController {
+public final class FancyCharacterController implements CharacterController {
     private final EnumSet<CharacterCapability> capabilities = EnumSet.of(
             CharacterCapability.INTERACTIONS,
             CharacterCapability.NON_PLAYER_ENTITIES
     );
     private final Plugin plugin;
 
-    public FancyCharacterController(Plugin plugin) {
+    public FancyCharacterController(final Plugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public <T extends Entity> Character<T> createNPC(String name, Class<T> type) {
+    public <T extends Entity> Character<T> createNPC(final String name, final Class<T> type) {
         return createNPC(name, getEntityTypeByClass(type));
     }
 
     @Override
-    public <T extends Entity> Character<T> createNPC(String name, EntityType type) {
-        var plugin = FancyNpcsPlugin.get();
+    public <T extends Entity> Character<T> createNPC(final String name, final EntityType type) {
+        final var plugin = FancyNpcsPlugin.get();
 
-        var location = new Location(this.plugin.getServer().getWorlds().getFirst(), 0, 0, 0);
-        var data = new NpcData(name, new UUID(0, 0), location);
+        final var location = new Location(this.plugin.getServer().getWorlds().getFirst(), 0, 0, 0);
+        final var data = new NpcData(name, new UUID(0, 0), location);
         data.setType(type);
-        var npc = plugin.getNpcAdapter().apply(data);
+        final var npc = plugin.getNpcAdapter().apply(data);
 
         plugin.getNpcManager().registerNpc(npc);
         npc.create();
@@ -54,29 +54,29 @@ public class FancyCharacterController implements CharacterController {
     }
 
     @Override
-    public <T extends Entity> Character<T> spawnNPC(String name, Location location, Class<T> type) {
+    public <T extends Entity> Character<T> spawnNPC(final String name, final Location location, final Class<T> type) {
         return spawnNPC(name, location, getEntityTypeByClass(type));
     }
 
     @Override
-    public <T extends Entity> Character<T> spawnNPC(String name, Location location, EntityType type) {
-        var npc = this.<T>createNPC(name, type);
+    public <T extends Entity> Character<T> spawnNPC(final String name, final Location location, final EntityType type) {
+        final var npc = this.<T>createNPC(name, type);
         npc.spawn(location);
         return npc;
     }
 
     @Override
-    public <T extends Entity> Optional<Character<T>> getNPC(T entity) {
+    public <T extends Entity> Optional<Character<T>> getNPC(final T entity) {
         return Optional.empty();
     }
 
     @Override
-    public Character<Player> createNPC(String name) {
+    public Character<Player> createNPC(final String name) {
         return createNPC(name, Player.class);
     }
 
     @Override
-    public Character<Player> spawnNPC(String name, Location location) {
+    public Character<Player> spawnNPC(final String name, final Location location) {
         return spawnNPC(name, location, Player.class);
     }
 
@@ -88,7 +88,7 @@ public class FancyCharacterController implements CharacterController {
     }
 
     @Override
-    public @Unmodifiable List<Character<?>> getNPCs(Player player) {
+    public @Unmodifiable List<Character<?>> getNPCs(final Player player) {
         return FancyNpcsPlugin.get().getNpcManager().getAllNpcs().stream()
                 .filter(npc -> npc.getIsVisibleForPlayer().containsKey(player.getUniqueId()))
                 .map(FancyCharacter::new)
@@ -96,7 +96,7 @@ public class FancyCharacterController implements CharacterController {
     }
 
     @Override
-    public @Unmodifiable List<Character<?>> getNPCs(World world) {
+    public @Unmodifiable List<Character<?>> getNPCs(final World world) {
         return FancyNpcsPlugin.get().getNpcManager().getAllNpcs().stream()
                 .filter(npc -> npc.getData().getLocation() != null)
                 .filter(npc -> world.equals(npc.getData().getLocation().getWorld()))
@@ -105,18 +105,18 @@ public class FancyCharacterController implements CharacterController {
     }
 
     @Override
-    public Optional<Character<?>> getNPC(String name) {
+    public Optional<Character<?>> getNPC(final String name) {
         return Optional.ofNullable(FancyNpcsPlugin.get().getNpcManager().getNpc(name))
                 .map(FancyCharacter::new);
     }
 
     @Override
-    public Optional<Character<?>> getNPC(UUID uuid) {
+    public Optional<Character<?>> getNPC(final UUID uuid) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<Character<Player>> getNPC(Player player) {
+    public Optional<Character<Player>> getNPC(final Player player) {
         return Optional.empty();
     }
 
@@ -126,12 +126,12 @@ public class FancyCharacterController implements CharacterController {
     }
 
     @Override
-    public boolean hasCapabilities(Collection<CharacterCapability> capabilities) {
+    public boolean hasCapabilities(final Collection<CharacterCapability> capabilities) {
         return this.capabilities.containsAll(capabilities);
     }
 
     @Override
-    public boolean hasCapability(CharacterCapability capability) {
+    public boolean hasCapability(final CharacterCapability capability) {
         return this.capabilities.contains(capability);
     }
 
@@ -146,11 +146,11 @@ public class FancyCharacterController implements CharacterController {
     }
 
     @Override
-    public boolean isNPC(Entity entity) {
+    public boolean isNPC(final Entity entity) {
         return false;
     }
 
-    public EntityType getEntityTypeByClass(Class<? extends Entity> type) {
+    public EntityType getEntityTypeByClass(final Class<? extends Entity> type) {
         return Arrays.stream(EntityType.values())
                 .filter(entityType -> type.equals(entityType.getEntityClass()))
                 .findAny().orElseThrow();

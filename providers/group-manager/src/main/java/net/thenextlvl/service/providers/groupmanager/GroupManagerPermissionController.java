@@ -17,32 +17,32 @@ import java.util.concurrent.CompletableFuture;
 
 @DoNotWrap
 @NullMarked
-public class GroupManagerPermissionController implements PermissionController {
+public final class GroupManagerPermissionController implements PermissionController {
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
 
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid) {
-        var holder = groupManager.getWorldsHolder().getDefaultWorld();
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid) {
+        final var holder = groupManager.getWorldsHolder().getDefaultWorld();
         return CompletableFuture.completedFuture(getHolder(holder, uuid).orElse(null));
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, World world) {
-        var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid, final World world) {
+        final var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
         return CompletableFuture.completedFuture(getHolder(holder, uuid).orElse(null));
     }
 
     @Override
-    public Optional<PermissionHolder> getPermissionHolder(UUID uuid) {
+    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<PermissionHolder> getPermissionHolder(UUID uuid, World world) {
+    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid, final World world) {
         return Optional.empty();
     }
 
-    private Optional<PermissionHolder> getHolder(@Nullable WorldDataHolder holder, UUID uuid) {
+    private Optional<PermissionHolder> getHolder(@Nullable final WorldDataHolder holder, final UUID uuid) {
         return holder != null ? Optional.ofNullable(holder.getUser(uuid.toString()))
                 .map(user -> new GroupManagerPermissionHolder(user, holder)) : Optional.empty();
     }

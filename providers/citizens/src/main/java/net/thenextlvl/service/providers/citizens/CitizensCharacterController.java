@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @NullMarked
-public class CitizensCharacterController implements CharacterController {
+public final class CitizensCharacterController implements CharacterController {
     private final EnumSet<CharacterCapability> capabilities = EnumSet.of(
             CharacterCapability.HEALTH,
             CharacterCapability.INTERACTIONS,
@@ -34,34 +34,34 @@ public class CitizensCharacterController implements CharacterController {
     );
     private final Plugin plugin;
 
-    public CitizensCharacterController(Plugin plugin) {
+    public CitizensCharacterController(final Plugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public <T extends Entity> Character<T> createNPC(String name, Class<T> type) {
+    public <T extends Entity> Character<T> createNPC(final String name, final Class<T> type) {
         return createNPC(name, getEntityTypeByClass(type));
     }
 
     @Override
-    public <T extends Entity> Character<T> createNPC(String name, EntityType type) {
-        var npc = CitizensAPI.getNPCRegistry().createNPC(type, name);
+    public <T extends Entity> Character<T> createNPC(final String name, final EntityType type) {
+        final var npc = CitizensAPI.getNPCRegistry().createNPC(type, name);
         return new CitizensCharacter<>(npc);
     }
 
     @Override
-    public <T extends Entity> Character<T> spawnNPC(String name, Location location, Class<T> type) {
+    public <T extends Entity> Character<T> spawnNPC(final String name, final Location location, final Class<T> type) {
         return spawnNPC(name, location, getEntityTypeByClass(type));
     }
 
     @Override
-    public <T extends Entity> Character<T> spawnNPC(String name, Location location, EntityType type) {
-        var npc = CitizensAPI.getNPCRegistry().createNPC(type, name, location);
+    public <T extends Entity> Character<T> spawnNPC(final String name, final Location location, final EntityType type) {
+        final var npc = CitizensAPI.getNPCRegistry().createNPC(type, name, location);
         return new CitizensCharacter<>(npc);
     }
 
     @Override
-    public <T extends Entity> Optional<Character<T>> getNPC(T entity) {
+    public <T extends Entity> Optional<Character<T>> getNPC(final T entity) {
         return Optional.ofNullable(CitizensAPI.getNPCRegistry().getNPC(entity))
                 .map(CitizensCharacter::new);
     }
@@ -73,7 +73,7 @@ public class CitizensCharacterController implements CharacterController {
     }
 
     @Override
-    public @Unmodifiable List<Character<?>> getNPCs(Player player) {
+    public @Unmodifiable List<Character<?>> getNPCs(final Player player) {
         return streamNPCs()
                 .filter(character -> !character.isHiddenFrom(player))
                 .map(CitizensCharacter::new)
@@ -81,7 +81,7 @@ public class CitizensCharacterController implements CharacterController {
     }
 
     @Override
-    public @Unmodifiable List<Character<?>> getNPCs(World world) {
+    public @Unmodifiable List<Character<?>> getNPCs(final World world) {
         return streamNPCs()
                 .filter(character -> world.equals(character.getEntity().getWorld()))
                 .map(CitizensCharacter::new)
@@ -89,31 +89,31 @@ public class CitizensCharacterController implements CharacterController {
     }
 
     @Override
-    public Optional<Character<?>> getNPC(String name) {
+    public Optional<Character<?>> getNPC(final String name) {
         return streamNPCs().filter(npc -> name.equals(npc.getRawName()))
                 .<Character<?>>map(CitizensCharacter::new)
                 .findAny();
     }
 
     @Override
-    public Character<Player> createNPC(String name) {
+    public Character<Player> createNPC(final String name) {
         return createNPC(name, Player.class);
     }
 
     @Override
-    public Character<Player> spawnNPC(String name, Location location) {
+    public Character<Player> spawnNPC(final String name, final Location location) {
         return spawnNPC(name, location, Player.class);
     }
 
     @Override
-    public Optional<Character<?>> getNPC(UUID uuid) {
+    public Optional<Character<?>> getNPC(final UUID uuid) {
         return Optional.ofNullable(plugin.getServer().getEntity(uuid))
                 .map(CitizensAPI.getNPCRegistry()::getNPC)
                 .map(CitizensCharacter::new);
     }
 
     @Override
-    public Optional<Character<Player>> getNPC(Player player) {
+    public Optional<Character<Player>> getNPC(final Player player) {
         return Optional.ofNullable(CitizensAPI.getNPCRegistry().getNPC(player))
                 .filter(npc -> npc.getEntity().getType().equals(EntityType.PLAYER))
                 .map(CitizensCharacter::new);
@@ -130,7 +130,7 @@ public class CitizensCharacterController implements CharacterController {
     }
 
     @Override
-    public boolean isNPC(Entity entity) {
+    public boolean isNPC(final Entity entity) {
         return CitizensAPI.getNPCRegistry().isNPC(entity);
     }
 
@@ -145,16 +145,16 @@ public class CitizensCharacterController implements CharacterController {
     }
 
     @Override
-    public boolean hasCapabilities(Collection<CharacterCapability> capabilities) {
+    public boolean hasCapabilities(final Collection<CharacterCapability> capabilities) {
         return this.capabilities.containsAll(capabilities);
     }
 
     @Override
-    public boolean hasCapability(CharacterCapability capability) {
+    public boolean hasCapability(final CharacterCapability capability) {
         return this.capabilities.contains(capability);
     }
 
-    public EntityType getEntityTypeByClass(Class<? extends Entity> type) {
+    public EntityType getEntityTypeByClass(final Class<? extends Entity> type) {
         return Arrays.stream(EntityType.values())
                 .filter(entityType -> type.equals(entityType.getEntityClass()))
                 .findAny().orElseThrow();

@@ -14,12 +14,12 @@ import java.util.Set;
 import java.util.function.Function;
 
 @NullMarked
-public class WrappedChatProfile implements ChatProfile {
+public final class WrappedChatProfile implements ChatProfile {
     private final @Nullable World world;
     private final Chat chat;
     private final OfflinePlayer holder;
 
-    public WrappedChatProfile(@Nullable World world, Chat chat, OfflinePlayer holder) {
+    public WrappedChatProfile(@Nullable final World world, final Chat chat, final OfflinePlayer holder) {
         this.world = world;
         this.chat = chat;
         this.holder = holder;
@@ -36,7 +36,7 @@ public class WrappedChatProfile implements ChatProfile {
     }
 
     @Override
-    public Optional<String> getPrefix(int priority) {
+    public Optional<String> getPrefix(final int priority) {
         return Optional.ofNullable(chat.getPlayerPrefix(world != null ? world.getName() : null, holder));
     }
 
@@ -51,7 +51,7 @@ public class WrappedChatProfile implements ChatProfile {
     }
 
     @Override
-    public Optional<String> getSuffix(int priority) {
+    public Optional<String> getSuffix(final int priority) {
         return Optional.ofNullable(chat.getPlayerSuffix(world != null ? world.getName() : null, holder));
     }
 
@@ -66,58 +66,58 @@ public class WrappedChatProfile implements ChatProfile {
     }
 
     @Override
-    public boolean setDisplayName(@Nullable String displayName) {
+    public boolean setDisplayName(@Nullable final String displayName) {
         return false;
     }
 
     @Override
-    public boolean setPrefix(@Nullable String prefix, int priority) {
+    public boolean setPrefix(@Nullable final String prefix, final int priority) {
         chat.setPlayerPrefix(world != null ? world.getName() : null, holder, prefix);
         return true;
     }
 
     @Override
-    public boolean setSuffix(@Nullable String suffix, int priority) {
+    public boolean setSuffix(@Nullable final String suffix, final int priority) {
         chat.setPlayerSuffix(world != null ? world.getName() : null, holder, suffix);
         return true;
     }
 
     @Override
-    public <T> Optional<T> getInfoNode(String key, Function<@Nullable String, @Nullable T> mapper) {
+    public <T> Optional<T> getInfoNode(final String key, final Function<@Nullable String, @Nullable T> mapper) {
         return Optional.ofNullable(chat.getPlayerInfoString(
                 world != null ? world.getName() : null, holder, key, null
         )).map(mapper);
     }
 
     @Override
-    public Optional<Boolean> booleanInfoNode(String key) {
+    public Optional<Boolean> booleanInfoNode(final String key) {
         return Optional.of(chat.getPlayerInfoBoolean(
                 world != null ? world.getName() : null, holder, key, false
         ));
     }
 
     @Override
-    public Optional<Double> doubleInfoNode(String key) throws NumberFormatException {
+    public Optional<Double> doubleInfoNode(final String key) throws NumberFormatException {
         return Optional.of(chat.getPlayerInfoDouble(
                 world != null ? world.getName() : null, holder, key, 0
         ));
     }
 
     @Override
-    public Optional<Integer> intInfoNode(String key) throws NumberFormatException {
+    public Optional<Integer> intInfoNode(final String key) throws NumberFormatException {
         return Optional.of(chat.getPlayerInfoInteger(
                 world != null ? world.getName() : null, holder, key, 0
         ));
     }
 
     @Override
-    public boolean removeInfoNode(String key) {
+    public boolean removeInfoNode(final String key) {
         chat.setPlayerInfoString(world != null ? world.getName() : null, holder, key, null);
         return true;
     }
 
     @Override
-    public boolean setInfoNode(String key, String value) {
+    public boolean setInfoNode(final String key, final String value) {
         chat.setPlayerInfoString(world != null ? world.getName() : null, holder, key, value);
         return true;
     }

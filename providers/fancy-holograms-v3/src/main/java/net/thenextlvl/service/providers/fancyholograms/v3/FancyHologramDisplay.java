@@ -24,12 +24,12 @@ public record FancyHologramDisplay(DisplayHologramData data) implements Hologram
     }
 
     @Override
-    public void setTransformation(Transformation transformation) {
+    public void setTransformation(final Transformation transformation) {
         data().setScale(transformation.getScale());
     }
 
     @Override
-    public void setTransformationMatrix(Matrix4f transformationMatrix) {
+    public void setTransformationMatrix(final Matrix4f transformationMatrix) {
     }
 
     @Override
@@ -38,7 +38,7 @@ public record FancyHologramDisplay(DisplayHologramData data) implements Hologram
     }
 
     @Override
-    public void setInterpolationDuration(int duration) {
+    public void setInterpolationDuration(final int duration) {
         data().setInterpolationDuration(duration);
     }
 
@@ -48,7 +48,7 @@ public record FancyHologramDisplay(DisplayHologramData data) implements Hologram
     }
 
     @Override
-    public void setTeleportDuration(int duration) {
+    public void setTeleportDuration(final int duration) {
     }
 
     @Override
@@ -57,7 +57,7 @@ public record FancyHologramDisplay(DisplayHologramData data) implements Hologram
     }
 
     @Override
-    public void setViewRange(float range) {
+    public void setViewRange(final float range) {
     }
 
     @Override
@@ -66,7 +66,7 @@ public record FancyHologramDisplay(DisplayHologramData data) implements Hologram
     }
 
     @Override
-    public void setShadowRadius(float radius) {
+    public void setShadowRadius(final float radius) {
         data().setShadowRadius(radius);
     }
 
@@ -76,7 +76,7 @@ public record FancyHologramDisplay(DisplayHologramData data) implements Hologram
     }
 
     @Override
-    public void setShadowStrength(float strength) {
+    public void setShadowStrength(final float strength) {
         data().setShadowStrength(strength);
     }
 
@@ -86,7 +86,7 @@ public record FancyHologramDisplay(DisplayHologramData data) implements Hologram
     }
 
     @Override
-    public void setDisplayWidth(float width) {
+    public void setDisplayWidth(final float width) {
     }
 
     @Override
@@ -95,7 +95,7 @@ public record FancyHologramDisplay(DisplayHologramData data) implements Hologram
     }
 
     @Override
-    public void setDisplayHeight(float height) {
+    public void setDisplayHeight(final float height) {
     }
 
     @Override
@@ -104,7 +104,7 @@ public record FancyHologramDisplay(DisplayHologramData data) implements Hologram
     }
 
     @Override
-    public void setInterpolationDelay(int ticks) {
+    public void setInterpolationDelay(final int ticks) {
     }
 
     @Override
@@ -113,7 +113,7 @@ public record FancyHologramDisplay(DisplayHologramData data) implements Hologram
     }
 
     @Override
-    public void setBillboard(Display.Billboard billboard) {
+    public void setBillboard(final Display.Billboard billboard) {
         data().setBillboard(billboard);
     }
 
@@ -123,7 +123,7 @@ public record FancyHologramDisplay(DisplayHologramData data) implements Hologram
     }
 
     @Override
-    public void setGlowColorOverride(@Nullable Color color) {
+    public void setGlowColorOverride(@Nullable final Color color) {
     }
 
     @Override
@@ -132,7 +132,7 @@ public record FancyHologramDisplay(DisplayHologramData data) implements Hologram
     }
 
     @Override
-    public void setBrightness(Display.@Nullable Brightness brightness) {
+    public void setBrightness(final Display.@Nullable Brightness brightness) {
         data().setBrightness(brightness);
     }
 
@@ -142,17 +142,17 @@ public record FancyHologramDisplay(DisplayHologramData data) implements Hologram
     }
 
     @Override
-    public void setLineWidth(int width) {
+    public void setLineWidth(final int width) {
     }
 
     @Override
     public @Nullable Color getBackgroundColor() {
-        return data() instanceof TextHologramData text ? text.getBackground() : null;
+        return data() instanceof final TextHologramData text ? text.getBackground() : null;
     }
 
     @Override
-    public void setBackgroundColor(@Nullable Color color) {
-        if (data() instanceof TextHologramData text) text.setBackground(color);
+    public void setBackgroundColor(@Nullable final Color color) {
+        if (data() instanceof final TextHologramData text) text.setBackground(color);
     }
 
     @Override
@@ -161,27 +161,27 @@ public record FancyHologramDisplay(DisplayHologramData data) implements Hologram
     }
 
     @Override
-    public void setTextOpacity(byte opacity) {
+    public void setTextOpacity(final byte opacity) {
     }
 
     @Override
     public boolean isShadowed() {
-        return data() instanceof TextHologramData text && text.hasTextShadow();
+        return data() instanceof final TextHologramData text && text.hasTextShadow();
     }
 
     @Override
-    public void setShadowed(boolean shadow) {
-        if (data() instanceof TextHologramData text) text.setTextShadow(shadow);
+    public void setShadowed(final boolean shadow) {
+        if (data() instanceof final TextHologramData text) text.setTextShadow(shadow);
     }
 
     @Override
     public boolean isSeeThrough() {
-        return data() instanceof TextHologramData text && text.isSeeThrough();
+        return data() instanceof final TextHologramData text && text.isSeeThrough();
     }
 
     @Override
-    public void setSeeThrough(boolean seeThrough) {
-        if (data() instanceof TextHologramData text) text.setSeeThrough(seeThrough);
+    public void setSeeThrough(final boolean seeThrough) {
+        if (data() instanceof final TextHologramData text) text.setSeeThrough(seeThrough);
     }
 
     @Override
@@ -190,16 +190,16 @@ public record FancyHologramDisplay(DisplayHologramData data) implements Hologram
     }
 
     @Override
-    public void setDefaultBackground(boolean defaultBackground) {
+    public void setDefaultBackground(final boolean defaultBackground) {
     }
 
     @Override
     public TextDisplay.TextAlignment getAlignment() {
-        return data() instanceof TextHologramData text ? text.getTextAlignment() : TextDisplay.TextAlignment.CENTER;
+        return data() instanceof final TextHologramData text ? text.getTextAlignment() : TextDisplay.TextAlignment.CENTER;
     }
 
     @Override
-    public void setAlignment(TextDisplay.TextAlignment alignment) {
-        if (data() instanceof TextHologramData text) text.setTextAlignment(alignment);
+    public void setAlignment(final TextDisplay.TextAlignment alignment) {
+        if (data() instanceof final TextHologramData text) text.setTextAlignment(alignment);
     }
 }

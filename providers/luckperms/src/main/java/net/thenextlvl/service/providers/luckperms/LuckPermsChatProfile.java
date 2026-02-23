@@ -37,7 +37,7 @@ public record LuckPermsChatProfile(User user, QueryOptions options) implements C
     }
 
     @Override
-    public Optional<String> getPrefix(int priority) {
+    public Optional<String> getPrefix(final int priority) {
         return Optional.ofNullable(getPrefixes().get(priority));
     }
 
@@ -57,7 +57,7 @@ public record LuckPermsChatProfile(User user, QueryOptions options) implements C
     }
 
     @Override
-    public Optional<String> getSuffix(int priority) {
+    public Optional<String> getSuffix(final int priority) {
         return Optional.ofNullable(getSuffixes().get(priority));
     }
 
@@ -74,9 +74,9 @@ public record LuckPermsChatProfile(User user, QueryOptions options) implements C
     }
 
     @Override
-    public boolean setDisplayName(@Nullable String displayName) {
+    public boolean setDisplayName(@Nullable final String displayName) {
         if (displayName == null) return unsetDisplayName();
-        var result = user().data().add(DisplayNameNode.builder(displayName).build());
+        final var result = user().data().add(DisplayNameNode.builder(displayName).build());
         LuckPermsProvider.get().getUserManager().saveUser(user());
         return result.wasSuccessful();
     }
@@ -88,55 +88,55 @@ public record LuckPermsChatProfile(User user, QueryOptions options) implements C
     }
 
     @Override
-    public boolean setPrefix(@Nullable String prefix, int priority) {
+    public boolean setPrefix(@Nullable final String prefix, final int priority) {
         if (prefix == null) return unsetPrefix(priority);
-        var result = user().data().add(PrefixNode.builder(prefix, priority).context(options().context()).build());
+        final var result = user().data().add(PrefixNode.builder(prefix, priority).context(options().context()).build());
         LuckPermsProvider.get().getUserManager().saveUser(user());
         return result.wasSuccessful();
     }
 
-    private boolean unsetPrefix(int priority) {
-        user().data().clear(options().context(), node -> node instanceof PrefixNode prefix && prefix.getPriority() == priority);
+    private boolean unsetPrefix(final int priority) {
+        user().data().clear(options().context(), node -> node instanceof final PrefixNode prefix && prefix.getPriority() == priority);
         LuckPermsProvider.get().getUserManager().saveUser(user());
         return true;
     }
 
     @Override
-    public boolean setSuffix(@Nullable String suffix, int priority) {
+    public boolean setSuffix(@Nullable final String suffix, final int priority) {
         if (suffix == null) return unsetSuffix(priority);
-        var result = user().data().add(SuffixNode.builder(suffix, priority).context(options().context()).build());
+        final var result = user().data().add(SuffixNode.builder(suffix, priority).context(options().context()).build());
         LuckPermsProvider.get().getUserManager().saveUser(user());
         return result.wasSuccessful();
     }
 
-    private boolean unsetSuffix(int priority) {
-        user().data().clear(options().context(), node -> node instanceof SuffixNode suffix && suffix.getPriority() == priority);
+    private boolean unsetSuffix(final int priority) {
+        user().data().clear(options().context(), node -> node instanceof final SuffixNode suffix && suffix.getPriority() == priority);
         LuckPermsProvider.get().getUserManager().saveUser(user());
         return true;
     }
 
     @Override
-    public <T> Optional<T> getInfoNode(String key, Function<String, @Nullable T> mapper) {
+    public <T> Optional<T> getInfoNode(final String key, final Function<String, @Nullable T> mapper) {
         return user().getCachedData().getMetaData(options()).getMetaValue(key, mapper);
     }
 
     @Override
-    public boolean setInfoNode(String key, String value) {
-        var result = user().data().add(MetaNode.builder(key, value).context(options().context()).build());
+    public boolean setInfoNode(final String key, final String value) {
+        final var result = user().data().add(MetaNode.builder(key, value).context(options().context()).build());
         LuckPermsProvider.get().getUserManager().saveUser(user());
         return result.wasSuccessful();
     }
 
     @Override
-    public boolean removeInfoNode(String key) {
+    public boolean removeInfoNode(final String key) {
         user().data().clear(options().context(), node -> node.getKey().equals(key));
         LuckPermsProvider.get().getUserManager().saveUser(user());
         return true;
     }
 
     @Override
-    public boolean removeInfoNode(String key, String value) {
-        var result = user().data().remove(MetaNode.builder(key, value).context(options().context()).build());
+    public boolean removeInfoNode(final String key, final String value) {
+        final var result = user().data().remove(MetaNode.builder(key, value).context(options().context()).build());
         LuckPermsProvider.get().getUserManager().saveUser(user());
         return result.wasSuccessful();
     }

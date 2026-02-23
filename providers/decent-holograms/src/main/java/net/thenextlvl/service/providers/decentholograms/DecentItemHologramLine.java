@@ -7,8 +7,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class DecentItemHologramLine extends DecentHologramLine<ItemStack> {
-    public DecentItemHologramLine(HologramLine line) {
+public final class DecentItemHologramLine extends DecentHologramLine<ItemStack> {
+    public DecentItemHologramLine(final HologramLine line) {
         super(line);
     }
 
@@ -23,7 +23,7 @@ public class DecentItemHologramLine extends DecentHologramLine<ItemStack> {
     }
 
     @Override
-    public void setContent(ItemStack itemStack) {
+    public void setContent(final ItemStack itemStack) {
         line.setContent("#ICON:" + HologramItem.fromItemStack(itemStack).getContent());
     }
 }

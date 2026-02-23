@@ -5,8 +5,8 @@ import org.bukkit.block.data.BlockData;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class FancyBlockHologramLine extends FancyHologramLine<BlockHologramData, BlockData> {
-    public FancyBlockHologramLine(BlockHologramData data) {
+public final class FancyBlockHologramLine extends FancyHologramLine<BlockHologramData, BlockData> {
+    public FancyBlockHologramLine(final BlockHologramData data) {
         super(data);
     }
 
@@ -16,7 +16,7 @@ public class FancyBlockHologramLine extends FancyHologramLine<BlockHologramData,
     }
 
     @Override
-    public void setContent(BlockData content) {
+    public void setContent(final BlockData content) {
         data.setBlock(content.getMaterial());
     }
 }

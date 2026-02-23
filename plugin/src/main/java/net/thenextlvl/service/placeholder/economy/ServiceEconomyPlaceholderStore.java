@@ -9,8 +9,8 @@ import org.jspecify.annotations.NullMarked;
 import java.math.BigDecimal;
 
 @NullMarked
-public class ServiceEconomyPlaceholderStore extends PlaceholderStore<EconomyController> {
-    public ServiceEconomyPlaceholderStore(Plugin plugin) {
+public final class ServiceEconomyPlaceholderStore extends PlaceholderStore<EconomyController> {
+    public ServiceEconomyPlaceholderStore(final Plugin plugin) {
         super(plugin, EconomyController.class);
     }
 
@@ -23,7 +23,7 @@ public class ServiceEconomyPlaceholderStore extends PlaceholderStore<EconomyCont
 
         // %serviceio_balance_<world>%
         registerResolver("balance_%s", (provider, player, matcher) -> {
-            var world = plugin.getServer().getWorld(matcher.group(1));
+            final var world = plugin.getServer().getWorld(matcher.group(1));
             if (world == null) return null;
             return provider.getAccount(player, world).map(Account::getBalance).orElse(BigDecimal.ZERO).toPlainString();
         });
@@ -35,7 +35,7 @@ public class ServiceEconomyPlaceholderStore extends PlaceholderStore<EconomyCont
 
         // %serviceio_balance_formatted_<world>%
         registerResolver("balance_formatted_%s", (provider, player, matcher) -> {
-            var world = plugin.getServer().getWorld(matcher.group(1));
+            final var world = plugin.getServer().getWorld(matcher.group(1));
             if (world == null) return null;
             return provider.format(provider.getAccount(player, world).map(Account::getBalance).orElse(BigDecimal.ZERO));
         });

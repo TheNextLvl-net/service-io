@@ -21,7 +21,7 @@ public abstract class PlaceholderStore<T> implements Listener {
 
     protected final Plugin plugin;
 
-    public PlaceholderStore(Plugin plugin, Class<T> providerClass) {
+    public PlaceholderStore(final Plugin plugin, final Class<T> providerClass) {
         this.plugin = plugin;
         this.providerClass = providerClass;
         updateServices();
@@ -31,27 +31,27 @@ public abstract class PlaceholderStore<T> implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    private void registerResolver(Pattern pattern, PlaceholderResolver<T> resolver) {
+    private void registerResolver(final Pattern pattern, final PlaceholderResolver<T> resolver) {
         resolvers.put(pattern, resolver);
     }
 
-    protected final void registerResolver(String regex, PlaceholderResolver<T> resolver) {
+    protected final void registerResolver(final String regex, final PlaceholderResolver<T> resolver) {
         resolvers.put(Pattern.compile(regex.replace("%s", "([^{}]+)")), resolver);
     }
 
     protected abstract void registerResolvers();
 
-    public final @Nullable String resolve(OfflinePlayer player, String params) {
+    public final @Nullable String resolve(final OfflinePlayer player, final String params) {
         try {
-            if (provider != null) for (var entry : resolvers.entrySet()) {
-                var matcher = entry.getKey().matcher(params);
+            if (provider != null) for (final var entry : resolvers.entrySet()) {
+                final var matcher = entry.getKey().matcher(params);
                 if (!matcher.matches()) continue;
-                var resolved = entry.getValue().resolve(provider, player, matcher);
+                final var resolved = entry.getValue().resolve(provider, player, matcher);
                 if (resolved != null) return resolved;
             }
             return null;
-        } catch (Exception e) {
-            var name = player.getName() != null ? player.getName() : player.getUniqueId().toString();
+        } catch (final Exception e) {
+            final var name = player.getName() != null ? player.getName() : player.getUniqueId().toString();
             plugin.getComponentLogger().warn("Failed to resolve placeholder '{}' for player {}", params, name, e);
             return null;
         }
@@ -62,12 +62,12 @@ public abstract class PlaceholderStore<T> implements Listener {
     }
 
     @EventHandler
-    public void onServiceRegister(ServiceRegisterEvent event) {
+    public void onServiceRegister(final ServiceRegisterEvent event) {
         if (providerClass.isInstance(event.getProvider().getProvider())) updateServices();
     }
 
     @EventHandler
-    public void onServiceUnregister(ServiceUnregisterEvent event) {
+    public void onServiceUnregister(final ServiceUnregisterEvent event) {
         if (providerClass.isInstance(event.getProvider().getProvider())) updateServices();
     }
 

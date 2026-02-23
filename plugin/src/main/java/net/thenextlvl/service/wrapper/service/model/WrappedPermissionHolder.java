@@ -16,12 +16,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class WrappedPermissionHolder implements PermissionHolder {
+public final class WrappedPermissionHolder implements PermissionHolder {
     private final @Nullable World world;
     private final OfflinePlayer holder;
     private final Permission permission;
 
-    public WrappedPermissionHolder(@Nullable World world, OfflinePlayer holder, Permission permission) {
+    public WrappedPermissionHolder(@Nullable final World world, final OfflinePlayer holder, final Permission permission) {
         this.world = world;
         this.holder = holder;
         this.permission = permission;
@@ -29,7 +29,7 @@ public class WrappedPermissionHolder implements PermissionHolder {
 
     @Override
     public @Unmodifiable Map<String, Boolean> getPermissions() {
-        var player = holder.getPlayer();
+        final var player = holder.getPlayer();
         return player != null ? player.getEffectivePermissions().stream()
                 .collect(Collectors.toUnmodifiableMap(
                         PermissionAttachmentInfo::getPermission,
@@ -38,37 +38,37 @@ public class WrappedPermissionHolder implements PermissionHolder {
     }
 
     @Override
-    public TriState checkPermission(String permission) {
+    public TriState checkPermission(final String permission) {
         return TriState.byBoolean(this.permission.playerHas(world != null ? world.getName() : null, holder, permission));
     }
 
     @Override
-    public boolean addPermission(String permission) {
+    public boolean addPermission(final String permission) {
         return this.permission.playerAdd(world != null ? world.getName() : null, holder, permission);
     }
 
     @Override
-    public boolean removePermission(String permission) {
+    public boolean removePermission(final String permission) {
         return this.permission.playerRemove(world != null ? world.getName() : null, holder, permission);
     }
 
     @Override
-    public boolean setPermission(String permission, boolean value) {
+    public boolean setPermission(final String permission, final boolean value) {
         return false;
     }
 
     @Override
-    public <T> Optional<T> getInfoNode(String key, Function<@Nullable String, @Nullable T> mapper) {
+    public <T> Optional<T> getInfoNode(final String key, final Function<@Nullable String, @Nullable T> mapper) {
         return Optional.empty();
     }
 
     @Override
-    public boolean removeInfoNode(String key) {
+    public boolean removeInfoNode(final String key) {
         return false;
     }
 
     @Override
-    public boolean setInfoNode(String key, String value) {
+    public boolean setInfoNode(final String key, final String value) {
         return false;
     }
 }

@@ -20,27 +20,27 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class EconomyServiceWrapper implements EconomyController, Wrapper {
+public final class EconomyServiceWrapper implements EconomyController, Wrapper {
     private final Economy economy;
     private final Plugin provider;
 
-    public EconomyServiceWrapper(Economy economy, Plugin provider) {
+    public EconomyServiceWrapper(final Economy economy, final Plugin provider) {
         this.economy = economy;
         this.provider = provider;
     }
 
     @Override
-    public String format(Number amount) {
+    public String format(final Number amount) {
         return economy.format(amount.doubleValue());
     }
 
     @Override
-    public String getCurrencyNamePlural(Locale locale) {
+    public String getCurrencyNamePlural(final Locale locale) {
         return economy.currencyNamePlural();
     }
 
     @Override
-    public String getCurrencyNameSingular(Locale locale) {
+    public String getCurrencyNameSingular(final Locale locale) {
         return economy.currencyNameSingular();
     }
 
@@ -63,76 +63,76 @@ public class EconomyServiceWrapper implements EconomyController, Wrapper {
     }
 
     @Override
-    public Optional<Account> getAccount(OfflinePlayer player) {
+    public Optional<Account> getAccount(final OfflinePlayer player) {
         if (!economy.hasAccount(player)) return Optional.empty();
         return Optional.of(new WrappedAccount(null, economy, player));
     }
 
     @Override
-    public Optional<Account> getAccount(OfflinePlayer player, World world) {
+    public Optional<Account> getAccount(final OfflinePlayer player, final World world) {
         if (!economy.hasAccount(player, world.getName())) return Optional.empty();
         return Optional.of(new WrappedAccount(world, economy, player));
     }
 
     @Override
-    public Optional<Account> getAccount(UUID uuid) {
+    public Optional<Account> getAccount(final UUID uuid) {
         return getAccount(provider.getServer().getOfflinePlayer(uuid));
     }
 
     @Override
-    public Optional<Account> getAccount(UUID uuid, World world) {
+    public Optional<Account> getAccount(final UUID uuid, final World world) {
         return getAccount(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
-    public CompletableFuture<Account> createAccount(OfflinePlayer player) {
+    public CompletableFuture<Account> createAccount(final OfflinePlayer player) {
         return CompletableFuture.completedFuture(economy.createPlayerAccount(player))
                 .thenApply(account -> getAccount(player).orElseThrow());
     }
 
     @Override
-    public CompletableFuture<Account> createAccount(OfflinePlayer player, World world) {
+    public CompletableFuture<Account> createAccount(final OfflinePlayer player, final World world) {
         return CompletableFuture.completedFuture(economy.createPlayerAccount(player, world.getName()))
                 .thenApply(account -> getAccount(player, world).orElseThrow());
     }
 
     @Override
-    public CompletableFuture<Account> createAccount(UUID uuid) {
+    public CompletableFuture<Account> createAccount(final UUID uuid) {
         return createAccount(provider.getServer().getOfflinePlayer(uuid));
     }
 
     @Override
-    public CompletableFuture<Account> createAccount(UUID uuid, World world) {
+    public CompletableFuture<Account> createAccount(final UUID uuid, final World world) {
         return createAccount(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
-    public CompletableFuture<Optional<Account>> loadAccount(OfflinePlayer player) {
+    public CompletableFuture<Optional<Account>> loadAccount(final OfflinePlayer player) {
         return CompletableFuture.completedFuture(getAccount(player));
     }
 
     @Override
-    public CompletableFuture<Optional<Account>> loadAccount(OfflinePlayer player, World world) {
+    public CompletableFuture<Optional<Account>> loadAccount(final OfflinePlayer player, final World world) {
         return CompletableFuture.completedFuture(getAccount(player, world));
     }
 
     @Override
-    public CompletableFuture<Optional<Account>> loadAccount(UUID uuid) {
+    public CompletableFuture<Optional<Account>> loadAccount(final UUID uuid) {
         return loadAccount(provider.getServer().getOfflinePlayer(uuid));
     }
 
     @Override
-    public CompletableFuture<Optional<Account>> loadAccount(UUID uuid, World world) {
+    public CompletableFuture<Optional<Account>> loadAccount(final UUID uuid, final World world) {
         return loadAccount(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteAccount(UUID uuid) {
+    public CompletableFuture<Boolean> deleteAccount(final UUID uuid) {
         return CompletableFuture.completedFuture(false);
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteAccount(UUID uuid, World world) {
+    public CompletableFuture<Boolean> deleteAccount(final UUID uuid, final World world) {
         return CompletableFuture.completedFuture(false);
     }
 

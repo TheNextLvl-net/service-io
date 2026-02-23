@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class ServiceBankPlaceholderStore extends PlaceholderStore<BankController> {
-    public ServiceBankPlaceholderStore(Plugin plugin) {
+public final class ServiceBankPlaceholderStore extends PlaceholderStore<BankController> {
+    public ServiceBankPlaceholderStore(final Plugin plugin) {
         super(plugin, BankController.class);
     }
 
@@ -34,21 +34,21 @@ public class ServiceBankPlaceholderStore extends PlaceholderStore<BankController
 
         // %serviceio_bank_<world>%
         registerResolver("bank_%s", (provider, player, matcher) -> {
-            var world = plugin.getServer().getWorld(matcher.group(1));
+            final var world = plugin.getServer().getWorld(matcher.group(1));
             if (world == null) return null;
             return provider.getBank(player, world).map(Bank::getName).orElse("");
         });
 
         // %serviceio_bank_<world>_balance%
         registerResolver("bank_%s_balance", (provider, player, matcher) -> {
-            var world = plugin.getServer().getWorld(matcher.group(1));
+            final var world = plugin.getServer().getWorld(matcher.group(1));
             if (world == null) return null;
             return provider.getBank(player, world).map(Bank::getBalance).orElse(BigDecimal.ZERO).toPlainString();
         });
 
         // %serviceio_bank_<world>_balance_formatted%
         registerResolver("bank_%s_balance_formatted", (provider, player, matcher) -> {
-            var world = plugin.getServer().getWorld(matcher.group(1));
+            final var world = plugin.getServer().getWorld(matcher.group(1));
             if (world == null) return null;
             return provider.format(provider.getBank(player, world).map(Bank::getBalance).orElse(BigDecimal.ZERO));
         });
@@ -60,7 +60,7 @@ public class ServiceBankPlaceholderStore extends PlaceholderStore<BankController
 
         // %serviceio_banks_<world>%
         registerResolver("banks_%s", (provider, player, matcher) -> {
-            var world = plugin.getServer().getWorld(matcher.group(1));
+            final var world = plugin.getServer().getWorld(matcher.group(1));
             if (world == null) return null;
             return provider.getBanks(world).stream().map(Bank::getName).collect(Collectors.joining(", "));
         });

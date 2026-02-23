@@ -77,7 +77,7 @@ public interface EconomyController extends Controller {
      * @param player the player for whom the account will be retrieved
      * @return an optional containing the account, or empty
      */
-    default Optional<Account> getAccount(OfflinePlayer player) {
+    default Optional<Account> getAccount(final OfflinePlayer player) {
         return getAccount(player.getUniqueId());
     }
 
@@ -88,7 +88,7 @@ public interface EconomyController extends Controller {
      * @param world  the world in which the account is located
      * @return an optional containing the account, or empty
      */
-    default Optional<Account> getAccount(OfflinePlayer player, World world) {
+    default Optional<Account> getAccount(final OfflinePlayer player, final World world) {
         return getAccount(player.getUniqueId(), world);
     }
 
@@ -115,7 +115,7 @@ public interface EconomyController extends Controller {
      * @param player the player for whom the account will be retrieved
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    default CompletableFuture<Optional<Account>> tryGetAccount(OfflinePlayer player) {
+    default CompletableFuture<Optional<Account>> tryGetAccount(final OfflinePlayer player) {
         return getAccount(player)
                 .map(account -> CompletableFuture.completedFuture(Optional.of(account)))
                 .orElseGet(() -> loadAccount(player));
@@ -128,7 +128,7 @@ public interface EconomyController extends Controller {
      * @param world  the world in which the account is located
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    default CompletableFuture<Optional<Account>> tryGetAccount(OfflinePlayer player, World world) {
+    default CompletableFuture<Optional<Account>> tryGetAccount(final OfflinePlayer player, final World world) {
         return getAccount(player, world)
                 .map(account -> CompletableFuture.completedFuture(Optional.of(account)))
                 .orElseGet(() -> loadAccount(player, world));
@@ -140,7 +140,7 @@ public interface EconomyController extends Controller {
      * @param uuid the uuid of the account to be retrieved
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    default CompletableFuture<Optional<Account>> tryGetAccount(UUID uuid) {
+    default CompletableFuture<Optional<Account>> tryGetAccount(final UUID uuid) {
         return getAccount(uuid)
                 .map(account -> CompletableFuture.completedFuture(Optional.of(account)))
                 .orElseGet(() -> loadAccount(uuid));
@@ -153,7 +153,7 @@ public interface EconomyController extends Controller {
      * @param world the world in which the account is located
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    default CompletableFuture<Optional<Account>> tryGetAccount(UUID uuid, World world) {
+    default CompletableFuture<Optional<Account>> tryGetAccount(final UUID uuid, final World world) {
         return getAccount(uuid, world)
                 .map(account -> CompletableFuture.completedFuture(Optional.of(account)))
                 .orElseGet(() -> loadAccount(uuid, world));
@@ -166,7 +166,7 @@ public interface EconomyController extends Controller {
      * @return a CompletableFuture that will complete with the created account
      * @throws IllegalStateException if a similar account already exists
      */
-    default CompletableFuture<Account> createAccount(OfflinePlayer player) {
+    default CompletableFuture<Account> createAccount(final OfflinePlayer player) {
         return createAccount(player.getUniqueId());
     }
 
@@ -177,7 +177,7 @@ public interface EconomyController extends Controller {
      * @param world  the world in which the player's account will be created
      * @return a CompletableFuture that will complete with the created account
      */
-    default CompletableFuture<Account> createAccount(OfflinePlayer player, World world) {
+    default CompletableFuture<Account> createAccount(final OfflinePlayer player, final World world) {
         return createAccount(player.getUniqueId(), world);
     }
 
@@ -204,7 +204,7 @@ public interface EconomyController extends Controller {
      * @param player the player for whom the account will be retrieved
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    default CompletableFuture<Optional<Account>> loadAccount(OfflinePlayer player) {
+    default CompletableFuture<Optional<Account>> loadAccount(final OfflinePlayer player) {
         return loadAccount(player.getUniqueId());
     }
 
@@ -215,7 +215,7 @@ public interface EconomyController extends Controller {
      * @param world  the world in which the account is located
      * @return a CompletableFuture that will complete with the retrieved account
      */
-    default CompletableFuture<Optional<Account>> loadAccount(OfflinePlayer player, World world) {
+    default CompletableFuture<Optional<Account>> loadAccount(final OfflinePlayer player, final World world) {
         return loadAccount(player.getUniqueId(), world);
     }
 
@@ -242,7 +242,7 @@ public interface EconomyController extends Controller {
      * @param account the account to be deleted
      * @return a CompletableFuture that will complete when the account is deleted
      */
-    default CompletableFuture<Boolean> deleteAccount(Account account) {
+    default CompletableFuture<Boolean> deleteAccount(final Account account) {
         return account.getWorld()
                 .map(world -> deleteAccount(account.getOwner(), world))
                 .orElseGet(() -> deleteAccount(account.getOwner()));
@@ -254,7 +254,7 @@ public interface EconomyController extends Controller {
      * @param player the player whose account will be deleted
      * @return a CompletableFuture that will complete when the account is deleted
      */
-    default CompletableFuture<Boolean> deleteAccount(OfflinePlayer player) {
+    default CompletableFuture<Boolean> deleteAccount(final OfflinePlayer player) {
         return deleteAccount(player.getUniqueId());
     }
 
@@ -265,7 +265,7 @@ public interface EconomyController extends Controller {
      * @param world  the world in which the player's account exists
      * @return a CompletableFuture that will complete when the account is deleted
      */
-    default CompletableFuture<Boolean> deleteAccount(OfflinePlayer player, World world) {
+    default CompletableFuture<Boolean> deleteAccount(final OfflinePlayer player, final World world) {
         return deleteAccount(player.getUniqueId(), world);
     }
 

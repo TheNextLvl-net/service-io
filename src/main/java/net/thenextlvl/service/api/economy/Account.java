@@ -57,7 +57,7 @@ public interface Account extends Comparable<Account> {
      * less than, equal to, or greater than the specified account
      */
     @Override
-    default int compareTo(Account account) {
+    default int compareTo(final Account account) {
         return getBalance().compareTo(account.getBalance());
     }
 
