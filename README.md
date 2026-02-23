@@ -1,4 +1,4 @@
-# ServiceIO
+# ServiceIO – Full Replacement for Vault
 
 A modern, drop-in replacement for Vault that offers enhanced functionality,
 better performance, and seamless integration across plugins.
@@ -19,8 +19,7 @@ better performance, and seamless integration across plugins.
 
 You can find a list of all known incompatible plugins [here](https://github.com/TheNextLvl-net/service-io/issues/62).
 
-If you encounter a plugin that doesn't recognize ServiceIO as Vault and is not listed,<br>
-report it by creating a new issue
+If you encounter a plugin that doesn't recognize ServiceIO as Vault and is not listed, report it by creating a new issue
 [here](https://github.com/TheNextLvl-net/service-io/issues/new?template=incompatible_plugin.yml).
 
 [Download now](https://modrinth.com/project/MNPyHOe7#download)
