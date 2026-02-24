@@ -28,7 +28,7 @@ dependencies {
     implementation("net.thenextlvl:i18n:1.2.0")
 
     implementation("dev.faststats.metrics:bukkit:0.14.0")
-    implementation("org.bstats:bstats-bukkit:3.2.1-SNAPSHOT")
+    implementation("org.bstats:bstats-bukkit:3.2.1")
 
     implementation(project(":providers:citizens"))
     implementation(project(":providers:decent-holograms"))
