@@ -1,8 +1,8 @@
 package net.thenextlvl.service;
 
 import dev.faststats.bukkit.BukkitMetrics;
-import dev.faststats.core.chart.Chart;
-import dev.faststats.core.chart.ChartId;
+import dev.faststats.core.data.Metric;
+import dev.faststats.core.data.SourceId;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
 import net.milkbowl.vault.Vault;
@@ -45,13 +45,13 @@ public final class ServicePlugin extends Vault {
             .build();
 
     private final dev.faststats.core.Metrics fastStats = BukkitMetrics.factory()
-            .addChart(createChart(BankController.class, BankController::getName, "bank_providers"))
-            .addChart(createChart(GroupController.class, GroupController::getName, "group_providers"))
-            .addChart(createChart(ChatController.class, ChatController::getName, "chat_providers"))
-            .addChart(createChart(EconomyController.class, EconomyController::getName, "economy_providers"))
-            .addChart(createChart(PermissionController.class, PermissionController::getName, "permission_providers"))
-            .addChart(createChart(HologramController.class, HologramController::getName, "hologram_providers"))
-            .addChart(createChart(CharacterController.class, CharacterController::getName, "npc_providers"))
+            .addMetric(createChart(BankController.class, BankController::getName, "bank_providers"))
+            .addMetric(createChart(GroupController.class, GroupController::getName, "group_providers"))
+            .addMetric(createChart(ChatController.class, ChatController::getName, "chat_providers"))
+            .addMetric(createChart(EconomyController.class, EconomyController::getName, "economy_providers"))
+            .addMetric(createChart(PermissionController.class, PermissionController::getName, "permission_providers"))
+            .addMetric(createChart(HologramController.class, HologramController::getName, "hologram_providers"))
+            .addMetric(createChart(CharacterController.class, CharacterController::getName, "npc_providers"))
             .errorTracker(ServiceBootstrapper.ERROR_TRACKER)
             .token("f7e1aef24e2f8fe48abfb84ccfae5163")
             .create(this);
@@ -111,8 +111,8 @@ public final class ServicePlugin extends Vault {
         metrics.addCustomChart(new SimplePie(chartId, () -> loaded != null ? function.apply(loaded) : "None"));
     }
 
-    private <T> Chart<String[]> createChart(final Class<T> service, final Function<T, String> function, @ChartId final String chartId) {
-        return Chart.stringArray(chartId, () -> {
+    private <T> Metric<String[]> createChart(final Class<T> service, final Function<T, String> function, @SourceId final String chartId) {
+        return Metric.stringArray(chartId, () -> {
             return getServer().getServicesManager().getRegistrations(service).stream()
                     .map(RegisteredServiceProvider::getProvider)
                     .map(function)
