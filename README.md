@@ -26,4 +26,4 @@ If you encounter a plugin that doesn't recognize ServiceIO as Vault and is not l
 
 ---
 
-[![Usage](https://faststats.dev/embed/002e22bf-43b4-472f-a4df-864e0a0d54c6?w=1012)](https://faststats.dev/project/service-io)
+[![Usage](https://faststats.dev/embed/default:efdf3cff-84d3-46c5-8591-95b89a1926ad:servers-and-players?w=1012)](https://faststats.dev/project/service-io)
