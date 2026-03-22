@@ -2,7 +2,6 @@ package net.thenextlvl.service.api.character;
 
 import net.kyori.adventure.key.Key;
 import net.thenextlvl.service.api.capability.Capability;
-import org.jspecify.annotations.NullMarked;
 
 import java.lang.Character;
 

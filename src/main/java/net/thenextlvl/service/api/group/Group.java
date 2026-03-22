@@ -3,7 +3,6 @@ package net.thenextlvl.service.api.group;
 import net.thenextlvl.service.api.model.Display;
 import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.bukkit.World;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 import java.util.OptionalInt;

@@ -5,7 +5,6 @@ import net.thenextlvl.service.api.character.CharacterCapability;
 import net.thenextlvl.service.api.character.CharacterController;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents an event triggered when a player interacts with a character.

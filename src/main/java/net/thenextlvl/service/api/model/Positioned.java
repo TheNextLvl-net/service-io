@@ -4,11 +4,13 @@ import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * The Positioned interface represents an object with a specific position and orientation within a world.
  * It provides methods to retrieve coordinates, rotation, and associated world and server information.
  */
+@NullUnmarked
 public interface Positioned {
     /**
      * Retrieves the location of the object.

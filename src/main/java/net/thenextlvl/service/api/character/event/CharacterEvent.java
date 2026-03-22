@@ -4,7 +4,6 @@ import net.thenextlvl.service.api.character.Character;
 import net.thenextlvl.service.api.character.CharacterController;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents a base class for events related to a character in the game.

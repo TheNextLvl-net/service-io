@@ -2,7 +2,6 @@ package net.thenextlvl.service.api.group;
 
 import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.jetbrains.annotations.Unmodifiable;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.Set;
 

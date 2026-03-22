@@ -2,7 +2,6 @@ package net.thenextlvl.service.api.hologram;
 
 import net.kyori.adventure.key.Key;
 import net.thenextlvl.service.api.capability.Capability;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * An enum representing various capabilities a {@link Hologram} might possess.

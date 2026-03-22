@@ -116,8 +116,8 @@ final class ServiceInfoCommand extends SimpleCommand {
                 .map(Controller::getName);
         final var vaultRegistrations = vault != null && mapper != null
                 ? plugin.getServer().getServicesManager().getRegistrations(vault).stream()
-                .map(RegisteredServiceProvider::getProvider)
-                .map(mapper) : Stream.<String>empty();
+                  .map(RegisteredServiceProvider::getProvider)
+                  .map(mapper) : Stream.<String>empty();
         return Stream.concat(registrations, vaultRegistrations)
                 .filter(provider -> !provider.equals(name))
                 .distinct()

@@ -2,7 +2,8 @@ package net.thenextlvl.service.placeholder.api;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.plugin.Plugin;import org.jspecify.annotations.NullMarked;
+import org.bukkit.plugin.Plugin;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
@@ -28,12 +29,12 @@ public final class PlaceholderExpansionBuilder extends PlaceholderExpansion {
         this(plugin, "serviceio");
     }
 
-    public final PlaceholderExpansionBuilder registerStore(final PlaceholderStore<?> store) {
+    public PlaceholderExpansionBuilder registerStore(final PlaceholderStore<?> store) {
         if (store.isEnabled()) stores.add(store);
         return this;
     }
 
-    public final PlaceholderExpansionBuilder setAuthors(final Collection<String> authors) {
+    public PlaceholderExpansionBuilder setAuthors(final Collection<String> authors) {
         this.author = String.join(", ", authors);
         return this;
     }
@@ -49,12 +50,12 @@ public final class PlaceholderExpansionBuilder extends PlaceholderExpansion {
     }
 
     @Override
-    public final String getIdentifier() {
+    public String getIdentifier() {
         return identifier;
     }
 
     @Override
-    public final String getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
@@ -64,15 +65,15 @@ public final class PlaceholderExpansionBuilder extends PlaceholderExpansion {
     }
 
     @Override
-    public final boolean persist() {
+    public boolean persist() {
         return true;
     }
 
     @Override
-    public final @Nullable String onRequest(@Nullable final OfflinePlayer player, final String params) {
+    public @Nullable String onRequest(@Nullable final OfflinePlayer player, final String params) {
         return player == null ? null : stores.stream()
-                .map(store -> store.resolve(player, params))
-                .filter(Objects::nonNull)
-                .findAny().orElse(null);
+                                       .map(store -> store.resolve(player, params))
+                                       .filter(Objects::nonNull)
+                                       .findAny().orElse(null);
     }
 }

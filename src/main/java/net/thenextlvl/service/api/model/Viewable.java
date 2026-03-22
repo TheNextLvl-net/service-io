@@ -2,7 +2,6 @@ package net.thenextlvl.service.api.model;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Unmodifiable;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
 import java.util.Set;

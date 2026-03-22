@@ -5,7 +5,6 @@ import net.thenextlvl.service.api.character.CharacterCapability;
 import net.thenextlvl.service.api.character.CharacterController;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents an event triggered when an entity damages a character.

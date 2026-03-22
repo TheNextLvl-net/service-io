@@ -242,9 +242,9 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
         final var attribute = plugin.getAttributeManager().getAttributeByName(EntityType.PLAYER, "invisible");
 
         return plugin.getFancyNpcConfig().isSkipInvisibleNpcs()
-               && npc().getData().getAttributes().getOrDefault(attribute, "false").equalsIgnoreCase("true")
-               && !npc().getData().isGlowing()
-               && npc().getData().getEquipment().isEmpty();
+                && npc().getData().getAttributes().getOrDefault(attribute, "false").equalsIgnoreCase("true")
+                && !npc().getData().isGlowing()
+                && npc().getData().getEquipment().isEmpty();
     }
 
     @Override

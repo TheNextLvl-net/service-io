@@ -1,6 +1,5 @@
 package net.thenextlvl.service.api.model;
 
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;

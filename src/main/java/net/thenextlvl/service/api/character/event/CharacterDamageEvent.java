@@ -5,7 +5,6 @@ import net.thenextlvl.service.api.character.CharacterCapability;
 import net.thenextlvl.service.api.character.CharacterController;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * The CharacterDamageEvent represents an event triggered when a character takes damage.
