@@ -11,7 +11,6 @@ import java.util.Set;
  * It extends the {@link PermissionHolder} interface.
  * It provides methods to retrieve and manipulate groups for the holder.
  */
-@NullMarked
 public interface GroupHolder extends PermissionHolder {
     /**
      * Retrieves the groups associated with the permission holder.

@@ -14,7 +14,6 @@ import java.util.Set;
  *
  * @param <T> the type of {@link Capability} supported by this provider
  */
-@NullMarked
 public interface CapabilityProvider<T extends Capability> {
     /**
      * Retrieves an unmodifiable set of all available capabilities supported by the capability provider.

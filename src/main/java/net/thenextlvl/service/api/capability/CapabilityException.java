@@ -8,7 +8,6 @@ import org.jspecify.annotations.Nullable;
  * This exception is typically thrown when there is an issue or unsupported operation
  * associated with a particular capability in the system.
  */
-@NullMarked
 public class CapabilityException extends RuntimeException {
     private final Capability capability;
 

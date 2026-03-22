@@ -13,7 +13,6 @@ import java.util.UUID;
  * It extends the Account interface, providing additional functionality specific
  * to banking, such as depositing or withdrawing money.
  */
-@NullMarked
 public interface Bank extends Account {
     /**
      * Retrieves a set of UUIDs representing the members of the bank.

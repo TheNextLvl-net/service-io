@@ -11,7 +11,6 @@ import java.util.Set;
  * The Viewable interface represents an object that can be viewed or tracked by players within a specific range.
  * It provides methods to manage visibility, track players, and modify how the object is displayed.
  */
-@NullMarked
 public interface Viewable extends Positioned {
     /**
      * Retrieves an unmodifiable set of players currently tracking this viewable object.

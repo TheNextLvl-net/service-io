@@ -15,7 +15,6 @@ import java.util.concurrent.CompletableFuture;
 /**
  * The AccountController interface provides methods to create, retrieve and delete accounts.
  */
-@NullMarked
 public interface EconomyController extends Controller {
     /**
      * Formats the specified amount as a string.

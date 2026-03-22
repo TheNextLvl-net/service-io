@@ -16,7 +16,6 @@ import org.jspecify.annotations.NullMarked;
  * <p>
  * This event will only be fired for providers that support the {@link CharacterCapability#HEALTH} capability.
  */
-@NullMarked
 public class EntityDamageCharacterEvent extends CharacterDamageEvent {
     private final Entity attacker;
     private final boolean critical;

@@ -8,7 +8,6 @@ import org.jspecify.annotations.NullMarked;
 import java.util.Optional;
 import java.util.Set;
 
-@NullMarked
 public interface ChatProfile extends InfoNode, Display {
     /**
      * Retrieves the name associated with the chat profile.

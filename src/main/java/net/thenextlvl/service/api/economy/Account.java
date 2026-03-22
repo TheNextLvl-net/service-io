@@ -10,7 +10,6 @@ import java.util.UUID;
 /**
  * Account is an interface representing a financial account.
  */
-@NullMarked
 public interface Account extends Comparable<Account> {
     /**
      * Deposits the specified amount into the account balance.

@@ -7,7 +7,6 @@ import org.jspecify.annotations.NullMarked;
  * A Persistable object provides functionalities to check its persistent state,
  * retrieve its name, enable or disable persistence, and persist its current state.
  */
-@NullMarked
 public interface Persistable {
     /**
      * Retrieves the name of the object.

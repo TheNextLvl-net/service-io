@@ -9,7 +9,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Unmodifiable;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -22,7 +21,6 @@ import java.util.UUID;
  * It includes functionality for creating, spawning, retrieving, and checking
  * entities as NPCs, along with capability management.
  */
-@NullMarked
 public interface CharacterController extends CapabilityProvider<CharacterCapability>, Controller {
     /**
      * Creates a character with the given name and entity type.

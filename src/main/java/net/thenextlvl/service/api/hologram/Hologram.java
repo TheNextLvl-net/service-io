@@ -17,7 +17,6 @@ import java.util.concurrent.CompletableFuture;
  * in a virtual 3D space, providing interactivity functionality such as visibility and teleportation.
  * This interface incorporates persistence, viewability, and iterable capabilities.
  */
-@NullMarked
 public interface Hologram extends Persistable, Viewable, Iterable<HologramLine<?>> {
     /**
      * Asynchronously teleports the hologram to the specified location.

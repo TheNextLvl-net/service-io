@@ -13,7 +13,6 @@ import java.util.OptionalInt;
  * a display name, prefix, and suffix. It provides methods to manage these attributes as well as the
  * group weight and associated world.
  */
-@NullMarked
 public interface Group extends PermissionHolder, Display {
     /**
      * Retrieves the world associated with the group.

@@ -17,7 +17,6 @@ import org.jspecify.annotations.NullMarked;
  * Subclasses can make use of these common properties while implementing specific
  * character-related event functionalities.
  */
-@NullMarked
 public abstract class CharacterEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final CharacterController controller;

@@ -12,7 +12,6 @@ import java.util.Optional;
  *
  * @param <T> the type of content associated with the hologram line
  */
-@NullMarked
 public interface HologramLine<T> extends Positioned {
     /**
      * Retrieves the type of the hologram line.

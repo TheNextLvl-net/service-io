@@ -16,7 +16,6 @@ import java.util.concurrent.CompletableFuture;
  * It allows creating, loading, deleting, and retrieving groups and group holders.
  * Operations can be performed asynchronously using CompletableFutures.
  */
-@NullMarked
 public interface GroupController extends Controller {
     /**
      * Creates a new group with the given name.

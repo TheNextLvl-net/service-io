@@ -20,7 +20,6 @@ import org.jspecify.annotations.NullMarked;
  * <p>
  * This event will only be fired for providers that support the {@link CharacterCapability#INTERACTIONS} capability.
  */
-@NullMarked
 public class PlayerInteractCharacterEvent extends CharacterEvent implements Cancellable {
     private final Player player;
     private final InteractionType type;

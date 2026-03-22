@@ -4,7 +4,6 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 
-@NullMarked
 public interface Controller {
     /**
      * Retrieves the plugin associated with the controller.

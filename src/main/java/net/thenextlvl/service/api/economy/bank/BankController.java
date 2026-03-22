@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-@NullMarked
 public interface BankController extends Controller {
     /**
      * Formats the specified amount as a string.
