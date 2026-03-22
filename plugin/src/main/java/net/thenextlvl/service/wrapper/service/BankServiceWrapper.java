@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.Set;
@@ -39,23 +40,13 @@ public final class BankServiceWrapper implements BankController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<Bank> createBank(final OfflinePlayer player, final String name) {
+    public CompletableFuture<Bank> createBank(final OfflinePlayer player, final String name, @Nullable final World world) {
         return CompletableFuture.completedFuture(economy.createBank(name, player))
                 .thenApply(bank -> getBank(name).orElseThrow());
     }
 
     @Override
-    public CompletableFuture<Bank> createBank(final OfflinePlayer player, final String name, final World world) {
-        return createBank(player, name);
-    }
-
-    @Override
-    public CompletableFuture<Bank> createBank(final UUID uuid, final String name) {
-        return createBank(provider.getServer().getOfflinePlayer(uuid), name);
-    }
-
-    @Override
-    public CompletableFuture<Bank> createBank(final UUID uuid, final String name, final World world) {
+    public CompletableFuture<Bank> createBank(final UUID uuid, final String name, @Nullable final World world) {
         return createBank(provider.getServer().getOfflinePlayer(uuid), name, world);
     }
 
@@ -65,22 +56,12 @@ public final class BankServiceWrapper implements BankController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<Bank> loadBank(final UUID uuid) {
-        return CompletableFuture.completedFuture(getBank(uuid).orElse(null));
-    }
-
-    @Override
-    public CompletableFuture<Bank> loadBank(final UUID uuid, final World world) {
+    public CompletableFuture<Bank> loadBank(final UUID uuid, @Nullable final World world) {
         return CompletableFuture.completedFuture(getBank(uuid, world).orElse(null));
     }
 
     @Override
-    public CompletableFuture<@Unmodifiable Set<Bank>> loadBanks() {
-        return CompletableFuture.completedFuture(getBanks());
-    }
-
-    @Override
-    public CompletableFuture<@Unmodifiable Set<Bank>> loadBanks(final World world) {
+    public CompletableFuture<@Unmodifiable Set<Bank>> loadBanks(@Nullable final World world) {
         return CompletableFuture.completedFuture(getBanks(world));
     }
 
@@ -91,39 +72,24 @@ public final class BankServiceWrapper implements BankController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteBank(final UUID uuid) {
-        return deleteBank(getBank(uuid).orElseThrow().getName());
-    }
-
-    @Override
-    public CompletableFuture<Boolean> deleteBank(final UUID uuid, final World world) {
+    public CompletableFuture<Boolean> deleteBank(final UUID uuid, @Nullable final World world) {
         return deleteBank(getBank(uuid, world).orElseThrow().getName());
     }
 
     @Override
-    public @Unmodifiable Set<Bank> getBanks() {
+    public @Unmodifiable Set<Bank> getBanks(@Nullable final World world) {
         return economy.getBanks().stream()
-                .map(bank -> new WrappedBank(bank, null, economy, provider))
+                .map(bank -> new WrappedBank(bank, economy, provider))
                 .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
-    public @Unmodifiable Set<Bank> getBanks(final World world) {
-        return getBanks();
-    }
-
-    @Override
     public Optional<Bank> getBank(final String name) {
-        return Optional.of(new WrappedBank(name, null, economy, provider));
+        return Optional.of(new WrappedBank(name, economy, provider));
     }
 
     @Override
-    public Optional<Bank> getBank(final UUID uuid) {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<Bank> getBank(final UUID uuid, final World world) {
+    public Optional<Bank> getBank(final UUID uuid, @Nullable final World world) {
         return Optional.empty();
     }
 
