@@ -16,13 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 @DoNotWrap
 @NullMarked
-public final class SuperPermsPermissionController implements PermissionController {
-    private final Plugin plugin;
-
-    public SuperPermsPermissionController(final Plugin plugin) {
-        this.plugin = plugin;
-    }
-
+public record SuperPermsPermissionController(Plugin plugin) implements PermissionController {
     @Override
     public CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player, @Nullable final World world) {
         return CompletableFuture.completedFuture(getPermissionHolder(player.getPlayer()).orElse(null));

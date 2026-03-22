@@ -10,6 +10,7 @@ import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.group.GroupHolder;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Optional;
@@ -53,7 +54,7 @@ public record LuckPermsPermissionHolder(User user, QueryOptions options) impleme
     }
 
     @Override
-    public <T> Optional<T> getInfoNode(final String key, final Function<String, T> mapper) {
+    public <T> Optional<T> getInfoNode(final String key, final Function<@Nullable String, @Nullable T> mapper) {
         return user().getCachedData().getMetaData(options()).getMetaValue(key, mapper);
     }
 

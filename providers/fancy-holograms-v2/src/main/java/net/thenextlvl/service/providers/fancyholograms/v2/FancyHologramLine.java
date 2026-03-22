@@ -10,6 +10,7 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.joml.Vector3f;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -128,7 +129,7 @@ abstract class FancyHologramLine<D extends DisplayHologramData, T> implements Ho
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(@Nullable final Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         final FancyHologramLine<?, ?> that = (FancyHologramLine<?, ?>) o;
         return Objects.equals(data, that.data);

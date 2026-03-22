@@ -151,7 +151,7 @@ public record LuckPermsGroup(
     }
 
     @Override
-    public <T> Optional<T> getInfoNode(final String key, final Function<String, T> mapper) {
+    public <T> Optional<T> getInfoNode(final String key, final Function<@Nullable String, @Nullable T> mapper) {
         return group().getCachedData().getMetaData(options()).getMetaValue(key, mapper);
     }
 
