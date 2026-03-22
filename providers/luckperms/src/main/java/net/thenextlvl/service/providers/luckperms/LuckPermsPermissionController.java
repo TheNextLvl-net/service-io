@@ -10,6 +10,7 @@ import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -32,7 +33,8 @@ public final class LuckPermsPermissionController implements PermissionController
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid, final World world) {
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid, @Nullable final World world) {
+        if (world == null) return loadPermissionHolder(uuid);
         return luckPerms.getUserManager().loadUser(uuid).thenApply(user -> {
             final var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
             return new LuckPermsPermissionHolder(user, context);
@@ -46,7 +48,8 @@ public final class LuckPermsPermissionController implements PermissionController
     }
 
     @Override
-    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid, final World world) {
+    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid, @Nullable final World world) {
+        if (world == null) return getPermissionHolder(uuid);
         return Optional.ofNullable(luckPerms.getUserManager().getUser(uuid)).map(user -> {
             final var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
             return new LuckPermsPermissionHolder(user, context);

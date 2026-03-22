@@ -30,11 +30,12 @@ public final class WrappedPermissionHolder implements PermissionHolder {
     @Override
     public @Unmodifiable Map<String, Boolean> getPermissions() {
         final var player = holder.getPlayer();
-        return player != null ? player.getEffectivePermissions().stream()
-                .collect(Collectors.toUnmodifiableMap(
-                        PermissionAttachmentInfo::getPermission,
-                        PermissionAttachmentInfo::getValue
-                )) : Map.of();
+        return player == null ? Map.of()
+                : player.getEffectivePermissions().stream()
+                  .collect(Collectors.toUnmodifiableMap(
+                          PermissionAttachmentInfo::getPermission,
+                          PermissionAttachmentInfo::getValue
+                  ));
     }
 
     @Override
