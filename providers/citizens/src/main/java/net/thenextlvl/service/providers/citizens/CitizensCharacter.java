@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public final class CitizensCharacter<T extends Entity> implements Character<T> {
-    protected final NPC npc;
+    private final NPC npc;
 
     public CitizensCharacter(final NPC npc) {
         this.npc = npc;
@@ -277,7 +277,7 @@ public final class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(@Nullable final Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         final CitizensCharacter<?> that = (CitizensCharacter<?>) o;
         return Objects.equals(npc, that.npc);

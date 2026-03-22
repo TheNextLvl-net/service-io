@@ -7,7 +7,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
@@ -19,7 +18,6 @@ import java.util.concurrent.CompletableFuture;
  *
  * @param <T> the type of the entity associated with this character
  */
-@NullMarked
 public interface Character<T extends Entity> extends Persistable, Viewable {
     /**
      * Asynchronously teleports the character to the specified location.

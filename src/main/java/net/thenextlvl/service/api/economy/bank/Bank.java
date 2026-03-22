@@ -3,7 +3,6 @@ package net.thenextlvl.service.api.economy.bank;
 import net.thenextlvl.service.api.economy.Account;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.Unmodifiable;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.Set;
 import java.util.UUID;
@@ -13,7 +12,6 @@ import java.util.UUID;
  * It extends the Account interface, providing additional functionality specific
  * to banking, such as depositing or withdrawing money.
  */
-@NullMarked
 public interface Bank extends Account {
     /**
      * Retrieves a set of UUIDs representing the members of the bank.

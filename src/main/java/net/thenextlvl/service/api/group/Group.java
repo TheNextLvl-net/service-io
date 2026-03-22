@@ -3,7 +3,6 @@ package net.thenextlvl.service.api.group;
 import net.thenextlvl.service.api.model.Display;
 import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.bukkit.World;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -13,7 +12,6 @@ import java.util.OptionalInt;
  * a display name, prefix, and suffix. It provides methods to manage these attributes as well as the
  * group weight and associated world.
  */
-@NullMarked
 public interface Group extends PermissionHolder, Display {
     /**
      * Retrieves the world associated with the group.

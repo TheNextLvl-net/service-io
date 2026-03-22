@@ -2,7 +2,6 @@ package net.thenextlvl.service.api.character;
 
 import net.kyori.adventure.key.Key;
 import net.thenextlvl.service.api.capability.Capability;
-import org.jspecify.annotations.NullMarked;
 
 import java.lang.Character;
 
@@ -19,7 +18,6 @@ import java.lang.Character;
  * Each capability is associated with a unique {@link Key} that acts as an
  * identifier for the capability.
  */
-@NullMarked
 public enum CharacterCapability implements Capability {
     /**
      * Represents the capability for a character to have a health attribute.

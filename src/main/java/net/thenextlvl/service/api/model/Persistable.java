@@ -1,13 +1,10 @@
 package net.thenextlvl.service.api.model;
 
-import org.jspecify.annotations.NullMarked;
-
 /**
  * Represents an object that can be persisted in a storage medium.
  * A Persistable object provides functionalities to check its persistent state,
  * retrieve its name, enable or disable persistence, and persist its current state.
  */
-@NullMarked
 public interface Persistable {
     /**
      * Retrieves the name of the object.

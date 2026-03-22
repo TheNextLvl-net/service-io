@@ -5,7 +5,6 @@ import net.thenextlvl.service.api.character.CharacterCapability;
 import net.thenextlvl.service.api.character.CharacterController;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents an event triggered when an entity damages a character.
@@ -16,7 +15,6 @@ import org.jspecify.annotations.NullMarked;
  * <p>
  * This event will only be fired for providers that support the {@link CharacterCapability#HEALTH} capability.
  */
-@NullMarked
 public class EntityDamageCharacterEvent extends CharacterDamageEvent {
     private final Entity attacker;
     private final boolean critical;

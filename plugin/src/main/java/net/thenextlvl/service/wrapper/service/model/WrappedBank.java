@@ -7,7 +7,6 @@ import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -18,14 +17,12 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public final class WrappedBank implements Bank {
-    private final @Nullable World world;
     private final Economy economy;
     private final Plugin provider;
     private final String name;
 
-    public WrappedBank(final String name, @Nullable final World world, final Economy economy, final Plugin provider) {
+    public WrappedBank(final String name, final Economy economy, final Plugin provider) {
         this.name = name;
-        this.world = world;
         this.economy = economy;
         this.provider = provider;
     }
@@ -47,7 +44,7 @@ public final class WrappedBank implements Bank {
 
     @Override
     public Optional<World> getWorld() {
-        return Optional.ofNullable(world);
+        return Optional.empty();
     }
 
     @Override
@@ -69,9 +66,9 @@ public final class WrappedBank implements Bank {
     @Override
     public @Unmodifiable Set<UUID> getMembers() {
         return Arrays.stream(provider.getServer().getOfflinePlayers())
-            .filter(player -> economy.isBankMember(name, player).transactionSuccess())
-            .map(OfflinePlayer::getUniqueId)
-            .collect(Collectors.toUnmodifiableSet());
+                .filter(player -> economy.isBankMember(name, player).transactionSuccess())
+                .map(OfflinePlayer::getUniqueId)
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override

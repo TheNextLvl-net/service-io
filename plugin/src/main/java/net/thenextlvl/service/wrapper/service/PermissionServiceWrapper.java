@@ -9,6 +9,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -25,42 +26,22 @@ public final class PermissionServiceWrapper implements PermissionController, Wra
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player) {
-        return CompletableFuture.completedFuture(new WrappedPermissionHolder(null, player, permission));
-    }
-
-    @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player, final World world) {
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player, @Nullable final World world) {
         return CompletableFuture.completedFuture(new WrappedPermissionHolder(world, player, permission));
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid) {
-        return loadPermissionHolder(provider.getServer().getOfflinePlayer(uuid));
-    }
-
-    @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid, final World world) {
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid, @Nullable final World world) {
         return loadPermissionHolder(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
-    public Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player) {
-        return Optional.of(new WrappedPermissionHolder(null, player, permission));
-    }
-
-    @Override
-    public Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player, final World world) {
+    public Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player, @Nullable final World world) {
         return Optional.of(new WrappedPermissionHolder(world, player, permission));
     }
 
     @Override
-    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid) {
-        return getPermissionHolder(provider.getServer().getOfflinePlayer(uuid));
-    }
-
-    @Override
-    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid, final World world) {
+    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid, @Nullable final World world) {
         return getPermissionHolder(provider.getServer().getOfflinePlayer(uuid), world);
     }
 

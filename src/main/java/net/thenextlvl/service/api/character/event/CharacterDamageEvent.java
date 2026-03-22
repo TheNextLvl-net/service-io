@@ -5,7 +5,6 @@ import net.thenextlvl.service.api.character.CharacterCapability;
 import net.thenextlvl.service.api.character.CharacterController;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * The CharacterDamageEvent represents an event triggered when a character takes damage.
@@ -15,7 +14,6 @@ import org.jspecify.annotations.NullMarked;
  * <p>
  * This event will only be fired for providers that support the {@link CharacterCapability#HEALTH} capability.
  */
-@NullMarked
 public class CharacterDamageEvent extends CharacterEvent implements Cancellable {
     private final EntityDamageEvent.DamageCause cause;
     private boolean cancelled;

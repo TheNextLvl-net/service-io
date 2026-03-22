@@ -63,7 +63,7 @@ public final class SuperPermsPermission extends Permission {
 
     @Override
     public boolean playerInGroup(@Nullable final String world, final String player, final String group) {
-		return playerHas(world, player, "groups." + group);
+        return playerHas(world, player, "groups." + group);
     }
 
     @Override

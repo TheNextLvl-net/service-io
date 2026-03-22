@@ -4,7 +4,6 @@ import net.thenextlvl.service.api.character.Character;
 import net.thenextlvl.service.api.character.CharacterController;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.jspecify.annotations.NullMarked;
 
 /**
  * Represents a base class for events related to a character in the game.
@@ -17,7 +16,6 @@ import org.jspecify.annotations.NullMarked;
  * Subclasses can make use of these common properties while implementing specific
  * character-related event functionalities.
  */
-@NullMarked
 public abstract class CharacterEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final CharacterController controller;

@@ -21,30 +21,22 @@ public final class GroupManagerPermissionController implements PermissionControl
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
 
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid) {
-        final var holder = groupManager.getWorldsHolder().getDefaultWorld();
-        return CompletableFuture.completedFuture(getHolder(holder, uuid).orElse(null));
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid, @Nullable final World world) {
+        return CompletableFuture.completedFuture(getPermissionHolder(uuid, world).orElse(null));
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid, final World world) {
-        final var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
-        return CompletableFuture.completedFuture(getHolder(holder, uuid).orElse(null));
-    }
-
-    @Override
-    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid) {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid, final World world) {
-        return Optional.empty();
+    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid, @Nullable final World world) {
+        final var holder = world != null
+                ? groupManager.getWorldsHolder().getWorldData(world.getName())
+                : groupManager.getWorldsHolder().getDefaultWorld();
+        return getHolder(holder, uuid);
     }
 
     private Optional<PermissionHolder> getHolder(@Nullable final WorldDataHolder holder, final UUID uuid) {
-        return holder != null ? Optional.ofNullable(holder.getUser(uuid.toString()))
-                .map(user -> new GroupManagerPermissionHolder(user, holder)) : Optional.empty();
+        if (holder == null) return Optional.empty();
+        return Optional.ofNullable(holder.getUser(uuid.toString()))
+                .map(user -> new GroupManagerPermissionHolder(user, holder));
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -69,7 +70,8 @@ public final class EconomyServiceWrapper implements EconomyController, Wrapper {
     }
 
     @Override
-    public Optional<Account> getAccount(final OfflinePlayer player, final World world) {
+    public Optional<Account> getAccount(final OfflinePlayer player, @Nullable final World world) {
+        if (world == null) return getAccount(player);
         if (!economy.hasAccount(player, world.getName())) return Optional.empty();
         return Optional.of(new WrappedAccount(world, economy, player));
     }
@@ -80,7 +82,7 @@ public final class EconomyServiceWrapper implements EconomyController, Wrapper {
     }
 
     @Override
-    public Optional<Account> getAccount(final UUID uuid, final World world) {
+    public Optional<Account> getAccount(final UUID uuid, @Nullable final World world) {
         return getAccount(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
@@ -91,7 +93,8 @@ public final class EconomyServiceWrapper implements EconomyController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<Account> createAccount(final OfflinePlayer player, final World world) {
+    public CompletableFuture<Account> createAccount(final OfflinePlayer player, @Nullable final World world) {
+        if (world == null) return createAccount(player);
         return CompletableFuture.completedFuture(economy.createPlayerAccount(player, world.getName()))
                 .thenApply(account -> getAccount(player, world).orElseThrow());
     }
@@ -102,7 +105,7 @@ public final class EconomyServiceWrapper implements EconomyController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<Account> createAccount(final UUID uuid, final World world) {
+    public CompletableFuture<Account> createAccount(final UUID uuid, @Nullable final World world) {
         return createAccount(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
@@ -112,7 +115,7 @@ public final class EconomyServiceWrapper implements EconomyController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<Optional<Account>> loadAccount(final OfflinePlayer player, final World world) {
+    public CompletableFuture<Optional<Account>> loadAccount(final OfflinePlayer player, @Nullable final World world) {
         return CompletableFuture.completedFuture(getAccount(player, world));
     }
 
@@ -122,17 +125,12 @@ public final class EconomyServiceWrapper implements EconomyController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<Optional<Account>> loadAccount(final UUID uuid, final World world) {
+    public CompletableFuture<Optional<Account>> loadAccount(final UUID uuid, @Nullable final World world) {
         return loadAccount(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteAccount(final UUID uuid) {
-        return CompletableFuture.completedFuture(false);
-    }
-
-    @Override
-    public CompletableFuture<Boolean> deleteAccount(final UUID uuid, final World world) {
+    public CompletableFuture<Boolean> deleteAccount(final UUID uuid, @Nullable final World world) {
         return CompletableFuture.completedFuture(false);
     }
 

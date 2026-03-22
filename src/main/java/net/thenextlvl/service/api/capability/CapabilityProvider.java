@@ -1,7 +1,6 @@
 package net.thenextlvl.service.api.capability;
 
 import org.jetbrains.annotations.Unmodifiable;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
 import java.util.Set;
@@ -14,7 +13,6 @@ import java.util.Set;
  *
  * @param <T> the type of {@link Capability} supported by this provider
  */
-@NullMarked
 public interface CapabilityProvider<T extends Capability> {
     /**
      * Retrieves an unmodifiable set of all available capabilities supported by the capability provider.

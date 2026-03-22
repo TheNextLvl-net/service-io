@@ -116,7 +116,7 @@ public record LuckPermsChatProfile(User user, QueryOptions options) implements C
     }
 
     @Override
-    public <T> Optional<T> getInfoNode(final String key, final Function<String, @Nullable T> mapper) {
+    public <T> Optional<T> getInfoNode(final String key, final Function<@Nullable String, @Nullable T> mapper) {
         return user().getCachedData().getMetaData(options()).getMetaValue(key, mapper);
     }
 

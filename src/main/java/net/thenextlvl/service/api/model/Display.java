@@ -1,7 +1,6 @@
 package net.thenextlvl.service.api.model;
 
 import org.jetbrains.annotations.Unmodifiable;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
@@ -10,7 +9,6 @@ import java.util.Optional;
 /**
  * The Display interface provides methods to manage display names, prefixes, and suffixes associated with an object.
  */
-@NullMarked
 public interface Display {
     /**
      * Retrieves the display name associated with the object.

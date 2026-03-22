@@ -37,7 +37,7 @@ body:
       description: A clear and concise description of what you expected to happen.
     validations:
       required: true
-      
+
   - type: input
     attributes:
       label: Error log (if applicable)
@@ -50,7 +50,7 @@ body:
       placeholder: "Example output: Essentials, PlotSquared, ServiceIO, VaultChatFormatter"
     validations:
       required: true
-      
+
   - type: input
     attributes:
       label: ServiceIO Version

@@ -2,7 +2,6 @@ package net.thenextlvl.service.api.model;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Unmodifiable;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
 import java.util.Set;
@@ -11,7 +10,6 @@ import java.util.Set;
  * The Viewable interface represents an object that can be viewed or tracked by players within a specific range.
  * It provides methods to manage visibility, track players, and modify how the object is displayed.
  */
-@NullMarked
 public interface Viewable extends Positioned {
     /**
      * Retrieves an unmodifiable set of players currently tracking this viewable object.

@@ -3,7 +3,6 @@ package net.thenextlvl.service.api.hologram;
 import net.thenextlvl.service.api.model.Positioned;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 
@@ -12,7 +11,6 @@ import java.util.Optional;
  *
  * @param <T> the type of content associated with the hologram line
  */
-@NullMarked
 public interface HologramLine<T> extends Positioned {
     /**
      * Retrieves the type of the hologram line.

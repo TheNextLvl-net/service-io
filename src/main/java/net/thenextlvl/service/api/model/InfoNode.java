@@ -1,6 +1,5 @@
 package net.thenextlvl.service.api.model;
 
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
@@ -11,7 +10,6 @@ import java.util.function.Function;
  * An information node is a key-value pair where both key and value are stored as string but can be retrieved as any object.
  * The value is retrieved as an Optional, allowing for a null-safe operation.
  */
-@NullMarked
 public interface InfoNode {
     /**
      * Retrieves the information node value associated with the given key.
