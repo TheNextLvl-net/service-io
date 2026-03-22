@@ -22,54 +22,32 @@ public final class GroupManagerChatController implements ChatController {
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player) {
-        return getProfile(player)
-                .map(CompletableFuture::completedFuture)
-                .orElseGet(() -> CompletableFuture.completedFuture(null));
-    }
-
-    @Override
-    public CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player, final World world) {
+    public CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player, @Nullable final World world) {
         return getProfile(player, world)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> CompletableFuture.completedFuture(null));
     }
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(final UUID uuid) {
-        return getProfile(uuid)
-                .map(CompletableFuture::completedFuture)
-                .orElseGet(() -> CompletableFuture.completedFuture(null));
-    }
-
-    @Override
-    public CompletableFuture<ChatProfile> loadProfile(final UUID uuid, final World world) {
+    public CompletableFuture<ChatProfile> loadProfile(final UUID uuid, @Nullable final World world) {
         return getProfile(uuid, world)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> CompletableFuture.completedFuture(null));
     }
 
     @Override
-    public Optional<ChatProfile> getProfile(final OfflinePlayer player) {
-        final var holder = groupManager.getWorldsHolder().getDefaultWorld();
+    public Optional<ChatProfile> getProfile(final OfflinePlayer player, @Nullable final World world) {
+        final var holder = world != null
+                ? groupManager.getWorldsHolder().getWorldData(world.getName())
+                : groupManager.getWorldsHolder().getDefaultWorld();
         return getProfile(holder, player.getUniqueId(), player.getName());
     }
 
     @Override
-    public Optional<ChatProfile> getProfile(final OfflinePlayer player, final World world) {
-        final var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
-        return getProfile(holder, player.getUniqueId(), player.getName());
-    }
-
-    @Override
-    public Optional<ChatProfile> getProfile(final UUID uuid) {
-        final var holder = groupManager.getWorldsHolder().getDefaultWorld();
-        return getProfile(holder, uuid, null);
-    }
-
-    @Override
-    public Optional<ChatProfile> getProfile(final UUID uuid, final World world) {
-        final var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
+    public Optional<ChatProfile> getProfile(final UUID uuid, @Nullable final World world) {
+        final var holder = world != null
+                ? groupManager.getWorldsHolder().getWorldData(world.getName())
+                : groupManager.getWorldsHolder().getDefaultWorld();
         return getProfile(holder, uuid, null);
     }
 
