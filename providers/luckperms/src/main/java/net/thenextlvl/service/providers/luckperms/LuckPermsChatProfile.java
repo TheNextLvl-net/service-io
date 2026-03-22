@@ -9,6 +9,7 @@ import net.luckperms.api.node.types.PrefixNode;
 import net.luckperms.api.node.types.SuffixNode;
 import net.luckperms.api.query.QueryOptions;
 import net.thenextlvl.service.api.chat.ChatProfile;
+import org.bukkit.World;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -20,7 +21,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @NullMarked
-public record LuckPermsChatProfile(User user, QueryOptions options) implements ChatProfile {
+public record LuckPermsChatProfile(User user, QueryOptions options, @Nullable World world) implements ChatProfile {
     @Override
     public Optional<String> getDisplayName() {
         return getInfoNode("DISPLAY_NAME");
@@ -49,6 +50,11 @@ public record LuckPermsChatProfile(User user, QueryOptions options) implements C
     @Override
     public Optional<String> getPrimaryGroup() {
         return Optional.of(user().getPrimaryGroup());
+    }
+
+    @Override
+    public Optional<World> getWorld() {
+        return Optional.ofNullable(world);
     }
 
     @Override

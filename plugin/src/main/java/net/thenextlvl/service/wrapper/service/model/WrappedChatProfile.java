@@ -51,6 +51,11 @@ public final class WrappedChatProfile implements ChatProfile {
     }
 
     @Override
+    public Optional<World> getWorld() {
+        return Optional.ofNullable(world);
+    }
+
+    @Override
     public Optional<String> getSuffix(final int priority) {
         return Optional.ofNullable(chat.getPlayerSuffix(world != null ? world.getName() : null, holder));
     }

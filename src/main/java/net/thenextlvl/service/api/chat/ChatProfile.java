@@ -2,6 +2,7 @@ package net.thenextlvl.service.api.chat;
 
 import net.thenextlvl.service.api.model.Display;
 import net.thenextlvl.service.api.model.InfoNode;
+import org.bukkit.World;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Optional;
@@ -23,6 +24,14 @@ public interface ChatProfile extends InfoNode, Display {
      * Returns an empty Optional if no primary group is set.
      */
     Optional<String> getPrimaryGroup();
+
+    /**
+     * Retrieves the world associated with the chat profile.
+     *
+     * @return An Optional containing the world of the chat profile.
+     * @since 3.0.0
+     */
+    Optional<World> getWorld();
 
     /**
      * Retrieves the name of the groups associated with the chat profile.

@@ -29,7 +29,7 @@ public final class LuckPermsChatController implements ChatController {
     @Override
     public CompletableFuture<ChatProfile> loadProfile(final UUID uuid) {
         return luckPerms.getUserManager().loadUser(uuid).thenApply(user ->
-                new LuckPermsChatProfile(user, QueryOptions.defaultContextualOptions()));
+                new LuckPermsChatProfile(user, QueryOptions.defaultContextualOptions(), null));
     }
 
     @Override
@@ -37,14 +37,14 @@ public final class LuckPermsChatController implements ChatController {
         if (world == null) return loadProfile(uuid);
         return luckPerms.getUserManager().loadUser(uuid).thenApply(user -> {
             final var options = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
-            return new LuckPermsChatProfile(user, options);
+            return new LuckPermsChatProfile(user, options, world);
         });
     }
 
     @Override
     public Optional<ChatProfile> getProfile(final UUID uuid) {
         return Optional.ofNullable(luckPerms.getUserManager().getUser(uuid)).map(user ->
-                new LuckPermsChatProfile(user, QueryOptions.defaultContextualOptions()));
+                new LuckPermsChatProfile(user, QueryOptions.defaultContextualOptions(), null));
     }
 
     @Override
@@ -52,7 +52,7 @@ public final class LuckPermsChatController implements ChatController {
         if (world == null) return getProfile(uuid);
         return Optional.ofNullable(luckPerms.getUserManager().getUser(uuid)).map(user -> {
             final var options = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
-            return new LuckPermsChatProfile(user, options);
+            return new LuckPermsChatProfile(user, options, world);
         });
     }
 

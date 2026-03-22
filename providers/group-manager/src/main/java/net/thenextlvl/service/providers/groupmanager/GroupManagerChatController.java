@@ -40,7 +40,7 @@ public final class GroupManagerChatController implements ChatController {
         final var holder = world != null
                 ? groupManager.getWorldsHolder().getWorldData(world.getName())
                 : groupManager.getWorldsHolder().getDefaultWorld();
-        return getProfile(holder, player.getUniqueId(), player.getName());
+        return getProfile(holder, world, player.getUniqueId(), player.getName());
     }
 
     @Override
@@ -48,13 +48,13 @@ public final class GroupManagerChatController implements ChatController {
         final var holder = world != null
                 ? groupManager.getWorldsHolder().getWorldData(world.getName())
                 : groupManager.getWorldsHolder().getDefaultWorld();
-        return getProfile(holder, uuid, null);
+        return getProfile(holder, world, uuid, null);
     }
 
-    private Optional<ChatProfile> getProfile(@Nullable final WorldDataHolder holder, final UUID uuid, @Nullable final String name) {
+    private Optional<ChatProfile> getProfile(@Nullable final WorldDataHolder holder, @Nullable final World world, final UUID uuid, @Nullable final String name) {
         if (holder == null) return Optional.empty();
         final var user = name != null ? holder.getUser(uuid.toString(), name) : holder.getUser(uuid.toString());
-        return user != null ? Optional.of(new GroupManagerChatProfile(user, holder)) : Optional.empty();
+        return user != null ? Optional.of(new GroupManagerChatProfile(user, holder, world)) : Optional.empty();
     }
 
     @Override
