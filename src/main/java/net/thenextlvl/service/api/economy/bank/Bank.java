@@ -10,35 +10,32 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * The Bank interface represents a financial entity that can be owned and hold members.
- * It extends the Account interface, providing additional functionality specific
- * to banking, such as depositing or withdrawing money.
+ * Represents a bank account that extends {@link Account} with ownership and membership management.
  *
- * @since 1.0.0
+ * @since 3.0.0
  */
 public interface Bank extends Account {
     /**
-     * Retrieves a set of UUIDs representing the members of the bank.
+     * Retrieves the name of the bank.
      *
-     * @return an unmodifiable set containing the UUIDs of the members.
-     * @apiNote does not contain the uuid of the owner
-     */
-    @Unmodifiable
-    Set<UUID> getMembers();
-
-    /**
-     * Retrieves the name associated with the bank.
-     *
-     * @return the name of the bank.
+     * @return the name of the bank
      */
     @Contract(pure = true)
     String getName();
 
     /**
+     * Retrieves the UUIDs of all members of the bank (excluding the owner).
+     *
+     * @return an unmodifiable set of member UUIDs
+     */
+    @Unmodifiable
+    Set<UUID> getMembers();
+
+    /**
      * Adds a member to the bank.
      *
-     * @param player the player to be added as a member
-     * @return {@code true} if the player was successfully added as a member, otherwise {@code false}
+     * @param player the player to add
+     * @return {@code true} if the player was added
      */
     default boolean addMember(final OfflinePlayer player) {
         return addMember(player.getUniqueId());
@@ -47,122 +44,108 @@ public interface Bank extends Account {
     /**
      * Adds a member to the bank.
      *
-     * @param uuid the uuid of the member to be added
-     * @return {@code true} if the member was successfully added, otherwise {@code false}
+     * @param uuid the UUID of the member to add
+     * @return {@code true} if the member was added
      */
     boolean addMember(UUID uuid);
 
     /**
-     * Checks if the specified player is a member of the bank.
+     * Checks if the specified player is a member (not the owner) of this bank.
      *
-     * @param player the player to check for membership
-     * @return {@code true} if the player is a member of the bank, otherwise {@code false}
-     * @apiNote returns {@code false} on the owner
+     * @param player the player to check
+     * @return {@code true} if the player is a member
      */
     default boolean isMember(final OfflinePlayer player) {
         return isMember(player.getUniqueId());
     }
 
     /**
-     * Checks if the specified uuid is associated with a member of the bank.
+     * Checks if the specified UUID is a member (not the owner) of this bank.
      *
-     * @param uuid the uuid of the member to check for membership
-     * @return {@code true} if the uuid corresponds to a member of the bank, otherwise {@code false}
-     * @apiNote returns {@code false} on the owner
+     * @param uuid the UUID to check
+     * @return {@code true} if the UUID corresponds to a member
      */
     boolean isMember(UUID uuid);
 
     /**
      * Removes a member from the bank.
      *
-     * @param player the player to be removed as a member
-     * @return {@code true} if the member was successfully removed, otherwise {@code false}
+     * @param player the player to remove
+     * @return {@code true} if the member was removed
      */
     default boolean removeMember(final OfflinePlayer player) {
         return removeMember(player.getUniqueId());
     }
 
     /**
-     * Removes a member from the bank using the specified uuid.
+     * Removes a member from the bank.
      *
-     * @param uuid the uuid of the member to be removed
-     * @return {@code true} if the member was successfully removed, otherwise {@code false}
+     * @param uuid the UUID of the member to remove
+     * @return {@code true} if the member was removed
      */
     boolean removeMember(UUID uuid);
 
     /**
-     * Sets the specified player as the owner of the bank.
+     * Sets the owner of the bank.
      *
-     * @param player the player to be set as the owner
-     * @return {@code true} if the player was successfully set as the owner, otherwise {@code false}
+     * @param player the player to set as owner
+     * @return {@code true} if the owner was changed
      */
     default boolean setOwner(final OfflinePlayer player) {
         return setOwner(player.getUniqueId());
     }
 
     /**
-     * Sets the owner of the bank to the specified uuid.
+     * Sets the owner of the bank.
      *
-     * @param uuid the uuid of the new owner
-     * @return {@code true} if the owner was successfully set, otherwise {@code false}
+     * @param uuid the UUID of the new owner
+     * @return {@code true} if the owner was changed
      */
     boolean setOwner(UUID uuid);
 
     /**
-     * Checks whether the specified player can deposit the specified amount in the given currency.
-     * <p>
-     * Returns {@code false} if {@link #canHold(Currency)} returns {@code false}
+     * Checks whether the specified player can deposit into this bank.
      *
-     * @param player   the player attempting to make the deposit
-     * @param amount   the amount being attempted to deposit
+     * @param player   the player attempting the deposit
+     * @param amount   the amount to deposit
      * @param currency the currency of the deposit
-     * @return {@code true} if the player can deposit the specified amount, otherwise {@code false}
-     * @since 3.0.0
+     * @return {@code true} if the deposit is allowed
      */
     default boolean canDeposit(final OfflinePlayer player, final Number amount, final Currency currency) {
         return canDeposit(player.getUniqueId(), amount, currency);
     }
 
     /**
-     * Checks whether the specified uuid can deposit the specified amount in the given currency.
-     * <p>
-     * Returns {@code false} if {@link #canHold(Currency)} returns {@code false}
+     * Checks whether the specified UUID can deposit into this bank.
      *
-     * @param uuid     the uuid of the player attempting to make the deposit
-     * @param amount   the amount being attempted to deposit
+     * @param uuid     the UUID of the player
+     * @param amount   the amount to deposit
      * @param currency the currency of the deposit
-     * @return {@code true} if the player can deposit the specified amount, otherwise {@code false}
-     * @since 3.0.0
+     * @return {@code true} if the deposit is allowed
      */
     default boolean canDeposit(final UUID uuid, final Number amount, final Currency currency) {
         return getOwner().equals(uuid) || isMember(uuid);
     }
 
     /**
-     * Checks whether the specified player can withdraw the specified amount in the given currency.
-     * <p>
-     * Returns {@code false} if {@link #canHold(Currency)} returns {@code false}
+     * Checks whether the specified player can withdraw from this bank.
      *
-     * @param player   the player attempting to make the withdrawal
-     * @param amount   the amount being attempted to withdraw
+     * @param player   the player attempting the withdrawal
+     * @param amount   the amount to withdraw
      * @param currency the currency of the withdrawal
-     * @return {@code true} if the player can withdraw the specified amount, otherwise {@code false}
-     * @since 3.0.0
+     * @return {@code true} if the withdrawal is allowed
      */
     default boolean canWithdraw(final OfflinePlayer player, final Number amount, final Currency currency) {
         return canWithdraw(player.getUniqueId(), amount, currency);
     }
 
     /**
-     * Checks whether the specified uuid can withdraw the specified amount in the given currency.
-     * <p>
-     * Returns {@code false} if {@link #canHold(Currency)} returns {@code false}
+     * Checks whether the specified UUID can withdraw from this bank.
      *
-     * @param uuid     the UUID of the player attempting to make the withdrawal
-     * @param amount   the amount being attempted to withdraw
+     * @param uuid     the UUID of the player
+     * @param amount   the amount to withdraw
      * @param currency the currency of the withdrawal
-     * @return {@code true} if the player can withdraw the specified amount, otherwise {@code false}
-     * @since 3.0.0
+     * @return {@code true} if the withdrawal is allowed
      */
     default boolean canWithdraw(final UUID uuid, final Number amount, final Currency currency) {
         return getOwner().equals(uuid);
