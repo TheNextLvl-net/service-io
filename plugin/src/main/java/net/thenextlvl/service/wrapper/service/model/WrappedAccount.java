@@ -2,6 +2,7 @@ package net.thenextlvl.service.wrapper.service.model;
 
 import net.milkbowl.vault.economy.Economy;
 import net.thenextlvl.service.api.economy.Account;
+import net.thenextlvl.service.api.economy.currency.Currency;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jspecify.annotations.NullMarked;
@@ -36,6 +37,11 @@ public final class WrappedAccount implements Account {
     }
 
     @Override
+    public BigDecimal getBalance(@Nullable final Currency currency) {
+        return currency != null ? BigDecimal.ZERO : getBalance();
+    }
+
+    @Override
     public BigDecimal withdraw(final Number amount) {
         final var response = economy.withdrawPlayer(holder, world != null ? world.getName() : null, amount.doubleValue());
         return new BigDecimal(response.balance);
@@ -52,9 +58,15 @@ public final class WrappedAccount implements Account {
     }
 
     @Override
-    public void setBalance(final Number balance) {
+    public BigDecimal setBalance(final Number balance) {
         final var difference = balance.doubleValue() - getBalance().doubleValue();
-        if (difference > 0) deposit(difference);
-        else if (difference < 0) withdraw(-difference);
+        if (difference > 0) return deposit(difference);
+        else if (difference < 0) return withdraw(-difference);
+        return BigDecimal.ZERO;
+    }
+
+    @Override
+    public BigDecimal setBalance(final Number balance, @Nullable final Currency currency) {
+        return currency != null ? BigDecimal.ZERO : setBalance(balance);
     }
 }

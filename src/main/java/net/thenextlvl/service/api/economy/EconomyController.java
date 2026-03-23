@@ -1,8 +1,12 @@
 package net.thenextlvl.service.api.economy;
 
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.thenextlvl.service.api.Controller;
+import net.thenextlvl.service.api.economy.currency.Currency;
+import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
@@ -13,7 +17,10 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * The AccountController interface provides methods to create, retrieve and delete accounts.
+ * EconomyController is an interface that provides methods for managing and interacting
+ * with economic systems, such as currency formatting, account retrieval, and multi-currency support.
+ *
+ * @since 1.0.0
  */
 public interface EconomyController extends Controller {
     /**
@@ -21,38 +28,67 @@ public interface EconomyController extends Controller {
      *
      * @param amount the number amount to be formatted
      * @return the formatted amount as a string
+     * @deprecated Use {@link Currency#format(Number, Locale)} instead
      */
-    String format(Number amount);
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    default String format(final Number amount) {
+        return PlainTextComponentSerializer.plainText().serialize(getCurrencyHolder().getDefaultCurrency().format(amount, Locale.US));
+    }
 
     /**
      * Retrieves the number of fractional digits used for formatting currency amounts.
      *
      * @return the number of fractional digits used for formatting currency amounts
+     * @deprecated Use {@link Currency#getFractionalDigits()} instead
      */
-    int fractionalDigits();
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    default int fractionalDigits() {
+        return getCurrencyHolder().getDefaultCurrency().getFractionalDigits();
+    }
 
     /**
      * Retrieves the plural form of the currency name based on the provided locale.
      *
      * @param locale the locale for which to retrieve the plural currency name
      * @return the plural form of the currency name as a string
+     * @deprecated Use {@link Currency#getDisplayNamePlural(Locale)} instead
      */
-    String getCurrencyNamePlural(Locale locale);
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    default String getCurrencyNamePlural(final Locale locale) {
+        return getCurrencyHolder().getDefaultCurrency().getDisplayNamePlural(locale).map(PlainTextComponentSerializer.plainText()::serialize).orElse("");
+    }
 
     /**
      * Retrieves the name of the currency associated with the specified locale.
      *
      * @param locale the locale for which to retrieve the currency name
      * @return the name of the currency as a string
+     * @deprecated Use {@link Currency#getDisplayNameSingular(Locale)} instead
      */
-    String getCurrencyNameSingular(Locale locale);
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    default String getCurrencyNameSingular(final Locale locale) {
+        return getCurrencyHolder().getDefaultCurrency().getDisplayNameSingular(locale).map(PlainTextComponentSerializer.plainText()::serialize).orElse("");
+    }
 
     /**
      * Retrieves the currency symbol associated with the economy controller.
      *
      * @return the currency symbol as a string
+     * @deprecated Use {@link Currency#getSymbol()} instead
      */
-    String getCurrencySymbol();
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    default String getCurrencySymbol() {
+        return PlainTextComponentSerializer.plainText().serialize(getCurrencyHolder().getDefaultCurrency().getSymbol());
+    }
+
+    /**
+     * Retrieves the {@code CurrencyHolder} associated with the economy controller.
+     *
+     * @return the {@code CurrencyHolder} instance that manages the defined currencies for the controller
+     * @since 3.0.0
+     */
+    @Contract(pure = true)
+    CurrencyHolder getCurrencyHolder();
 
     /**
      * Loads all accounts asynchronously.
@@ -149,9 +185,7 @@ public interface EconomyController extends Controller {
      * @return a CompletableFuture that will complete with the retrieved account
      */
     default CompletableFuture<Optional<Account>> tryGetAccount(final UUID uuid, @Nullable final World world) {
-        return getAccount(uuid, world)
-                .map(account -> CompletableFuture.completedFuture(Optional.of(account)))
-                .orElseGet(() -> loadAccount(uuid, world));
+        return getAccount(uuid, world).map(account -> CompletableFuture.completedFuture(Optional.of(account))).orElseGet(() -> loadAccount(uuid, world));
     }
 
     /**
@@ -284,4 +318,16 @@ public interface EconomyController extends Controller {
      * @return a CompletableFuture that will complete when the account is deleted
      */
     CompletableFuture<Boolean> deleteAccount(UUID uuid, @Nullable World world);
+
+    /**
+     * Determines whether the controller supports handling of multiple worlds.
+     *
+     * @return {@code true} if multi-world economy is supported, otherwise {@code false}
+     * @implSpec If multiple worlds are not supported, implementations must ignore world-specific parameters.
+     * @since 3.0.0
+     */
+    @Contract(pure = true)
+    default boolean hasMultiWorldSupport() {
+        return false;
+    }
 }

@@ -7,6 +7,7 @@ module net.thenextlvl.services {
     exports net.thenextlvl.service.api.character;
     exports net.thenextlvl.service.api.chat;
     exports net.thenextlvl.service.api.economy.bank;
+    exports net.thenextlvl.service.api.economy.currency;
     exports net.thenextlvl.service.api.economy;
     exports net.thenextlvl.service.api.group;
     exports net.thenextlvl.service.api.hologram;
@@ -15,6 +16,7 @@ module net.thenextlvl.services {
     exports net.thenextlvl.service.api;
 
     requires net.kyori.adventure.key;
+    requires net.kyori.adventure.text.serializer.plain;
     requires net.kyori.adventure;
     requires net.kyori.examination.api;
     requires net.thenextlvl.vault;

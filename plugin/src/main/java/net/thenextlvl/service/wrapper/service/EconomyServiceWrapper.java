@@ -3,8 +3,10 @@ package net.thenextlvl.service.wrapper.service;
 import net.milkbowl.vault.economy.Economy;
 import net.thenextlvl.service.api.economy.Account;
 import net.thenextlvl.service.api.economy.EconomyController;
+import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import net.thenextlvl.service.wrapper.Wrapper;
 import net.thenextlvl.service.wrapper.service.model.WrappedAccount;
+import net.thenextlvl.service.wrapper.service.model.WrappedCurrencyHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
@@ -13,7 +15,6 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -22,32 +23,19 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public final class EconomyServiceWrapper implements EconomyController, Wrapper {
+    private final CurrencyHolder holder;
     private final Economy economy;
     private final Plugin provider;
 
     public EconomyServiceWrapper(final Economy economy, final Plugin provider) {
+        this.holder = new WrappedCurrencyHolder(economy);
         this.economy = economy;
         this.provider = provider;
     }
 
     @Override
-    public String format(final Number amount) {
-        return economy.format(amount.doubleValue());
-    }
-
-    @Override
-    public String getCurrencyNamePlural(final Locale locale) {
-        return economy.currencyNamePlural();
-    }
-
-    @Override
-    public String getCurrencyNameSingular(final Locale locale) {
-        return economy.currencyNameSingular();
-    }
-
-    @Override
-    public String getCurrencySymbol() {
-        return "";
+    public CurrencyHolder getCurrencyHolder() {
+        return holder;
     }
 
     @Override
@@ -132,11 +120,6 @@ public final class EconomyServiceWrapper implements EconomyController, Wrapper {
     @Override
     public CompletableFuture<Boolean> deleteAccount(final UUID uuid, @Nullable final World world) {
         return CompletableFuture.completedFuture(false);
-    }
-
-    @Override
-    public int fractionalDigits() {
-        return economy.fractionalDigits();
     }
 
     @Override

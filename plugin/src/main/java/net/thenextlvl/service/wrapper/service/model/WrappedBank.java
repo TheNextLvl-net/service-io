@@ -2,11 +2,13 @@ package net.thenextlvl.service.wrapper.service.model;
 
 import net.milkbowl.vault.economy.Economy;
 import net.thenextlvl.service.api.economy.bank.Bank;
+import net.thenextlvl.service.api.economy.currency.Currency;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -38,6 +40,11 @@ public final class WrappedBank implements Bank {
     }
 
     @Override
+    public BigDecimal getBalance(@Nullable final Currency currency) {
+        return currency != null ? BigDecimal.ZERO : getBalance();
+    }
+
+    @Override
     public BigDecimal withdraw(final Number amount) {
         return new BigDecimal(economy.bankWithdraw(name, amount.doubleValue()).balance);
     }
@@ -57,10 +64,16 @@ public final class WrappedBank implements Bank {
     }
 
     @Override
-    public void setBalance(final Number balance) {
+    public BigDecimal setBalance(final Number balance) {
         final var difference = balance.doubleValue() - getBalance().doubleValue();
-        if (difference > 0) deposit(difference);
-        else if (difference < 0) withdraw(-difference);
+        if (difference > 0) return deposit(difference);
+        else if (difference < 0) return withdraw(-difference);
+        return BigDecimal.ZERO;
+    }
+
+    @Override
+    public BigDecimal setBalance(final Number balance, @Nullable final Currency currency) {
+        return currency != null ? BigDecimal.ZERO : setBalance(balance);
     }
 
     @Override
@@ -94,5 +107,25 @@ public final class WrappedBank implements Bank {
     @Override
     public boolean setOwner(final UUID uuid) {
         return false;
+    }
+
+    @Override
+    public boolean canDeposit(final OfflinePlayer player, final Number amount, final Currency currency) {
+        return economy.isBankOwner(getName(), player).transactionSuccess();
+    }
+
+    @Override
+    public boolean canDeposit(final UUID uuid, final Number amount, final Currency currency) {
+        return canDeposit(provider.getServer().getOfflinePlayer(uuid), amount, currency);
+    }
+
+    @Override
+    public boolean canWithdraw(final OfflinePlayer player, final Number amount, final Currency currency) {
+        return economy.isBankOwner(getName(), player).transactionSuccess();
+    }
+
+    @Override
+    public boolean canWithdraw(final UUID uuid, final Number amount, final Currency currency) {
+        return canWithdraw(provider.getServer().getOfflinePlayer(uuid), amount, currency);
     }
 }

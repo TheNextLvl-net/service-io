@@ -4,8 +4,10 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.bank.BankController;
+import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import net.thenextlvl.service.wrapper.Wrapper;
 import net.thenextlvl.service.wrapper.service.model.WrappedBank;
+import net.thenextlvl.service.wrapper.service.model.WrappedCurrencyHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
@@ -21,20 +23,29 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public final class BankServiceWrapper implements BankController, Wrapper {
+    private final CurrencyHolder holder;
     private final Economy economy;
     private final Plugin provider;
 
     public BankServiceWrapper(final Economy economy, final Plugin provider) {
+        this.holder = new WrappedCurrencyHolder(economy);
         this.economy = economy;
         this.provider = provider;
     }
 
     @Override
+    public CurrencyHolder getCurrencyHolder() {
+        return holder;
+    }
+
+    @Override
+    @SuppressWarnings("removal")
     public String format(final Number amount) {
         return economy.format(amount.doubleValue());
     }
 
     @Override
+    @SuppressWarnings("removal")
     public int fractionalDigits() {
         return economy.fractionalDigits();
     }
@@ -91,6 +102,11 @@ public final class BankServiceWrapper implements BankController, Wrapper {
     @Override
     public Optional<Bank> getBank(final UUID uuid, @Nullable final World world) {
         return Optional.empty();
+    }
+
+    @Override
+    public boolean hasMultiWorldSupport() {
+        return false;
     }
 
     @Override

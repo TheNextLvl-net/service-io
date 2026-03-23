@@ -1,31 +1,57 @@
 package net.thenextlvl.service.api.economy.bank;
 
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.thenextlvl.service.api.Controller;
+import net.thenextlvl.service.api.economy.currency.Currency;
+import net.thenextlvl.service.api.economy.currency.CurrencyHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Represents a controller for managing banks tied to players and worlds.
+ *
+ * @since 1.0.0
+ */
 public interface BankController extends Controller {
+    /**
+     * Retrieves the {@code CurrencyHolder} associated with the economy controller.
+     *
+     * @return the {@code CurrencyHolder} instance that manages the defined currencies for the controller
+     */
+    @Contract(pure = true)
+    CurrencyHolder getCurrencyHolder();
+
     /**
      * Formats the specified amount as a string.
      *
      * @param amount the number amount to be formatted
      * @return the formatted amount as a string
+     * @deprecated Use {@link Currency#format(Number, Locale)} instead
      */
-    String format(Number amount);
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    default String format(final Number amount) {
+        return PlainTextComponentSerializer.plainText().serialize(getCurrencyHolder().getDefaultCurrency().format(amount, Locale.US));
+    }
 
     /**
      * Retrieves the number of fractional digits used for formatting currency amounts.
      *
      * @return the number of fractional digits used for formatting currency amounts
+     * @deprecated Use {@link Currency#getFractionalDigits()} instead
      */
-    int fractionalDigits();
+    @Deprecated(forRemoval = true, since = "3.0.0")
+    default int fractionalDigits() {
+        return getCurrencyHolder().getDefaultCurrency().getFractionalDigits();
+    }
 
     /**
      * Creates a bank for the specified player with the given name.
@@ -36,6 +62,7 @@ public interface BankController extends Controller {
      * @param name   the name of the bank (must be unique)
      * @return a CompletableFuture that completes with the created bank
      */
+    @Contract("_, _ -> new")
     default CompletableFuture<Bank> createBank(final OfflinePlayer player, final String name) {
         return createBank(player, name, null);
     }
@@ -50,6 +77,7 @@ public interface BankController extends Controller {
      * @param world  the world in which the bank is located
      * @return a CompletableFuture that completes with the created bank
      */
+    @Contract("_, _, _ -> new")
     default CompletableFuture<Bank> createBank(final OfflinePlayer player, final String name, @Nullable final World world) {
         return createBank(player.getUniqueId(), name, world);
     }
@@ -63,6 +91,7 @@ public interface BankController extends Controller {
      * @param name the name of the bank (must be unique)
      * @return a CompletableFuture that completes with the created bank
      */
+    @Contract("_, _ -> new")
     default CompletableFuture<Bank> createBank(final UUID uuid, final String name) {
         return createBank(uuid, name, null);
     }
@@ -77,6 +106,7 @@ public interface BankController extends Controller {
      * @param world the world in which the bank exists
      * @return a CompletableFuture that completes with the created bank
      */
+    @Contract("_, _, _ -> new")
     CompletableFuture<Bank> createBank(UUID uuid, String name, @Nullable World world);
 
     /**
@@ -331,4 +361,15 @@ public interface BankController extends Controller {
      * @return an Optional containing the Bank associated with the UUID and world, or empty if not found
      */
     Optional<Bank> getBank(UUID uuid, @Nullable World world);
+
+    /**
+     * Determines whether the controller supports handling of multiple worlds.
+     *
+     * @return {@code true} if multi-world banking is supported, otherwise {@code false}
+     * @implSpec If multiple worlds are not supported,
+     * implementations must ignore world-specific parameters and only handle cases where the world parameter is null.
+     * @since 3.0.0
+     */
+    @Contract(pure = true)
+    boolean hasMultiWorldSupport();
 }
