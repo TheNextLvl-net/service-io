@@ -39,6 +39,7 @@ public interface Account {
      *
      * @param currency the currency for which the balance is to be retrieved
      * @return the balance of the account
+     * @throws IllegalArgumentException if the account cannot hold the specified currency
      */
     BigDecimal getBalance(Currency currency);
 

@@ -1,5 +1,6 @@
 package net.thenextlvl.service.api.economy.bank;
 
+import net.thenextlvl.service.api.Controller;
 import net.thenextlvl.service.api.capability.CapabilityException;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.currency.CurrencyController;
@@ -24,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
  * including the main server thread and asynchronous task threads concurrently.
  * @since 3.0.0
  */
-public interface BankController {
+public interface BankController extends Controller {
     /**
      * Retrieves all currently cached banks.
      *
@@ -74,7 +75,7 @@ public interface BankController {
     }
 
     /**
-     * Retrieves a cached bank with the specified UUID.
+     * Retrieves a cached bank owned by the specified player.
      *
      * @param uuid the UUID of the bank owner
      * @return an optional containing the bank, or empty if not cached
@@ -82,7 +83,7 @@ public interface BankController {
     Optional<Bank> getBank(UUID uuid);
 
     /**
-     * Retrieves a cached bank with the specified UUID in the given world.
+     * Retrieves a cached bank owned by the specified player in the given world.
      *
      * @param uuid  the UUID of the bank owner
      * @param world the world scope of the bank
@@ -138,7 +139,7 @@ public interface BankController {
     }
 
     /**
-     * Retrieves the bank with the specified UUID, loading if not cached.
+     * Retrieves the bank owned by the specified player, loading if not cached.
      *
      * @param uuid the UUID of the bank owner
      * @return a future that completes with the bank, or empty if it does not exist
@@ -146,7 +147,7 @@ public interface BankController {
     CompletableFuture<Optional<Bank>> resolveBank(UUID uuid);
 
     /**
-     * Retrieves the bank with the specified UUID in the given world, loading if not cached.
+     * Retrieves the bank owned by the specified player in the given world, loading if not cached.
      *
      * @param uuid  the UUID of the bank owner
      * @param world the world scope of the bank
@@ -184,7 +185,7 @@ public interface BankController {
     }
 
     /**
-     * Creates a bank with the specified UUID and name.
+     * Creates a bank for the specified owner with the given name.
      *
      * @param uuid the UUID of the bank owner
      * @param name the unique name of the bank
@@ -195,7 +196,7 @@ public interface BankController {
     CompletableFuture<Bank> createBank(UUID uuid, String name);
 
     /**
-     * Creates a bank with the specified UUID, name, and world.
+     * Creates a bank for the specified owner with the given name in the given world.
      *
      * @param uuid  the UUID of the bank owner
      * @param name  the unique name of the bank
@@ -250,7 +251,7 @@ public interface BankController {
     CompletableFuture<Boolean> deleteBank(String name);
 
     /**
-     * Deletes the bank with the specified UUID.
+     * Deletes the bank owned by the specified player.
      *
      * @param uuid the UUID of the bank owner
      * @return a future that completes with {@code true} if the bank was deleted
@@ -258,7 +259,7 @@ public interface BankController {
     CompletableFuture<Boolean> deleteBank(UUID uuid);
 
     /**
-     * Deletes the bank with the specified UUID in the given world.
+     * Deletes the bank owned by the specified player in the given world.
      *
      * @param uuid  the UUID of the bank owner
      * @param world the world scope of the bank

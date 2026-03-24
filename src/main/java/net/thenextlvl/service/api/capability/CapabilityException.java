@@ -10,6 +10,11 @@ import org.jspecify.annotations.Nullable;
 public class CapabilityException extends RuntimeException {
     private final Capability capability;
 
+    public CapabilityException(final Capability capability) {
+        super();
+        this.capability = capability;
+    }
+
     /**
      * Creates a new {@code CapabilityException} with the specified detail message and
      * the related capability that caused this exception.

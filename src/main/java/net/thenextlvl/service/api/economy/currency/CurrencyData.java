@@ -7,6 +7,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Mutable data carrier for creating a currency.
@@ -28,7 +29,29 @@ public sealed interface CurrencyData permits SimpleCurrencyData {
      */
     @Contract("_, _, _ -> new")
     static CurrencyData of(final String name, final Component symbol, final int fractionalDigits) {
-        return new SimpleCurrencyData(name, symbol, fractionalDigits);
+        return new SimpleCurrencyData(name, symbol, fractionalDigits, new ConcurrentHashMap<>(), new ConcurrentHashMap<>());
+    }
+
+    /**
+     * Creates new currency data with no localized display names.
+     *
+     * @param name             the unique identifier of the currency
+     * @param symbol           the currency symbol
+     * @param fractionalDigits the number of fractional digits
+     * @return a new currency data instance
+     * @throws IllegalArgumentException if fractionalDigits is negative
+     */
+    @Contract("_, _, _, _, _ -> new")
+    static CurrencyData of(
+            final String name, final Component symbol, final int fractionalDigits,
+            final Map<Locale, Component> displayNamesSingular,
+            final Map<Locale, Component> displayNamesPlural
+    ) {
+        return new SimpleCurrencyData(
+                name, symbol, fractionalDigits,
+                new ConcurrentHashMap<>(displayNamesSingular),
+                new ConcurrentHashMap<>(displayNamesPlural)
+        );
     }
 
     /**

@@ -6,21 +6,26 @@ import org.jspecify.annotations.Nullable;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 final class SimpleCurrencyData implements CurrencyData {
-    private final Map<Locale, Component> displayNamesPlural = new ConcurrentHashMap<>();
-    private final Map<Locale, Component> displayNamesSingular = new ConcurrentHashMap<>();
+    private final Map<Locale, Component> displayNamesPlural;
+    private final Map<Locale, Component> displayNamesSingular;
 
     private Component symbol;
     private String name;
     private int fractions;
 
-    SimpleCurrencyData(final String name, final Component symbol, final int fractions) {
+    SimpleCurrencyData(
+            final String name, final Component symbol, final int fractions,
+            final Map<Locale, Component> displayNamesSingular,
+            final Map<Locale, Component> displayNamesPlural
+    ) {
         if (fractions < 0) throw new IllegalArgumentException("fractionalDigits must be non-negative");
         this.name = name;
         this.symbol = symbol;
         this.fractions = fractions;
+        this.displayNamesSingular = displayNamesSingular;
+        this.displayNamesPlural = displayNamesPlural;
     }
 
     @Override
