@@ -18,11 +18,7 @@ public enum EconomyCapability implements Capability {
     /**
      * The provider supports per-world economies.
      */
-    MULTI_WORLD("multi_world"),
-    /**
-     * The provider supports bank accounts.
-     */
-    BANK("bank");
+    MULTI_WORLD("multi_world");
 
     private final Key key;
 

@@ -26,15 +26,12 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public final class EconomyServiceWrapper implements EconomyController, Wrapper {
-    private final Set<EconomyCapability> capabilities;
+    private final EnumSet<EconomyCapability> capabilities = EnumSet.of(EconomyCapability.MULTI_WORLD);
     private final CurrencyController controller;
     private final Economy economy;
     private final Plugin provider;
 
     public EconomyServiceWrapper(final Economy economy, final Plugin provider) {
-        this.capabilities = economy.hasBankSupport()
-                ? EnumSet.of(EconomyCapability.MULTI_WORLD, EconomyCapability.BANK)
-                : EnumSet.of(EconomyCapability.MULTI_WORLD);
         this.controller = new WrappedCurrencyController(economy);
         this.economy = economy;
         this.provider = provider;

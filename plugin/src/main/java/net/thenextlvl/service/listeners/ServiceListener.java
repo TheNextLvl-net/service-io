@@ -91,7 +91,7 @@ public final class ServiceListener implements Listener {
                 provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
 
         if (!provider.getProvider().hasBankSupport()) return;
-        final var banks = new BankServiceWrapper(provider.getProvider(), provider.getPlugin());
+        final var banks = new BankServiceWrapper(provider.getProvider(), provider.getPlugin(), wrapper);
         getServicesManager().register(BankController.class, banks, provider.getPlugin(), provider.getPriority());
         plugin.getComponentLogger().info("Registered bank service wrapper for {} - {} ({})",
                 provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());

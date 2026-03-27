@@ -11,6 +11,7 @@ import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.api.economy.currency.Currency;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -306,25 +307,25 @@ public final class VaultEconomyServiceWrapper implements Economy, Wrapper {
     public boolean createPlayerAccount(@Nullable final OfflinePlayer player, @Nullable final String worldName) {
         return Optional.ofNullable(player).map(offline -> Optional.ofNullable(worldName)
                         .map(plugin.getServer()::getWorld)
-                        .map(world -> resolve(economyController.createAccount(offline, world)))
-                        .orElseGet(() -> resolve(economyController.createAccount(offline))))
+                        .map(world -> tryResolve(economyController.createAccount(offline, world), null))
+                        .orElseGet(() -> tryResolve(economyController.createAccount(offline), null)))
                 .isPresent();
     }
 
     private Optional<Account> getAccount(@Nullable final OfflinePlayer player, @Nullable final String worldName) {
         return Optional.ofNullable(player).flatMap(offline -> Optional.ofNullable(worldName)
                 .map(plugin.getServer()::getWorld)
-                .flatMap(world -> resolve(economyController.resolveAccount(offline, world)))
-                .or(() -> resolve(economyController.resolveAccount(offline))));
+                .flatMap(world -> tryResolve(economyController.resolveAccount(offline, world), Optional.empty()))
+                .or(() -> tryResolve(economyController.resolveAccount(offline), Optional.empty())));
     }
 
-    private EconomyResponse getBankController(final RespondingFunction function) {
+    private EconomyResponse getBankController(final ThrowingFunction<EconomyResponse> function) {
         if (bankController == null) {
             return new EconomyResponse(0, 0, NOT_IMPLEMENTED, "Bank support not available");
         } else try {
             return function.apply(bankController);
         } catch (final Exception e) {
-            plugin.getComponentLogger().error("Failed to execute bank controller function", e);
+            plugin.getComponentLogger().error("Failed to get future synchronously", e);
             return new EconomyResponse(0, 0, FAILURE, e.getMessage());
         }
     }
@@ -343,11 +344,21 @@ public final class VaultEconomyServiceWrapper implements Economy, Wrapper {
     }
 
     @FunctionalInterface
-    public interface RespondingFunction {
-        EconomyResponse apply(BankController controller) throws Exception;
+    public interface ThrowingFunction<T> {
+        T apply(BankController controller) throws Exception;
     }
 
     private <T> T resolve(final CompletableFuture<T> future) throws ExecutionException, InterruptedException, TimeoutException {
         return future.get(5, TimeUnit.SECONDS);
+    }
+
+    @Contract("_, !null -> !null")
+    private <T> @Nullable T tryResolve(final CompletableFuture<T> future, @Nullable final T defaultValue) {
+        try {
+            return resolve(future);
+        } catch (final InterruptedException | ExecutionException | TimeoutException e) {
+            plugin.getComponentLogger().error("Failed to get future synchronously", e);
+            return defaultValue;
+        }
     }
 }

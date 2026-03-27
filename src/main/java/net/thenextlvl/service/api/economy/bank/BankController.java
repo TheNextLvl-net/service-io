@@ -2,7 +2,6 @@ package net.thenextlvl.service.api.economy.bank;
 
 import net.thenextlvl.service.api.Controller;
 import net.thenextlvl.service.api.capability.CapabilityException;
-import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.api.economy.currency.CurrencyController;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -16,16 +15,20 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * Controller for managing bank accounts.
- * <p>
- * Access the currency configuration via the shared
- * {@link CurrencyController CurrencyController}
- * from the parent {@link EconomyController}.
  *
  * @implSpec Implementations must be thread-safe. All methods may be called from any thread,
  * including the main server thread and asynchronous task threads concurrently.
  * @since 3.0.0
  */
 public interface BankController extends Controller {
+    /**
+     * Retrieves the currency controller for managing currencies.
+     *
+     * @return the currency controller
+     */
+    @Contract(pure = true)
+    CurrencyController getCurrencyController();
+
     /**
      * Retrieves all currently cached banks.
      *

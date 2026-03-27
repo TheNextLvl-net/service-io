@@ -6,6 +6,7 @@ import net.thenextlvl.service.api.capability.CapabilityException;
 import net.thenextlvl.service.api.economy.EconomyCapability;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.bank.BankController;
+import net.thenextlvl.service.api.economy.currency.CurrencyController;
 import net.thenextlvl.service.wrapper.Wrapper;
 import net.thenextlvl.service.wrapper.service.model.WrappedBank;
 import org.bukkit.OfflinePlayer;
@@ -23,12 +24,14 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public final class BankServiceWrapper implements BankController, Wrapper {
+    private final EconomyServiceWrapper wrapper;
     private final Economy economy;
     private final Plugin provider;
 
-    public BankServiceWrapper(final Economy economy, final Plugin provider) {
+    public BankServiceWrapper(final Economy economy, final Plugin provider, final EconomyServiceWrapper wrapper) {
         this.economy = economy;
         this.provider = provider;
+        this.wrapper = wrapper;
     }
 
     @Override
@@ -61,6 +64,11 @@ public final class BankServiceWrapper implements BankController, Wrapper {
     @Override
     public CompletableFuture<Boolean> deleteBank(final UUID uuid, final World world) {
         throw new CapabilityException(EconomyCapability.MULTI_WORLD);
+    }
+
+    @Override
+    public CurrencyController getCurrencyController() {
+        return wrapper.getCurrencyController();
     }
 
     @Override
