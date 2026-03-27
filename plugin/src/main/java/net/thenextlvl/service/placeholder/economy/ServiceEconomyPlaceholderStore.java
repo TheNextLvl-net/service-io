@@ -1,12 +1,13 @@
 package net.thenextlvl.service.placeholder.economy;
 
-import net.thenextlvl.service.api.economy.Account;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.thenextlvl.service.api.economy.EconomyController;
 import net.thenextlvl.service.placeholder.api.PlaceholderStore;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 @NullMarked
 public final class ServiceEconomyPlaceholderStore extends PlaceholderStore<EconomyController> {
@@ -18,26 +19,44 @@ public final class ServiceEconomyPlaceholderStore extends PlaceholderStore<Econo
     protected void registerResolvers() {
         // %serviceio_balance%
         registerResolver("balance", (provider, player, matcher) -> {
-            return provider.getAccount(player).map(Account::getBalance).orElse(BigDecimal.ZERO).toPlainString();
+            final var currency = provider.getCurrencyController().getDefaultCurrency();
+            return provider.getAccount(player).map(account -> account.getBalance(currency)).orElse(BigDecimal.ZERO).toPlainString();
         });
 
         // %serviceio_balance_<world>%
         registerResolver("balance_%s", (provider, player, matcher) -> {
             final var world = plugin.getServer().getWorld(matcher.group(1));
             if (world == null) return null;
-            return provider.getAccount(player, world).map(Account::getBalance).orElse(BigDecimal.ZERO).toPlainString();
+
+            final var currency = provider.getCurrencyController().getDefaultCurrency();
+            return provider.getAccount(player, world).map(bank -> bank.getBalance(currency)).orElse(BigDecimal.ZERO).toPlainString();
         });
 
         // %serviceio_balance_formatted%
         registerResolver("balance_formatted", (provider, player, matcher) -> {
-            return provider.format(provider.getAccount(player).map(Account::getBalance).orElse(BigDecimal.ZERO));
+            final var currency = provider.getCurrencyController().getDefaultCurrency();
+            final var balance = provider.getAccount(player).map(bank -> bank.getBalance(currency)).orElse(BigDecimal.ZERO);
+
+            final var online = player.getPlayer();
+            final var locale = online != null ? online.locale() : Locale.US;
+
+            final var format = currency.format(balance, locale);
+            return PlainTextComponentSerializer.plainText().serialize(format);
         });
 
         // %serviceio_balance_formatted_<world>%
         registerResolver("balance_formatted_%s", (provider, player, matcher) -> {
             final var world = plugin.getServer().getWorld(matcher.group(1));
             if (world == null) return null;
-            return provider.format(provider.getAccount(player, world).map(Account::getBalance).orElse(BigDecimal.ZERO));
+
+            final var currency = provider.getCurrencyController().getDefaultCurrency();
+            final var balance = provider.getAccount(player, world).map(bank -> bank.getBalance(currency)).orElse(BigDecimal.ZERO);
+
+            final var online = player.getPlayer();
+            final var locale = online != null ? online.locale() : Locale.US;
+
+            final var format = currency.format(balance, locale);
+            return PlainTextComponentSerializer.plainText().serialize(format);
         });
     }
 }
