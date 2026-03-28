@@ -76,6 +76,6 @@ public final class WrappedAccount implements Account {
 
     @Override
     public boolean canHold(final Currency currency) {
-        return currency instanceof final WrappedCurrency wrapped && wrapped.economy == economy;
+        return currency instanceof WrappedCurrency(final Economy wrapped) && wrapped == economy;
     }
 }

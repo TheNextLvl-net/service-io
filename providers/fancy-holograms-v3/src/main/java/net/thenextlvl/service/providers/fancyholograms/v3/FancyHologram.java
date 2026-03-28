@@ -95,7 +95,7 @@ public record FancyHologram(com.fancyinnovations.fancyholograms.api.hologram.Hol
 
     @Override
     public boolean persist() {
-        if (!isPersistent()) return false;
+        // if (!isPersistent()) return false;
         // FancyHolograms.get().getRegistry().save(); // fixme
         return true;
     }

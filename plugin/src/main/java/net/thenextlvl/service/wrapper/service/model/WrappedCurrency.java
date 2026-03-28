@@ -11,13 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @NullMarked
-public class WrappedCurrency implements Currency {
-    public final Economy economy;
-
-    public WrappedCurrency(final Economy economy) {
-        this.economy = economy;
-    }
-
+public record WrappedCurrency(Economy economy) implements Currency {
     @Override
     public String getName() {
         return economy.getName();

@@ -16,7 +16,6 @@ module net.thenextlvl.services {
     exports net.thenextlvl.service.api;
 
     requires net.kyori.adventure.key;
-    requires net.kyori.adventure.text.serializer.plain;
     requires net.kyori.adventure;
     requires net.kyori.examination.api;
     requires net.thenextlvl.vault;
