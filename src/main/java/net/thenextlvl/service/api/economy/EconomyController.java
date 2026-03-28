@@ -43,6 +43,17 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
     Set<Account> getAccounts();
 
     /**
+     * Retrieves all currently cached accounts from the specified world.
+     * <p>
+     * This method returns immediately without performing any I/O.
+     *
+     * @param world the world to get all accounts from
+     * @return an unmodifiable set of cached accounts
+     */
+    @Unmodifiable
+    Set<Account> getAccounts(World world);
+
+    /**
      * Retrieves a cached account for the specified player.
      *
      * @param player the player whose account is being retrieved
@@ -83,12 +94,21 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
     }
 
     /**
-     * Loads all accounts from the backing store and caches them.
+     * Loads all accounts from the backing store.
      *
      * @return a future that completes with an unmodifiable set of all accounts
      * @since 3.0.0
      */
-    CompletableFuture<@Unmodifiable Set<Account>> resolveAccounts();
+    CompletableFuture<@Unmodifiable Set<Account>> loadAccounts();
+
+    /**
+     * Loads all accounts from the backing store.
+     *
+     * @param world the world from which to load all accounts
+     * @return a future that completes with an unmodifiable set of all accounts
+     * @since 3.0.0
+     */
+    CompletableFuture<@Unmodifiable Set<Account>> loadAccounts(World world);
 
     /**
      * Retrieves the account for the specified player, loading from the backing store if not cached.

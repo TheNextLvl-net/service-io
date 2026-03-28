@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -51,6 +50,14 @@ public final class EconomyServiceWrapper implements EconomyController, Wrapper {
     }
 
     @Override
+    public @Unmodifiable Set<Account> getAccounts(final World world) {
+        return Arrays.stream(provider.getServer().getOfflinePlayers())
+                .filter(offlinePlayer -> economy.hasAccount(offlinePlayer, world.getName()))
+                .map(player -> new WrappedAccount(null, economy, player))
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
+    @Override
     public Optional<Account> getAccount(final OfflinePlayer player) {
         if (!economy.hasAccount(player)) return Optional.empty();
         return Optional.of(new WrappedAccount(null, economy, player));
@@ -64,8 +71,13 @@ public final class EconomyServiceWrapper implements EconomyController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<@Unmodifiable Set<Account>> resolveAccounts() {
+    public CompletableFuture<@Unmodifiable Set<Account>> loadAccounts() {
         return CompletableFuture.completedFuture(getAccounts());
+    }
+
+    @Override
+    public CompletableFuture<@Unmodifiable Set<Account>> loadAccounts(final World world) {
+        return CompletableFuture.completedFuture(getAccounts(world));
     }
 
     @Override
