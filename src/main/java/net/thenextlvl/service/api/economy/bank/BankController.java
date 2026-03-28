@@ -60,9 +60,7 @@ public interface BankController extends Controller {
      * @param player the player whose bank is being retrieved
      * @return an optional containing the bank, or empty if not cached
      */
-    default Optional<Bank> getBank(final OfflinePlayer player) {
-        return getBank(player.getUniqueId());
-    }
+    Optional<Bank> getBank(OfflinePlayer player);
 
     /**
      * Retrieves a cached bank for the specified player in the given world.
@@ -72,9 +70,7 @@ public interface BankController extends Controller {
      * @return an optional containing the bank, or empty if not cached
      * @throws CapabilityException if multi-world is not supported
      */
-    default Optional<Bank> getBank(final OfflinePlayer player, final World world) {
-        return getBank(player.getUniqueId(), world);
-    }
+    Optional<Bank> getBank(OfflinePlayer player, World world);
 
     /**
      * Retrieves a cached bank owned by the specified player.
@@ -82,7 +78,9 @@ public interface BankController extends Controller {
      * @param uuid the UUID of the bank owner
      * @return an optional containing the bank, or empty if not cached
      */
-    Optional<Bank> getBank(UUID uuid);
+    default Optional<Bank> getBank(final UUID uuid) {
+        return getBank(getPlugin().getServer().getOfflinePlayer(uuid));
+    }
 
     /**
      * Retrieves a cached bank owned by the specified player in the given world.
@@ -92,7 +90,9 @@ public interface BankController extends Controller {
      * @return an optional containing the bank, or empty if not cached
      * @throws CapabilityException if multi-world is not supported
      */
-    Optional<Bank> getBank(UUID uuid, World world);
+    default Optional<Bank> getBank(final UUID uuid, final World world) {
+        return getBank(getPlugin().getServer().getOfflinePlayer(uuid), world);
+    }
 
     /**
      * Loads all banks from the backing store and caches them.
@@ -128,9 +128,7 @@ public interface BankController extends Controller {
      * @return a future that completes with the bank, or empty if it does not exist
      * @since 3.0.0
      */
-    default CompletableFuture<Optional<Bank>> resolveBank(final OfflinePlayer player) {
-        return resolveBank(player.getUniqueId());
-    }
+    CompletableFuture<Optional<Bank>> resolveBank(OfflinePlayer player);
 
     /**
      * Retrieves the bank for the specified player in the given world, loading if not cached.
@@ -141,9 +139,7 @@ public interface BankController extends Controller {
      * @throws CapabilityException if multi-world is not supported
      * @since 3.0.0
      */
-    default CompletableFuture<Optional<Bank>> resolveBank(final OfflinePlayer player, final World world) {
-        return resolveBank(player.getUniqueId(), world);
-    }
+    CompletableFuture<Optional<Bank>> resolveBank(OfflinePlayer player, World world);
 
     /**
      * Retrieves the bank owned by the specified player, loading if not cached.
@@ -152,7 +148,9 @@ public interface BankController extends Controller {
      * @return a future that completes with the bank, or empty if it does not exist
      * @since 3.0.0
      */
-    CompletableFuture<Optional<Bank>> resolveBank(UUID uuid);
+    default CompletableFuture<Optional<Bank>> resolveBank(final UUID uuid) {
+        return resolveBank(getPlugin().getServer().getOfflinePlayer(uuid));
+    }
 
     /**
      * Retrieves the bank owned by the specified player in the given world, loading if not cached.
@@ -163,7 +161,9 @@ public interface BankController extends Controller {
      * @throws CapabilityException if multi-world is not supported
      * @since 3.0.0
      */
-    CompletableFuture<Optional<Bank>> resolveBank(UUID uuid, World world);
+    default CompletableFuture<Optional<Bank>> resolveBank(final UUID uuid, final World world) {
+        return resolveBank(getPlugin().getServer().getOfflinePlayer(uuid), world);
+    }
 
     /**
      * Creates a bank for the specified player with the given name.
@@ -174,9 +174,7 @@ public interface BankController extends Controller {
      * @throws IllegalStateException if a bank with that owner or name already exists
      */
     @Contract("_, _ -> new")
-    default CompletableFuture<Bank> createBank(final OfflinePlayer player, final String name) {
-        return createBank(player.getUniqueId(), name);
-    }
+    CompletableFuture<Bank> createBank(OfflinePlayer player, String name);
 
     /**
      * Creates a bank for the specified player in the given world.
@@ -189,9 +187,7 @@ public interface BankController extends Controller {
      * @throws CapabilityException   if multi-world is not supported
      */
     @Contract("_, _, _ -> new")
-    default CompletableFuture<Bank> createBank(final OfflinePlayer player, final String name, final World world) {
-        return createBank(player.getUniqueId(), name, world);
-    }
+    CompletableFuture<Bank> createBank(OfflinePlayer player, String name, World world);
 
     /**
      * Creates a bank for the specified owner with the given name.
@@ -202,7 +198,9 @@ public interface BankController extends Controller {
      * @throws IllegalStateException if a bank with that owner or name already exists
      */
     @Contract("_, _ -> new")
-    CompletableFuture<Bank> createBank(UUID uuid, String name);
+    default CompletableFuture<Bank> createBank(final UUID uuid, final String name) {
+        return createBank(getPlugin().getServer().getOfflinePlayer(uuid), name);
+    }
 
     /**
      * Creates a bank for the specified owner with the given name in the given world.
@@ -215,7 +213,9 @@ public interface BankController extends Controller {
      * @throws CapabilityException   if multi-world is not supported
      */
     @Contract("_, _, _ -> new")
-    CompletableFuture<Bank> createBank(UUID uuid, String name, World world);
+    default CompletableFuture<Bank> createBank(final UUID uuid, final String name, final World world) {
+        return createBank(getPlugin().getServer().getOfflinePlayer(uuid), name, world);
+    }
 
     /**
      * Deletes the specified bank.
@@ -235,9 +235,7 @@ public interface BankController extends Controller {
      * @param player the player whose bank will be deleted
      * @return a future that completes with {@code true} if the bank was deleted
      */
-    default CompletableFuture<Boolean> deleteBank(final OfflinePlayer player) {
-        return deleteBank(player.getUniqueId());
-    }
+    CompletableFuture<Boolean> deleteBank(OfflinePlayer player);
 
     /**
      * Deletes the bank of the specified player in the given world.
@@ -247,9 +245,7 @@ public interface BankController extends Controller {
      * @return a future that completes with {@code true} if the bank was deleted
      * @throws CapabilityException if multi-world is not supported
      */
-    default CompletableFuture<Boolean> deleteBank(final OfflinePlayer player, final World world) {
-        return deleteBank(player.getUniqueId(), world);
-    }
+    CompletableFuture<Boolean> deleteBank(OfflinePlayer player, World world);
 
     /**
      * Deletes the bank with the specified name.
@@ -265,7 +261,9 @@ public interface BankController extends Controller {
      * @param uuid the UUID of the bank owner
      * @return a future that completes with {@code true} if the bank was deleted
      */
-    CompletableFuture<Boolean> deleteBank(UUID uuid);
+    default CompletableFuture<Boolean> deleteBank(final UUID uuid) {
+        return deleteBank(getPlugin().getServer().getOfflinePlayer(uuid));
+    }
 
     /**
      * Deletes the bank owned by the specified player in the given world.
@@ -275,5 +273,7 @@ public interface BankController extends Controller {
      * @return a future that completes with {@code true} if the bank was deleted
      * @throws CapabilityException if multi-world is not supported
      */
-    CompletableFuture<Boolean> deleteBank(UUID uuid, World world);
+    default CompletableFuture<Boolean> deleteBank(final UUID uuid, final World world) {
+        return deleteBank(getPlugin().getServer().getOfflinePlayer(uuid), world);
+    }
 }

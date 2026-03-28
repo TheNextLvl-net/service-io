@@ -12,7 +12,6 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
@@ -26,13 +25,8 @@ public final class ChatServiceWrapper implements ChatController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(final UUID uuid) {
-        return loadProfile(uuid, null);
-    }
-
-    @Override
-    public CompletableFuture<ChatProfile> loadProfile(final UUID uuid, @Nullable final World world) {
-        return loadProfile(provider.getServer().getOfflinePlayer(uuid), world);
+    public CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player) {
+        return loadProfile(player, null);
     }
 
     @Override
@@ -41,18 +35,13 @@ public final class ChatServiceWrapper implements ChatController, Wrapper {
     }
 
     @Override
+    public Optional<ChatProfile> getProfile(final OfflinePlayer player) {
+        return Optional.of(new WrappedChatProfile(null, chat, player));
+    }
+
+    @Override
     public Optional<ChatProfile> getProfile(final OfflinePlayer player, @Nullable final World world) {
         return Optional.of(new WrappedChatProfile(world, chat, player));
-    }
-
-    @Override
-    public Optional<ChatProfile> getProfile(final UUID uuid) {
-        return getProfile(uuid, null);
-    }
-
-    @Override
-    public Optional<ChatProfile> getProfile(final UUID uuid, final @Nullable World world) {
-        return getProfile(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override

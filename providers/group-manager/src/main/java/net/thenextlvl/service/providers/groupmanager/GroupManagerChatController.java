@@ -22,13 +22,18 @@ public final class GroupManagerChatController implements ChatController {
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(final UUID uuid) {
-        return loadProfile(uuid, null);
+    public CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player) {
+        return loadProfile(player, null);
     }
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(final UUID uuid, @Nullable final World world) {
-        return CompletableFuture.completedFuture(getProfile(uuid, world).orElse(null));
+    public CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player, @Nullable final World world) {
+        return CompletableFuture.completedFuture(getProfile(player, world).orElse(null));
+    }
+
+    @Override
+    public Optional<ChatProfile> getProfile(final OfflinePlayer player) {
+        return getProfile(player, null);
     }
 
     @Override
@@ -37,16 +42,6 @@ public final class GroupManagerChatController implements ChatController {
                 ? groupManager.getWorldsHolder().getWorldData(world.getName())
                 : groupManager.getWorldsHolder().getDefaultWorld();
         return getProfile(holder, world, player.getUniqueId(), player.getName());
-    }
-
-    @Override
-    public Optional<ChatProfile> getProfile(final UUID uuid) {
-        return getProfile(uuid, null);
-    }
-
-    @Override
-    public Optional<ChatProfile> getProfile(final UUID uuid, @Nullable final World world) {
-        return getProfile(groupManager.getServer().getOfflinePlayer(uuid), world);
     }
 
     private Optional<ChatProfile> getProfile(@Nullable final WorldDataHolder holder, @Nullable final World world, final UUID uuid, @Nullable final String name) {

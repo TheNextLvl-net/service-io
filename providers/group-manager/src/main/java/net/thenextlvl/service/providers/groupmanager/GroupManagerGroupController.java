@@ -5,6 +5,7 @@ import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.group.GroupHolder;
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -48,13 +49,13 @@ public final class GroupManagerGroupController implements GroupController {
     }
 
     @Override
-    public CompletableFuture<GroupHolder> loadGroupHolder(final UUID uuid) {
-        return loadGroupHolder(uuid, null);
+    public CompletableFuture<GroupHolder> loadGroupHolder(final OfflinePlayer player) {
+        return loadGroupHolder(player, null);
     }
 
     @Override
-    public CompletableFuture<GroupHolder> loadGroupHolder(final UUID uuid, @Nullable final World world) {
-        return CompletableFuture.completedFuture(getGroupHolder(uuid, world).orElse(null));
+    public CompletableFuture<GroupHolder> loadGroupHolder(final OfflinePlayer player, @Nullable final World world) {
+        return CompletableFuture.completedFuture(getGroupHolder(player, world).orElse(null));
     }
 
     @Override
@@ -101,16 +102,16 @@ public final class GroupManagerGroupController implements GroupController {
     }
 
     @Override
-    public Optional<GroupHolder> getGroupHolder(final UUID uuid) {
-        return getGroupHolder(uuid, null);
+    public Optional<GroupHolder> getGroupHolder(final OfflinePlayer player) {
+        return getGroupHolder(player, null);
     }
 
     @Override
-    public Optional<GroupHolder> getGroupHolder(final UUID uuid, @Nullable final World world) {
+    public Optional<GroupHolder> getGroupHolder(final OfflinePlayer player, @Nullable final World world) {
         final var holder = world != null
                 ? groupManager.getWorldsHolder().getWorldData(world.getName())
                 : groupManager.getWorldsHolder().getDefaultWorld();
-        return getHolder(holder, uuid, null);
+        return getHolder(holder, player.getUniqueId(), player.getName());
     }
 
     @Override

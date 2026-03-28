@@ -23,9 +23,7 @@ public interface PermissionController extends Controller {
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
      */
-    default CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player) {
-        return loadPermissionHolder(player.getUniqueId());
-    }
+    CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player);
 
     /**
      * Loads the {@code PermissionHolder} for the specified {@code OfflinePlayer} asynchronously.
@@ -36,9 +34,7 @@ public interface PermissionController extends Controller {
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
      */
-    default CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player, final World world) {
-        return loadPermissionHolder(player.getUniqueId(), world);
-    }
+    CompletableFuture<PermissionHolder> loadPermissionHolder(OfflinePlayer player, World world);
 
     /**
      * Loads the {@code PermissionHolder} for the specified {@code UUID} asynchronously.
@@ -47,7 +43,9 @@ public interface PermissionController extends Controller {
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
      */
-    CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid);
+    default CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid) {
+        return loadPermissionHolder(getPlugin().getServer().getOfflinePlayer(uuid));
+    }
 
     /**
      * Loads the {@code PermissionHolder} for the specified {@code UUID} and {@code World} asynchronously.
@@ -57,7 +55,9 @@ public interface PermissionController extends Controller {
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
      */
-    CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, World world);
+    default CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid, final World world) {
+        return loadPermissionHolder(getPlugin().getServer().getOfflinePlayer(uuid), world);
+    }
 
     /**
      * Resolves the {@code PermissionHolder} for the specified {@code OfflinePlayer}, loading if not cached.
@@ -68,7 +68,9 @@ public interface PermissionController extends Controller {
      * @since 3.0.0
      */
     default CompletableFuture<PermissionHolder> resolvePermissionHolder(final OfflinePlayer player) {
-        return resolvePermissionHolder(player.getUniqueId());
+        return getPermissionHolder(player)
+                .map(CompletableFuture::completedFuture)
+                .orElseGet(() -> loadPermissionHolder(player));
     }
 
     /**
@@ -121,12 +123,10 @@ public interface PermissionController extends Controller {
      * Retrieves the {@code PermissionHolder} for the specified {@code OfflinePlayer}.
      *
      * @param player the player for whom to retrieve the permission holder
-     * @return a {@code CompletableFuture} that will complete with the permission holder
+     * @return an optional containing the permission holder, or empty
      * @see PermissionHolder
      */
-    default Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player) {
-        return getPermissionHolder(player.getUniqueId());
-    }
+    Optional<PermissionHolder> getPermissionHolder(OfflinePlayer player);
 
     /**
      * Retrieves the {@code PermissionHolder} for the specified {@code OfflinePlayer}
@@ -134,29 +134,31 @@ public interface PermissionController extends Controller {
      *
      * @param player the player for whom to retrieve the permission holder
      * @param world  the world in which the permission holder exists
-     * @return a {@code CompletableFuture} that will complete with the permission holder
+     * @return an optional containing the permission holder, or empty
      * @see PermissionHolder
      */
-    default Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player, final World world) {
-        return getPermissionHolder(player.getUniqueId(), world);
-    }
+    Optional<PermissionHolder> getPermissionHolder(OfflinePlayer player, World world);
 
     /**
      * Retrieves the {@code PermissionHolder} for the specified {@code UUID}.
      *
      * @param uuid the unique ID of the player for whom to retrieve the permission holder
-     * @return a {@code CompletableFuture} that will complete with the permission holder
+     * @return an optional containing the permission holder, or empty
      * @see PermissionHolder
      */
-    Optional<PermissionHolder> getPermissionHolder(final UUID uuid);
+    default Optional<PermissionHolder> getPermissionHolder(final UUID uuid) {
+        return getPermissionHolder(getPlugin().getServer().getOfflinePlayer(uuid));
+    }
 
     /**
      * Retrieves the {@code PermissionHolder} for the specified {@code UUID} and {@code World}.
      *
      * @param uuid  the unique ID of the player for whom to retrieve the permission holder
      * @param world the world in which the permission holder exists
-     * @return a {@code CompletableFuture} that will complete with the permission holder
+     * @return an optional containing the permission holder, or empty
      * @see PermissionHolder
      */
-    Optional<PermissionHolder> getPermissionHolder(UUID uuid, World world);
+    default Optional<PermissionHolder> getPermissionHolder(final UUID uuid, final World world) {
+        return getPermissionHolder(getPlugin().getServer().getOfflinePlayer(uuid), world);
+    }
 }

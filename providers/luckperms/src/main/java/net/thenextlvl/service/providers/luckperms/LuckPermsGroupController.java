@@ -7,13 +7,13 @@ import net.luckperms.api.query.QueryOptions;
 import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.group.GroupHolder;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -59,14 +59,14 @@ public final class LuckPermsGroupController implements GroupController {
     }
 
     @Override
-    public CompletableFuture<GroupHolder> loadGroupHolder(final UUID uuid) {
-        return luckPerms.getUserManager().loadUser(uuid).thenApply(user ->
+    public CompletableFuture<GroupHolder> loadGroupHolder(final OfflinePlayer player) {
+        return luckPerms.getUserManager().loadUser(player.getUniqueId(), player.getName()).thenApply(user ->
                 new LuckPermsPermissionHolder(user, QueryOptions.defaultContextualOptions()));
     }
 
     @Override
-    public CompletableFuture<GroupHolder> loadGroupHolder(final UUID uuid, final World world) {
-        return luckPerms.getUserManager().loadUser(uuid).thenApply(user -> {
+    public CompletableFuture<GroupHolder> loadGroupHolder(final OfflinePlayer player, final World world) {
+        return luckPerms.getUserManager().loadUser(player.getUniqueId(), player.getName()).thenApply(user -> {
             final var options = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
             return new LuckPermsPermissionHolder(user, options);
         });
@@ -114,14 +114,14 @@ public final class LuckPermsGroupController implements GroupController {
     }
 
     @Override
-    public Optional<GroupHolder> getGroupHolder(final UUID uuid) {
-        return Optional.ofNullable(luckPerms.getUserManager().getUser(uuid)).map(user ->
+    public Optional<GroupHolder> getGroupHolder(final OfflinePlayer player) {
+        return Optional.ofNullable(luckPerms.getUserManager().getUser(player.getUniqueId())).map(user ->
                 new LuckPermsPermissionHolder(user, QueryOptions.defaultContextualOptions()));
     }
 
     @Override
-    public Optional<GroupHolder> getGroupHolder(final UUID uuid, final World world) {
-        return Optional.ofNullable(luckPerms.getUserManager().getUser(uuid)).map(user -> {
+    public Optional<GroupHolder> getGroupHolder(final OfflinePlayer player, final World world) {
+        return Optional.ofNullable(luckPerms.getUserManager().getUser(player.getUniqueId())).map(user -> {
             final var context = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
             return new LuckPermsPermissionHolder(user, context);
         });

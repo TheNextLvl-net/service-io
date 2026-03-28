@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 public record SuperPermsPermissionController(Plugin plugin) implements PermissionController {
     @Override
     public CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player) {
-        return CompletableFuture.completedFuture(getPermissionHolder(player.getPlayer()).orElse(NoOpHolder.INSTANCE));
+        return CompletableFuture.completedFuture(getPermissionHolder(player).orElse(NoOpHolder.INSTANCE));
     }
 
     @Override
@@ -28,33 +28,14 @@ public record SuperPermsPermissionController(Plugin plugin) implements Permissio
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid) {
-        return CompletableFuture.completedFuture(getPermissionHolder(uuid).orElse(NoOpHolder.INSTANCE));
-    }
-
-    @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid, final World world) {
-        return loadPermissionHolder(uuid);
-    }
-
-    @Override
     public Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player) {
-        return getPermissionHolder(player.getPlayer());
+        final var onlinePlayer = player.getPlayer();
+        return Optional.ofNullable(onlinePlayer).map(SuperPermsPermissionHolder::new);
     }
 
     @Override
     public Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player, final World world) {
         return getPermissionHolder(player);
-    }
-
-    @Override
-    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid) {
-        return getPermissionHolder(plugin.getServer().getPlayer(uuid));
-    }
-
-    @Override
-    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid, final World world) {
-        return getPermissionHolder(uuid);
     }
 
     private Optional<PermissionHolder> getPermissionHolder(@Nullable final Player player) {

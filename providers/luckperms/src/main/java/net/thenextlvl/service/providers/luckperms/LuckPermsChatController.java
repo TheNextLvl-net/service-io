@@ -7,12 +7,12 @@ import net.luckperms.api.query.QueryOptions;
 import net.thenextlvl.service.api.DoNotWrap;
 import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.chat.ChatProfile;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @DoNotWrap
@@ -26,31 +26,27 @@ public final class LuckPermsChatController implements ChatController {
     }
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(final UUID uuid) {
-        return luckPerms.getUserManager().loadUser(uuid).thenApply(user ->
+    public CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player) {
+        return luckPerms.getUserManager().loadUser(player.getUniqueId(), player.getName()).thenApply(user ->
                 new LuckPermsChatProfile(user, QueryOptions.defaultContextualOptions(), null));
     }
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(final UUID uuid, final World world) {
-        return luckPerms.getUserManager().loadUser(uuid).thenApply(user -> {
+    public CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player, final World world) {
+        return luckPerms.getUserManager().loadUser(player.getUniqueId()).thenApply(user -> {
             final var options = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
             return new LuckPermsChatProfile(user, options, world);
         });
     }
 
     @Override
-    public Optional<ChatProfile> getProfile(final UUID uuid) {
-        return Optional.ofNullable(luckPerms.getUserManager().getUser(uuid)).map(user ->
-                new LuckPermsChatProfile(user, QueryOptions.defaultContextualOptions(), null));
+    public Optional<ChatProfile> getProfile(final OfflinePlayer player) {
+        return getProfile(player.getUniqueId());
     }
 
     @Override
-    public Optional<ChatProfile> getProfile(final UUID uuid, final World world) {
-        return Optional.ofNullable(luckPerms.getUserManager().getUser(uuid)).map(user -> {
-            final var options = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
-            return new LuckPermsChatProfile(user, options, world);
-        });
+    public Optional<ChatProfile> getProfile(final OfflinePlayer player, final World world) {
+        return getProfile(player.getUniqueId(), world);
     }
 
     @Override

@@ -64,28 +64,18 @@ public final class EconomyServiceWrapper implements EconomyController, Wrapper {
     }
 
     @Override
-    public Optional<Account> getAccount(final UUID uuid) {
-        return getAccount(provider.getServer().getOfflinePlayer(uuid));
-    }
-
-    @Override
-    public Optional<Account> getAccount(final UUID uuid, final World world) {
-        return getAccount(provider.getServer().getOfflinePlayer(uuid), world);
-    }
-
-    @Override
     public CompletableFuture<@Unmodifiable Set<Account>> resolveAccounts() {
         return CompletableFuture.completedFuture(getAccounts());
     }
 
     @Override
-    public CompletableFuture<Optional<Account>> resolveAccount(final UUID uuid) {
-        return CompletableFuture.completedFuture(getAccount(uuid));
+    public CompletableFuture<Optional<Account>> resolveAccount(final OfflinePlayer player) {
+        return CompletableFuture.completedFuture(getAccount(player));
     }
 
     @Override
-    public CompletableFuture<Optional<Account>> resolveAccount(final UUID uuid, final World world) {
-        return CompletableFuture.completedFuture(getAccount(uuid, world));
+    public CompletableFuture<Optional<Account>> resolveAccount(final OfflinePlayer player, final World world) {
+        return CompletableFuture.completedFuture(getAccount(player, world));
     }
 
     @Override
@@ -102,22 +92,12 @@ public final class EconomyServiceWrapper implements EconomyController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<Account> createAccount(final UUID uuid) {
-        return createAccount(provider.getServer().getOfflinePlayer(uuid));
-    }
-
-    @Override
-    public CompletableFuture<Account> createAccount(final UUID uuid, final World world) {
-        return createAccount(provider.getServer().getOfflinePlayer(uuid), world);
-    }
-
-    @Override
-    public CompletableFuture<Boolean> deleteAccount(final UUID uuid) {
+    public CompletableFuture<Boolean> deleteAccount(final OfflinePlayer player) {
         return CompletableFuture.completedFuture(false);
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteAccount(final UUID uuid, final World world) {
+    public CompletableFuture<Boolean> deleteAccount(final OfflinePlayer player, final World world) {
         return CompletableFuture.completedFuture(false);
     }
 

@@ -5,6 +5,7 @@ import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.api.permission.PermissionHolder;
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,26 +22,26 @@ public final class GroupManagerPermissionController implements PermissionControl
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
 
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid) {
-        return loadPermissionHolder(uuid, null);
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player) {
+        return loadPermissionHolder(player, null);
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid, @Nullable final World world) {
-        return CompletableFuture.completedFuture(getPermissionHolder(uuid, world).orElse(null));
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player, @Nullable final World world) {
+        return CompletableFuture.completedFuture(getPermissionHolder(player, world).orElse(null));
     }
 
     @Override
-    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid) {
-        return getPermissionHolder(uuid, null);
+    public Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player) {
+        return getPermissionHolder(player, null);
     }
 
     @Override
-    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid, @Nullable final World world) {
+    public Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player, @Nullable final World world) {
         final var holder = world != null
                 ? groupManager.getWorldsHolder().getWorldData(world.getName())
                 : groupManager.getWorldsHolder().getDefaultWorld();
-        return getHolder(holder, uuid);
+        return getHolder(holder, player.getUniqueId());
     }
 
     private Optional<PermissionHolder> getHolder(@Nullable final WorldDataHolder holder, final UUID uuid) {

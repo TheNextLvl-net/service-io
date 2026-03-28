@@ -18,7 +18,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -35,18 +34,13 @@ public final class BankServiceWrapper implements BankController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<Bank> createBank(final UUID uuid, final String name) {
-        return createBank(provider.getServer().getOfflinePlayer(uuid), name);
-    }
-
-    @Override
     public CompletableFuture<Bank> createBank(final OfflinePlayer player, final String name) {
         return CompletableFuture.completedFuture(economy.createBank(name, player))
                 .thenApply(bank -> getBank(name).orElseThrow());
     }
 
     @Override
-    public CompletableFuture<Bank> createBank(final UUID uuid, final String name, final World world) {
+    public CompletableFuture<Bank> createBank(final OfflinePlayer player, final String name, final World world) {
         throw new CapabilityException(EconomyCapability.MULTI_WORLD);
     }
 
@@ -57,12 +51,12 @@ public final class BankServiceWrapper implements BankController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteBank(final UUID uuid) {
+    public CompletableFuture<Boolean> deleteBank(final OfflinePlayer player) {
         return CompletableFuture.completedFuture(false);
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteBank(final UUID uuid, final World world) {
+    public CompletableFuture<Boolean> deleteBank(final OfflinePlayer player, final World world) {
         throw new CapabilityException(EconomyCapability.MULTI_WORLD);
     }
 
@@ -89,12 +83,12 @@ public final class BankServiceWrapper implements BankController, Wrapper {
     }
 
     @Override
-    public Optional<Bank> getBank(final UUID uuid) {
+    public Optional<Bank> getBank(final OfflinePlayer player) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<Bank> getBank(final UUID uuid, @Nullable final World world) {
+    public Optional<Bank> getBank(final OfflinePlayer player, @Nullable final World world) {
         throw new CapabilityException(EconomyCapability.MULTI_WORLD);
     }
 
@@ -114,12 +108,12 @@ public final class BankServiceWrapper implements BankController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<Optional<Bank>> resolveBank(final UUID uuid) {
-        return CompletableFuture.completedFuture(getBank(uuid));
+    public CompletableFuture<Optional<Bank>> resolveBank(final OfflinePlayer player) {
+        return CompletableFuture.completedFuture(getBank(player));
     }
 
     @Override
-    public CompletableFuture<Optional<Bank>> resolveBank(final UUID uuid, final World world) {
+    public CompletableFuture<Optional<Bank>> resolveBank(final OfflinePlayer player, final World world) {
         throw new CapabilityException(EconomyCapability.MULTI_WORLD);
     }
 

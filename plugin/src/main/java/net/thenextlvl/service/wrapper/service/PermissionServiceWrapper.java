@@ -12,7 +12,6 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
@@ -26,8 +25,8 @@ public final class PermissionServiceWrapper implements PermissionController, Wra
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid) {
-        return loadPermissionHolder(uuid, null);
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player) {
+        return loadPermissionHolder(player, null);
     }
 
     @Override
@@ -36,23 +35,13 @@ public final class PermissionServiceWrapper implements PermissionController, Wra
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid, @Nullable final World world) {
-        return loadPermissionHolder(provider.getServer().getOfflinePlayer(uuid), world);
+    public Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player) {
+        return Optional.of(new WrappedPermissionHolder(null, player, permission));
     }
 
     @Override
     public Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player, @Nullable final World world) {
         return Optional.of(new WrappedPermissionHolder(world, player, permission));
-    }
-
-    @Override
-    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid) {
-        return getPermissionHolder(uuid, null);
-    }
-
-    @Override
-    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid, @Nullable final World world) {
-        return getPermissionHolder(provider.getServer().getOfflinePlayer(uuid), world);
     }
 
     @Override
