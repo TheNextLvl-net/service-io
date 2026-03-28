@@ -22,7 +22,6 @@ import java.util.concurrent.CompletableFuture;
  *
  * @implSpec Implementations must be thread-safe. All methods may be called from any thread,
  * including the main server thread and asynchronous task threads concurrently.
- * @since 3.0.0
  */
 public interface EconomyController extends Controller, CapabilityProvider<EconomyCapability> {
     /**
@@ -87,6 +86,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      * Loads all accounts from the backing store and caches them.
      *
      * @return a future that completes with an unmodifiable set of all accounts
+     * @since 3.0.0
      */
     CompletableFuture<@Unmodifiable Set<Account>> resolveAccounts();
 
@@ -95,6 +95,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      *
      * @param player the player whose account is being resolved
      * @return a future that completes with the account, or empty if it does not exist
+     * @since 3.0.0
      */
     default CompletableFuture<Optional<Account>> resolveAccount(final OfflinePlayer player) {
         return resolveAccount(player.getUniqueId());
@@ -107,6 +108,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      * @param world  the world scope of the account
      * @return a future that completes with the account, or empty if it does not exist
      * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
      */
     default CompletableFuture<Optional<Account>> resolveAccount(final OfflinePlayer player, final World world) {
         return resolveAccount(player.getUniqueId(), world);
@@ -117,6 +119,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      *
      * @param uuid the UUID of the account owner
      * @return a future that completes with the account, or empty if it does not exist
+     * @since 3.0.0
      */
     CompletableFuture<Optional<Account>> resolveAccount(UUID uuid);
 
@@ -127,6 +130,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      * @param world the world scope of the account
      * @return a future that completes with the account, or empty if it does not exist
      * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
      */
     CompletableFuture<Optional<Account>> resolveAccount(UUID uuid, World world);
 

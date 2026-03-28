@@ -10,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 final class PermissionConverter extends PlayerConverter<PermissionController> {
     @Override
     public CompletableFuture<Void> convert(final OfflinePlayer player, final PermissionController source, final PermissionController target) {
-        return source.tryGetPermissionHolder(player).thenAccept(holder -> target.tryGetPermissionHolder(player)
+        return source.resolvePermissionHolder(player).thenAccept(holder -> target.resolvePermissionHolder(player)
                 .thenAccept(targetHolder -> holder.getPermissions().forEach(targetHolder::setPermission)));
     }
 }

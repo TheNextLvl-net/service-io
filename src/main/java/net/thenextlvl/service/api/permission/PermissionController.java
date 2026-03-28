@@ -12,6 +12,8 @@ import java.util.concurrent.CompletableFuture;
 /**
  * The PermissionController interface represents a controller for managing permissions for players.
  *
+ * @implSpec Implementations must be thread-safe. All methods may be called from any thread,
+ * including the main server thread and asynchronous task threads concurrently.
  * @see PermissionHolder
  */
 public interface PermissionController extends Controller {
@@ -61,51 +63,56 @@ public interface PermissionController extends Controller {
     CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, @Nullable World world);
 
     /**
-     * Retrieves the {@code PermissionHolder} for the specified {@code OfflinePlayer} or try to load it.
+     * Resolves the {@code PermissionHolder} for the specified {@code OfflinePlayer}, loading if not cached.
      *
-     * @param player the player for whom to retrieve the permission holder
+     * @param player the player for whom to resolve the permission holder
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
+     * @since 3.0.0
      */
-    default CompletableFuture<PermissionHolder> tryGetPermissionHolder(final OfflinePlayer player) {
-        return tryGetPermissionHolder(player, null);
+    default CompletableFuture<PermissionHolder> resolvePermissionHolder(final OfflinePlayer player) {
+        return resolvePermissionHolder(player, null);
     }
 
     /**
-     * Retrieves the {@code PermissionHolder} for the specified {@code OfflinePlayer} or try to load it.
-     * and {@code World}.
+     * Resolves the {@code PermissionHolder} for the specified {@code OfflinePlayer} and {@code World},
+     * loading from the backing store if not cached.
      *
-     * @param player the player for whom to retrieve the permission holder
+     * @param player the player for whom to resolve the permission holder
      * @param world  the world in which the permission holder exists
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
+     * @since 3.0.0
      */
-    default CompletableFuture<PermissionHolder> tryGetPermissionHolder(final OfflinePlayer player, @Nullable final World world) {
+    default CompletableFuture<PermissionHolder> resolvePermissionHolder(final OfflinePlayer player, @Nullable final World world) {
         return getPermissionHolder(player, world)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadPermissionHolder(player, world));
     }
 
     /**
-     * Retrieves the {@code PermissionHolder} for the specified {@code UUID} or try to load it.
+     * Resolves the {@code PermissionHolder} for the specified {@code UUID}, loading if not cached.
      *
-     * @param uuid the unique ID of the player for whom to retrieve the permission holder
+     * @param uuid the unique ID of the player for whom to resolve the permission holder
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
+     * @since 3.0.0
      */
-    default CompletableFuture<PermissionHolder> tryGetPermissionHolder(final UUID uuid) {
-        return tryGetPermissionHolder(uuid, null);
+    default CompletableFuture<PermissionHolder> resolvePermissionHolder(final UUID uuid) {
+        return resolvePermissionHolder(uuid, null);
     }
 
     /**
-     * Retrieves the {@code PermissionHolder} for the specified {@code UUID} and {@code World} or try to load it.
+     * Resolves the {@code PermissionHolder} for the specified {@code UUID} and {@code World},
+     * loading from the backing store if not cached.
      *
-     * @param uuid  the unique ID of the player for whom to retrieve the permission holder
+     * @param uuid  the unique ID of the player for whom to resolve the permission holder
      * @param world the world in which the permission holder exists
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
+     * @since 3.0.0
      */
-    default CompletableFuture<PermissionHolder> tryGetPermissionHolder(final UUID uuid, @Nullable final World world) {
+    default CompletableFuture<PermissionHolder> resolvePermissionHolder(final UUID uuid, @Nullable final World world) {
         return getPermissionHolder(uuid, world)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadPermissionHolder(uuid, world));

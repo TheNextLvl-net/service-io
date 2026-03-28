@@ -10,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 final class GroupConverter extends PlayerConverter<GroupController> {
     @Override
     public CompletableFuture<Void> convert(final OfflinePlayer player, final GroupController source, final GroupController target) {
-        return source.tryGetGroupHolder(player).thenAccept(holder -> target.tryGetGroupHolder(player)
+        return source.resolveGroupHolder(player).thenAccept(holder -> target.resolveGroupHolder(player)
                 .thenAccept(targetHolder -> {
                     holder.getGroups().forEach(targetHolder::addGroup);
                     holder.getPermissions().forEach(targetHolder::setPermission);

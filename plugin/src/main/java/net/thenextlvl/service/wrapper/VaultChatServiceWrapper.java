@@ -180,13 +180,13 @@ public final class VaultChatServiceWrapper extends Chat implements Wrapper {
         return Optional.ofNullable(plugin.getServer().getOfflinePlayerIfCached(name))
                 .flatMap(player -> Optional.ofNullable(worldName)
                         .map(plugin.getServer()::getWorld)
-                        .map(world -> chatController.tryGetProfile(player, world).join()));
+                        .map(world -> chatController.resolveProfile(player, world).join()));
     }
 
     private Optional<Group> getGroup(@Nullable final String worldName, final String groupName) {
         return Optional.ofNullable(groupController).map(controller -> Optional.ofNullable(worldName)
                 .map(plugin.getServer()::getWorld)
-                .map(world -> controller.tryGetGroup(groupName, world).join())
-                .orElseGet(() -> controller.tryGetGroup(groupName).join()));
+                .map(world -> controller.resolveGroup(groupName, world).join())
+                .orElseGet(() -> controller.resolveGroup(groupName).join()));
     }
 }

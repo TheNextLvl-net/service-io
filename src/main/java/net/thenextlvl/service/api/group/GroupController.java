@@ -15,6 +15,9 @@ import java.util.concurrent.CompletableFuture;
  * The GroupController interface provides methods for managing groups and group holders.
  * It allows creating, loading, deleting, and retrieving groups and group holders.
  * Operations can be performed asynchronously using CompletableFutures.
+ *
+ * @implSpec Implementations must be thread-safe. All methods may be called from any thread,
+ * including the main server thread and asynchronous task threads concurrently.
  */
 public interface GroupController extends Controller {
     /**
@@ -95,27 +98,72 @@ public interface GroupController extends Controller {
      */
     CompletableFuture<GroupHolder> loadGroupHolder(UUID uuid, @Nullable World world);
 
-    default CompletableFuture<Group> tryGetGroup(final String name) {
-        return tryGetGroup(name, null);
+    /**
+     * Resolves the group with the given name, loading from the backing store if not cached.
+     *
+     * @param name the name of the group to resolve
+     * @return a CompletableFuture that will complete with the resolved Group object
+     * @since 3.0.0
+     */
+    default CompletableFuture<Group> resolveGroup(final String name) {
+        return resolveGroup(name, null);
     }
 
-    default CompletableFuture<Group> tryGetGroup(final String name, @Nullable final World world) {
+    /**
+     * Resolves the group with the given name and world, loading from the backing store if not cached.
+     *
+     * @param name  the name of the group to resolve
+     * @param world the world the group should be resolved from
+     * @return a CompletableFuture that will complete with the resolved Group object
+     * @since 3.0.0
+     */
+    default CompletableFuture<Group> resolveGroup(final String name, @Nullable final World world) {
         return getGroup(name, world).map(CompletableFuture::completedFuture).orElseGet(() -> loadGroup(name, world));
     }
 
-    default CompletableFuture<GroupHolder> tryGetGroupHolder(final OfflinePlayer player) {
-        return tryGetGroupHolder(player, null);
+    /**
+     * Resolves the GroupHolder associated with the specified player, loading if not cached.
+     *
+     * @param player the player for whom to resolve the GroupHolder
+     * @return a CompletableFuture that will complete with the resolved GroupHolder object
+     * @since 3.0.0
+     */
+    default CompletableFuture<GroupHolder> resolveGroupHolder(final OfflinePlayer player) {
+        return resolveGroupHolder(player, null);
     }
 
-    default CompletableFuture<GroupHolder> tryGetGroupHolder(final OfflinePlayer player, @Nullable final World world) {
-        return tryGetGroupHolder(player.getUniqueId(), world);
+    /**
+     * Resolves the GroupHolder associated with the specified player and world, loading if not cached.
+     *
+     * @param player the player for whom to resolve the GroupHolder
+     * @param world  the world from which to resolve the GroupHolder
+     * @return a CompletableFuture that will complete with the resolved GroupHolder object
+     * @since 3.0.0
+     */
+    default CompletableFuture<GroupHolder> resolveGroupHolder(final OfflinePlayer player, @Nullable final World world) {
+        return resolveGroupHolder(player.getUniqueId(), world);
     }
 
-    default CompletableFuture<GroupHolder> tryGetGroupHolder(final UUID uuid) {
-        return tryGetGroupHolder(uuid, null);
+    /**
+     * Resolves the GroupHolder associated with the specified player's UUID, loading if not cached.
+     *
+     * @param uuid the UUID of the player for whom to resolve the GroupHolder
+     * @return a CompletableFuture that will complete with the resolved GroupHolder object
+     * @since 3.0.0
+     */
+    default CompletableFuture<GroupHolder> resolveGroupHolder(final UUID uuid) {
+        return resolveGroupHolder(uuid, null);
     }
 
-    default CompletableFuture<GroupHolder> tryGetGroupHolder(final UUID uuid, @Nullable final World world) {
+    /**
+     * Resolves the GroupHolder associated with the specified player's UUID and world, loading if not cached.
+     *
+     * @param uuid  the UUID of the player for whom to resolve the GroupHolder
+     * @param world the world from which to resolve the GroupHolder
+     * @return a CompletableFuture that will complete with the resolved GroupHolder object
+     * @since 3.0.0
+     */
+    default CompletableFuture<GroupHolder> resolveGroupHolder(final UUID uuid, @Nullable final World world) {
         return getGroupHolder(uuid, world).map(CompletableFuture::completedFuture).orElseGet(() -> loadGroupHolder(uuid, world));
     }
 

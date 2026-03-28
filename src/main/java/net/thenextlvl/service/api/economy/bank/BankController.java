@@ -18,7 +18,6 @@ import java.util.concurrent.CompletableFuture;
  *
  * @implSpec Implementations must be thread-safe. All methods may be called from any thread,
  * including the main server thread and asynchronous task threads concurrently.
- * @since 3.0.0
  */
 public interface BankController extends Controller {
     /**
@@ -99,6 +98,7 @@ public interface BankController extends Controller {
      * Loads all banks from the backing store and caches them.
      *
      * @return a future that completes with an unmodifiable set of all banks
+     * @since 3.0.0
      */
     CompletableFuture<@Unmodifiable Set<Bank>> resolveBanks();
 
@@ -108,6 +108,7 @@ public interface BankController extends Controller {
      * @param world the world from which to load banks
      * @return a future that completes with an unmodifiable set of banks in the world
      * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
      */
     CompletableFuture<@Unmodifiable Set<Bank>> resolveBanks(World world);
 
@@ -116,6 +117,7 @@ public interface BankController extends Controller {
      *
      * @param name the name of the bank
      * @return a future that completes with the bank, or empty if it does not exist
+     * @since 3.0.0
      */
     CompletableFuture<Optional<Bank>> resolveBank(String name);
 
@@ -124,6 +126,7 @@ public interface BankController extends Controller {
      *
      * @param player the player whose bank is being resolved
      * @return a future that completes with the bank, or empty if it does not exist
+     * @since 3.0.0
      */
     default CompletableFuture<Optional<Bank>> resolveBank(final OfflinePlayer player) {
         return resolveBank(player.getUniqueId());
@@ -136,6 +139,7 @@ public interface BankController extends Controller {
      * @param world  the world scope of the bank
      * @return a future that completes with the bank, or empty if it does not exist
      * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
      */
     default CompletableFuture<Optional<Bank>> resolveBank(final OfflinePlayer player, final World world) {
         return resolveBank(player.getUniqueId(), world);
@@ -146,6 +150,7 @@ public interface BankController extends Controller {
      *
      * @param uuid the UUID of the bank owner
      * @return a future that completes with the bank, or empty if it does not exist
+     * @since 3.0.0
      */
     CompletableFuture<Optional<Bank>> resolveBank(UUID uuid);
 
@@ -156,6 +161,7 @@ public interface BankController extends Controller {
      * @param world the world scope of the bank
      * @return a future that completes with the bank, or empty if it does not exist
      * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
      */
     CompletableFuture<Optional<Bank>> resolveBank(UUID uuid, World world);
 
