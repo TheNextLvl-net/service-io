@@ -3,7 +3,6 @@ package net.thenextlvl.service.api.chat;
 import net.thenextlvl.service.api.Controller;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -23,7 +22,7 @@ public interface ChatController extends Controller {
      * @return a CompletableFuture that will complete with the chat profile
      */
     default CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player) {
-        return loadProfile(player, null);
+        return loadProfile(player.getUniqueId());
     }
 
     /**
@@ -33,7 +32,7 @@ public interface ChatController extends Controller {
      * @param world  The world for which the chat profile is requested.
      * @return A CompletableFuture that will complete with the chat profile.
      */
-    default CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player, @Nullable final World world) {
+    default CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player, final World world) {
         return loadProfile(player.getUniqueId(), world);
     }
 
@@ -43,9 +42,7 @@ public interface ChatController extends Controller {
      * @param uuid The UUID of the player whose ChatProfile is to be retrieved.
      * @return A CompletableFuture that will complete with the chat profile.
      */
-    default CompletableFuture<ChatProfile> loadProfile(final UUID uuid) {
-        return loadProfile(uuid, null);
-    }
+    CompletableFuture<ChatProfile> loadProfile(final UUID uuid);
 
     /**
      * Loads the chat profile for the given UUID in the specified world.
@@ -54,7 +51,7 @@ public interface ChatController extends Controller {
      * @param world The world for which the ChatProfile is requested.
      * @return A CompletableFuture that will complete with the chat profile.
      */
-    CompletableFuture<ChatProfile> loadProfile(UUID uuid, @Nullable World world);
+    CompletableFuture<ChatProfile> loadProfile(UUID uuid, World world);
 
     /**
      * Resolves the chat profile for the given OfflinePlayer, loading from the backing store if not cached.
@@ -64,7 +61,7 @@ public interface ChatController extends Controller {
      * @since 3.0.0
      */
     default CompletableFuture<ChatProfile> resolveProfile(final OfflinePlayer player) {
-        return resolveProfile(player, null);
+        return resolveProfile(player.getUniqueId());
     }
 
     /**
@@ -75,7 +72,7 @@ public interface ChatController extends Controller {
      * @return A CompletableFuture that will complete with the chat profile.
      * @since 3.0.0
      */
-    default CompletableFuture<ChatProfile> resolveProfile(final OfflinePlayer player, @Nullable final World world) {
+    default CompletableFuture<ChatProfile> resolveProfile(final OfflinePlayer player, final World world) {
         return resolveProfile(player.getUniqueId(), world);
     }
 
@@ -87,7 +84,9 @@ public interface ChatController extends Controller {
      * @since 3.0.0
      */
     default CompletableFuture<ChatProfile> resolveProfile(final UUID uuid) {
-        return resolveProfile(uuid, null);
+        return getProfile(uuid)
+                .map(CompletableFuture::completedFuture)
+                .orElseGet(() -> loadProfile(uuid));
     }
 
     /**
@@ -98,7 +97,7 @@ public interface ChatController extends Controller {
      * @return A CompletableFuture that will complete with the chat profile.
      * @since 3.0.0
      */
-    default CompletableFuture<ChatProfile> resolveProfile(final UUID uuid, @Nullable final World world) {
+    default CompletableFuture<ChatProfile> resolveProfile(final UUID uuid, final World world) {
         return getProfile(uuid, world)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadProfile(uuid, world));
@@ -111,7 +110,7 @@ public interface ChatController extends Controller {
      * @return an optional containing the chat profile, or empty.
      */
     default Optional<ChatProfile> getProfile(final OfflinePlayer player) {
-        return getProfile(player, null);
+        return getProfile(player.getUniqueId());
     }
 
     /**
@@ -121,7 +120,7 @@ public interface ChatController extends Controller {
      * @param world  The world for which the chat profile is requested.
      * @return an optional containing the chat profile, or empty.
      */
-    default Optional<ChatProfile> getProfile(final OfflinePlayer player, @Nullable final World world) {
+    default Optional<ChatProfile> getProfile(final OfflinePlayer player, final World world) {
         return getProfile(player.getUniqueId(), world);
     }
 
@@ -131,9 +130,7 @@ public interface ChatController extends Controller {
      * @param uuid The UUID of the player whose ChatProfile is to be retrieved.
      * @return an optional containing the chat profile, or empty.
      */
-    default Optional<ChatProfile> getProfile(final UUID uuid) {
-        return getProfile(uuid, null);
-    }
+    Optional<ChatProfile> getProfile(final UUID uuid);
 
     /**
      * Retrieves the chat profile for the given UUID in the specified world.
@@ -142,5 +139,5 @@ public interface ChatController extends Controller {
      * @param world The world for which the ChatProfile is requested.
      * @return an optional containing the chat profile, or empty.
      */
-    Optional<ChatProfile> getProfile(UUID uuid, @Nullable World world);
+    Optional<ChatProfile> getProfile(UUID uuid, World world);
 }

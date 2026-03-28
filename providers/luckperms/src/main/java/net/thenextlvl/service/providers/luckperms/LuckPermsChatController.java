@@ -10,7 +10,6 @@ import net.thenextlvl.service.api.chat.ChatProfile;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -33,8 +32,7 @@ public final class LuckPermsChatController implements ChatController {
     }
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(final UUID uuid, @Nullable final World world) {
-        if (world == null) return loadProfile(uuid);
+    public CompletableFuture<ChatProfile> loadProfile(final UUID uuid, final World world) {
         return luckPerms.getUserManager().loadUser(uuid).thenApply(user -> {
             final var options = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
             return new LuckPermsChatProfile(user, options, world);
@@ -48,8 +46,7 @@ public final class LuckPermsChatController implements ChatController {
     }
 
     @Override
-    public Optional<ChatProfile> getProfile(final UUID uuid, @Nullable final World world) {
-        if (world == null) return getProfile(uuid);
+    public Optional<ChatProfile> getProfile(final UUID uuid, final World world) {
         return Optional.ofNullable(luckPerms.getUserManager().getUser(uuid)).map(user -> {
             final var options = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
             return new LuckPermsChatProfile(user, options, world);

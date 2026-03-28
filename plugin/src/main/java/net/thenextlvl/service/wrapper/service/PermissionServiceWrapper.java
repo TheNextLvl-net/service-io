@@ -26,6 +26,11 @@ public final class PermissionServiceWrapper implements PermissionController, Wra
     }
 
     @Override
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid) {
+        return loadPermissionHolder(uuid, null);
+    }
+
+    @Override
     public CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player, @Nullable final World world) {
         return CompletableFuture.completedFuture(new WrappedPermissionHolder(world, player, permission));
     }
@@ -38,6 +43,11 @@ public final class PermissionServiceWrapper implements PermissionController, Wra
     @Override
     public Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player, @Nullable final World world) {
         return Optional.of(new WrappedPermissionHolder(world, player, permission));
+    }
+
+    @Override
+    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid) {
+        return getPermissionHolder(uuid, null);
     }
 
     @Override

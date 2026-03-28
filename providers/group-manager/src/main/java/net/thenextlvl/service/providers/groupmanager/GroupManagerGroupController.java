@@ -8,6 +8,7 @@ import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -37,8 +38,18 @@ public final class GroupManagerGroupController implements GroupController {
     }
 
     @Override
+    public CompletableFuture<Group> loadGroup(final String name) {
+        return loadGroup(name, null);
+    }
+
+    @Override
     public CompletableFuture<Group> loadGroup(final String name, @Nullable final World world) {
         return CompletableFuture.completedFuture(getGroup(name, world).orElse(null));
+    }
+
+    @Override
+    public CompletableFuture<GroupHolder> loadGroupHolder(final UUID uuid) {
+        return loadGroupHolder(uuid, null);
     }
 
     @Override
@@ -47,12 +58,17 @@ public final class GroupManagerGroupController implements GroupController {
     }
 
     @Override
+    public CompletableFuture<@Unmodifiable Set<Group>> loadGroups() {
+        return loadGroups(null);
+    }
+
+    @Override
     public CompletableFuture<Set<Group>> loadGroups(@Nullable final World world) {
         return CompletableFuture.completedFuture(getGroups(world));
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteGroup(final Group group, @Nullable final World world) {
+    public CompletableFuture<Boolean> deleteGroup(final Group group, final World world) {
         return deleteGroup(group.getName(), world);
     }
 
@@ -62,8 +78,7 @@ public final class GroupManagerGroupController implements GroupController {
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteGroup(final String name, @Nullable final World world) {
-        if (world == null) return deleteGroup(name);
+    public CompletableFuture<Boolean> deleteGroup(final String name, final World world) {
         final var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
         if (holder != null) CompletableFuture.completedFuture(holder.removeGroup(name));
         return CompletableFuture.completedFuture(null);
@@ -83,6 +98,11 @@ public final class GroupManagerGroupController implements GroupController {
         return Optional.ofNullable(holder)
                 .map(holder1 -> holder1.getGroup(name))
                 .map(GroupManagerGroup::new);
+    }
+
+    @Override
+    public Optional<GroupHolder> getGroupHolder(final UUID uuid) {
+        return getGroupHolder(uuid, null);
     }
 
     @Override

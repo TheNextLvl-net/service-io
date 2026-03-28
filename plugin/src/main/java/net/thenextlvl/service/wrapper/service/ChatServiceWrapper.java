@@ -26,8 +26,8 @@ public final class ChatServiceWrapper implements ChatController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player, @Nullable final World world) {
-        return CompletableFuture.completedFuture(new WrappedChatProfile(world, chat, player));
+    public CompletableFuture<ChatProfile> loadProfile(final UUID uuid) {
+        return loadProfile(uuid, null);
     }
 
     @Override
@@ -36,8 +36,18 @@ public final class ChatServiceWrapper implements ChatController, Wrapper {
     }
 
     @Override
+    public CompletableFuture<ChatProfile> loadProfile(final OfflinePlayer player, @Nullable final World world) {
+        return CompletableFuture.completedFuture(new WrappedChatProfile(world, chat, player));
+    }
+
+    @Override
     public Optional<ChatProfile> getProfile(final OfflinePlayer player, @Nullable final World world) {
         return Optional.of(new WrappedChatProfile(world, chat, player));
+    }
+
+    @Override
+    public Optional<ChatProfile> getProfile(final UUID uuid) {
+        return getProfile(uuid, null);
     }
 
     @Override

@@ -21,8 +21,18 @@ public final class GroupManagerPermissionController implements PermissionControl
     private final GroupManager groupManager = JavaPlugin.getPlugin(GroupManager.class);
 
     @Override
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid) {
+        return loadPermissionHolder(uuid, null);
+    }
+
+    @Override
     public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid, @Nullable final World world) {
         return CompletableFuture.completedFuture(getPermissionHolder(uuid, world).orElse(null));
+    }
+
+    @Override
+    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid) {
+        return getPermissionHolder(uuid, null);
     }
 
     @Override

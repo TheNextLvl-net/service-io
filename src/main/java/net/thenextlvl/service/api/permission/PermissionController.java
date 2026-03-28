@@ -3,7 +3,6 @@ package net.thenextlvl.service.api.permission;
 import net.thenextlvl.service.api.Controller;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -25,7 +24,7 @@ public interface PermissionController extends Controller {
      * @see PermissionHolder
      */
     default CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player) {
-        return loadPermissionHolder(player, null);
+        return loadPermissionHolder(player.getUniqueId());
     }
 
     /**
@@ -37,7 +36,7 @@ public interface PermissionController extends Controller {
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
      */
-    default CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player, @Nullable final World world) {
+    default CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player, final World world) {
         return loadPermissionHolder(player.getUniqueId(), world);
     }
 
@@ -48,9 +47,7 @@ public interface PermissionController extends Controller {
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
      */
-    default CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid) {
-        return loadPermissionHolder(uuid, null);
-    }
+    CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid);
 
     /**
      * Loads the {@code PermissionHolder} for the specified {@code UUID} and {@code World} asynchronously.
@@ -60,7 +57,7 @@ public interface PermissionController extends Controller {
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
      */
-    CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, @Nullable World world);
+    CompletableFuture<PermissionHolder> loadPermissionHolder(UUID uuid, World world);
 
     /**
      * Resolves the {@code PermissionHolder} for the specified {@code OfflinePlayer}, loading if not cached.
@@ -71,7 +68,7 @@ public interface PermissionController extends Controller {
      * @since 3.0.0
      */
     default CompletableFuture<PermissionHolder> resolvePermissionHolder(final OfflinePlayer player) {
-        return resolvePermissionHolder(player, null);
+        return resolvePermissionHolder(player.getUniqueId());
     }
 
     /**
@@ -84,7 +81,7 @@ public interface PermissionController extends Controller {
      * @see PermissionHolder
      * @since 3.0.0
      */
-    default CompletableFuture<PermissionHolder> resolvePermissionHolder(final OfflinePlayer player, @Nullable final World world) {
+    default CompletableFuture<PermissionHolder> resolvePermissionHolder(final OfflinePlayer player, final World world) {
         return getPermissionHolder(player, world)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadPermissionHolder(player, world));
@@ -99,7 +96,9 @@ public interface PermissionController extends Controller {
      * @since 3.0.0
      */
     default CompletableFuture<PermissionHolder> resolvePermissionHolder(final UUID uuid) {
-        return resolvePermissionHolder(uuid, null);
+        return getPermissionHolder(uuid)
+                .map(CompletableFuture::completedFuture)
+                .orElseGet(() -> loadPermissionHolder(uuid));
     }
 
     /**
@@ -112,7 +111,7 @@ public interface PermissionController extends Controller {
      * @see PermissionHolder
      * @since 3.0.0
      */
-    default CompletableFuture<PermissionHolder> resolvePermissionHolder(final UUID uuid, @Nullable final World world) {
+    default CompletableFuture<PermissionHolder> resolvePermissionHolder(final UUID uuid, final World world) {
         return getPermissionHolder(uuid, world)
                 .map(CompletableFuture::completedFuture)
                 .orElseGet(() -> loadPermissionHolder(uuid, world));
@@ -126,7 +125,7 @@ public interface PermissionController extends Controller {
      * @see PermissionHolder
      */
     default Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player) {
-        return getPermissionHolder(player, null);
+        return getPermissionHolder(player.getUniqueId());
     }
 
     /**
@@ -138,7 +137,7 @@ public interface PermissionController extends Controller {
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
      */
-    default Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player, @Nullable final World world) {
+    default Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player, final World world) {
         return getPermissionHolder(player.getUniqueId(), world);
     }
 
@@ -149,9 +148,7 @@ public interface PermissionController extends Controller {
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
      */
-    default Optional<PermissionHolder> getPermissionHolder(final UUID uuid) {
-        return getPermissionHolder(uuid, null);
-    }
+    Optional<PermissionHolder> getPermissionHolder(final UUID uuid);
 
     /**
      * Retrieves the {@code PermissionHolder} for the specified {@code UUID} and {@code World}.
@@ -161,5 +158,5 @@ public interface PermissionController extends Controller {
      * @return a {@code CompletableFuture} that will complete with the permission holder
      * @see PermissionHolder
      */
-    Optional<PermissionHolder> getPermissionHolder(UUID uuid, @Nullable World world);
+    Optional<PermissionHolder> getPermissionHolder(UUID uuid, World world);
 }

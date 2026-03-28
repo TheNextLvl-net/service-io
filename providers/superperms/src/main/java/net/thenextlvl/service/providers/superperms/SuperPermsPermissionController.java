@@ -18,23 +18,43 @@ import java.util.concurrent.CompletableFuture;
 @NullMarked
 public record SuperPermsPermissionController(Plugin plugin) implements PermissionController {
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player, @Nullable final World world) {
-        return CompletableFuture.completedFuture(getPermissionHolder(player.getPlayer()).orElse(null));
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player) {
+        return CompletableFuture.completedFuture(getPermissionHolder(player.getPlayer()).orElse(NoOpHolder.INSTANCE));
     }
 
     @Override
-    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid, @Nullable final World world) {
-        return CompletableFuture.completedFuture(getPermissionHolder(uuid).orElse(null));
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(final OfflinePlayer player, final World world) {
+        return loadPermissionHolder(player);
     }
 
     @Override
-    public Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player, @Nullable final World world) {
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid) {
+        return CompletableFuture.completedFuture(getPermissionHolder(uuid).orElse(NoOpHolder.INSTANCE));
+    }
+
+    @Override
+    public CompletableFuture<PermissionHolder> loadPermissionHolder(final UUID uuid, final World world) {
+        return loadPermissionHolder(uuid);
+    }
+
+    @Override
+    public Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player) {
         return getPermissionHolder(player.getPlayer());
     }
 
     @Override
-    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid, @Nullable final World world) {
+    public Optional<PermissionHolder> getPermissionHolder(final OfflinePlayer player, final World world) {
+        return getPermissionHolder(player);
+    }
+
+    @Override
+    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid) {
         return getPermissionHolder(plugin.getServer().getPlayer(uuid));
+    }
+
+    @Override
+    public Optional<PermissionHolder> getPermissionHolder(final UUID uuid, final World world) {
+        return getPermissionHolder(uuid);
     }
 
     private Optional<PermissionHolder> getPermissionHolder(@Nullable final Player player) {
