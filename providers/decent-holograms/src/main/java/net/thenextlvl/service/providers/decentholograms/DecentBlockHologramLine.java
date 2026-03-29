@@ -52,7 +52,7 @@ public final class DecentBlockHologramLine extends DecentHologramLine implements
             if (!(blockData instanceof final Skull skull)) return;
             final var data = item.getData(DataComponentTypes.PROFILE);
             if (data == null) return;
-            final var profile = getServer().createProfile(data.uuid(), data.name());
+            final var profile = hologram.getServer().createProfile(data.uuid(), data.name());
             skull.setPlayerProfile(profile);
         });
     }

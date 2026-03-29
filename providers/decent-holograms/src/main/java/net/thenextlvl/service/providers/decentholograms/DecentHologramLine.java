@@ -2,8 +2,6 @@ package net.thenextlvl.service.providers.decentholograms;
 
 import net.thenextlvl.service.api.hologram.Hologram;
 import net.thenextlvl.service.api.hologram.line.StaticHologramLine;
-import org.bukkit.Bukkit;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -69,10 +67,6 @@ abstract class DecentHologramLine implements StaticHologramLine {
         if (o == null || getClass() != o.getClass()) return false;
         final DecentHologramLine that = (DecentHologramLine) o;
         return Objects.equals(line, that.line);
-    }
-
-    protected Server getServer() {
-        return Bukkit.getServer();
     }
 
     @Override
