@@ -2,20 +2,25 @@ package net.thenextlvl.service.converter;
 
 import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.bank.BankController;
+import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-final class BankConverter implements Converter<BankController> {
+public final class BankConverter extends Converter<BankController> {
+    public BankConverter(final Plugin plugin, final BankController source, final BankController target) {
+        super(plugin, source, target);
+    }
+
     @Override
-    public CompletableFuture<Void> convert(final BankController source, final BankController target) {
+    public CompletableFuture<Void> convert() {
         return source.loadBanks().thenCompose(banks -> CompletableFuture.allOf(banks.stream()
-                .map(bank -> convert(bank, source, target))
+                .map(this::convert)
                 .toArray(CompletableFuture[]::new)));
     }
 
-    private CompletableFuture<Void> convert(final Bank bank, final BankController source, final BankController target) {
+    private CompletableFuture<Void> convert(final Bank bank) {
         return bank.getWorld().map(world -> target.createBank(bank.getOwner(), bank.getName(), world))
                 .orElseGet(() -> target.createBank(bank.getOwner(), bank.getName()))
                 .thenAccept(targetBank -> {

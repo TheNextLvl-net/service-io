@@ -1,5 +1,6 @@
 package net.thenextlvl.service.converter;
 
+import net.thenextlvl.service.api.capability.CapabilityException;
 import net.thenextlvl.service.api.hologram.Hologram;
 import net.thenextlvl.service.api.hologram.HologramController;
 import net.thenextlvl.service.api.hologram.line.BlockHologramLine;
@@ -10,28 +11,40 @@ import net.thenextlvl.service.api.hologram.line.ItemHologramLine;
 import net.thenextlvl.service.api.hologram.line.PagedHologramLine;
 import net.thenextlvl.service.api.hologram.line.StaticHologramLine;
 import net.thenextlvl.service.api.hologram.line.TextHologramLine;
+import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-final class HologramConverter implements Converter<HologramController> {
+final class HologramConverter extends Converter<HologramController> {
+    public HologramConverter(final Plugin plugin, final HologramController source, final HologramController target) {
+        super(plugin, source, target);
+    }
+
     @Override
-    public CompletableFuture<Void> convert(final HologramController source, final HologramController target) {
+    public CompletableFuture<Void> convert() {
         for (final Hologram hologram : source.getHolograms()) {
             final var created = target.createHologram(hologram.getName(), hologram.getLocation());
             hologram.forEach(hologramLine -> {
-                switch (hologramLine) {
-                    case final TextHologramLine text -> copyFromText(text, created.addTextLine());
-                    case final ItemHologramLine item -> copyFromItem(item, created.addItemLine());
-                    case final BlockHologramLine block -> copyFromBlock(block, created.addBlockLine());
-                    case final EntityHologramLine entity -> {
-                        final var newLine = created.addEntityLine(entity.getEntityType());
-                        copyFromEntity(entity, newLine);
+                try {
+                    switch (hologramLine) {
+                        case final TextHologramLine text -> copyFromText(text, created.addTextLine());
+                        case final ItemHologramLine item -> copyFromItem(item, created.addItemLine());
+                        case final BlockHologramLine block -> copyFromBlock(block, created.addBlockLine());
+                        case final EntityHologramLine entity -> {
+                            final var newLine = created.addEntityLine(entity.getEntityType());
+                            copyFromEntity(entity, newLine);
+                        }
+                        case final PagedHologramLine paged -> copyFromPaged(paged, created.addPagedLine());
+                        default -> throw new UnsupportedOperationException(
+                                "Unknown hologram line type: " + hologramLine.getClass()
+                        );
                     }
-                    case final PagedHologramLine paged -> copyFromPaged(paged, created.addPagedLine());
-                    default -> throw new UnsupportedOperationException(
-                            "Unknown hologram line type: " + hologramLine.getClass()
+                } catch (final CapabilityException e) {
+                    plugin.getComponentLogger().warn(
+                            "Failed to convert hologram line from {} to {}",
+                            source.getName(), target.getName(), e
                     );
                 }
             });
@@ -53,16 +66,23 @@ final class HologramConverter implements Converter<HologramController> {
         copyFrom(paged, newLine);
 
         paged.forEachPage(hologramLine -> {
-            switch (hologramLine) {
-                case final TextHologramLine text -> copyFromText(text, newLine.addTextPage());
-                case final ItemHologramLine item -> copyFromItem(item, newLine.addItemPage());
-                case final BlockHologramLine block -> copyFromBlock(block, newLine.addBlockPage());
-                case final EntityHologramLine entity -> {
-                    final var newEntity = newLine.addEntityPage(entity.getEntityType());
-                    copyFromEntity(entity, newEntity);
+            try {
+                switch (hologramLine) {
+                    case final TextHologramLine text -> copyFromText(text, newLine.addTextPage());
+                    case final ItemHologramLine item -> copyFromItem(item, newLine.addItemPage());
+                    case final BlockHologramLine block -> copyFromBlock(block, newLine.addBlockPage());
+                    case final EntityHologramLine entity -> {
+                        final var newEntity = newLine.addEntityPage(entity.getEntityType());
+                        copyFromEntity(entity, newEntity);
+                    }
+                    default -> throw new UnsupportedOperationException(
+                            "Unknown hologram line type: " + hologramLine.getClass()
+                    );
                 }
-                default -> throw new UnsupportedOperationException(
-                        "Unknown hologram line type: " + hologramLine.getClass()
+            } catch (final CapabilityException e) {
+                plugin.getComponentLogger().warn(
+                        "Failed to convert hologram line from {} to {}",
+                        source.getName(), target.getName(), e
                 );
             }
         });

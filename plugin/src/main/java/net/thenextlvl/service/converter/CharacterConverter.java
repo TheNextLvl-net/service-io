@@ -1,15 +1,19 @@
 package net.thenextlvl.service.converter;
 
 import net.thenextlvl.service.api.character.CharacterController;
+import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-final class CharacterConverter implements Converter<CharacterController> {
+final class CharacterConverter extends Converter<CharacterController> {
+    public CharacterConverter(final Plugin plugin, final CharacterController source, final CharacterController target) {
+        super(plugin, source, target);
+    }
 
     @Override
-    public CompletableFuture<Void> convert(final CharacterController source, final CharacterController target) {
+    public CompletableFuture<Void> convert() {
         source.getNPCs().forEach(character -> target.getNPC(character.getName()).orElseGet(() -> {
             final var npc = target.createNPC(character.getName(), character.getType());
             npc.setDisplayName(character.getDisplayName());

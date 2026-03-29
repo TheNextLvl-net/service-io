@@ -44,7 +44,7 @@ public final class BankServiceWrapper implements BankController, Wrapper {
 
     @Override
     public CompletableFuture<Bank> createBank(final OfflinePlayer player, final String name, final World world) {
-        throw new CapabilityException(EconomyCapability.MULTI_WORLD);
+        throw new CapabilityException(provider, EconomyCapability.MULTI_WORLD);
     }
 
     @Override
@@ -60,7 +60,7 @@ public final class BankServiceWrapper implements BankController, Wrapper {
 
     @Override
     public CompletableFuture<Boolean> deleteBank(final OfflinePlayer player, final World world) {
-        throw new CapabilityException(EconomyCapability.MULTI_WORLD);
+        throw new CapabilityException(provider, EconomyCapability.MULTI_WORLD);
     }
 
     @Override
@@ -77,7 +77,7 @@ public final class BankServiceWrapper implements BankController, Wrapper {
 
     @Override
     public @Unmodifiable Set<Bank> getBanks(@Nullable final World world) {
-        throw new CapabilityException(EconomyCapability.MULTI_WORLD);
+        throw new CapabilityException(provider, EconomyCapability.MULTI_WORLD);
     }
 
     @Override
@@ -92,7 +92,7 @@ public final class BankServiceWrapper implements BankController, Wrapper {
 
     @Override
     public Optional<Bank> getBank(final OfflinePlayer player, @Nullable final World world) {
-        throw new CapabilityException(EconomyCapability.MULTI_WORLD);
+        throw new CapabilityException(provider, EconomyCapability.MULTI_WORLD);
     }
 
     @Override
@@ -102,7 +102,7 @@ public final class BankServiceWrapper implements BankController, Wrapper {
 
     @Override
     public CompletableFuture<@Unmodifiable Set<Bank>> loadBanks(final World world) {
-        throw new CapabilityException(EconomyCapability.MULTI_WORLD);
+        throw new CapabilityException(provider, EconomyCapability.MULTI_WORLD);
     }
 
     @Override
@@ -117,7 +117,7 @@ public final class BankServiceWrapper implements BankController, Wrapper {
 
     @Override
     public CompletableFuture<Optional<Bank>> loadBank(final OfflinePlayer player, final World world) {
-        throw new CapabilityException(EconomyCapability.MULTI_WORLD);
+        throw new CapabilityException(provider, EconomyCapability.MULTI_WORLD);
     }
 
     @Override

@@ -2,14 +2,19 @@ package net.thenextlvl.service.converter;
 
 import net.thenextlvl.service.api.group.GroupController;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
 final class GroupConverter extends PlayerConverter<GroupController> {
+    public GroupConverter(final Plugin plugin, final GroupController source, final GroupController target) {
+        super(plugin, source, target);
+    }
+
     @Override
-    public CompletableFuture<Void> convert(final OfflinePlayer player, final GroupController source, final GroupController target) {
+    public CompletableFuture<Void> convert(final OfflinePlayer player) {
         return source.resolveGroupHolder(player).thenAccept(holder -> target.resolveGroupHolder(player)
                 .thenAccept(targetHolder -> {
                     holder.getGroups().forEach(targetHolder::addGroup);
@@ -19,7 +24,7 @@ final class GroupConverter extends PlayerConverter<GroupController> {
     }
 
     @Override
-    public CompletableFuture<Void> convert(final GroupController source, final GroupController target) {
+    public CompletableFuture<Void> convert() {
         source.loadGroups().thenAccept(groups -> groups.forEach(group -> group.getWorld()
                 .map(world -> target.createGroup(group.getName(), world))
                 .orElseGet(() -> target.createGroup(group.getName()))
@@ -30,6 +35,6 @@ final class GroupConverter extends PlayerConverter<GroupController> {
                     group.getSuffixes().forEach((priority, suffix) -> targetGroup.setSuffix(suffix, priority));
                     group.getWeight().ifPresent(targetGroup::setWeight);
                 })));
-        return super.convert(source, target);
+        return super.convert();
     }
 }

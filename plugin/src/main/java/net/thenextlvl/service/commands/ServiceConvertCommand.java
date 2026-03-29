@@ -11,7 +11,6 @@ import net.thenextlvl.service.ServicePlugin;
 import net.thenextlvl.service.api.Controller;
 import net.thenextlvl.service.commands.arguments.ControllerArgumentType;
 import net.thenextlvl.service.commands.brigadier.BrigadierCommand;
-import net.thenextlvl.service.converter.Converter;
 import net.thenextlvl.service.converter.Converters;
 import org.jspecify.annotations.NullMarked;
 
@@ -39,17 +38,17 @@ final class ServiceConvertCommand extends BrigadierCommand {
     }
 
     private <C extends Controller> LiteralArgumentBuilder<CommandSourceStack> converter(final String name, final Converters.Entry<C> entry) {
-        return Commands.literal(name).then(converter(entry.type(), entry.converter()));
+        return Commands.literal(name).then(converter(entry.type(), entry.factory()));
     }
 
-    private <C extends Controller> ArgumentBuilder<CommandSourceStack, ?> converter(final Class<C> type, final Converter<C> converter) {
+    private <C extends Controller> ArgumentBuilder<CommandSourceStack, ?> converter(final Class<C> type, final Converters.ConverterFactory<C> factory) {
         return Commands.argument("source", new ControllerArgumentType<>(plugin, type, (c, e) -> true))
                 .then(Commands.argument("target", new ControllerArgumentType<>(plugin, type, (context, controller) ->
                                 !context.getLastChild().getArgument("source", type).equals(controller)))
-                        .executes(context -> convert(context, type, converter)));
+                        .executes(context -> convert(context, type, factory)));
     }
 
-    private <C extends Controller> int convert(final CommandContext<CommandSourceStack> context, final Class<C> type, final Converter<C> converter) {
+    private <C extends Controller> int convert(final CommandContext<CommandSourceStack> context, final Class<C> type, final Converters.ConverterFactory<C> factory) {
         final var sender = context.getSource().getSender();
 
         final var source = context.getArgument("source", type);
@@ -72,7 +71,7 @@ final class ServiceConvertCommand extends BrigadierCommand {
 
             final var now = System.currentTimeMillis();
 
-            converter.convert(source, target).thenAccept(unused -> {
+            factory.create(plugin, source, target).convert().thenAccept(unused -> {
                 conversionRunning.set(false);
 
                 final var time = new DecimalFormat("0.000").format((System.currentTimeMillis() - now) / 1000d);

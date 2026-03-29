@@ -31,7 +31,7 @@ public final class EconomyServiceWrapper implements EconomyController, Wrapper {
     private final Plugin provider;
 
     public EconomyServiceWrapper(final Economy economy, final Plugin provider) {
-        this.controller = new WrappedCurrencyController(economy);
+        this.controller = new WrappedCurrencyController(economy, provider);
         this.economy = economy;
         this.provider = provider;
     }
