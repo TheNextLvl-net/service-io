@@ -1,14 +1,23 @@
 package net.thenextlvl.service.providers.decentholograms;
 
 import eu.decentsoftware.holograms.api.holograms.HologramLine;
+import net.kyori.adventure.text.format.TextColor;
+import net.thenextlvl.service.api.hologram.Hologram;
 import net.thenextlvl.service.api.hologram.LineType;
+import net.thenextlvl.service.api.hologram.line.EntityHologramLine;
+import net.thenextlvl.service.api.hologram.line.PagedHologramLine;
+import org.bukkit.entity.Display;
 import org.bukkit.entity.EntityType;
+import org.joml.Vector3f;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
+import java.util.Optional;
 
 @NullMarked
-public final class DecentEntityHologramLine extends DecentHologramLine<EntityType> {
-    public DecentEntityHologramLine(final HologramLine line) {
-        super(line);
+public final class DecentEntityHologramLine extends DecentHologramLine implements EntityHologramLine {
+    public DecentEntityHologramLine(final Hologram hologram, final HologramLine line) {
+        super(hologram, line);
     }
 
     @Override
@@ -17,12 +26,66 @@ public final class DecentEntityHologramLine extends DecentHologramLine<EntityTyp
     }
 
     @Override
-    public EntityType getContent() {
-        return line.getEntity().getType();
+    public boolean setEntityType(final EntityType entityType) {
+        if (!entityType.isSpawnable()) return false;
+        final var content = "#ENTITY:" + entityType.name();
+        if (content.equals(line.getContent())) return false;
+        line.setContent(content);
+        return true;
     }
 
     @Override
-    public void setContent(final EntityType content) {
-        line.setContent("#ENTITY:" + content.name());
+    public double getScale() {
+        return 0;
+    }
+
+    @Override
+    public boolean setScale(final double scale) {
+        return false;
+    }
+
+    @Override
+    public boolean isGlowing() {
+        return false;
+    }
+
+    @Override
+    public boolean setGlowing(final boolean glowing) {
+        return false;
+    }
+
+    @Override
+    public Optional<TextColor> getGlowColor() {
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean setGlowColor(@Nullable final TextColor color) {
+        return false;
+    }
+
+    @Override
+    public Display.Billboard getBillboard() {
+        return null;
+    }
+
+    @Override
+    public boolean setBillboard(final Display.Billboard billboard) {
+        return false;
+    }
+
+    @Override
+    public Optional<PagedHologramLine> getParentLine() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Vector3f getOffset() {
+        return null;
+    }
+
+    @Override
+    public boolean setOffset(final Vector3f offset) {
+        return false;
     }
 }

@@ -1,11 +1,14 @@
 package net.thenextlvl.service.providers.decentholograms;
 
-import net.thenextlvl.service.api.hologram.HologramDisplay;
-import net.thenextlvl.service.api.hologram.HologramLine;
+import net.thenextlvl.service.api.hologram.Hologram;
+import net.thenextlvl.service.api.hologram.line.StaticHologramLine;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -13,103 +16,63 @@ import java.util.Objects;
 import java.util.Optional;
 
 @NullMarked
-abstract class DecentHologramLine<T> implements HologramLine<T> {
+abstract class DecentHologramLine implements StaticHologramLine {
+    protected final Hologram hologram;
     protected final eu.decentsoftware.holograms.api.holograms.HologramLine line;
 
-    protected DecentHologramLine(final eu.decentsoftware.holograms.api.holograms.HologramLine line) {
+    protected DecentHologramLine(final Hologram hologram, final eu.decentsoftware.holograms.api.holograms.HologramLine line) {
+        this.hologram = hologram;
         this.line = line;
     }
 
     @Override
-    public Optional<HologramDisplay> getDisplay() {
-        return Optional.empty();
+    public Hologram getHologram() {
+        return hologram;
     }
 
     @Override
-    public double getHeight() {
-        return line.getHeight();
+    public Class<? extends Entity> getEntityClass() {
+        final var entityClass = getEntityType().getEntityClass();
+        return entityClass != null ? entityClass : ArmorStand.class;
     }
 
     @Override
-    public double getOffsetX() {
-        return line.getOffsetX();
-    }
-
-    @Override
-    public double getOffsetY() {
-        return line.getOffsetY();
-    }
-
-    @Override
-    public double getOffsetZ() {
-        return line.getOffsetZ();
-    }
-
-    @Override
-    public void setHeight(final double height) {
-        line.setHeight(height);
-    }
-
-    @Override
-    public void setOffsetX(final double offsetX) {
-        line.setOffsetX(offsetX);
-    }
-
-    @Override
-    public void setOffsetY(final double offsetY) {
-        line.setOffsetY(offsetY);
-    }
-
-    @Override
-    public void setOffsetZ(final double offsetZ) {
-        line.setOffsetZ(offsetZ);
-    }
-
-    @Override
-    public Location getLocation() {
-        return line.getLocation();
-    }
-
-    @Override
-    public Server getServer() {
-        return Bukkit.getServer();
+    public EntityType getEntityType() {
+        final var entity = line.getEntity();
+        return entity != null ? entity.getType() : EntityType.ARMOR_STAND;
     }
 
     @Override
     public World getWorld() {
-        return getLocation().getWorld();
+        return line.getLocation().getWorld();
     }
 
     @Override
-    public double getX() {
-        return getLocation().getX();
+    public Optional<String> getViewPermission() {
+        return Optional.ofNullable(line.getPermission());
     }
 
     @Override
-    public double getY() {
-        return getLocation().getY();
+    public boolean setViewPermission(@Nullable final String permission) {
+        if (Objects.equals(line.getPermission(), permission)) return false;
+        line.setPermission(permission);
+        return true;
     }
 
     @Override
-    public double getZ() {
-        return getLocation().getZ();
-    }
-
-    @Override
-    public float getPitch() {
-        return getLocation().getPitch();
-    }
-
-    @Override
-    public float getYaw() {
-        return getLocation().getYaw();
+    public boolean canSee(final Player player) {
+        return line.canShow(player);
     }
 
     @Override
     public boolean equals(@Nullable final Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        final DecentHologramLine<?> that = (DecentHologramLine<?>) o;
+        final DecentHologramLine that = (DecentHologramLine) o;
         return Objects.equals(line, that.line);
+    }
+
+    protected Server getServer() {
+        return Bukkit.getServer();
     }
 
     @Override
