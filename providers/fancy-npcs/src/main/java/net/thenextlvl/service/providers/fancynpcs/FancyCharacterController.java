@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -121,8 +122,8 @@ public final class FancyCharacterController implements CharacterController {
     }
 
     @Override
-    public @Unmodifiable EnumSet<CharacterCapability> getCapabilities() {
-        return EnumSet.copyOf(this.capabilities);
+    public @Unmodifiable Set<CharacterCapability> getCapabilities() {
+        return Set.copyOf(capabilities);
     }
 
     @Override
