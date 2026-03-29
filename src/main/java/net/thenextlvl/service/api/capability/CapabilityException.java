@@ -1,6 +1,6 @@
 package net.thenextlvl.service.api.capability;
 
-import org.jspecify.annotations.Nullable;
+import org.bukkit.plugin.Plugin;
 
 /**
  * An exception that indicates a problem related to a specific {@link Capability}.
@@ -13,12 +13,13 @@ public class CapabilityException extends RuntimeException {
     /**
      * Creates a new {@code CapabilityException} with the related capability that caused this exception.
      *
+     * @param plugin     the {@link Plugin} instance that is missing the capability,
      * @param capability the {@link Capability} instance associated with this exception,
      *                   indicating the capability that caused the issue.
+     * @since 3.0.0
      */
-    public CapabilityException(final Capability capability) {
-        super();
-        this.capability = capability;
+    public CapabilityException(final Plugin plugin, final Capability capability) {
+        this(plugin.getName() + " is missing the capability: " + capability.name(), capability);
     }
 
     /**
@@ -31,20 +32,6 @@ public class CapabilityException extends RuntimeException {
      */
     public CapabilityException(final String message, final Capability capability) {
         super(message);
-        this.capability = capability;
-    }
-
-    /**
-     * Constructs a new {@code CapabilityException} with a specified detail message, cause,
-     * and the associated capability that led to the exception.
-     *
-     * @param message    the detail message, providing additional information about the exception.
-     * @param cause      the cause of the exception, which may be {@code null} to indicate no specific cause.
-     * @param capability the {@link Capability} instance associated with this exception,
-     *                   indicating the capability that caused the issue.
-     */
-    public CapabilityException(final String message, @Nullable final Throwable cause, final Capability capability) {
-        super(message, cause);
         this.capability = capability;
     }
 

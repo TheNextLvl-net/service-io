@@ -22,21 +22,21 @@ public enum HologramCapability implements Capability {
      * This capability determines whether holograms can include lines that
      * display blocks as their visual elements.
      */
-    BLOCK_LINES(Key.key("service-io", "block_lines")),
+    BLOCK_LINES,
 
     /**
      * Represents the capability of using entity-oriented lines within a hologram.
      * This capability determines whether holograms can include lines that display
      * entities as their visual elements.
      */
-    ENTITY_LINES(Key.key("service-io", "entity_lines")),
+    ENTITY_LINES,
 
     /**
      * Represents the capability of using item-oriented lines within a hologram.
      * This capability determines whether holograms can include lines that display
      * items as their visual elements.
      */
-    ITEM_LINES(Key.key("service-io", "item_lines")),
+    ITEM_LINES,
 
     /**
      * Represents the capability of using text-oriented lines within a hologram.
@@ -45,14 +45,14 @@ public enum HologramCapability implements Capability {
      * <p>
      * It is generally safe to assume that every hologram will have this capability
      */
-    TEXT_LINES(Key.key("service-io", "text_lines")),
+    TEXT_LINES,
 
     /**
      * Represents the capability of having multiple lines within a hologram.
      * This capability determines whether holograms can consist of more than
      * a single line.
      */
-    MULTILINE(Key.key("service-io", "multiline")),
+    MULTILINE,
 
     /**
      * Represents the capability of text lines supporting line breaks within a hologram.
@@ -61,7 +61,7 @@ public enum HologramCapability implements Capability {
      * <p>
      * It is mutually exclusive with the {@link #DISPLAY_BACKED} capability.
      */
-    MULTILINE_TEXT(Key.key("service-io", "multiline_text")),
+    MULTILINE_TEXT,
 
     /**
      * Represents the capability of holograms being backed by display entities.
@@ -70,7 +70,7 @@ public enum HologramCapability implements Capability {
      * <p>
      * It is mutually exclusive with the {@link #MULTILINE_TEXT} capability.
      */
-    DISPLAY_BACKED(Key.key("service-io", "display_backed")),
+    DISPLAY_BACKED,
 
     /**
      * Represents the capability of holograms being paginated.
@@ -78,16 +78,5 @@ public enum HologramCapability implements Capability {
      *
      * @since 3.0.0
      */
-    PAGINATION(Key.key("service-io", "pagination"));
-
-    private final Key key;
-
-    HologramCapability(final Key key) {
-        this.key = key;
-    }
-
-    @Override
-    public Key key() {
-        return this.key;
-    }
+    PAGINATION
 }
