@@ -75,6 +75,8 @@ public enum HologramCapability implements Capability {
     /**
      * Represents the capability of holograms being paginated.
      * This capability determines whether holograms can be displayed in multiple pages.
+     *
+     * @since 3.0.0
      */
     PAGINATION(Key.key("service-io", "pagination"));
 

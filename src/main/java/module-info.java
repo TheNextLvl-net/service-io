@@ -10,6 +10,7 @@ module net.thenextlvl.services {
     exports net.thenextlvl.service.api.economy.currency;
     exports net.thenextlvl.service.api.economy;
     exports net.thenextlvl.service.api.group;
+    exports net.thenextlvl.service.api.hologram.line;
     exports net.thenextlvl.service.api.hologram;
     exports net.thenextlvl.service.api.model;
     exports net.thenextlvl.service.api.permission;
