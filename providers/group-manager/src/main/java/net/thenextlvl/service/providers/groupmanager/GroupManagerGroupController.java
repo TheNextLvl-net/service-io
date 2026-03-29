@@ -69,11 +69,6 @@ public final class GroupManagerGroupController implements GroupController {
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteGroup(final Group group, final World world) {
-        return deleteGroup(group.getName(), world);
-    }
-
-    @Override
     public CompletableFuture<Boolean> deleteGroup(final String name) {
         return CompletableFuture.completedFuture(GroupManager.getGlobalGroups().removeGroup(name));
     }
@@ -81,8 +76,7 @@ public final class GroupManagerGroupController implements GroupController {
     @Override
     public CompletableFuture<Boolean> deleteGroup(final String name, final World world) {
         final var holder = groupManager.getWorldsHolder().getWorldData(world.getName());
-        if (holder != null) CompletableFuture.completedFuture(holder.removeGroup(name));
-        return CompletableFuture.completedFuture(null);
+        return CompletableFuture.completedFuture(holder != null && holder.removeGroup(name));
     }
 
     @Override

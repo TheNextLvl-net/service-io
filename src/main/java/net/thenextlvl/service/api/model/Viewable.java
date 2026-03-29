@@ -53,8 +53,6 @@ public interface Viewable extends Positioned {
      */
     boolean isTrackedBy(Player player);
 
-    // whether the player meets all conditions to view this object
-
     /**
      * Determines whether the specified player can see this viewable object.
      *

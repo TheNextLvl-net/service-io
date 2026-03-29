@@ -139,7 +139,7 @@ public interface HologramDisplay {
     float getDisplayHeight();
 
     /**
-     * Sets the height if this display.
+     * Sets the height of this display.
      *
      * @param height new height
      */

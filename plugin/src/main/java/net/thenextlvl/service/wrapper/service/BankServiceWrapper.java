@@ -16,6 +16,8 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public final class BankServiceWrapper implements BankController, Wrapper {
+    private final EnumSet<EconomyCapability> capabilities = EnumSet.of(EconomyCapability.MULTI_WORLD);
     private final EconomyServiceWrapper wrapper;
     private final Economy economy;
     private final Plugin provider;
@@ -93,27 +96,27 @@ public final class BankServiceWrapper implements BankController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<@Unmodifiable Set<Bank>> resolveBanks() {
+    public CompletableFuture<@Unmodifiable Set<Bank>> loadBanks() {
         return CompletableFuture.completedFuture(getBanks());
     }
 
     @Override
-    public CompletableFuture<@Unmodifiable Set<Bank>> resolveBanks(final World world) {
+    public CompletableFuture<@Unmodifiable Set<Bank>> loadBanks(final World world) {
         throw new CapabilityException(EconomyCapability.MULTI_WORLD);
     }
 
     @Override
-    public CompletableFuture<Optional<Bank>> resolveBank(final String name) {
+    public CompletableFuture<Optional<Bank>> loadBank(final String name) {
         return CompletableFuture.completedFuture(getBank(name));
     }
 
     @Override
-    public CompletableFuture<Optional<Bank>> resolveBank(final OfflinePlayer player) {
+    public CompletableFuture<Optional<Bank>> loadBank(final OfflinePlayer player) {
         return CompletableFuture.completedFuture(getBank(player));
     }
 
     @Override
-    public CompletableFuture<Optional<Bank>> resolveBank(final OfflinePlayer player, final World world) {
+    public CompletableFuture<Optional<Bank>> loadBank(final OfflinePlayer player, final World world) {
         throw new CapabilityException(EconomyCapability.MULTI_WORLD);
     }
 
@@ -125,5 +128,20 @@ public final class BankServiceWrapper implements BankController, Wrapper {
     @Override
     public String getName() {
         return economy.getName() + " Wrapper";
+    }
+
+    @Override
+    public @Unmodifiable Set<EconomyCapability> getCapabilities() {
+        return Set.copyOf(capabilities);
+    }
+
+    @Override
+    public boolean hasCapabilities(final Collection<EconomyCapability> capabilities) {
+        return this.capabilities.containsAll(capabilities);
+    }
+
+    @Override
+    public boolean hasCapability(final EconomyCapability capability) {
+        return capabilities.contains(capability);
     }
 }

@@ -83,7 +83,7 @@ public final class LuckPermsGroupController implements GroupController {
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteGroup(final Group group, final World world) {
+    public CompletableFuture<Boolean> deleteGroup(final Group group) {
         return !(group instanceof final LuckPermsGroup luckPermsGroup) ? deleteGroup(group.getName())
                 : luckPerms.getGroupManager().deleteGroup(luckPermsGroup.group()).thenApply(none -> true);
     }

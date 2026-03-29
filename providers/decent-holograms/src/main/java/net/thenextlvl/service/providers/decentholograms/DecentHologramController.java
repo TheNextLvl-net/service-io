@@ -120,8 +120,8 @@ public final class DecentHologramController implements HologramController {
     }
 
     @Override
-    public @Unmodifiable EnumSet<HologramCapability> getCapabilities() {
-        return EnumSet.copyOf(this.capabilities);
+    public EnumSet<HologramCapability> getCapabilities() {
+        return EnumSet.copyOf(capabilities);
     }
 
     @Override

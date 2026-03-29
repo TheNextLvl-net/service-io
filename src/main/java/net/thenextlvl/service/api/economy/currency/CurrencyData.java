@@ -27,21 +27,23 @@ public sealed interface CurrencyData permits SimpleCurrencyData {
      * @return a new currency data instance
      * @throws IllegalArgumentException if fractionalDigits is negative
      */
-    @Contract("_, _, _ -> new")
+    @Contract(value = "_, _, _ -> new", pure = true)
     static CurrencyData of(final String name, final Component symbol, final int fractionalDigits) {
         return new SimpleCurrencyData(name, symbol, fractionalDigits, new ConcurrentHashMap<>(), new ConcurrentHashMap<>());
     }
 
     /**
-     * Creates new currency data with no localized display names.
+     * Creates new currency data with localized display names.
      *
-     * @param name             the unique identifier of the currency
-     * @param symbol           the currency symbol
-     * @param fractionalDigits the number of fractional digits
+     * @param name                 the unique identifier of the currency
+     * @param symbol               the currency symbol
+     * @param fractionalDigits     the number of fractional digits
+     * @param displayNamesPlural   the plural display names
+     * @param displayNamesSingular the singular display names
      * @return a new currency data instance
      * @throws IllegalArgumentException if fractionalDigits is negative
      */
-    @Contract("_, _, _, _, _ -> new")
+    @Contract(value = "_, _, _, _, _ -> new", pure = true)
     static CurrencyData of(
             final String name, final Component symbol, final int fractionalDigits,
             final Map<Locale, Component> displayNamesSingular,
@@ -59,6 +61,7 @@ public sealed interface CurrencyData permits SimpleCurrencyData {
      *
      * @return the name of the currency
      */
+    @Contract(pure = true)
     String name();
 
     /**
@@ -66,6 +69,7 @@ public sealed interface CurrencyData permits SimpleCurrencyData {
      *
      * @return the currency symbol as a component
      */
+    @Contract(pure = true)
     Component symbol();
 
     /**
@@ -73,6 +77,7 @@ public sealed interface CurrencyData permits SimpleCurrencyData {
      *
      * @return the number of fractional digits
      */
+    @Contract(pure = true)
     int fractionalDigits();
 
     /**
@@ -81,6 +86,7 @@ public sealed interface CurrencyData permits SimpleCurrencyData {
      * @return an unmodifiable view of the singular display names
      */
     @Unmodifiable
+    @Contract(pure = true)
     Map<Locale, Component> displayNamesSingular();
 
     /**
@@ -89,6 +95,7 @@ public sealed interface CurrencyData permits SimpleCurrencyData {
      * @return an unmodifiable view of the plural display names
      */
     @Unmodifiable
+    @Contract(pure = true)
     Map<Locale, Component> displayNamesPlural();
 
     /**
@@ -97,7 +104,7 @@ public sealed interface CurrencyData permits SimpleCurrencyData {
      * @param name the new name
      * @return this instance for chaining
      */
-    @Contract("_ -> this")
+    @Contract(value = "_ -> this", mutates = "this")
     CurrencyData name(String name);
 
     /**
@@ -106,7 +113,7 @@ public sealed interface CurrencyData permits SimpleCurrencyData {
      * @param symbol the new symbol
      * @return this instance for chaining
      */
-    @Contract("_ -> this")
+    @Contract(value = "_ -> this", mutates = "this")
     CurrencyData symbol(Component symbol);
 
     /**
@@ -116,7 +123,7 @@ public sealed interface CurrencyData permits SimpleCurrencyData {
      * @return this instance for chaining
      * @throws IllegalArgumentException if fractionalDigits is negative
      */
-    @Contract("_ -> this")
+    @Contract(value = "_ -> this", mutates = "this")
     CurrencyData fractionalDigits(int fractionalDigits);
 
     /**
@@ -126,7 +133,7 @@ public sealed interface CurrencyData permits SimpleCurrencyData {
      * @param name   the singular display name component, or {@code null} to remove
      * @return this instance for chaining
      */
-    @Contract("_, _ -> this")
+    @Contract(value = "_, _ -> this", mutates = "this")
     CurrencyData displayNameSingular(Locale locale, @Nullable Component name);
 
     /**
@@ -136,6 +143,6 @@ public sealed interface CurrencyData permits SimpleCurrencyData {
      * @param name   the plural display name component, or {@code null} to remove
      * @return this instance for chaining
      */
-    @Contract("_, _ -> this")
+    @Contract(value = "_, _ -> this", mutates = "this")
     CurrencyData displayNamePlural(Locale locale, @Nullable Component name);
 }

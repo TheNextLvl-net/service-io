@@ -10,7 +10,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -157,10 +156,6 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * @return an {@code Optional} containing the NPC or empty if the player is not an NPC
      */
     Optional<Character<Player>> getNPC(Player player);
-
-    @Override
-    @Unmodifiable
-    EnumSet<CharacterCapability> getCapabilities();
 
     /**
      * Determines whether a given entity is a non-player character (NPC).

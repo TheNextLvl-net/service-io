@@ -81,12 +81,12 @@ public final class EconomyServiceWrapper implements EconomyController, Wrapper {
     }
 
     @Override
-    public CompletableFuture<Optional<Account>> resolveAccount(final OfflinePlayer player) {
+    public CompletableFuture<Optional<Account>> loadAccount(final OfflinePlayer player) {
         return CompletableFuture.completedFuture(getAccount(player));
     }
 
     @Override
-    public CompletableFuture<Optional<Account>> resolveAccount(final OfflinePlayer player, final World world) {
+    public CompletableFuture<Optional<Account>> loadAccount(final OfflinePlayer player, final World world) {
         return CompletableFuture.completedFuture(getAccount(player, world));
     }
 

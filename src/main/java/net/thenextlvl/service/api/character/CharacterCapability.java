@@ -3,8 +3,6 @@ package net.thenextlvl.service.api.character;
 import net.kyori.adventure.key.Key;
 import net.thenextlvl.service.api.capability.Capability;
 
-import java.lang.Character;
-
 /**
  * An enum representing various capabilities a {@link Character} might possess.
  * <p>

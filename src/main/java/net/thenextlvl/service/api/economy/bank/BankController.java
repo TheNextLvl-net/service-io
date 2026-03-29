@@ -2,6 +2,8 @@ package net.thenextlvl.service.api.economy.bank;
 
 import net.thenextlvl.service.api.Controller;
 import net.thenextlvl.service.api.capability.CapabilityException;
+import net.thenextlvl.service.api.capability.CapabilityProvider;
+import net.thenextlvl.service.api.economy.EconomyCapability;
 import net.thenextlvl.service.api.economy.currency.CurrencyController;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -19,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
  * @implSpec Implementations must be thread-safe. All methods may be called from any thread,
  * including the main server thread and asynchronous task threads concurrently.
  */
-public interface BankController extends Controller {
+public interface BankController extends Controller, CapabilityProvider<EconomyCapability> {
     /**
      * Retrieves the currency controller for managing currencies.
      *
@@ -95,22 +97,22 @@ public interface BankController extends Controller {
     }
 
     /**
-     * Loads all banks from the backing store and caches them.
+     * Loads all banks from the backing store.
      *
      * @return a future that completes with an unmodifiable set of all banks
      * @since 3.0.0
      */
-    CompletableFuture<@Unmodifiable Set<Bank>> resolveBanks();
+    CompletableFuture<@Unmodifiable Set<Bank>> loadBanks();
 
     /**
-     * Loads all banks in the specified world from the backing store and caches them.
+     * Loads all banks in the specified world from the backing store.
      *
      * @param world the world from which to load banks
      * @return a future that completes with an unmodifiable set of banks in the world
      * @throws CapabilityException if multi-world is not supported
      * @since 3.0.0
      */
-    CompletableFuture<@Unmodifiable Set<Bank>> resolveBanks(World world);
+    CompletableFuture<@Unmodifiable Set<Bank>> loadBanks(World world);
 
     /**
      * Retrieves the bank with the specified name, loading from the backing store if not cached.
@@ -119,7 +121,11 @@ public interface BankController extends Controller {
      * @return a future that completes with the bank, or empty if it does not exist
      * @since 3.0.0
      */
-    CompletableFuture<Optional<Bank>> resolveBank(String name);
+    default CompletableFuture<Optional<Bank>> resolveBank(final String name) {
+        return getBank(name)
+                .map(bank -> CompletableFuture.completedFuture(Optional.of(bank)))
+                .orElseGet(() -> loadBank(name));
+    }
 
     /**
      * Retrieves the bank for the specified player, loading if not cached.
@@ -128,7 +134,11 @@ public interface BankController extends Controller {
      * @return a future that completes with the bank, or empty if it does not exist
      * @since 3.0.0
      */
-    CompletableFuture<Optional<Bank>> resolveBank(OfflinePlayer player);
+    default CompletableFuture<Optional<Bank>> resolveBank(final OfflinePlayer player) {
+        return getBank(player)
+                .map(bank -> CompletableFuture.completedFuture(Optional.of(bank)))
+                .orElseGet(() -> loadBank(player));
+    }
 
     /**
      * Retrieves the bank for the specified player in the given world, loading if not cached.
@@ -139,7 +149,11 @@ public interface BankController extends Controller {
      * @throws CapabilityException if multi-world is not supported
      * @since 3.0.0
      */
-    CompletableFuture<Optional<Bank>> resolveBank(OfflinePlayer player, World world);
+    default CompletableFuture<Optional<Bank>> resolveBank(final OfflinePlayer player, final World world) {
+        return getBank(player, world)
+                .map(bank -> CompletableFuture.completedFuture(Optional.of(bank)))
+                .orElseGet(() -> loadBank(player, world));
+    }
 
     /**
      * Retrieves the bank owned by the specified player, loading if not cached.
@@ -163,6 +177,59 @@ public interface BankController extends Controller {
      */
     default CompletableFuture<Optional<Bank>> resolveBank(final UUID uuid, final World world) {
         return resolveBank(getPlugin().getServer().getOfflinePlayer(uuid), world);
+    }
+
+    /**
+     * Loads the bank with the specified name from the backing store.
+     *
+     * @param name the name of the bank
+     * @return a future that completes with the bank, or empty if it does not exist
+     * @since 3.0.0
+     */
+    CompletableFuture<Optional<Bank>> loadBank(String name);
+
+    /**
+     * Loads the bank for the specified player from the backing store.
+     *
+     * @param player the player whose bank is being loaded
+     * @return a future that completes with the bank, or empty if it does not exist
+     * @since 3.0.0
+     */
+    CompletableFuture<Optional<Bank>> loadBank(OfflinePlayer player);
+
+    /**
+     * Loads the bank for the specified player in the given world from the backing store.
+     *
+     * @param player the player whose bank is being loaded
+     * @param world  the world scope of the bank
+     * @return a future that completes with the bank, or empty if it does not exist
+     * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
+     */
+    CompletableFuture<Optional<Bank>> loadBank(OfflinePlayer player, World world);
+
+    /**
+     * Loads the bank owned by the specified player from the backing store.
+     *
+     * @param uuid the UUID of the bank owner
+     * @return a future that completes with the bank, or empty if it does not exist
+     * @since 3.0.0
+     */
+    default CompletableFuture<Optional<Bank>> loadBank(final UUID uuid) {
+        return loadBank(getPlugin().getServer().getOfflinePlayer(uuid));
+    }
+
+    /**
+     * Loads the bank owned by the specified player in the given world from the backing store.
+     *
+     * @param uuid  the UUID of the bank owner
+     * @param world the world scope of the bank
+     * @return a future that completes with the bank, or empty if it does not exist
+     * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
+     */
+    default CompletableFuture<Optional<Bank>> loadBank(final UUID uuid, final World world) {
+        return loadBank(getPlugin().getServer().getOfflinePlayer(uuid), world);
     }
 
     /**

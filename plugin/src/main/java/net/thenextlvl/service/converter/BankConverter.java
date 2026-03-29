@@ -10,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 final class BankConverter implements Converter<BankController> {
     @Override
     public CompletableFuture<Void> convert(final BankController source, final BankController target) {
-        return source.resolveBanks().thenCompose(banks -> CompletableFuture.allOf(banks.stream()
+        return source.loadBanks().thenCompose(banks -> CompletableFuture.allOf(banks.stream()
                 .map(bank -> convert(bank, source, target))
                 .toArray(CompletableFuture[]::new)));
     }
@@ -19,8 +19,8 @@ final class BankConverter implements Converter<BankController> {
         return bank.getWorld().map(world -> target.createBank(bank.getOwner(), bank.getName(), world))
                 .orElseGet(() -> target.createBank(bank.getOwner(), bank.getName()))
                 .thenAccept(targetBank -> {
-                    var currency = source.getCurrencyController().getDefaultCurrency();
-                    var targetCurrency = target.getCurrencyController().getDefaultCurrency();
+                    final var currency = source.getCurrencyController().getDefaultCurrency();
+                    final var targetCurrency = target.getCurrencyController().getDefaultCurrency();
                     targetBank.setBalance(bank.getBalance(currency), targetCurrency);
                     bank.getMembers().forEach(targetBank::addMember);
                 });

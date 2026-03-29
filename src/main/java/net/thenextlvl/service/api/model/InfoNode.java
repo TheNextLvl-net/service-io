@@ -58,7 +58,7 @@ public interface InfoNode {
      * @return an {@code Optional<Boolean>} containing the information node value if it exists
      */
     default Optional<Boolean> booleanInfoNode(final String key) {
-        return getInfoNode(key, Boolean::parseBoolean);
+        return getInfoNode(key, s -> s != null ? Boolean.parseBoolean(s) : null);
     }
 
     /**
@@ -75,7 +75,7 @@ public interface InfoNode {
      * Retrieves the information node value associated with the given key as a {@code OptionalDouble}.
      *
      * @param key the key to retrieve the value for
-     * @return an {@code OptionalDouble} containing the information node value if it exists
+     * @return an {@code Optional<Double>} containing the information node value if it exists
      * @throws NumberFormatException if the value associated with the key cannot be parsed into a double
      */
     default Optional<Double> doubleInfoNode(final String key) throws NumberFormatException {
@@ -86,7 +86,7 @@ public interface InfoNode {
      * Retrieves the information node value associated with the given key as an {@code OptionalInt}.
      *
      * @param key the key to retrieve the value for
-     * @return an {@code OptionalInt} containing the information node value if it exists
+     * @return an {@code Optional<Integer>} containing the information node value if it exists
      * @throws NumberFormatException if the value associated with the key cannot be parsed into an integer
      */
     default Optional<Integer> intInfoNode(final String key) throws NumberFormatException {

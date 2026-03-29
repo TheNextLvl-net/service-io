@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -123,8 +122,4 @@ public interface HologramController extends CapabilityProvider<HologramCapabilit
      * or an empty {@link Optional} if no such hologram exists
      */
     Optional<Hologram> getHologram(String name);
-
-    @Override
-    @Unmodifiable
-    EnumSet<HologramCapability> getCapabilities();
 }

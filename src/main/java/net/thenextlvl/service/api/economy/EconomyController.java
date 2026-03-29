@@ -117,7 +117,11 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      * @return a future that completes with the account, or empty if it does not exist
      * @since 3.0.0
      */
-    CompletableFuture<Optional<Account>> resolveAccount(OfflinePlayer player);
+    default CompletableFuture<Optional<Account>> resolveAccount(final OfflinePlayer player) {
+        return getAccount(player)
+                .map(account -> CompletableFuture.completedFuture(Optional.of(account)))
+                .orElseGet(() -> loadAccount(player));
+    }
 
     /**
      * Retrieves the account for the specified player in the given world, loading if not cached.
@@ -128,7 +132,11 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      * @throws CapabilityException if multi-world is not supported
      * @since 3.0.0
      */
-    CompletableFuture<Optional<Account>> resolveAccount(OfflinePlayer player, World world);
+    default CompletableFuture<Optional<Account>> resolveAccount(final OfflinePlayer player, final World world) {
+        return getAccount(player, world)
+                .map(account -> CompletableFuture.completedFuture(Optional.of(account)))
+                .orElseGet(() -> loadAccount(player, world));
+    }
 
     /**
      * Retrieves the account with the specified UUID, loading from the backing store if not cached.
@@ -152,6 +160,50 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      */
     default CompletableFuture<Optional<Account>> resolveAccount(final UUID uuid, final World world) {
         return resolveAccount(getPlugin().getServer().getOfflinePlayer(uuid), world);
+    }
+
+    /**
+     * Loads the account for the specified player from the backing store.
+     *
+     * @param player the player whose account is being loaded
+     * @return a future that completes with the account, or empty if it does not exist
+     * @since 3.0.0
+     */
+    CompletableFuture<Optional<Account>> loadAccount(OfflinePlayer player);
+
+    /**
+     * Loads the account for the specified player in the given world from the backing store.
+     *
+     * @param player the player whose account is being loaded
+     * @param world  the world scope of the account
+     * @return a future that completes with the account, or empty if it does not exist
+     * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
+     */
+    CompletableFuture<Optional<Account>> loadAccount(OfflinePlayer player, World world);
+
+    /**
+     * Loads the account with the specified UUID from the backing store.
+     *
+     * @param uuid the UUID of the account owner
+     * @return a future that completes with the account, or empty if it does not exist
+     * @since 3.0.0
+     */
+    default CompletableFuture<Optional<Account>> loadAccount(final UUID uuid) {
+        return loadAccount(getPlugin().getServer().getOfflinePlayer(uuid));
+    }
+
+    /**
+     * Loads the account with the specified UUID in the given world from the backing store.
+     *
+     * @param uuid  the UUID of the account owner
+     * @param world the world scope of the account
+     * @return a future that completes with the account, or empty if it does not exists
+     * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
+     */
+    default CompletableFuture<Optional<Account>> loadAccount(final UUID uuid, final World world) {
+        return loadAccount(getPlugin().getServer().getOfflinePlayer(uuid), world);
     }
 
     /**

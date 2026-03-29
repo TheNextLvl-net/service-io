@@ -37,10 +37,10 @@ public interface GroupController extends Controller {
     CompletableFuture<Group> createGroup(String name, World world);
 
     /**
-     * Retrieves the group with the given name asynchronously.
+     * Loads the group with the given name asynchronously.
      *
-     * @param name the name of the group to retrieve
-     * @return a CompletableFuture that will complete with the retrieved Group object
+     * @param name the name of the group to load
+     * @return a CompletableFuture that will complete with the loaded Group object
      */
     CompletableFuture<Group> loadGroup(String name);
 
@@ -62,11 +62,11 @@ public interface GroupController extends Controller {
     CompletableFuture<GroupHolder> loadGroupHolder(OfflinePlayer player);
 
     /**
-     * Retrieves the GroupHolder asynchronously associated with the specified player and world.
+     * Loads the GroupHolder asynchronously associated with the specified player and world.
      *
      * @param player the player for whom to load the GroupHolder
      * @param world  the world from which to load the GroupHolder
-     * @return a CompletableFuture that will complete with the retrieved GroupHolder object
+     * @return a CompletableFuture that will complete with the loaded GroupHolder object
      */
     CompletableFuture<GroupHolder> loadGroupHolder(OfflinePlayer player, World world);
 
@@ -173,16 +173,16 @@ public interface GroupController extends Controller {
     }
 
     /**
-     * Retrieves a set of groups asynchronously.
+     * Loads all groups from the backing store.
      *
      * @return a CompletableFuture that will complete with a set of groups
      */
     CompletableFuture<@Unmodifiable Set<Group>> loadGroups();
 
     /**
-     * Retrieves a set of groups asynchronously for the given world.
+     * Loads all groups from the backing store for the given world.
      *
-     * @param world the world for which to retrieve the groups
+     * @param world the world for which to load the groups
      * @return a CompletableFuture that will complete with a set of groups
      */
     CompletableFuture<@Unmodifiable Set<Group>> loadGroups(World world);
@@ -195,18 +195,9 @@ public interface GroupController extends Controller {
      */
     default CompletableFuture<Boolean> deleteGroup(final Group group) {
         return group.getWorld()
-                .map(world -> deleteGroup(group, world))
-                .orElseGet(() -> deleteGroup(group));
+                .map(world -> deleteGroup(group.getName(), world))
+                .orElseGet(() -> deleteGroup(group.getName()));
     }
-
-    /**
-     * Deletes the given group.
-     *
-     * @param group the group to delete
-     * @param world the world the group should be deleted from
-     * @return a CompletableFuture that will complete when the group has been deleted
-     */
-    CompletableFuture<Boolean> deleteGroup(Group group, World world);
 
     /**
      * Deletes the group with the given name.
@@ -229,7 +220,7 @@ public interface GroupController extends Controller {
      * Retrieves the group with the given name.
      *
      * @param name the name of the group to retrieve
-     * @return a CompletableFuture that will complete with the retrieved Group object
+     * @return an optional containing the Group, or empty
      */
     Optional<Group> getGroup(String name);
 
@@ -238,7 +229,7 @@ public interface GroupController extends Controller {
      *
      * @param name  the name of the group to retrieve
      * @param world the world the group should be received from
-     * @return a CompletableFuture that will complete with the retrieved Group object
+     * @return an optional containing the Group, or empty
      */
     Optional<Group> getGroup(String name, World world);
 
@@ -283,16 +274,16 @@ public interface GroupController extends Controller {
     /**
      * Retrieves all groups.
      *
-     * @return A CompletableFuture that will complete with a collection of all the groups.
+     * @return a set of all the groups.
      */
     @Unmodifiable
     Set<Group> getGroups();
 
     /**
-     * Retrieves all groups.
+     * Retrieves all groups in the specified world.
      *
      * @param world the world the groups should be received from
-     * @return A CompletableFuture that will complete with a collection of all the groups.
+     * @return a set of all the groups in the specified world.
      */
     @Unmodifiable
     Set<Group> getGroups(World world);
