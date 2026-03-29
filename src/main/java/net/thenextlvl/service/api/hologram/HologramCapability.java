@@ -22,21 +22,21 @@ public enum HologramCapability implements Capability {
      * This capability determines whether holograms can include lines that
      * display blocks as their visual elements.
      */
-    BLOCK_LINES(Key.key("capability", "block_lines")),
+    BLOCK_LINES(Key.key("service-io", "block_lines")),
 
     /**
      * Represents the capability of using entity-oriented lines within a hologram.
      * This capability determines whether holograms can include lines that display
      * entities as their visual elements.
      */
-    ENTITY_LINES(Key.key("capability", "entity_lines")),
+    ENTITY_LINES(Key.key("service-io", "entity_lines")),
 
     /**
      * Represents the capability of using item-oriented lines within a hologram.
      * This capability determines whether holograms can include lines that display
      * items as their visual elements.
      */
-    ITEM_LINES(Key.key("capability", "item_lines")),
+    ITEM_LINES(Key.key("service-io", "item_lines")),
 
     /**
      * Represents the capability of using text-oriented lines within a hologram.
@@ -45,14 +45,14 @@ public enum HologramCapability implements Capability {
      * <p>
      * It is generally safe to assume that every hologram will have this capability
      */
-    TEXT_LINES(Key.key("capability", "text_lines")),
+    TEXT_LINES(Key.key("service-io", "text_lines")),
 
     /**
      * Represents the capability of having multiple lines within a hologram.
      * This capability determines whether holograms can consist of more than
      * a single line.
      */
-    MULTILINE(Key.key("capability", "multiline")),
+    MULTILINE(Key.key("service-io", "multiline")),
 
     /**
      * Represents the capability of text lines supporting line breaks within a hologram.
@@ -61,7 +61,7 @@ public enum HologramCapability implements Capability {
      * <p>
      * It is mutually exclusive with the {@link #DISPLAY_BACKED} capability.
      */
-    MULTILINE_TEXT(Key.key("capability", "multiline_text")),
+    MULTILINE_TEXT(Key.key("service-io", "multiline_text")),
 
     /**
      * Represents the capability of holograms being backed by display entities.
@@ -71,6 +71,7 @@ public enum HologramCapability implements Capability {
      * It is mutually exclusive with the {@link #MULTILINE_TEXT} capability.
      */
     DISPLAY_BACKED(Key.key("capability", "display_backed"));
+    DISPLAY_BACKED(Key.key("service-io", "display_backed")),
 
     private final Key key;
 

@@ -23,19 +23,19 @@ public enum CharacterCapability implements Capability {
      * This capability indicates that the character can make use of features related
      * to health, such as taking damage or recovering health.
      */
-    HEALTH(Key.key("capability", "health")),
+    HEALTH(Key.key("service-io", "health")),
 
     /**
      * Represents the capability for a character to handle
      * interactions such as left, and right-click actions.
      */
-    INTERACTIONS(Key.key("capability", "interactions")),
+    INTERACTIONS(Key.key("service-io", "interactions")),
 
     /**
      * Represents the capability for supporting non-player entities such as pigs or zombies.
      * This indicates whether the provider can handle entity types beyond player characters.
      */
-    NON_PLAYER_ENTITIES(Key.key("capability", "non_player_entities")),
+    NON_PLAYER_ENTITIES(Key.key("service-io", "non_player_entities")),
 
     /**
      * Represents the capability to utilize actual entity objects.
@@ -45,7 +45,7 @@ public enum CharacterCapability implements Capability {
      * Such entities are recognized by the server and may be subject to various
      * physical interactions, such as collisions, gravity, or other in-game mechanics.
      */
-    ACTUAL_ENTITIES(Key.key("capability", "actual_entities"));
+    ACTUAL_ENTITIES(Key.key("service-io", "actual_entities"));
 
     private final Key key;
 
