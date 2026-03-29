@@ -18,6 +18,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.concurrent.CompletableFuture;
@@ -26,204 +27,27 @@ import java.util.stream.Stream;
 
 @NullMarked
 public class DecentPagedHologramLine implements PagedHologramLine {
+    protected final DecentHologram hologram;
     protected final HologramPage page;
-    protected final Hologram hologram;
 
-    protected DecentPagedHologramLine(final Hologram hologram, final HologramPage page) {
+    protected DecentPagedHologramLine(final DecentHologram hologram, final HologramPage page) {
         this.hologram = hologram;
         this.page = page;
     }
 
     @Override
-    public Stream<StaticHologramLine> getPages() {
-        return page.getLines().stream().map(line -> switch (line.getType()) {
-            case TEXT -> new DecentTextHologramLine(line);
-            case HEAD -> new DecentBlockHologramLine(hologram, line, false);
-            case SMALLHEAD -> new DecentBlockHologramLine(hologram, line, true);
-            case ENTITY -> new DecentEntityHologramLine(line);
-            case ICON -> new DecentItemHologramLine(line);
-            default -> throw new IllegalStateException("Unknown line type: " + line);
-        });
-    }
-
-    @Override
-    public Optional<StaticHologramLine> getPage(final int index) {
-        return Optional.empty();
-    }
-
-    @Override
-    public <T extends StaticHologramLine> Optional<T> getPage(final int index, final Class<T> type) {
-        return Optional.empty();
-    }
-
-    @Override
-    public int getPageCount() {
-        return 0;
-    }
-
-    @Override
-    public int getPageIndex(final HologramLine line) {
-        return 0;
-    }
-
-    @Override
-    public TextHologramLine addTextPage() throws CapabilityException {
-        return null;
-    }
-
-    @Override
-    public ItemHologramLine addItemPage() throws CapabilityException {
-        return null;
-    }
-
-    @Override
-    public BlockHologramLine addBlockPage() throws CapabilityException {
-        return null;
-    }
-
-    @Override
-    public EntityHologramLine addEntityPage(final EntityType entityType) throws IllegalArgumentException, CapabilityException {
-        return null;
-    }
-
-    @Override
-    public boolean removePage(final int index) {
-        return false;
-    }
-
-    @Override
-    public boolean removePage(final HologramLine page) {
-        return false;
-    }
-
-    @Override
-    public boolean clearPages() {
-        return false;
-    }
-
-    @Override
-    public boolean swapPages(final int first, final int second) {
-        return false;
-    }
-
-    @Override
-    public boolean movePage(final int from, final int to) {
-        return false;
-    }
-
-    @Override
-    public TextHologramLine setTextPage(final int index) throws IndexOutOfBoundsException, CapabilityException {
-        return null;
-    }
-
-    @Override
-    public ItemHologramLine setItemPage(final int index) throws IndexOutOfBoundsException, CapabilityException {
-        return null;
-    }
-
-    @Override
-    public BlockHologramLine setBlockPage(final int index) throws IndexOutOfBoundsException, CapabilityException {
-        return null;
-    }
-
-    @Override
-    public EntityHologramLine setEntityPage(final int index, final EntityType entityType) throws IllegalArgumentException, IndexOutOfBoundsException, CapabilityException {
-        return null;
-    }
-
-    @Override
-    public TextHologramLine insertTextPage(final int index) throws IndexOutOfBoundsException, CapabilityException {
-        return null;
-    }
-
-    @Override
-    public ItemHologramLine insertItemPage(final int index) throws IndexOutOfBoundsException, CapabilityException {
-        return null;
-    }
-
-    @Override
-    public BlockHologramLine insertBlockPage(final int index) throws IndexOutOfBoundsException, CapabilityException {
-        return null;
-    }
-
-    @Override
-    public EntityHologramLine insertEntityPage(final int index, final EntityType entityType) throws IllegalArgumentException, IndexOutOfBoundsException, CapabilityException {
-        return null;
-    }
-
-    @Override
-    public Duration getInterval() {
-        return null;
-    }
-
-    @Override
-    public PagedHologramLine setInterval(final Duration interval) throws IllegalArgumentException {
-        return null;
-    }
-
-    @Override
-    public boolean isRandomOrder() {
-        return false;
-    }
-
-    @Override
-    public PagedHologramLine setRandomOrder(final boolean random) {
-        return null;
-    }
-
-    @Override
-    public boolean isPaused() {
-        return false;
-    }
-
-    @Override
-    public PagedHologramLine setPaused(final boolean paused) {
-        return null;
-    }
-
-    @Override
-    public CompletableFuture<Boolean> cyclePage(final Player player) {
-        return null;
-    }
-
-    @Override
-    public CompletableFuture<Boolean> cyclePage(final Player player, final int amount) {
-        return null;
-    }
-
-    @Override
-    public CompletableFuture<Boolean> setPage(final Player player, final int page) throws IndexOutOfBoundsException {
-        return null;
-    }
-
-    @Override
-    public OptionalInt getCurrentPageIndex(final Player player) {
-        return OptionalInt.empty();
-    }
-
-    @Override
-    public Optional<StaticHologramLine> getCurrentPage(final Player player) {
-        return Optional.empty();
-    }
-
-    @Override
-    public void forEachPage(final Consumer<StaticHologramLine> action) {
-
-    }
-
-    @Override
     public Hologram getHologram() {
-        return null;
+        return hologram;
     }
 
     @Override
     public LineType getType() {
-        return null;
+        return LineType.PAGED;
     }
 
     @Override
     public World getWorld() {
-        return null;
+        return hologram.getWorld();
     }
 
     @Override
@@ -238,6 +62,264 @@ public class DecentPagedHologramLine implements PagedHologramLine {
 
     @Override
     public boolean canSee(final Player player) {
+        return hologram.canSee(player);
+    }
+
+    @Override
+    public Stream<StaticHologramLine> getPages() {
+        return page.getLines().stream().map(this::getLine);
+    }
+
+    @Override
+    public Optional<StaticHologramLine> getPage(final int index) {
+        final var lines = page.getLines();
+        if (index < 0 || index >= lines.size()) return Optional.empty();
+        return Optional.of(lines.get(index)).map(this::getLine);
+    }
+
+    private StaticHologramLine getLine(final eu.decentsoftware.holograms.api.holograms.HologramLine line) {
+        return switch (line.getType()) {
+            case TEXT -> new DecentTextHologramLine(hologram, line);
+            case HEAD -> new DecentBlockHologramLine(hologram, line, false);
+            case SMALLHEAD -> new DecentBlockHologramLine(hologram, line, true);
+            case ENTITY -> new DecentEntityHologramLine(hologram, line);
+            case ICON -> new DecentItemHologramLine(hologram, line);
+            default -> throw new IllegalStateException("Unknown line type: " + line);
+        };
+    }
+
+    @Override
+    public <T extends StaticHologramLine> Optional<T> getPage(final int index, final Class<T> type) {
+        return getPage(index).filter(type::isInstance).map(type::cast);
+    }
+
+    @Override
+    public int getPageCount() {
+        return page.getLines().size();
+    }
+
+    @Override
+    public int getPageIndex(final HologramLine line) {
+        if (!(line instanceof final DecentHologramLine decent)) return -1;
+        final var parent = decent.line.getParent();
+        return parent != null ? hologram.hologram().getPages().indexOf(parent) : -1;
+    }
+
+    @Override
+    public TextHologramLine addTextPage() throws CapabilityException {
+        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
+                page, hologram.getLocation(), ""
+        );
+        page.addLine(line);
+        return new DecentTextHologramLine(hologram, line);
+    }
+
+    @Override
+    public ItemHologramLine addItemPage() throws CapabilityException {
+        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
+                page, hologram.getLocation(), "#ICON:STONE"
+        );
+        page.addLine(line);
+        return new DecentItemHologramLine(hologram, line);
+    }
+
+    @Override
+    public BlockHologramLine addBlockPage() throws CapabilityException {
+        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
+                page, hologram.getLocation(), "#HEAD:STONE"
+        );
+        page.addLine(line);
+        return new DecentBlockHologramLine(hologram, line, false);
+    }
+
+    @Override
+    public EntityHologramLine addEntityPage(final EntityType entityType) throws IllegalArgumentException, CapabilityException {
+        if (!entityType.isSpawnable()) throw new IllegalArgumentException("Invalid entity type: " + entityType.name());
+        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
+                page, hologram.getLocation(), "#ENTITY:" + entityType.name()
+        );
+        page.addLine(line);
+        return new DecentEntityHologramLine(hologram, line);
+    }
+
+    @Override
+    public boolean removePage(final int index) {
+        return page.removeLine(index) != null;
+    }
+
+    @Override
+    public boolean removePage(final HologramLine line) {
+        final var index = getPageIndex(line);
+        return index >= 0 && removePage(index);
+    }
+
+    @Override
+    public boolean clearPages() {
+        if (page.getLines().isEmpty()) return false;
+        while (!page.getLines().isEmpty()) {
+            page.removeLine(0);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean swapPages(final int first, final int second) {
+        return hologram.hologram().swapPages(first, second);
+    }
+
+    @Override
+    public boolean movePage(final int from, final int to) {
+        final var pages = hologram.hologram().getPages();
+        if (from < 0 || from >= pages.size() || to < 0 || to >= pages.size() || from == to) return false;
+        final var page = pages.remove(from);
+        pages.add(to, page);
+        return true;
+    }
+
+    @Override
+    public TextHologramLine setTextPage(final int index) throws IndexOutOfBoundsException, CapabilityException {
+        Objects.checkIndex(index, page.getLines().size());
+        page.removeLine(index);
+        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
+                page, hologram.getLocation(), ""
+        );
+        page.addLine(line);
+        return new DecentTextHologramLine(hologram, line);
+    }
+
+    @Override
+    public ItemHologramLine setItemPage(final int index) throws IndexOutOfBoundsException, CapabilityException {
+        Objects.checkIndex(index, page.getLines().size());
+        page.removeLine(index);
+        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
+                page, hologram.getLocation(), "#ICON:STONE"
+        );
+        page.addLine(line);
+        return new DecentItemHologramLine(hologram, line);
+    }
+
+    @Override
+    public BlockHologramLine setBlockPage(final int index) throws IndexOutOfBoundsException, CapabilityException {
+        Objects.checkIndex(index, page.getLines().size());
+        page.removeLine(index);
+        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
+                page, hologram.getLocation(), "#HEAD:STONE"
+        );
+        page.addLine(line);
+        return new DecentBlockHologramLine(hologram, line, false);
+    }
+
+    @Override
+    public EntityHologramLine setEntityPage(final int index, final EntityType entityType) throws IllegalArgumentException, IndexOutOfBoundsException, CapabilityException {
+        if (!entityType.isSpawnable()) throw new IllegalArgumentException("Invalid entity type: " + entityType.name());
+        Objects.checkIndex(index, page.getLines().size());
+        page.removeLine(index);
+        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
+                page, hologram.getLocation(), "#ENTITY:" + entityType.name()
+        );
+        page.addLine(line);
+        return new DecentEntityHologramLine(hologram, line);
+    }
+
+    @Override
+    public TextHologramLine insertTextPage(final int index) throws IndexOutOfBoundsException, CapabilityException {
+        Objects.checkIndex(index, page.getLines().size() + 1);
+        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
+                page, hologram.getLocation(), ""
+        );
+        page.addLine(line);
+        return new DecentTextHologramLine(hologram, line);
+    }
+
+    @Override
+    public ItemHologramLine insertItemPage(final int index) throws IndexOutOfBoundsException, CapabilityException {
+        Objects.checkIndex(index, page.getLines().size() + 1);
+        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
+                page, hologram.getLocation(), "#ICON:STONE"
+        );
+        page.addLine(line);
+        return new DecentItemHologramLine(hologram, line);
+    }
+
+    @Override
+    public BlockHologramLine insertBlockPage(final int index) throws IndexOutOfBoundsException, CapabilityException {
+        Objects.checkIndex(index, page.getLines().size() + 1);
+        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
+                page, hologram.getLocation(), "#HEAD:STONE"
+        );
+        page.addLine(line);
+        return new DecentBlockHologramLine(hologram, line, false);
+    }
+
+    @Override
+    public EntityHologramLine insertEntityPage(final int index, final EntityType entityType) throws IllegalArgumentException, IndexOutOfBoundsException, CapabilityException {
+        if (!entityType.isSpawnable()) throw new IllegalArgumentException("Invalid entity type: " + entityType.name());
+        Objects.checkIndex(index, page.getLines().size() + 1);
+        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
+                page, hologram.getLocation(), "#ENTITY:" + entityType.name()
+        );
+        page.addLine(line);
+        return new DecentEntityHologramLine(hologram, line);
+    }
+
+    @Override
+    public Duration getInterval() {
+        return Duration.ofSeconds(5);
+    }
+
+    @Override
+    public PagedHologramLine setInterval(final Duration interval) throws IllegalArgumentException {
+        if (!interval.isPositive()) throw new IllegalArgumentException("Interval must be positive");
+        return this;
+    }
+
+    @Override
+    public boolean isRandomOrder() {
         return false;
+    }
+
+    @Override
+    public PagedHologramLine setRandomOrder(final boolean random) {
+        return this;
+    }
+
+    @Override
+    public boolean isPaused() {
+        return false;
+    }
+
+    @Override
+    public PagedHologramLine setPaused(final boolean paused) {
+        return this;
+    }
+
+    @Override
+    public CompletableFuture<Boolean> cyclePage(final Player player) {
+        return CompletableFuture.completedFuture(false);
+    }
+
+    @Override
+    public CompletableFuture<Boolean> cyclePage(final Player player, final int amount) {
+        return CompletableFuture.completedFuture(false);
+    }
+
+    @Override
+    public CompletableFuture<Boolean> setPage(final Player player, final int page) throws IndexOutOfBoundsException {
+        return CompletableFuture.completedFuture(false);
+    }
+
+    @Override
+    public OptionalInt getCurrentPageIndex(final Player player) {
+        return OptionalInt.empty();
+    }
+
+    @Override
+    public Optional<StaticHologramLine> getCurrentPage(final Player player) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void forEachPage(final Consumer<StaticHologramLine> action) {
+        getPages().forEach(action);
     }
 }

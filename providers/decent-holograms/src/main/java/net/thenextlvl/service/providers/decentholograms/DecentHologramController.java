@@ -2,20 +2,12 @@ package net.thenextlvl.service.providers.decentholograms;
 
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.DecentHologramsAPI;
-import eu.decentsoftware.holograms.api.utils.items.HologramItem;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.thenextlvl.service.api.capability.CapabilityException;
 import net.thenextlvl.service.api.hologram.Hologram;
 import net.thenextlvl.service.api.hologram.HologramCapability;
 import net.thenextlvl.service.api.hologram.HologramController;
-import net.thenextlvl.service.api.hologram.line.HologramLine;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
@@ -38,47 +30,8 @@ public final class DecentHologramController implements HologramController {
     );
 
     @Override
-    public Hologram createHologram(final String name, final Location location, final Collection<HologramLine<?>> lines) throws CapabilityException {
-        final var hologram = new DecentHologram(DHAPI.createHologram(name, location, false));
-        hologram.addLines(lines);
-        return hologram;
-    }
-
-    @Override
-    public HologramLine<BlockData> createLine(final BlockData block) throws CapabilityException {
-        final var item = ItemStack.of(block.getMaterial());
-        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
-                null, new Location(null, 0, 0, 0),
-                "#HEAD:" + HologramItem.fromItemStack(item).getContent()
-        );
-        return new DecentBlockHologramLine(line, false);
-    }
-
-    @Override
-    public HologramLine<Component> createLine(final Component text) throws CapabilityException {
-        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
-                null, new Location(null, 0, 0, 0),
-                LegacyComponentSerializer.legacyAmpersand().serialize(text)
-        );
-        return new DecentTextHologramLine(line);
-    }
-
-    @Override
-    public HologramLine<EntityType> createLine(final EntityType entity) throws CapabilityException {
-        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
-                null, new Location(null, 0, 0, 0),
-                "#ENTITY:" + entity.name()
-        );
-        return new DecentEntityHologramLine(line);
-    }
-
-    @Override
-    public HologramLine<ItemStack> createLine(final ItemStack itemStack) throws CapabilityException {
-        final var line = new eu.decentsoftware.holograms.api.holograms.HologramLine(
-                null, new Location(null, 0, 0, 0),
-                "#ICON:" + HologramItem.fromItemStack(itemStack).getContent()
-        );
-        return new DecentItemHologramLine(line);
+    public Hologram createHologram(final String name, final Location location) {
+        return new DecentHologram(DHAPI.createHologram(name, location, false));
     }
 
     @Override

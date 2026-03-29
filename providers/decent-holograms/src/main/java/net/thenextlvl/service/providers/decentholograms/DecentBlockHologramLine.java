@@ -4,7 +4,6 @@ import eu.decentsoftware.holograms.api.holograms.HologramLine;
 import eu.decentsoftware.holograms.api.utils.items.HologramItem;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.format.TextColor;
-import net.thenextlvl.service.api.hologram.Hologram;
 import net.thenextlvl.service.api.hologram.LineType;
 import net.thenextlvl.service.api.hologram.line.BlockHologramLine;
 import net.thenextlvl.service.api.hologram.line.PagedHologramLine;
@@ -23,7 +22,7 @@ import java.util.Optional;
 public final class DecentBlockHologramLine extends DecentHologramLine implements BlockHologramLine {
     private final boolean small;
 
-    public DecentBlockHologramLine(final Hologram hologram, final HologramLine line, final boolean small) {
+    public DecentBlockHologramLine(final DecentHologram hologram, final HologramLine line, final boolean small) {
         super(hologram, line);
         this.small = small;
     }
@@ -101,12 +100,12 @@ public final class DecentBlockHologramLine extends DecentHologramLine implements
     @Override
     public Optional<PagedHologramLine> getParentLine() {
         return Optional.ofNullable(line.getParent())
-                .map(hologramPage -> new DecentPagedHologramLine(hologramPage));
+                .map(page -> new DecentPagedHologramLine(hologram, page));
     }
 
     @Override
     public Vector3f getOffset() {
-        return null;
+        return new Vector3f(0, 0, 0);
     }
 
     @Override

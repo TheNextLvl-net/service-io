@@ -17,10 +17,10 @@ import java.util.Optional;
 
 @NullMarked
 abstract class DecentHologramLine implements StaticHologramLine {
-    protected final Hologram hologram;
+    protected final DecentHologram hologram;
     protected final eu.decentsoftware.holograms.api.holograms.HologramLine line;
 
-    protected DecentHologramLine(final Hologram hologram, final eu.decentsoftware.holograms.api.holograms.HologramLine line) {
+    protected DecentHologramLine(final DecentHologram hologram, final eu.decentsoftware.holograms.api.holograms.HologramLine line) {
         this.hologram = hologram;
         this.line = line;
     }

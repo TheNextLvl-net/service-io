@@ -2,7 +2,6 @@ package net.thenextlvl.service.providers.decentholograms;
 
 import eu.decentsoftware.holograms.api.holograms.HologramLine;
 import net.kyori.adventure.text.format.TextColor;
-import net.thenextlvl.service.api.hologram.Hologram;
 import net.thenextlvl.service.api.hologram.LineType;
 import net.thenextlvl.service.api.hologram.line.EntityHologramLine;
 import net.thenextlvl.service.api.hologram.line.PagedHologramLine;
@@ -16,7 +15,7 @@ import java.util.Optional;
 
 @NullMarked
 public final class DecentEntityHologramLine extends DecentHologramLine implements EntityHologramLine {
-    public DecentEntityHologramLine(final Hologram hologram, final HologramLine line) {
+    public DecentEntityHologramLine(final DecentHologram hologram, final HologramLine line) {
         super(hologram, line);
     }
 
@@ -66,7 +65,7 @@ public final class DecentEntityHologramLine extends DecentHologramLine implement
 
     @Override
     public Display.Billboard getBillboard() {
-        return null;
+        return Display.Billboard.CENTER;
     }
 
     @Override
@@ -76,12 +75,13 @@ public final class DecentEntityHologramLine extends DecentHologramLine implement
 
     @Override
     public Optional<PagedHologramLine> getParentLine() {
-        return Optional.empty();
+        return Optional.ofNullable(line.getParent())
+                .map(page -> new DecentPagedHologramLine(hologram, page));
     }
 
     @Override
     public Vector3f getOffset() {
-        return null;
+        return new Vector3f(0, 0, 0);
     }
 
     @Override
