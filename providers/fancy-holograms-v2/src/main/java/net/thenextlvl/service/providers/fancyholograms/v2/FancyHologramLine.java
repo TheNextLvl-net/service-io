@@ -1,13 +1,14 @@
 package net.thenextlvl.service.providers.fancyholograms.v2;
 
 import de.oliver.fancyholograms.api.data.DisplayHologramData;
-import net.thenextlvl.service.api.hologram.HologramDisplay;
-import net.thenextlvl.service.api.hologram.line.HologramLine;
+import net.kyori.adventure.text.format.TextColor;
+import net.thenextlvl.service.api.hologram.Hologram;
 import net.thenextlvl.service.api.hologram.LineType;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Server;
+import net.thenextlvl.service.api.hologram.line.PagedHologramLine;
+import net.thenextlvl.service.api.hologram.line.StaticHologramLine;
 import org.bukkit.World;
+import org.bukkit.entity.Display;
+import org.bukkit.entity.Player;
 import org.joml.Vector3f;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -16,11 +17,18 @@ import java.util.Objects;
 import java.util.Optional;
 
 @NullMarked
-abstract class FancyHologramLine<D extends DisplayHologramData, T> implements HologramLine<T> {
-    public final D data;
+abstract class FancyHologramLine<D extends DisplayHologramData> implements StaticHologramLine {
+    protected final D data;
+    protected final FancyHologram hologram;
 
-    protected FancyHologramLine(final D data) {
+    protected FancyHologramLine(final FancyHologram hologram, final D data) {
+        this.hologram = hologram;
         this.data = data;
+    }
+
+    @Override
+    public Hologram getHologram() {
+        return hologram;
     }
 
     @Override
@@ -33,105 +41,78 @@ abstract class FancyHologramLine<D extends DisplayHologramData, T> implements Ho
     }
 
     @Override
-    public Optional<HologramDisplay> getDisplay() {
-        return Optional.of(new FancyHologramDisplay(data));
-    }
-
-    @Override
-    public double getHeight() {
-        return 0;
-    }
-
-    @Override
-    public double getOffsetX() {
-        return data.getTranslation().x();
-    }
-
-    @Override
-    public double getOffsetY() {
-        return data.getTranslation().y();
-    }
-
-    @Override
-    public double getOffsetZ() {
-        return data.getTranslation().z();
-    }
-
-    @Override
-    public void setHeight(final double height) {
-    }
-
-    @Override
-    public void setOffsetX(final double offsetX) {
-        data.setTranslation(new Vector3f(
-                (float) offsetX,
-                (float) getOffsetY(),
-                (float) getOffsetZ())
-        );
-    }
-
-    @Override
-    public void setOffsetY(final double offsetY) {
-        data.setTranslation(new Vector3f(
-                (float) getOffsetX(),
-                (float) offsetY,
-                (float) getOffsetZ())
-        );
-    }
-
-    @Override
-    public void setOffsetZ(final double offsetZ) {
-        data.setTranslation(new Vector3f(
-                (float) getOffsetX(),
-                (float) getOffsetY(),
-                (float) offsetZ)
-        );
-    }
-
-    @Override
-    public Location getLocation() {
-        return data.getLocation();
-    }
-
-    @Override
-    public Server getServer() {
-        return Bukkit.getServer();
-    }
-
-    @Override
     public World getWorld() {
         return data.getLocation().getWorld();
     }
 
     @Override
-    public double getX() {
-        return getLocation().getX();
+    public Optional<String> getViewPermission() {
+        return Optional.empty();
     }
 
     @Override
-    public double getY() {
-        return getLocation().getY();
+    public boolean setViewPermission(@Nullable final String permission) {
+        return false;
     }
 
     @Override
-    public double getZ() {
-        return getLocation().getZ();
+    public boolean canSee(final Player player) {
+        return true;
     }
 
     @Override
-    public float getPitch() {
-        return getLocation().getPitch();
+    public boolean isGlowing() {
+        return false;
     }
 
     @Override
-    public float getYaw() {
-        return getLocation().getYaw();
+    public boolean setGlowing(final boolean glowing) {
+        return false;
+    }
+
+    @Override
+    public Optional<TextColor> getGlowColor() {
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean setGlowColor(@Nullable final TextColor color) {
+        return false;
+    }
+
+    @Override
+    public Display.Billboard getBillboard() {
+        return data.getBillboard();
+    }
+
+    @Override
+    public boolean setBillboard(final Display.Billboard billboard) {
+        if (data.getBillboard().equals(billboard)) return false;
+        data.setBillboard(billboard);
+        return true;
+    }
+
+    @Override
+    public Optional<PagedHologramLine> getParentLine() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Vector3f getOffset() {
+        return data.getTranslation();
+    }
+
+    @Override
+    public boolean setOffset(final Vector3f offset) {
+        if (data.getTranslation().equals(offset)) return false;
+        data.setTranslation(offset);
+        return true;
     }
 
     @Override
     public boolean equals(@Nullable final Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        final FancyHologramLine<?, ?> that = (FancyHologramLine<?, ?>) o;
+        final FancyHologramLine<?> that = (FancyHologramLine<?>) o;
         return Objects.equals(data, that.data);
     }
 

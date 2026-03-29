@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @NullMarked
@@ -74,8 +75,8 @@ public final class DecentHologramController implements HologramController {
     }
 
     @Override
-    public EnumSet<HologramCapability> getCapabilities() {
-        return EnumSet.copyOf(capabilities);
+    public Set<HologramCapability> getCapabilities() {
+        return Set.copyOf(capabilities);
     }
 
     @Override
