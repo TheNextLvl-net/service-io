@@ -2,7 +2,7 @@ package net.thenextlvl.service.providers.fancyholograms.v3;
 
 import com.fancyinnovations.fancyholograms.api.data.DisplayHologramData;
 import net.thenextlvl.service.api.hologram.HologramDisplay;
-import net.thenextlvl.service.api.hologram.HologramLine;
+import net.thenextlvl.service.api.hologram.line.HologramLine;
 import net.thenextlvl.service.api.hologram.LineType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

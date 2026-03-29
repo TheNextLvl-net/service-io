@@ -8,7 +8,7 @@ import com.fancyinnovations.fancyholograms.api.data.property.Visibility;
 import net.thenextlvl.service.api.capability.CapabilityException;
 import net.thenextlvl.service.api.hologram.Hologram;
 import net.thenextlvl.service.api.hologram.HologramCapability;
-import net.thenextlvl.service.api.hologram.HologramLine;
+import net.thenextlvl.service.api.hologram.line.HologramLine;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Server;
