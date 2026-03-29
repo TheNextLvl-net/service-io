@@ -7,7 +7,7 @@ import net.thenextlvl.service.api.hologram.line.HologramLine;
 import net.thenextlvl.service.api.hologram.line.ItemHologramLine;
 import net.thenextlvl.service.api.hologram.line.PagedHologramLine;
 import net.thenextlvl.service.api.hologram.line.TextHologramLine;
-import net.thenextlvl.service.api.model.Persistable;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -30,7 +30,15 @@ import java.util.stream.Stream;
  *
  * @since 3.0.0
  */
-public interface Hologram extends Persistable, Iterable<HologramLine> {
+public interface Hologram extends Iterable<HologramLine> {
+    /**
+     * Returns the name of the hologram.
+     *
+     * @return the hologram name
+     * @since 3.0.0
+     */
+    String getName();
+
     /**
      * Sets the name of the hologram.
      *
@@ -39,6 +47,31 @@ public interface Hologram extends Persistable, Iterable<HologramLine> {
      * @since 3.0.0
      */
     boolean setName(String name);
+
+    /**
+     * Checks if this hologram is persistent.
+     *
+     * @return {@code true} if this hologram is persistent, {@code false} otherwise
+     * @since 3.0.0
+     */
+    boolean isPersistent();
+
+    /**
+     * Sets whether this hologram is persistent.
+     *
+     * @param persistent {@code true} if this hologram should be persistent, {@code false} otherwise
+     * @return {@code true} if the persistence was changed, {@code false} otherwise
+     * @since 3.0.0
+     */
+    boolean setPersistent(boolean persistent);
+
+    /**
+     * Persists this hologram.
+     *
+     * @return {@code true} if the hologram was persisted, {@code false} otherwise
+     * @since 3.0.0
+     */
+    boolean persist();
 
     /**
      * Returns the location of the hologram.
