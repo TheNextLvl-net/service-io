@@ -20,7 +20,6 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
@@ -115,21 +114,12 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
 
     @Override
     public boolean moveLine(final int from, final int to) {
-        final var page = hologram.getPage(0);
-        final var lines = page.getLines();
-        if (from < 0 || from >= lines.size() || to < 0 || to >= lines.size() || from == to) return false;
-        final var line = lines.remove(from);
-        lines.add(to, line);
-        return true;
+        return false;
     }
 
     @Override
     public boolean swapLines(final int line1, final int line2) {
-        final var page = hologram.getPage(0);
-        final var lines = page.getLines();
-        if (line1 < 0 || line1 >= lines.size() || line2 < 0 || line2 >= lines.size() || line1 == line2) return false;
-        Collections.swap(lines, line1, line2);
-        return true;
+        return false;
     }
 
     @Override
