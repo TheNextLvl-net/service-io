@@ -7,7 +7,6 @@ import net.thenextlvl.service.api.hologram.line.HologramLine;
 import net.thenextlvl.service.api.hologram.line.ItemHologramLine;
 import net.thenextlvl.service.api.hologram.line.PagedHologramLine;
 import net.thenextlvl.service.api.hologram.line.TextHologramLine;
-
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -221,13 +220,17 @@ public interface Hologram extends Iterable<HologramLine> {
     /**
      * Adds an entity line to this hologram.
      *
-     * @param entityType the entity type
+     * @param entityClass the entity type class
      * @return a new entity hologram line
      * @throws IllegalArgumentException if the entity type is not spawnable
      * @throws CapabilityException      if the {@link HologramCapability#ENTITY_LINES} capability is not available
      * @since 3.0.0
      */
-    EntityHologramLine addEntityLine(Class<? extends Entity> entityType) throws IllegalArgumentException, CapabilityException;
+    default EntityHologramLine addEntityLine(final Class<? extends Entity> entityClass) throws IllegalArgumentException, CapabilityException {
+        return EntityHologramLine.getEntityType(entityClass)
+                .map(this::addEntityLine)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid entity type: " + entityClass.getName()));
+    }
 
     /**
      * Adds an entity line to this hologram at the given index.
@@ -245,15 +248,19 @@ public interface Hologram extends Iterable<HologramLine> {
     /**
      * Adds an entity line to this hologram at the given index.
      *
-     * @param index      the line index
-     * @param entityType the entity type
+     * @param index       the line index
+     * @param entityClass the entity type class
      * @return a new entity hologram line
      * @throws IllegalArgumentException  if the entity type is not spawnable
      * @throws IndexOutOfBoundsException if the index is out of bounds
      * @throws CapabilityException       if the {@link HologramCapability#ENTITY_LINES} capability is not available
      * @since 3.0.0
      */
-    EntityHologramLine addEntityLine(int index, Class<? extends Entity> entityType) throws IllegalArgumentException, IndexOutOfBoundsException, CapabilityException;
+    default EntityHologramLine addEntityLine(final int index, final Class<? extends Entity> entityClass) throws IllegalArgumentException, IndexOutOfBoundsException, CapabilityException {
+        return EntityHologramLine.getEntityType(entityClass)
+                .map(type -> addEntityLine(index, type))
+                .orElseThrow(() -> new IllegalArgumentException("Entity type not found for " + entityClass));
+    }
 
     /**
      * Adds a block line to this hologram.
@@ -370,7 +377,11 @@ public interface Hologram extends Iterable<HologramLine> {
      * @throws CapabilityException       if the {@link HologramCapability#ENTITY_LINES} capability is not available
      * @since 3.0.0
      */
-    EntityHologramLine setEntityLine(int index, Class<? extends Entity> entityType) throws IllegalArgumentException, IndexOutOfBoundsException, CapabilityException;
+    default EntityHologramLine setEntityLine(final int index, final Class<? extends Entity> entityType) throws IllegalArgumentException, IndexOutOfBoundsException, CapabilityException {
+        return EntityHologramLine.getEntityType(entityType)
+                .map(type -> setEntityLine(index, type))
+                .orElseThrow(() -> new IllegalArgumentException("Entity type not found for " + entityType));
+    }
 
     /**
      * Sets a block line at the given index.

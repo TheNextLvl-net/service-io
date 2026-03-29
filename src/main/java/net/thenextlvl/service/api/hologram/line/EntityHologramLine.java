@@ -4,6 +4,9 @@ import net.thenextlvl.service.api.hologram.HologramCapability;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 /**
  * Represents a line type within a hologram that displays an entity.
  *
@@ -16,20 +19,20 @@ public interface EntityHologramLine extends StaticHologramLine {
      *
      * @param entityType the new entity type
      * @return {@code true} if the entity type was changed, {@code false} otherwise
-     * @throws IllegalArgumentException if the entity type is not valid
      * @since 3.0.0
      */
-    boolean setEntityType(EntityType entityType) throws IllegalArgumentException;
+    boolean setEntityType(EntityType entityType);
 
     /**
      * Sets the entity type of the hologram line.
      *
      * @param entityType the new entity type
      * @return {@code true} if the entity type was changed, {@code false} otherwise
-     * @throws IllegalArgumentException if the entity type is not valid
      * @since 3.0.0
      */
-    boolean setEntityType(Class<? extends Entity> entityType) throws IllegalArgumentException;
+    default boolean setEntityType(final Class<? extends Entity> entityType) {
+        return getEntityType(entityType).map(this::setEntityType).orElse(false);
+    }
 
     /**
      * Gets the scale of the entity.
@@ -47,4 +50,11 @@ public interface EntityHologramLine extends StaticHologramLine {
      * @since 3.0.0
      */
     boolean setScale(double scale);
+
+    static Optional<EntityType> getEntityType(final Class<? extends Entity> entityClass) throws IllegalArgumentException {
+        return Arrays.stream(EntityType.values())
+                .filter(type -> type.getEntityClass() != null)
+                .filter(type -> type.getEntityClass().isAssignableFrom(entityClass))
+                .findAny();
+    }
 }
