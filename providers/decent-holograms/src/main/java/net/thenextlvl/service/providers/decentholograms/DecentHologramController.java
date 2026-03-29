@@ -33,7 +33,8 @@ public final class DecentHologramController implements HologramController {
             HologramCapability.ENTITY_LINES,
             HologramCapability.ITEM_LINES,
             HologramCapability.TEXT_LINES,
-            HologramCapability.MULTILINE
+            HologramCapability.MULTILINE,
+            HologramCapability.PAGINATION
     );
 
     @Override

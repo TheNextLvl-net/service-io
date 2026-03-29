@@ -70,8 +70,13 @@ public enum HologramCapability implements Capability {
      * <p>
      * It is mutually exclusive with the {@link #MULTILINE_TEXT} capability.
      */
-    DISPLAY_BACKED(Key.key("capability", "display_backed"));
     DISPLAY_BACKED(Key.key("service-io", "display_backed")),
+
+    /**
+     * Represents the capability of holograms being paginated.
+     * This capability determines whether holograms can be displayed in multiple pages.
+     */
+    PAGINATION(Key.key("service-io", "pagination"));
 
     private final Key key;
 
