@@ -1,4 +1,4 @@
-package net.thenextlvl.service.wrapper;
+package net.thenextlvl.service.wrapper.vault;
 
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.milkbowl.vault.economy.Economy;
@@ -9,6 +9,7 @@ import net.thenextlvl.service.api.economy.TransactionResult;
 import net.thenextlvl.service.api.economy.bank.Bank;
 import net.thenextlvl.service.api.economy.bank.BankController;
 import net.thenextlvl.service.api.economy.currency.Currency;
+import net.thenextlvl.service.wrapper.Wrapper;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Contract;

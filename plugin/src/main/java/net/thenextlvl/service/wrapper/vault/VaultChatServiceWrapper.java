@@ -1,4 +1,4 @@
-package net.thenextlvl.service.wrapper;
+package net.thenextlvl.service.wrapper.vault;
 
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
@@ -6,6 +6,7 @@ import net.thenextlvl.service.api.chat.ChatController;
 import net.thenextlvl.service.api.chat.ChatProfile;
 import net.thenextlvl.service.api.group.Group;
 import net.thenextlvl.service.api.group.GroupController;
+import net.thenextlvl.service.wrapper.Wrapper;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;

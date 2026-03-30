@@ -1,4 +1,4 @@
-package net.thenextlvl.service.wrapper;
+package net.thenextlvl.service.wrapper.vault;
 
 import net.kyori.adventure.util.TriState;
 import net.milkbowl.vault.permission.Permission;
@@ -7,6 +7,7 @@ import net.thenextlvl.service.api.group.GroupController;
 import net.thenextlvl.service.api.group.GroupHolder;
 import net.thenextlvl.service.api.permission.PermissionController;
 import net.thenextlvl.service.api.permission.PermissionHolder;
+import net.thenextlvl.service.wrapper.Wrapper;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
