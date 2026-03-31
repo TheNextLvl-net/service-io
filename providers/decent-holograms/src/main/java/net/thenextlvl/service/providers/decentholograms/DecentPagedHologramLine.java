@@ -268,9 +268,9 @@ public class DecentPagedHologramLine implements PagedHologramLine {
     }
 
     @Override
-    public PagedHologramLine setInterval(final Duration interval) throws IllegalArgumentException {
+    public boolean setInterval(final Duration interval) throws IllegalArgumentException {
         if (!interval.isPositive()) throw new IllegalArgumentException("Interval must be positive");
-        return this;
+        return false;
     }
 
     @Override
@@ -279,8 +279,8 @@ public class DecentPagedHologramLine implements PagedHologramLine {
     }
 
     @Override
-    public PagedHologramLine setRandomOrder(final boolean random) {
-        return this;
+    public boolean setRandomOrder(final boolean random) {
+        return false;
     }
 
     @Override
@@ -289,8 +289,8 @@ public class DecentPagedHologramLine implements PagedHologramLine {
     }
 
     @Override
-    public PagedHologramLine setPaused(final boolean paused) {
-        return this;
+    public boolean setPaused(final boolean paused) {
+        return false;
     }
 
     @Override

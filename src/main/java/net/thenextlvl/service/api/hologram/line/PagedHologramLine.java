@@ -254,11 +254,11 @@ public interface PagedHologramLine extends HologramLine {
      * Sets the interval between page changes.
      *
      * @param interval the new interval duration
-     * @return this
+     * @return whether the interval has been changed
      * @throws IllegalArgumentException if the interval is not bigger than zero
      * @since 3.0.0
      */
-    PagedHologramLine setInterval(Duration interval) throws IllegalArgumentException;
+    boolean setInterval(Duration interval) throws IllegalArgumentException;
 
     /**
      * Gets whether pages are cycled in random order.
@@ -272,10 +272,10 @@ public interface PagedHologramLine extends HologramLine {
      * Sets whether pages should be cycled in random order.
      *
      * @param random {@code true} for random order, {@code false} for sequential
-     * @return this
+     * @return whether the order has been changed
      * @since 3.0.0
      */
-    PagedHologramLine setRandomOrder(boolean random);
+    boolean setRandomOrder(boolean random);
 
     /**
      * Gets whether the paged line is currently paused.
@@ -290,10 +290,10 @@ public interface PagedHologramLine extends HologramLine {
      * When paused, the line will not automatically cycle through pages.
      *
      * @param paused {@code true} to pause, {@code false} to resume
-     * @return this
+     * @return whether the automatic cycling state has been changed
      * @since 3.0.0
      */
-    PagedHologramLine setPaused(boolean paused);
+    boolean setPaused(boolean paused);
 
     /**
      * Cycles the page of this line for the given player.
