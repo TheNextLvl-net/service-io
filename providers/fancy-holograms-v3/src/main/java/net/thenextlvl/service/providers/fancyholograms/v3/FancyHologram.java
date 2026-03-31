@@ -264,12 +264,6 @@ public record FancyHologram(com.fancyinnovations.fancyholograms.api.hologram.Hol
     }
 
     @Override
-    public void remove() {
-        FancyHolograms.get().getController().hideHologramFrom(hologram, getTrackedBy().toArray(Player[]::new));
-        FancyHolograms.get().getRegistry().unregister(hologram);
-    }
-
-    @Override
     public String getName() {
         return hologram.getData().getName();
     }

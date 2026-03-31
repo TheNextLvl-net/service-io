@@ -331,11 +331,6 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
     }
 
     @Override
-    public void remove() {
-        hologram.delete();
-    }
-
-    @Override
     public String getName() {
         return hologram.getName();
     }

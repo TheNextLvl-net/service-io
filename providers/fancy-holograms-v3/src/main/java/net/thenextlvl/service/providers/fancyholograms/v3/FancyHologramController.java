@@ -39,6 +39,15 @@ public final class FancyHologramController implements HologramController {
     }
 
     @Override
+    public boolean deleteHologram(final Hologram hologram) {
+        if (hologram instanceof FancyHologram(final com.fancyinnovations.fancyholograms.api.hologram.Hologram fancy)) {
+            if (!FancyHolograms.get().getRegistry().unregister(fancy)) return false;
+            FancyHolograms.get().getController().hideHologramFrom(fancy, hologram.getTrackedBy().toArray(Player[]::new));
+            return true;
+        } else return false;
+    }
+
+    @Override
     public @Unmodifiable List<Hologram> getHolograms() {
         final var registry = FancyHolograms.get().getRegistry();
         return registry.getAll().stream()

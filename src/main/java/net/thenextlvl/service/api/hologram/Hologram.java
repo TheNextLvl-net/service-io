@@ -536,12 +536,4 @@ public interface Hologram extends Iterable<HologramLine> {
      * @since 3.0.0
      */
     boolean isTrackedBy(Player player);
-
-    /**
-     * Completely removes this hologram instance from both storage and cache.
-     * <p>
-     * This method permanently deletes the hologram, ensuring that
-     * it is no longer available for retrieval or interaction.
-     */
-    void remove();
 }

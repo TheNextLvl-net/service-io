@@ -38,6 +38,14 @@ public final class FancyHologramController implements HologramController {
     }
 
     @Override
+    public boolean deleteHologram(final Hologram hologram) {
+        if (hologram instanceof FancyHologram(final de.oliver.fancyholograms.api.hologram.Hologram fancy)) {
+            FancyHologramsPlugin.get().getHologramManager().removeHologram(fancy);
+            return true;
+        } else return false;
+    }
+
+    @Override
     public @Unmodifiable List<Hologram> getHolograms() {
         final var manager = FancyHologramsPlugin.get().getHologramManager();
         return manager.getHolograms().stream()

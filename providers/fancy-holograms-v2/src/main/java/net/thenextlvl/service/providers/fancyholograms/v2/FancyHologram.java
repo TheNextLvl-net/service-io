@@ -265,11 +265,6 @@ public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram holog
     }
 
     @Override
-    public void remove() {
-        FancyHologramsPlugin.get().getHologramManager().removeHologram(hologram());
-    }
-
-    @Override
     public String getName() {
         return hologram().getName();
     }

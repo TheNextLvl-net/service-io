@@ -29,6 +29,15 @@ public interface HologramController extends CapabilityProvider<HologramCapabilit
     Hologram createHologram(String name, Location location);
 
     /**
+     * Delete a hologram
+     *
+     * @param hologram the hologram to delete
+     * @return {@code true} if the hologram was deleted, {@code false} otherwise
+     * @since 3.0.0
+     */
+    boolean deleteHologram(Hologram hologram);
+
+    /**
      * Retrieves an unmodifiable list of all available holograms.
      *
      * @return an unmodifiable list containing all hologram instances

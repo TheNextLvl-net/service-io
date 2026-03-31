@@ -36,6 +36,14 @@ public final class DecentHologramController implements HologramController {
     }
 
     @Override
+    public boolean deleteHologram(final Hologram hologram) {
+        if (hologram instanceof DecentHologram(final eu.decentsoftware.holograms.api.holograms.Hologram decent)) {
+            decent.delete();
+            return true;
+        } else return false;
+    }
+
+    @Override
     public @Unmodifiable List<Hologram> getHolograms() {
         return eu.decentsoftware.holograms.api.holograms.Hologram.getCachedHolograms().stream()
                 .map(DecentHologram::new)
