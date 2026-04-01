@@ -2,19 +2,19 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 module net.thenextlvl.services {
-    exports net.thenextlvl.service.api.capability;
-    exports net.thenextlvl.service.api.character.event;
-    exports net.thenextlvl.service.api.character;
-    exports net.thenextlvl.service.api.chat;
-    exports net.thenextlvl.service.api.economy.bank;
-    exports net.thenextlvl.service.api.economy.currency;
-    exports net.thenextlvl.service.api.economy;
-    exports net.thenextlvl.service.api.group;
-    exports net.thenextlvl.service.api.hologram.line;
-    exports net.thenextlvl.service.api.hologram;
-    exports net.thenextlvl.service.api.model;
-    exports net.thenextlvl.service.api.permission;
-    exports net.thenextlvl.service.api;
+    exports net.thenextlvl.service.capability;
+    exports net.thenextlvl.service.character.event;
+    exports net.thenextlvl.service.character;
+    exports net.thenextlvl.service.chat;
+    exports net.thenextlvl.service.economy.bank;
+    exports net.thenextlvl.service.economy.currency;
+    exports net.thenextlvl.service.economy;
+    exports net.thenextlvl.service.group;
+    exports net.thenextlvl.service.hologram.line;
+    exports net.thenextlvl.service.hologram;
+    exports net.thenextlvl.service.model;
+    exports net.thenextlvl.service.permission;
+    exports net.thenextlvl.service;
 
     requires net.kyori.adventure.key;
     requires net.kyori.adventure;
