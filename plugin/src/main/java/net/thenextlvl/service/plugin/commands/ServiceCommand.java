@@ -15,6 +15,7 @@ public final class ServiceCommand extends BrigadierCommand {
         return command.create()
                 .then(ServiceInfoCommand.create(plugin))
                 .then(ServiceConvertCommand.create(plugin))
+                .then(ServiceTestCommand.create(plugin))
                 .build();
     }
 }

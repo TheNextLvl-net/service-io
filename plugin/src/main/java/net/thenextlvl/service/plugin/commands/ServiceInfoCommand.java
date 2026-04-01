@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
@@ -27,6 +28,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -64,42 +66,62 @@ final class ServiceInfoCommand extends SimpleCommand {
         return SINGLE_SUCCESS;
     }
 
-    private <C extends Controller, V> int info(final CommandContext<CommandSourceStack> context, final Class<C> type, @Nullable final Class<V> vault, @Nullable final Function<V, String> mapper, final String name, final String none) {
+    private <C extends Controller, V> int info(
+            final CommandContext<CommandSourceStack> context, final Class<C> type,
+            @Nullable final Class<V> vault, @Nullable final Function<V, String> mapper
+    ) {
         final var sender = context.getSource().getSender();
         final C service = plugin.getServer().getServicesManager().load(type);
         final var registrations = getRegistrations(type, service, vault, mapper);
-        if (sendServiceInfo(sender, name, service != null ? service.getName() : null, registrations))
+        if (sendServiceInfo(sender, type, service != null ? service.getName() : null, registrations))
             return SINGLE_SUCCESS;
-        plugin.bundle().sendMessage(sender, none);
+        plugin.bundle().sendMessage(sender, "service.missing",
+                Placeholder.component("service", translate(plugin, sender, type)));
         return 0;
     }
 
+    private static final Map<Class<? extends Controller>, String> translations = Map.ofEntries(
+            Map.entry(BankController.class, "service.name.bank"),
+            Map.entry(CharacterController.class, "service.name.character"),
+            Map.entry(ChatController.class, "service.name.chat"),
+            Map.entry(EconomyController.class, "service.name.economy"),
+            Map.entry(GroupController.class, "service.name.group"),
+            Map.entry(HologramController.class, "service.name.hologram"),
+            Map.entry(PermissionController.class, "service.name.permission")
+    );
+
+    static Component translate(final ServicePlugin plugin, final Audience audience, final Class<? extends Controller> type) {
+        final var translation = translations.get(type);
+        if (translation != null) return plugin.bundle().component(translation, audience);
+        throw new IllegalStateException("Unexpected controller: " + type);
+    }
+
     private int infoBanks(final CommandContext<CommandSourceStack> context) {
-        return info(context, BankController.class, null, null, "Bank", "service.bank.none");
+        return info(context, BankController.class, null, null);
     }
 
     private int infoCharacters(final CommandContext<CommandSourceStack> context) {
-        return info(context, CharacterController.class, null, null, "Character", "service.character.none");
+        return info(context, CharacterController.class, null, null);
     }
 
     private int infoChat(final CommandContext<CommandSourceStack> context) {
-        return info(context, ChatController.class, Chat.class, Chat::getName, "Chat", "service.chat.none");
+        return info(context, ChatController.class, Chat.class, Chat::getName);
     }
 
     private int infoEconomy(final CommandContext<CommandSourceStack> context) {
-        return info(context, EconomyController.class, Economy.class, Economy::getName, "Economy", "service.economy.none");
+        return info(context, EconomyController.class, Economy.class, Economy::getName);
     }
 
     private int infoGroups(final CommandContext<CommandSourceStack> context) {
-        return info(context, GroupController.class, null, null, "Group", "service.group.none");
+        return info(context, GroupController.class, null, null);
     }
 
     private int infoHolograms(final CommandContext<CommandSourceStack> context) {
-        return info(context, HologramController.class, null, null, "Hologram", "service.hologram.none");
+        return info(context, HologramController.class, null, null);
     }
 
     private int infoPermissions(final CommandContext<CommandSourceStack> context) {
-        return info(context, PermissionController.class, Permission.class, Permission::getName, "Permission", "service.permission.none");
+        return info(context, PermissionController.class, Permission.class, Permission::getName);
     }
 
     private final JoinConfiguration separator = JoinConfiguration.builder()
@@ -123,9 +145,12 @@ final class ServiceInfoCommand extends SimpleCommand {
                 .toList();
     }
 
-    private boolean sendServiceInfo(final CommandSender sender, final String type, @Nullable final String provider, final List<TextComponent> registrations) {
+    private boolean sendServiceInfo(
+            final CommandSender sender, final Class<? extends Controller> type,
+            @Nullable final String provider, final List<TextComponent> registrations
+    ) {
         if (provider != null) plugin.bundle().sendMessage(sender, "service.provider.name",
-                Placeholder.parsed("provider", provider), Placeholder.parsed("type", type));
+                Placeholder.parsed("provider", provider), Placeholder.component("type", translate(plugin, sender, type)));
         if (!registrations.isEmpty()) plugin.bundle().sendMessage(sender, "service.provider.registrations",
                 Placeholder.component("registered", Component.join(separator, registrations)));
         return provider != null || !registrations.isEmpty();
