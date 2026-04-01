@@ -7,7 +7,6 @@ import net.thenextlvl.service.hologram.Hologram;
 import net.thenextlvl.service.hologram.HologramCapability;
 import net.thenextlvl.service.hologram.HologramController;
 import net.thenextlvl.service.plugin.ServicePlugin;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.Nullable;
 
@@ -16,56 +15,60 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         super(plugin, source, controller);
     }
 
-    @Override
-    public void run() {
-        final var player = source.getSender() instanceof final Player p ? p : null;
-
-        testGetCapabilities();
-        testGetHolograms();
-
-        final var name = "service-io-test";
-        final var hologram = testCreateHologram(name);
-        if (hologram == null) return;
-
-        testGetHologram(name);
-        testGetHologramsByWorld(source.getLocation().getWorld());
-        if (player != null) testGetHologramsByPlayer(player);
-
-        testGetName(hologram);
-        testSetName(hologram);
-        testGetLocation(hologram);
-        testTeleport(hologram);
-
-        testIsPersistent(hologram);
-        testSetPersistent(hologram);
-
-        if (player != null) {
-            testVisibility(hologram, player);
-
-            if (controller.hasCapability(HologramCapability.TEXT_LINES)) {
-                testTextLine(hologram, player);
-            } else {
-                skip("addTextLine", "TEXT_LINES capability not available");
-            }
-        }
-
-        testLineManagement(hologram);
-
-        testDeleteHologram(hologram);
-        testGetHologramEmpty(name);
-    }
-
+    @Test(order = 1)
     private void testGetCapabilities() {
         final var capabilities = controller.getCapabilities();
         pass("getCapabilities", capabilities.toString());
     }
 
+    @Test(order = 2)
     private void testGetHolograms() {
         final var holograms = controller.getHolograms();
         pass("getHolograms", holograms.size() + " hologram(s)");
     }
 
-    private @Nullable Hologram testCreateHologram(final String name) {
+    @Test(order = 3)
+    private void testHologramLifecycle() {
+        final var name = "service-io-test";
+        final var hologram = createHologram(name);
+        if (hologram == null) return;
+
+        assertHologramFound(name);
+        assertHologramsByWorld(hologram);
+
+        assertGetName(hologram);
+        assertSetName(hologram);
+        assertGetLocation(hologram);
+        assertTeleport(hologram);
+
+        assertIsPersistent(hologram);
+        assertSetPersistent(hologram);
+
+        assertLineManagement(hologram);
+
+        assertDeleteHologram(hologram);
+        assertHologramNotFound(name);
+    }
+
+    @Test(order = 4)
+    private void testPlayerHolograms(final Player player) {
+        final var name = "service-io-test-player";
+        final var hologram = createHologram(name);
+        if (hologram == null) return;
+
+        assertHologramsByPlayer(player);
+        assertVisibility(hologram, player);
+
+        if (controller.hasCapability(HologramCapability.TEXT_LINES)) {
+            assertTextLine(hologram, player);
+        } else {
+            skip("addTextLine", "TEXT_LINES capability not available");
+        }
+
+        assertDeleteHologram(hologram);
+    }
+
+    private @Nullable Hologram createHologram(final String name) {
         try {
             final var hologram = controller.createHologram(name, source.getLocation());
             pass("createHologram", "created '" + hologram.getName() + "'");
@@ -76,27 +79,34 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         }
     }
 
-    private void testGetHologram(final String name) {
+    private void assertHologramFound(final String name) {
         final var hologram = controller.getHologram(name);
         if (hologram.isPresent()) pass("getHologram", "found '" + name + "'");
         else fail("getHologram", "hologram '" + name + "' not found after creation");
     }
 
-    private void testGetHologramsByWorld(final World world) {
+    private void assertHologramNotFound(final String name) {
+        final var hologram = controller.getHologram(name);
+        if (hologram.isEmpty()) pass("getHologram (after delete)", "hologram no longer found");
+        else fail("getHologram (after delete)", "hologram still found after deletion");
+    }
+
+    private void assertHologramsByWorld(final Hologram hologram) {
+        final var world = hologram.getWorld();
         final var holograms = controller.getHolograms(world);
         pass("getHolograms(world)", holograms.size() + " hologram(s) in " + world.getName());
     }
 
-    private void testGetHologramsByPlayer(final Player player) {
+    private void assertHologramsByPlayer(final Player player) {
         final var holograms = controller.getHolograms(player);
         pass("getHolograms(player)", holograms.size() + " hologram(s) for " + player.getName());
     }
 
-    private void testGetName(final Hologram hologram) {
+    private void assertGetName(final Hologram hologram) {
         pass("getName", hologram.getName());
     }
 
-    private void testSetName(final Hologram hologram) {
+    private void assertSetName(final Hologram hologram) {
         final var original = hologram.getName();
         final var renamed = hologram.setName("service-io-test-renamed");
         if (renamed) {
@@ -107,12 +117,12 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         }
     }
 
-    private void testGetLocation(final Hologram hologram) {
+    private void assertGetLocation(final Hologram hologram) {
         final var loc = hologram.getLocation();
         pass("getLocation", String.format("%.1f, %.1f, %.1f in %s", loc.getX(), loc.getY(), loc.getZ(), hologram.getWorld().getName()));
     }
 
-    private void testTeleport(final Hologram hologram) {
+    private void assertTeleport(final Hologram hologram) {
         final var target = source.getLocation().add(0, 2, 0);
         hologram.teleportAsync(target).thenAccept(success -> {
             if (success)
@@ -124,11 +134,11 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         });
     }
 
-    private void testIsPersistent(final Hologram hologram) {
+    private void assertIsPersistent(final Hologram hologram) {
         pass("isPersistent", String.valueOf(hologram.isPersistent()));
     }
 
-    private void testSetPersistent(final Hologram hologram) {
+    private void assertSetPersistent(final Hologram hologram) {
         final var original = hologram.isPersistent();
         final var changed = hologram.setPersistent(!original);
         if (changed) {
@@ -139,7 +149,7 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         }
     }
 
-    private void testVisibility(final Hologram hologram, final Player player) {
+    private void assertVisibility(final Hologram hologram, final Player player) {
         pass("isVisibleByDefault", String.valueOf(hologram.isVisibleByDefault()));
         pass("canSee", String.valueOf(hologram.canSee(player)));
         pass("isTrackedBy", String.valueOf(hologram.isTrackedBy(player)));
@@ -156,7 +166,7 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         pass("removeViewer", removed ? "removed" : "was not a viewer");
     }
 
-    private void testTextLine(final Hologram hologram, final Player player) {
+    private void assertTextLine(final Hologram hologram, final Player player) {
         try {
             final var line = hologram.addTextLine();
             pass("addTextLine", "added text line at index " + hologram.getLineIndex(line));
@@ -181,7 +191,7 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         }
     }
 
-    private void testLineManagement(final Hologram hologram) {
+    private void assertLineManagement(final Hologram hologram) {
         if (!controller.hasCapability(HologramCapability.TEXT_LINES)) {
             skip("line management", "TEXT_LINES capability not available");
             return;
@@ -217,15 +227,9 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         }
     }
 
-    private void testDeleteHologram(final Hologram hologram) {
+    private void assertDeleteHologram(final Hologram hologram) {
         final var deleted = controller.deleteHologram(hologram);
         if (deleted) pass("deleteHologram", "deleted '" + hologram.getName() + "'");
         else fail("deleteHologram", "failed to delete hologram");
-    }
-
-    private void testGetHologramEmpty(final String name) {
-        final var hologram = controller.getHologram(name);
-        if (hologram.isEmpty()) pass("getHologram (after delete)", "hologram no longer found");
-        else fail("getHologram (after delete)", "hologram still found after deletion");
     }
 }

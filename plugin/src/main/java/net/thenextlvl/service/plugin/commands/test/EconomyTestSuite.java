@@ -16,42 +16,62 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
         super(plugin, source, controller);
     }
 
-    @Override
-    public void run() {
-        final var currencies = controller.getCurrencyController();
-        final var currency = currencies.getDefaultCurrency();
+    @Test(order = 1)
+    private void testGetDefaultCurrency() {
+        final var currency = controller.getCurrencyController().getDefaultCurrency();
+        pass("getDefaultCurrency", currency.getName());
+    }
 
-        testGetDefaultCurrency(currency);
-        testGetCurrencies();
-        testFormatCurrency(currency);
+    @Test(order = 2)
+    private void testGetCurrencies() {
+        final var currencies = controller.getCurrencyController().getCurrencies();
+        pass("getCurrencies", currencies.size() + " currency/currencies");
+    }
 
-        if (!(source.getSender() instanceof final Player player)) return;
+    @Test(order = 3)
+    private void testFormatCurrency() {
+        final var currency = controller.getCurrencyController().getDefaultCurrency();
+        final var formatted = currency.format(1234.56, source.getSender());
+        source.getSender().sendMessage(Component.text(" ✓ ", NamedTextColor.GREEN)
+                .append(Component.text("format(1234.56) → ", NamedTextColor.GRAY))
+                .append(formatted));
+    }
+
+    @Test(order = 4)
+    private void testGetAccounts() {
+        final var accounts = controller.getAccounts();
+        pass("getAccounts", accounts.size() + " account(s) cached");
+    }
+
+    @Test(order = 5)
+    private void testAccountLifecycle(final Player player) {
+        final var currency = controller.getCurrencyController().getDefaultCurrency();
 
         controller.createAccount(player).thenAccept(account -> {
             pass("createAccount", "created account for " + player.getName());
 
-            testGetAccount(player);
-            testGetAccounts();
+            assertAccountCached(player);
+            assertGetAccounts();
 
-            testGetBalance(account.getBalance(currency), currency);
-            testCanHold(account.canHold(currency), currency);
+            assertBalance(account.getBalance(currency), currency);
+            assertCanHold(account.canHold(currency), currency);
 
-            testDeposit(account.deposit(100, currency), currency);
-            testGetBalance(account.getBalance(currency), currency);
+            assertTransaction("deposit(100)", account.deposit(100, currency), currency);
+            assertBalance(account.getBalance(currency), currency);
 
-            testWithdraw(account.withdraw(50, currency), currency);
-            testGetBalance(account.getBalance(currency), currency);
+            assertTransaction("withdraw(50)", account.withdraw(50, currency), currency);
+            assertBalance(account.getBalance(currency), currency);
 
-            testSetBalance(account.setBalance(1000, currency), currency);
-            testGetBalance(account.getBalance(currency), currency);
+            assertTransaction("setBalance(1000)", account.setBalance(1000, currency), currency);
+            assertBalance(account.getBalance(currency), currency);
 
-            testWithdrawInsufficientFunds(account.withdraw(5000, currency), currency);
+            assertInsufficientFunds(account.withdraw(5000, currency), currency);
 
             controller.deleteAccount(account).thenAccept(deleted -> {
-                if (deleted) pass("deleteAccount", "deleted account for " + source.getSender().getName());
+                if (deleted) pass("deleteAccount", "deleted account for " + player.getName());
                 else fail("deleteAccount", "failed to delete account");
 
-                testGetAccountEmpty(player);
+                assertAccountNotCached(player);
             }).exceptionally(throwable -> {
                 fail("deleteAccount", throwable.getMessage());
                 return null;
@@ -62,64 +82,38 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
         });
     }
 
-    private void testGetDefaultCurrency(final Currency currency) {
-        pass("getDefaultCurrency", currency.getName());
-    }
-
-    private void testGetCurrencies() {
-        final var currencies = controller.getCurrencyController().getCurrencies();
-        pass("getCurrencies", currencies.size() + " currency/currencies");
-    }
-
-    private void testFormatCurrency(final Currency currency) {
-        final var formatted = currency.format(1234.56, source.getSender());
-        source.getSender().sendMessage(Component.text(" ✓ ", NamedTextColor.GREEN)
-                .append(Component.text("format(1234.56) → ", NamedTextColor.GRAY))
-                .append(formatted));
-    }
-
-    private void testGetAccount(final Player player) {
+    private void assertAccountCached(final Player player) {
         final var account = controller.getAccount(player);
         if (account.isPresent()) pass("getAccount", "found cached account");
         else fail("getAccount", "account not cached after creation");
     }
 
-    private void testGetAccountEmpty(final Player player) {
+    private void assertAccountNotCached(final Player player) {
         final var account = controller.getAccount(player);
         if (account.isEmpty()) pass("getAccount (after delete)", "account no longer cached");
         else fail("getAccount (after delete)", "account still cached after deletion");
     }
 
-    private void testGetAccounts() {
+    private void assertGetAccounts() {
         final var accounts = controller.getAccounts();
         pass("getAccounts", accounts.size() + " account(s) cached");
     }
 
-    private void testGetBalance(final BigDecimal balance, final Currency currency) {
+    private void assertBalance(final BigDecimal balance, final Currency currency) {
         pass("getBalance", balance.toPlainString() + " " + currency.getName());
     }
 
-    private void testCanHold(final boolean canHold, final Currency currency) {
+    private void assertCanHold(final boolean canHold, final Currency currency) {
         if (canHold) pass("canHold", "account can hold " + currency.getName());
         else fail("canHold", "account cannot hold default currency");
     }
 
-    private void testDeposit(final TransactionResult result, final Currency currency) {
-        if (result.successful()) pass("deposit(100)", "balance: " + result.balance() + " " + currency.getName());
-        else fail("deposit(100)", "status: " + result.status());
+    private void assertTransaction(final String name, final TransactionResult result, final Currency currency) {
+        if (result.successful()) pass(name, "balance: " + result.balance() + " " + currency.getName());
+        else fail(name, "status: " + result.status());
     }
 
-    private void testWithdraw(final TransactionResult result, final Currency currency) {
-        if (result.successful()) pass("withdraw(50)", "balance: " + result.balance() + " " + currency.getName());
-        else fail("withdraw(50)", "status: " + result.status());
-    }
-
-    private void testSetBalance(final TransactionResult result, final Currency currency) {
-        if (result.successful()) pass("setBalance(1000)", "balance: " + result.balance() + " " + currency.getName());
-        else fail("setBalance(1000)", "status: " + result.status());
-    }
-
-    private void testWithdrawInsufficientFunds(final TransactionResult result, final Currency currency) {
+    private void assertInsufficientFunds(final TransactionResult result, final Currency currency) {
         if (result.status() == TransactionResult.Status.INSUFFICIENT_FUNDS)
             pass("withdraw(5000) insufficient", "correctly returned INSUFFICIENT_FUNDS");
         else if (result.successful())
