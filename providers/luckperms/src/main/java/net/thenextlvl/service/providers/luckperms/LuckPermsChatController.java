@@ -41,12 +41,17 @@ public final class LuckPermsChatController implements ChatController {
 
     @Override
     public Optional<ChatProfile> getProfile(final OfflinePlayer player) {
-        return getProfile(player.getUniqueId());
+        return Optional.ofNullable(luckPerms.getUserManager().getUser(player.getUniqueId())).map(user -> {
+            return new LuckPermsChatProfile(user, QueryOptions.defaultContextualOptions(), null);
+        });
     }
 
     @Override
     public Optional<ChatProfile> getProfile(final OfflinePlayer player, final World world) {
-        return getProfile(player.getUniqueId(), world);
+        return Optional.ofNullable(luckPerms.getUserManager().getUser(player.getUniqueId())).map(user -> {
+            final var options = QueryOptions.contextual(ImmutableContextSet.of("world", world.getName()));
+            return new LuckPermsChatProfile(user, options, world);
+        });
     }
 
     @Override
