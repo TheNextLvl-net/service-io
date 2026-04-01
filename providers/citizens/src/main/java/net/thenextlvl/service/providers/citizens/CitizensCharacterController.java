@@ -2,9 +2,9 @@ package net.thenextlvl.service.providers.citizens;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.thenextlvl.service.api.character.Character;
-import net.thenextlvl.service.api.character.CharacterCapability;
-import net.thenextlvl.service.api.character.CharacterController;
+import net.thenextlvl.service.character.Character;
+import net.thenextlvl.service.character.CharacterCapability;
+import net.thenextlvl.service.character.CharacterController;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;

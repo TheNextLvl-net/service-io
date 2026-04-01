@@ -1,8 +1,8 @@
 package net.thenextlvl.service.providers.groupmanager;
 
 import net.kyori.adventure.util.TriState;
-import net.thenextlvl.service.api.group.Group;
-import net.thenextlvl.service.api.group.GroupHolder;
+import net.thenextlvl.service.group.Group;
+import net.thenextlvl.service.group.GroupHolder;
 import org.anjocaido.groupmanager.data.User;
 import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
 import org.jetbrains.annotations.Unmodifiable;

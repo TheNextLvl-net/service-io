@@ -72,9 +72,9 @@ tasks.javadoc {
 
 paper {
     name = "ServiceIO"
-    main = "net.thenextlvl.service.ServicePlugin"
+    main = "net.thenextlvl.service.plugin.ServicePlugin"
     description = "A Vault replacement, providing services for various plugins"
-    bootstrapper = "net.thenextlvl.service.ServiceBootstrapper"
+    bootstrapper = "net.thenextlvl.service.plugin.ServiceBootstrapper"
     author = "NonSwag"
     apiVersion = "1.21"
     foliaSupported = true

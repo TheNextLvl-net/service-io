@@ -1,0 +1,11 @@
+package net.thenextlvl.service.plugin.commands.brigadier;
+
+import com.mojang.brigadier.Command;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.thenextlvl.service.plugin.ServicePlugin;
+
+public abstract class SimpleCommand extends BrigadierCommand implements Command<CommandSourceStack> {
+    protected SimpleCommand(final ServicePlugin plugin, final String name, final String permission) {
+        super(plugin, name, permission);
+    }
+}

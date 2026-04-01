@@ -1,8 +1,8 @@
 package net.thenextlvl.service.providers.groupmanager;
 
-import net.thenextlvl.service.api.group.Group;
-import net.thenextlvl.service.api.group.GroupController;
-import net.thenextlvl.service.api.group.GroupHolder;
+import net.thenextlvl.service.group.Group;
+import net.thenextlvl.service.group.GroupController;
+import net.thenextlvl.service.group.GroupHolder;
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
 import org.bukkit.OfflinePlayer;

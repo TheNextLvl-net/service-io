@@ -1,0 +1,77 @@
+package net.thenextlvl.service.plugin.placeholder.api;
+
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.Plugin;
+import org.jspecify.annotations.Nullable;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+public final class PlaceholderExpansionBuilder extends PlaceholderExpansion {
+    private final Set<PlaceholderStore<?>> stores = new HashSet<>();
+    private final String identifier;
+
+    private String author;
+    private String version;
+
+    public PlaceholderExpansionBuilder(final Plugin plugin, final String identifier) {
+        this.author = String.join(", ", plugin.getPluginMeta().getAuthors());
+        this.version = plugin.getPluginMeta().getVersion();
+        this.identifier = identifier;
+    }
+
+    public PlaceholderExpansionBuilder(final Plugin plugin) {
+        this(plugin, "serviceio");
+    }
+
+    public PlaceholderExpansionBuilder registerStore(final PlaceholderStore<?> store) {
+        if (store.isEnabled()) stores.add(store);
+        return this;
+    }
+
+    public PlaceholderExpansionBuilder setAuthors(final Collection<String> authors) {
+        this.author = String.join(", ", authors);
+        return this;
+    }
+
+    public PlaceholderExpansionBuilder setVersion(final String version) {
+        this.version = version;
+        return this;
+    }
+
+    @Override
+    public boolean canRegister() {
+        return !stores.isEmpty() && super.canRegister();
+    }
+
+    @Override
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    @Override
+    public String getAuthor() {
+        return author;
+    }
+
+    @Override
+    public String getVersion() {
+        return version;
+    }
+
+    @Override
+    public boolean persist() {
+        return true;
+    }
+
+    @Override
+    public @Nullable String onRequest(@Nullable final OfflinePlayer player, final String params) {
+        return player == null ? null : stores.stream()
+                                       .map(store -> store.resolve(player, params))
+                                       .filter(Objects::nonNull)
+                                       .findAny().orElse(null);
+    }
+}

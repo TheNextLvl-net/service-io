@@ -1,7 +1,7 @@
 package net.thenextlvl.service.providers.decentholograms;
 
-import net.thenextlvl.service.api.hologram.Hologram;
-import net.thenextlvl.service.api.hologram.line.StaticHologramLine;
+import net.thenextlvl.service.hologram.Hologram;
+import net.thenextlvl.service.hologram.line.StaticHologramLine;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;

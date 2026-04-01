@@ -8,7 +8,7 @@ import net.luckperms.api.node.types.MetaNode;
 import net.luckperms.api.node.types.PrefixNode;
 import net.luckperms.api.node.types.SuffixNode;
 import net.luckperms.api.query.QueryOptions;
-import net.thenextlvl.service.api.chat.ChatProfile;
+import net.thenextlvl.service.chat.ChatProfile;
 import org.bukkit.World;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;

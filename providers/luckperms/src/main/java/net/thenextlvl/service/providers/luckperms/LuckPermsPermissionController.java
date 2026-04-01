@@ -4,16 +4,15 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.context.ImmutableContextSet;
 import net.luckperms.api.query.QueryOptions;
-import net.thenextlvl.service.api.DoNotWrap;
-import net.thenextlvl.service.api.permission.PermissionController;
-import net.thenextlvl.service.api.permission.PermissionHolder;
+import net.thenextlvl.service.DoNotWrap;
+import net.thenextlvl.service.permission.PermissionController;
+import net.thenextlvl.service.permission.PermissionHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @DoNotWrap

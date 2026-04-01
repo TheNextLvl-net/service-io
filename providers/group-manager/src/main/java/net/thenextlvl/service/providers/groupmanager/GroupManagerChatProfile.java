@@ -1,6 +1,6 @@
 package net.thenextlvl.service.providers.groupmanager;
 
-import net.thenextlvl.service.api.chat.ChatProfile;
+import net.thenextlvl.service.chat.ChatProfile;
 import org.anjocaido.groupmanager.data.Group;
 import org.anjocaido.groupmanager.data.User;
 import org.anjocaido.groupmanager.dataholder.WorldDataHolder;

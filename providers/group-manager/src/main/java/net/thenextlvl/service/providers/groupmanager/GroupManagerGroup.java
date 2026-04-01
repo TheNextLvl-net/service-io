@@ -1,7 +1,7 @@
 package net.thenextlvl.service.providers.groupmanager;
 
 import net.kyori.adventure.util.TriState;
-import net.thenextlvl.service.api.group.Group;
+import net.thenextlvl.service.group.Group;
 import org.anjocaido.groupmanager.GroupManager;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;

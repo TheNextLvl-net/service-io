@@ -1,8 +1,8 @@
 package net.thenextlvl.service.providers.groupmanager;
 
-import net.thenextlvl.service.api.DoNotWrap;
-import net.thenextlvl.service.api.permission.PermissionController;
-import net.thenextlvl.service.api.permission.PermissionHolder;
+import net.thenextlvl.service.DoNotWrap;
+import net.thenextlvl.service.permission.PermissionController;
+import net.thenextlvl.service.permission.PermissionHolder;
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
 import org.bukkit.OfflinePlayer;

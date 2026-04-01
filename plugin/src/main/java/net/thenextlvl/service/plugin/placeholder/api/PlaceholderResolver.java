@@ -1,0 +1,27 @@
+package net.thenextlvl.service.plugin.placeholder.api;
+
+import com.google.common.base.Preconditions;
+import org.bukkit.OfflinePlayer;
+import org.jspecify.annotations.Nullable;
+
+import java.util.regex.Matcher;
+
+public interface PlaceholderResolver<T> {
+    @Nullable
+    String resolve(T provider, OfflinePlayer player, Matcher matcher) throws RuntimeException;
+
+    @SafeVarargs
+    static <T> PlaceholderResolver<T> throwing(final PlaceholderResolver<T> resolver, final Class<? extends RuntimeException>... ignored) {
+        Preconditions.checkArgument(ignored.length > 0, "At least one exception class must be provided");
+        return (provider, player, matcher) -> {
+            try {
+                return resolver.resolve(provider, player, matcher);
+            } catch (final RuntimeException exception) {
+                for (final var clazz : ignored) {
+                    if (clazz.isInstance(exception)) return null;
+                }
+                throw exception;
+            }
+        };
+    }
+}

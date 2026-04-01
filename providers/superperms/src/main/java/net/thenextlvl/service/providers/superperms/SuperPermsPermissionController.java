@@ -1,8 +1,8 @@
 package net.thenextlvl.service.providers.superperms;
 
-import net.thenextlvl.service.api.DoNotWrap;
-import net.thenextlvl.service.api.permission.PermissionController;
-import net.thenextlvl.service.api.permission.PermissionHolder;
+import net.thenextlvl.service.DoNotWrap;
+import net.thenextlvl.service.permission.PermissionController;
+import net.thenextlvl.service.permission.PermissionHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -11,7 +11,6 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @DoNotWrap

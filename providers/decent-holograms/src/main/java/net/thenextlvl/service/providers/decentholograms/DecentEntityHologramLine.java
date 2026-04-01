@@ -2,9 +2,9 @@ package net.thenextlvl.service.providers.decentholograms;
 
 import eu.decentsoftware.holograms.api.holograms.HologramLine;
 import net.kyori.adventure.text.format.TextColor;
-import net.thenextlvl.service.api.hologram.LineType;
-import net.thenextlvl.service.api.hologram.line.EntityHologramLine;
-import net.thenextlvl.service.api.hologram.line.PagedHologramLine;
+import net.thenextlvl.service.hologram.LineType;
+import net.thenextlvl.service.hologram.line.EntityHologramLine;
+import net.thenextlvl.service.hologram.line.PagedHologramLine;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.EntityType;
 import org.joml.Vector3f;

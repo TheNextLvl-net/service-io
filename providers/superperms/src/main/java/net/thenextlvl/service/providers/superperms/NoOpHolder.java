@@ -1,7 +1,7 @@
 package net.thenextlvl.service.providers.superperms;
 
 import net.kyori.adventure.util.TriState;
-import net.thenextlvl.service.api.permission.PermissionHolder;
+import net.thenextlvl.service.permission.PermissionHolder;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;

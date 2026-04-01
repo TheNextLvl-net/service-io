@@ -1,16 +1,16 @@
 package net.thenextlvl.service.providers.decentholograms;
 
 import eu.decentsoftware.holograms.api.holograms.HologramPage;
-import net.thenextlvl.service.api.capability.CapabilityException;
-import net.thenextlvl.service.api.hologram.Hologram;
-import net.thenextlvl.service.api.hologram.LineType;
-import net.thenextlvl.service.api.hologram.line.BlockHologramLine;
-import net.thenextlvl.service.api.hologram.line.EntityHologramLine;
-import net.thenextlvl.service.api.hologram.line.HologramLine;
-import net.thenextlvl.service.api.hologram.line.ItemHologramLine;
-import net.thenextlvl.service.api.hologram.line.PagedHologramLine;
-import net.thenextlvl.service.api.hologram.line.StaticHologramLine;
-import net.thenextlvl.service.api.hologram.line.TextHologramLine;
+import net.thenextlvl.service.capability.CapabilityException;
+import net.thenextlvl.service.hologram.Hologram;
+import net.thenextlvl.service.hologram.LineType;
+import net.thenextlvl.service.hologram.line.BlockHologramLine;
+import net.thenextlvl.service.hologram.line.EntityHologramLine;
+import net.thenextlvl.service.hologram.line.HologramLine;
+import net.thenextlvl.service.hologram.line.ItemHologramLine;
+import net.thenextlvl.service.hologram.line.PagedHologramLine;
+import net.thenextlvl.service.hologram.line.StaticHologramLine;
+import net.thenextlvl.service.hologram.line.TextHologramLine;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;

@@ -1,8 +1,8 @@
 package net.thenextlvl.service.providers.groupmanager;
 
-import net.thenextlvl.service.api.DoNotWrap;
-import net.thenextlvl.service.api.chat.ChatController;
-import net.thenextlvl.service.api.chat.ChatProfile;
+import net.thenextlvl.service.DoNotWrap;
+import net.thenextlvl.service.chat.ChatController;
+import net.thenextlvl.service.chat.ChatProfile;
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
 import org.bukkit.OfflinePlayer;

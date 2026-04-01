@@ -1,7 +1,7 @@
 package net.thenextlvl.service.providers.superperms;
 
 import net.milkbowl.vault.permission.Permission;
-import net.thenextlvl.service.api.DoNotWrap;
+import net.thenextlvl.service.DoNotWrap;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.Nullable;

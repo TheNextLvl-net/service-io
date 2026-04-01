@@ -2,10 +2,10 @@ package net.thenextlvl.service.providers.fancyholograms.v3;
 
 import com.fancyinnovations.fancyholograms.api.data.DisplayHologramData;
 import net.kyori.adventure.text.format.TextColor;
-import net.thenextlvl.service.api.hologram.Hologram;
-import net.thenextlvl.service.api.hologram.LineType;
-import net.thenextlvl.service.api.hologram.line.PagedHologramLine;
-import net.thenextlvl.service.api.hologram.line.StaticHologramLine;
+import net.thenextlvl.service.hologram.Hologram;
+import net.thenextlvl.service.hologram.LineType;
+import net.thenextlvl.service.hologram.line.PagedHologramLine;
+import net.thenextlvl.service.hologram.line.StaticHologramLine;
 import org.bukkit.World;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Player;

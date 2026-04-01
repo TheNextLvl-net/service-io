@@ -1,8 +1,8 @@
 package net.thenextlvl.service.providers.fancyholograms.v3;
 
 import com.fancyinnovations.fancyholograms.api.data.BlockHologramData;
-import net.thenextlvl.service.api.hologram.LineType;
-import net.thenextlvl.service.api.hologram.line.BlockHologramLine;
+import net.thenextlvl.service.hologram.LineType;
+import net.thenextlvl.service.hologram.line.BlockHologramLine;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Entity;

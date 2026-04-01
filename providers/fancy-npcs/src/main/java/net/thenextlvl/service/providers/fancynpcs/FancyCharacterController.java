@@ -2,9 +2,9 @@ package net.thenextlvl.service.providers.fancynpcs;
 
 import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.NpcData;
-import net.thenextlvl.service.api.character.Character;
-import net.thenextlvl.service.api.character.CharacterCapability;
-import net.thenextlvl.service.api.character.CharacterController;
+import net.thenextlvl.service.character.Character;
+import net.thenextlvl.service.character.CharacterCapability;
+import net.thenextlvl.service.character.CharacterController;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;

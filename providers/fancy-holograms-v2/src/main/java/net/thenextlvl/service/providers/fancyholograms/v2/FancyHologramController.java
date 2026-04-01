@@ -1,9 +1,9 @@
 package net.thenextlvl.service.providers.fancyholograms.v2;
 
 import de.oliver.fancyholograms.api.FancyHologramsPlugin;
-import net.thenextlvl.service.api.hologram.Hologram;
-import net.thenextlvl.service.api.hologram.HologramCapability;
-import net.thenextlvl.service.api.hologram.HologramController;
+import net.thenextlvl.service.hologram.Hologram;
+import net.thenextlvl.service.hologram.HologramCapability;
+import net.thenextlvl.service.hologram.HologramController;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;

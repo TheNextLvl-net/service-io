@@ -1,7 +1,7 @@
 package net.thenextlvl.service.providers.groupmanager;
 
 import net.milkbowl.vault.permission.Permission;
-import net.thenextlvl.service.api.DoNotWrap;
+import net.thenextlvl.service.DoNotWrap;
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.data.Group;
 import org.anjocaido.groupmanager.data.User;
