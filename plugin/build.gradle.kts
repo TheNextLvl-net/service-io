@@ -53,6 +53,23 @@ tasks.test {
     useJUnitPlatform()
 }
 
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.addAll(listOf("--add-reads", "net.thenextlvl.services.plugin=ALL-UNNAMED"))
+}
+
+tasks.withType<Test>().configureEach {
+    jvmArgs("--add-reads", "net.thenextlvl.services.plugin=ALL-UNNAMED")
+}
+
+tasks.withType<JavaExec>().configureEach {
+    jvmArgs("--add-reads", "net.thenextlvl.services.plugin=ALL-UNNAMED")
+}
+
+tasks.javadoc {
+    val options = options as StandardJavadocDocletOptions
+    options.addStringOption("-add-reads", "net.thenextlvl.services.plugin=ALL-UNNAMED")
+}
+
 paper {
     name = "ServiceIO"
     main = "net.thenextlvl.service.ServicePlugin"
