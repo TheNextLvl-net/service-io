@@ -1,231 +1,231 @@
 package net.thenextlvl.service.plugin.commands.test;
 
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.thenextlvl.service.hologram.Hologram;
 import net.thenextlvl.service.hologram.HologramCapability;
 import net.thenextlvl.service.hologram.HologramController;
-import org.bukkit.command.CommandSender;
+import net.thenextlvl.service.plugin.ServicePlugin;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.Nullable;
 
-public final class HologramTestSuite implements TestSuite<HologramController> {
-    @Override
-    public Class<HologramController> controllerType() {
-        return HologramController.class;
+public final class HologramTestSuite extends TestSuite<HologramController> {
+    public HologramTestSuite(final ServicePlugin plugin, final CommandSourceStack source, final HologramController controller) {
+        super(plugin, source, controller);
     }
 
     @Override
-    public void run(final CommandSender sender, final HologramController controller) {
-        if (!(sender instanceof final Player player)) {
-            sender.sendMessage(Component.text("This test must be run by a player", NamedTextColor.RED));
-            return;
-        }
+    public void run() {
+        final var player = source.getSender() instanceof final Player p ? p : null;
 
-        testGetCapabilities(sender, controller);
-        testGetHolograms(sender, controller);
+        testGetCapabilities();
+        testGetHolograms();
 
         final var name = "service-io-test";
-        final var hologram = testCreateHologram(sender, controller, name, player);
+        final var hologram = testCreateHologram(name);
         if (hologram == null) return;
 
-        testGetHologram(sender, controller, name);
-        testGetHologramsByWorld(sender, controller, player);
-        testGetHologramsByPlayer(sender, controller, player);
+        testGetHologram(name);
+        testGetHologramsByWorld(source.getLocation().getWorld());
+        if (player != null) testGetHologramsByPlayer(player);
 
-        testGetName(sender, hologram);
-        testSetName(sender, hologram);
-        testGetLocation(sender, hologram);
-        testTeleport(sender, hologram, player);
+        testGetName(hologram);
+        testSetName(hologram);
+        testGetLocation(hologram);
+        testTeleport(hologram);
 
-        testIsPersistent(sender, hologram);
-        testSetPersistent(sender, hologram);
+        testIsPersistent(hologram);
+        testSetPersistent(hologram);
 
-        testVisibility(sender, hologram, player);
+        if (player != null) {
+            testVisibility(hologram, player);
 
-        if (controller.hasCapability(HologramCapability.TEXT_LINES)) {
-            testTextLine(sender, hologram, player);
-        } else {
-            skip(sender, "addTextLine", "TEXT_LINES capability not available");
+            if (controller.hasCapability(HologramCapability.TEXT_LINES)) {
+                testTextLine(hologram, player);
+            } else {
+                skip("addTextLine", "TEXT_LINES capability not available");
+            }
         }
 
-        testLineManagement(sender, hologram, controller);
+        testLineManagement(hologram);
 
-        testDeleteHologram(sender, controller, hologram);
-        testGetHologramEmpty(sender, controller, name);
+        testDeleteHologram(hologram);
+        testGetHologramEmpty(name);
     }
 
-    private void testGetCapabilities(final CommandSender sender, final HologramController controller) {
+    private void testGetCapabilities() {
         final var capabilities = controller.getCapabilities();
-        pass(sender, "getCapabilities", capabilities.toString());
+        pass("getCapabilities", capabilities.toString());
     }
 
-    private void testGetHolograms(final CommandSender sender, final HologramController controller) {
+    private void testGetHolograms() {
         final var holograms = controller.getHolograms();
-        pass(sender, "getHolograms", holograms.size() + " hologram(s)");
+        pass("getHolograms", holograms.size() + " hologram(s)");
     }
 
-    private @Nullable Hologram testCreateHologram(final CommandSender sender, final HologramController controller, final String name, final Player player) {
+    private @Nullable Hologram testCreateHologram(final String name) {
         try {
-            final var hologram = controller.createHologram(name, player.getLocation());
-            pass(sender, "createHologram", "created '" + hologram.getName() + "'");
+            final var hologram = controller.createHologram(name, source.getLocation());
+            pass("createHologram", "created '" + hologram.getName() + "'");
             return hologram;
         } catch (final Exception e) {
-            fail(sender, "createHologram", e.getMessage());
+            fail("createHologram", e.getMessage());
             return null;
         }
     }
 
-    private void testGetHologram(final CommandSender sender, final HologramController controller, final String name) {
+    private void testGetHologram(final String name) {
         final var hologram = controller.getHologram(name);
-        if (hologram.isPresent()) pass(sender, "getHologram", "found '" + name + "'");
-        else fail(sender, "getHologram", "hologram '" + name + "' not found after creation");
+        if (hologram.isPresent()) pass("getHologram", "found '" + name + "'");
+        else fail("getHologram", "hologram '" + name + "' not found after creation");
     }
 
-    private void testGetHologramsByWorld(final CommandSender sender, final HologramController controller, final Player player) {
-        final var holograms = controller.getHolograms(player.getWorld());
-        pass(sender, "getHolograms(world)", holograms.size() + " hologram(s) in " + player.getWorld().getName());
+    private void testGetHologramsByWorld(final World world) {
+        final var holograms = controller.getHolograms(world);
+        pass("getHolograms(world)", holograms.size() + " hologram(s) in " + world.getName());
     }
 
-    private void testGetHologramsByPlayer(final CommandSender sender, final HologramController controller, final Player player) {
+    private void testGetHologramsByPlayer(final Player player) {
         final var holograms = controller.getHolograms(player);
-        pass(sender, "getHolograms(player)", holograms.size() + " hologram(s) for " + player.getName());
+        pass("getHolograms(player)", holograms.size() + " hologram(s) for " + player.getName());
     }
 
-    private void testGetName(final CommandSender sender, final Hologram hologram) {
-        pass(sender, "getName", hologram.getName());
+    private void testGetName(final Hologram hologram) {
+        pass("getName", hologram.getName());
     }
 
-    private void testSetName(final CommandSender sender, final Hologram hologram) {
+    private void testSetName(final Hologram hologram) {
         final var original = hologram.getName();
         final var renamed = hologram.setName("service-io-test-renamed");
         if (renamed) {
-            pass(sender, "setName", "renamed to '" + hologram.getName() + "'");
+            pass("setName", "renamed to '" + hologram.getName() + "'");
             hologram.setName(original);
         } else {
-            fail(sender, "setName", "failed to rename hologram");
+            fail("setName", "failed to rename hologram");
         }
     }
 
-    private void testGetLocation(final CommandSender sender, final Hologram hologram) {
+    private void testGetLocation(final Hologram hologram) {
         final var loc = hologram.getLocation();
-        pass(sender, "getLocation", String.format("%.1f, %.1f, %.1f in %s", loc.getX(), loc.getY(), loc.getZ(), hologram.getWorld().getName()));
+        pass("getLocation", String.format("%.1f, %.1f, %.1f in %s", loc.getX(), loc.getY(), loc.getZ(), hologram.getWorld().getName()));
     }
 
-    private void testTeleport(final CommandSender sender, final Hologram hologram, final Player player) {
-        final var target = player.getLocation().add(0, 2, 0);
+    private void testTeleport(final Hologram hologram) {
+        final var target = source.getLocation().add(0, 2, 0);
         hologram.teleportAsync(target).thenAccept(success -> {
             if (success)
-                pass(sender, "teleportAsync", String.format("moved to %.1f, %.1f, %.1f", target.getX(), target.getY(), target.getZ()));
-            else fail(sender, "teleportAsync", "teleport returned false");
+                pass("teleportAsync", String.format("moved to %.1f, %.1f, %.1f", target.getX(), target.getY(), target.getZ()));
+            else fail("teleportAsync", "teleport returned false");
         }).exceptionally(throwable -> {
-            fail(sender, "teleportAsync", throwable.getMessage());
+            fail("teleportAsync", throwable.getMessage());
             return null;
         });
     }
 
-    private void testIsPersistent(final CommandSender sender, final Hologram hologram) {
-        pass(sender, "isPersistent", String.valueOf(hologram.isPersistent()));
+    private void testIsPersistent(final Hologram hologram) {
+        pass("isPersistent", String.valueOf(hologram.isPersistent()));
     }
 
-    private void testSetPersistent(final CommandSender sender, final Hologram hologram) {
+    private void testSetPersistent(final Hologram hologram) {
         final var original = hologram.isPersistent();
         final var changed = hologram.setPersistent(!original);
         if (changed) {
-            pass(sender, "setPersistent", "changed to " + hologram.isPersistent());
+            pass("setPersistent", "changed to " + hologram.isPersistent());
             hologram.setPersistent(original);
         } else {
-            pass(sender, "setPersistent", "already " + original + " (no change)");
+            pass("setPersistent", "already " + original + " (no change)");
         }
     }
 
-    private void testVisibility(final CommandSender sender, final Hologram hologram, final Player player) {
-        pass(sender, "isVisibleByDefault", String.valueOf(hologram.isVisibleByDefault()));
-        pass(sender, "canSee", String.valueOf(hologram.canSee(player)));
-        pass(sender, "isTrackedBy", String.valueOf(hologram.isTrackedBy(player)));
+    private void testVisibility(final Hologram hologram, final Player player) {
+        pass("isVisibleByDefault", String.valueOf(hologram.isVisibleByDefault()));
+        pass("canSee", String.valueOf(hologram.canSee(player)));
+        pass("isTrackedBy", String.valueOf(hologram.isTrackedBy(player)));
 
         final var added = hologram.addViewer(player.getUniqueId());
-        pass(sender, "addViewer", added ? "added" : "already a viewer");
+        pass("addViewer", added ? "added" : "already a viewer");
 
-        if (hologram.isViewer(player.getUniqueId())) pass(sender, "isViewer", "true");
-        else fail(sender, "isViewer", "false after addViewer");
+        if (hologram.isViewer(player.getUniqueId())) pass("isViewer", "true");
+        else fail("isViewer", "false after addViewer");
 
-        pass(sender, "getViewers", hologram.getViewers().size() + " viewer(s)");
+        pass("getViewers", hologram.getViewers().size() + " viewer(s)");
 
         final var removed = hologram.removeViewer(player.getUniqueId());
-        pass(sender, "removeViewer", removed ? "removed" : "was not a viewer");
+        pass("removeViewer", removed ? "removed" : "was not a viewer");
     }
 
-    private void testTextLine(final CommandSender sender, final Hologram hologram, final Player player) {
+    private void testTextLine(final Hologram hologram, final Player player) {
         try {
             final var line = hologram.addTextLine();
-            pass(sender, "addTextLine", "added text line at index " + hologram.getLineIndex(line));
+            pass("addTextLine", "added text line at index " + hologram.getLineIndex(line));
 
             final var text = Component.text("Hello from ServiceIO test!", NamedTextColor.GOLD);
             final var changed = line.setText(text);
-            if (changed) pass(sender, "setText", "set text content");
-            else fail(sender, "setText", "text was not changed");
+            if (changed) pass("setText", "set text content");
+            else fail("setText", "text was not changed");
 
             final var retrieved = line.getText(player);
-            if (retrieved.isPresent()) pass(sender, "getText", "text content present");
-            else fail(sender, "getText", "text content empty after setText");
+            if (retrieved.isPresent()) pass("getText", "text content present");
+            else fail("getText", "text content empty after setText");
 
-            pass(sender, "getLineWidth", String.valueOf(line.getLineWidth()));
-            pass(sender, "getAlignment", String.valueOf(line.getAlignment()));
-            pass(sender, "isShadowed", String.valueOf(line.isShadowed()));
-            pass(sender, "isSeeThrough", String.valueOf(line.isSeeThrough()));
+            pass("getLineWidth", String.valueOf(line.getLineWidth()));
+            pass("getAlignment", String.valueOf(line.getAlignment()));
+            pass("isShadowed", String.valueOf(line.isShadowed()));
+            pass("isSeeThrough", String.valueOf(line.isSeeThrough()));
 
-            pass(sender, "getLineCount", String.valueOf(hologram.getLineCount()));
+            pass("getLineCount", String.valueOf(hologram.getLineCount()));
         } catch (final Exception e) {
-            fail(sender, "textLine tests", e.getMessage());
+            fail("textLine tests", e.getMessage());
         }
     }
 
-    private void testLineManagement(final CommandSender sender, final Hologram hologram, final HologramController controller) {
+    private void testLineManagement(final Hologram hologram) {
         if (!controller.hasCapability(HologramCapability.TEXT_LINES)) {
-            skip(sender, "line management", "TEXT_LINES capability not available");
+            skip("line management", "TEXT_LINES capability not available");
             return;
         }
 
         try {
             hologram.addTextLine();
             hologram.addTextLine();
-            pass(sender, "getLineCount (after adding)", String.valueOf(hologram.getLineCount()));
+            pass("getLineCount (after adding)", String.valueOf(hologram.getLineCount()));
 
             if (hologram.getLineCount() >= 2) {
                 final var swapped = hologram.swapLines(0, 1);
-                pass(sender, "swapLines(0, 1)", swapped ? "swapped" : "not swapped");
+                pass("swapLines(0, 1)", swapped ? "swapped" : "not swapped");
 
                 final var moved = hologram.moveLine(1, 0);
-                pass(sender, "moveLine(1, 0)", moved ? "moved" : "not moved");
+                pass("moveLine(1, 0)", moved ? "moved" : "not moved");
             }
 
             final var line = hologram.getLine(0);
             if (line.isPresent()) {
-                pass(sender, "getLine(0)", "type: " + line.get().getType());
-                pass(sender, "hasLine", String.valueOf(hologram.hasLine(line.get())));
+                pass("getLine(0)", "type: " + line.get().getType());
+                pass("hasLine", String.valueOf(hologram.hasLine(line.get())));
                 final var removed = hologram.removeLine(line.get());
-                pass(sender, "removeLine", removed ? "removed line 0" : "failed to remove");
+                pass("removeLine", removed ? "removed line 0" : "failed to remove");
             } else {
-                fail(sender, "getLine(0)", "no line at index 0");
+                fail("getLine(0)", "no line at index 0");
             }
 
             final var cleared = hologram.clearLines();
-            pass(sender, "clearLines", cleared ? "cleared all lines" : "no lines to clear");
+            pass("clearLines", cleared ? "cleared all lines" : "no lines to clear");
         } catch (final Exception e) {
-            fail(sender, "line management", e.getMessage());
+            fail("line management", e.getMessage());
         }
     }
 
-    private void testDeleteHologram(final CommandSender sender, final HologramController controller, final Hologram hologram) {
+    private void testDeleteHologram(final Hologram hologram) {
         final var deleted = controller.deleteHologram(hologram);
-        if (deleted) pass(sender, "deleteHologram", "deleted '" + hologram.getName() + "'");
-        else fail(sender, "deleteHologram", "failed to delete hologram");
+        if (deleted) pass("deleteHologram", "deleted '" + hologram.getName() + "'");
+        else fail("deleteHologram", "failed to delete hologram");
     }
 
-    private void testGetHologramEmpty(final CommandSender sender, final HologramController controller, final String name) {
+    private void testGetHologramEmpty(final String name) {
         final var hologram = controller.getHologram(name);
-        if (hologram.isEmpty()) pass(sender, "getHologram (after delete)", "hologram no longer found");
-        else fail(sender, "getHologram (after delete)", "hologram still found after deletion");
+        if (hologram.isEmpty()) pass("getHologram (after delete)", "hologram no longer found");
+        else fail("getHologram (after delete)", "hologram still found after deletion");
     }
 }
