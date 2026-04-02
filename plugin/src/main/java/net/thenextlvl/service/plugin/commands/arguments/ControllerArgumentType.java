@@ -30,7 +30,7 @@ public final class ControllerArgumentType<C extends Controller> implements Custo
                 .getRegistrations(type).stream()
                 .map(RegisteredServiceProvider::getProvider)
                 .filter(controller -> controller.getName().equals(nativeType))
-                .findAny().orElseThrow();
+                .findAny().orElseThrow(() -> new IllegalArgumentException("Controller not found: " + nativeType));
     }
 
     @Override
