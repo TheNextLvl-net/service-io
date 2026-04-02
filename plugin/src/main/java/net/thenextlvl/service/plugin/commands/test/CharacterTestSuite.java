@@ -14,19 +14,23 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         super(plugin, source, controller);
     }
 
-    @Test(order = 1)
+    @Override
+    protected void setup() {
+        test("getCapabilities", this::testGetCapabilities);
+        test("getNPCs", this::testGetNPCs);
+        playerTest("characterLifecycle", this::testCharacterLifecycle);
+    }
+
     private void testGetCapabilities() {
         final var capabilities = controller.getCapabilities();
         pass("getCapabilities", capabilities.toString());
     }
 
-    @Test(order = 2)
     private void testGetNPCs() {
         final var npcs = controller.getNPCs();
         pass("getNPCs", npcs.size() + " NPC(s)");
     }
 
-    @Test(order = 3)
     private void testCharacterLifecycle(final Player player) {
         final var name = "service-io-test";
         final var npc = controller.spawnNPC(name, player.getLocation());

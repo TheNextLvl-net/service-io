@@ -12,7 +12,13 @@ public final class PermissionTestSuite extends TestSuite<PermissionController> {
         super(plugin, source, controller);
     }
 
-    @Test(order = 1)
+    @Override
+    protected void setup() {
+        playerTest("loadPermissionHolder", this::testLoadPermissionHolder);
+        playerTest("getPermissionHolder", this::testGetPermissionHolder);
+        playerTest("resolvePermissionHolder", this::testResolvePermissionHolder);
+    }
+
     private void testLoadPermissionHolder(final Player player) {
         controller.loadPermissionHolder(player).thenAccept(holder -> {
             pass("loadPermissionHolder", "loaded permission holder for " + player.getName());
@@ -30,14 +36,12 @@ public final class PermissionTestSuite extends TestSuite<PermissionController> {
         });
     }
 
-    @Test(order = 2)
     private void testGetPermissionHolder(final Player player) {
         final var holder = controller.getPermissionHolder(player);
         if (holder.isPresent()) pass("getPermissionHolder", "found cached permission holder");
         else fail("getPermissionHolder", "permission holder not cached after load");
     }
 
-    @Test(order = 3)
     private void testResolvePermissionHolder(final Player player) {
         controller.resolvePermissionHolder(player).thenAccept(holder ->
                 pass("resolvePermissionHolder", "resolved permission holder for " + player.getName())

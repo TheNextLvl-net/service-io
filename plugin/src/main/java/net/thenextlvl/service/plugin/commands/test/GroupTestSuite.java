@@ -11,13 +11,18 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
         super(plugin, source, controller);
     }
 
-    @Test(order = 1)
+    @Override
+    protected void setup() {
+        test("getGroups", this::testGetGroups);
+        test("groupLifecycle", this::testGroupLifecycle);
+        playerTest("groupHolder", this::testGroupHolder);
+    }
+
     private void testGetGroups() {
         final var groups = controller.getGroups();
         pass("getGroups", groups.size() + " group(s) cached");
     }
 
-    @Test(order = 2)
     private void testGroupLifecycle() {
         final var name = "service-io-test";
 
@@ -45,7 +50,6 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
         });
     }
 
-    @Test(order = 3)
     private void testGroupHolder(final Player player) {
         controller.loadGroupHolder(player).thenAccept(holder -> {
             pass("loadGroupHolder", "loaded group holder for " + player.getName());

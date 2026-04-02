@@ -15,19 +15,24 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         super(plugin, source, controller);
     }
 
-    @Test(order = 1)
+    @Override
+    protected void setup() {
+        test("getCapabilities", this::testGetCapabilities);
+        test("getHolograms", this::testGetHolograms);
+        test("hologramLifecycle", this::testHologramLifecycle);
+        playerTest("playerHolograms", this::testPlayerHolograms);
+    }
+
     private void testGetCapabilities() {
         final var capabilities = controller.getCapabilities();
         pass("getCapabilities", capabilities.toString());
     }
 
-    @Test(order = 2)
     private void testGetHolograms() {
         final var holograms = controller.getHolograms();
         pass("getHolograms", holograms.size() + " hologram(s)");
     }
 
-    @Test(order = 3)
     private void testHologramLifecycle() {
         final var name = "service-io-test";
         final var hologram = createHologram(name);
@@ -50,7 +55,6 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         assertHologramNotFound(name);
     }
 
-    @Test(order = 4)
     private void testPlayerHolograms(final Player player) {
         final var name = "service-io-test-player";
         final var hologram = createHologram(name);

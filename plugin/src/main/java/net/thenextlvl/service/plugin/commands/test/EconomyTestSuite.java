@@ -16,19 +16,25 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
         super(plugin, source, controller);
     }
 
-    @Test(order = 1)
+    @Override
+    protected void setup() {
+        test("getDefaultCurrency", this::testGetDefaultCurrency);
+        test("getCurrencies", this::testGetCurrencies);
+        test("formatCurrency", this::testFormatCurrency);
+        test("getAccounts", this::testGetAccounts);
+        playerTest("accountLifecycle", this::testAccountLifecycle);
+    }
+
     private void testGetDefaultCurrency() {
         final var currency = controller.getCurrencyController().getDefaultCurrency();
         pass("getDefaultCurrency", currency.getName());
     }
 
-    @Test(order = 2)
     private void testGetCurrencies() {
         final var currencies = controller.getCurrencyController().getCurrencies();
         pass("getCurrencies", currencies.size() + " currency/currencies");
     }
 
-    @Test(order = 3)
     private void testFormatCurrency() {
         final var currency = controller.getCurrencyController().getDefaultCurrency();
         final var formatted = currency.format(1234.56, source.getSender());
@@ -37,13 +43,11 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
                 .append(formatted));
     }
 
-    @Test(order = 4)
     private void testGetAccounts() {
         final var accounts = controller.getAccounts();
         pass("getAccounts", accounts.size() + " account(s) cached");
     }
 
-    @Test(order = 5)
     private void testAccountLifecycle(final Player player) {
         final var currency = controller.getCurrencyController().getDefaultCurrency();
 
