@@ -13,6 +13,7 @@ import net.thenextlvl.service.group.GroupController;
 import net.thenextlvl.service.hologram.HologramController;
 import net.thenextlvl.service.permission.PermissionController;
 import net.thenextlvl.service.plugin.ServicePlugin;
+import net.thenextlvl.service.plugin.commands.arguments.ControllerArgumentType;
 import net.thenextlvl.service.plugin.commands.brigadier.BrigadierCommand;
 import net.thenextlvl.service.plugin.commands.test.CharacterTestSuite;
 import net.thenextlvl.service.plugin.commands.test.ChatTestSuite;
@@ -48,24 +49,34 @@ final class ServiceTestCommand extends BrigadierCommand {
     }
 
     private <C extends Controller> LiteralArgumentBuilder<CommandSourceStack> buildSuite(final String name, final TestSuite.Entry<C> entry) {
-        return Commands.literal(name).executes(context -> {
+        final var argument = new ControllerArgumentType<>(plugin, entry.controllerType(), (context, controller) -> true);
+        final var provider = Commands.argument("provider", argument);
+        return Commands.literal(name).then(provider.executes(context -> {
+            final var controller = context.getArgument("provider", entry.controllerType());
+            return runSuite(context.getSource(), entry, controller);
+        })).executes(context -> {
             final var sender = context.getSource().getSender();
             final var controller = plugin.getServer().getServicesManager().load(entry.controllerType());
             final var displayName = ServiceInfoCommand.translate(plugin, sender, entry.controllerType());
 
-            if (controller == null) {
-                plugin.bundle().sendMessage(sender, "service.missing", Placeholder.component("service", displayName));
-                return 0;
-            }
+            if (controller != null) return runSuite(context.getSource(), entry, controller);
 
-            plugin.bundle().sendMessage(sender, "service.test.started",
-                    Placeholder.component("service", displayName),
-                    Placeholder.parsed("provider", controller.getName()));
-            entry.factory().create(plugin, context.getSource(), controller).execute();
-            plugin.bundle().sendMessage(sender, "service.test.completed",
-                    Placeholder.component("service", displayName),
-                    Placeholder.parsed("provider", controller.getName()));
-            return Command.SINGLE_SUCCESS;
+            plugin.bundle().sendMessage(sender, "service.missing", Placeholder.component("service", displayName));
+            return 0;
+
         });
+    }
+
+    private <C extends Controller> int runSuite(final CommandSourceStack source, final TestSuite.Entry<C> entry, final C controller) {
+        final var displayName = ServiceInfoCommand.translate(plugin, source.getSender(), entry.controllerType());
+
+        plugin.bundle().sendMessage(source.getSender(), "service.test.started",
+                Placeholder.component("service", displayName),
+                Placeholder.parsed("provider", controller.getName()));
+        entry.factory().create(plugin, source, controller).execute();
+        plugin.bundle().sendMessage(source.getSender(), "service.test.completed",
+                Placeholder.component("service", displayName),
+                Placeholder.parsed("provider", controller.getName()));
+        return Command.SINGLE_SUCCESS;
     }
 }
