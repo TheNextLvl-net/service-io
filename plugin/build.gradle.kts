@@ -5,7 +5,7 @@ import net.minecrell.pluginyml.paper.PaperPluginDescription
 plugins {
     id("com.gradleup.shadow") version "9.3.1"
     id("com.modrinth.minotaur") version "2.+"
-    id("de.eldoria.plugin-yml.paper") version "0.8.0"
+    id("de.eldoria.plugin-yml.paper") version "0.9.0"
     id("io.papermc.hangar-publish-plugin") version "0.1.4"
 }
 
@@ -59,7 +59,7 @@ paper {
     description = "A Vault replacement, providing services for various plugins"
     bootstrapper = "net.thenextlvl.service.ServiceBootstrapper"
     author = "NonSwag"
-    apiVersion = "1.21"
+    apiVersion = "26.1"
     foliaSupported = true
     load = BukkitPluginDescription.PluginLoadOrder.STARTUP
 
