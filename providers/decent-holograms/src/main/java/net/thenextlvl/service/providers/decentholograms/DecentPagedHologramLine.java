@@ -20,7 +20,6 @@ import org.jspecify.annotations.Nullable;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -309,13 +308,13 @@ public class DecentPagedHologramLine implements PagedHologramLine {
     }
 
     @Override
-    public OptionalInt getCurrentPageIndex(final Player player) {
-        return OptionalInt.empty();
+    public Optional<Integer> getCurrentPageIndex(final Player player) {
+        return Optional.of(page.getParent().getPlayerPage(player));
     }
 
     @Override
     public Optional<StaticHologramLine> getCurrentPage(final Player player) {
-        return Optional.empty();
+        return getCurrentPageIndex(player).flatMap(index -> hologram.getLine(index, StaticHologramLine.class));
     }
 
     @Override
