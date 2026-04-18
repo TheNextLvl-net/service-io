@@ -83,7 +83,7 @@ public interface InfoNode {
     }
 
     /**
-     * Retrieves the information node value associated with the given key as an {@code OptionalInt}.
+     * Retrieves the information node value associated with the given key as an {@code Optional}.
      *
      * @param key the key to retrieve the value for
      * @return an {@code Optional<Integer>} containing the information node value if it exists
