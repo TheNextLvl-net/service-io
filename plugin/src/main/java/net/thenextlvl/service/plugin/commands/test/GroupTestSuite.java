@@ -8,7 +8,6 @@ import net.thenextlvl.service.group.GroupHolder;
 import net.thenextlvl.service.permission.PermissionHolder;
 import net.thenextlvl.service.plugin.ServicePlugin;
 import org.bukkit.entity.Player;
-import org.bukkit.generator.WorldInfo;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -127,21 +126,18 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
     }
 
     private void assertGetWorld(final Group group) {
-        final var world = group.getWorld();
-        pass("getWorld", world.map(WorldInfo::getName).orElse("(not set)"));
+        pass("getWorld", group.getWorld().map(world -> world.key().asString()).orElse("(not set)"));
     }
 
     private void assertGetWeight(final Group group) {
-        final var weight = group.getWeight();
-        pass("getWeight", weight.isPresent() ? String.valueOf(weight.getAsInt()) : "(not set)");
+        pass("getWeight", group.getWeight().map(String::valueOf).orElse("(not set)"));
     }
 
     private void assertSetWeight(final Group group) {
         final var before = group.getWeight();
         final var set = group.setWeight(42);
         final var after = group.getWeight();
-        assertChangedValue("setWeight", set, before.isPresent() ? before.getAsInt() : null,
-                after.isPresent() ? after.getAsInt() : null, 42, "set weight to 42");
+        assertChangedValue("setWeight", set, before.orElse(null), after.orElse(null), 42, "set weight to 42");
         before.ifPresentOrElse(group::setWeight, () -> group.setWeight(0));
     }
 

@@ -1,11 +1,9 @@
 package net.thenextlvl.service.plugin.commands.test;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import net.kyori.adventure.key.Key;
 import net.thenextlvl.service.chat.ChatController;
 import net.thenextlvl.service.chat.ChatProfile;
 import net.thenextlvl.service.plugin.ServicePlugin;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.concurrent.CompletableFuture;
@@ -65,13 +63,11 @@ public final class ChatTestSuite extends TestSuite<ChatController> {
     }
 
     private void assertGetWorld(final ChatProfile profile) {
-        final var world = profile.getWorld();
-        pass("getWorld", world.map(World::key).map(Key::asString).orElse("(not set)"));
+        pass("getWorld", profile.getWorld().map(world -> world.key().asString()).orElse("(not set)"));
     }
 
     private void assertGetGroups(final ChatProfile profile) {
-        final var groups = profile.getGroups();
-        pass("getGroups", groups.size() + " group(s)");
+        pass("getGroups", profile.getGroups().size() + " group(s)");
     }
 
     private void assertDisplayName(final ChatProfile profile) {

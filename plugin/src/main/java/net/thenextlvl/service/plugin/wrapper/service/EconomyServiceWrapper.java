@@ -50,7 +50,7 @@ public final class EconomyServiceWrapper implements EconomyController, Wrapper {
     @Override
     public @Unmodifiable Set<Account> getAccounts(final World world) {
         return Arrays.stream(provider.getServer().getOfflinePlayers())
-                .filter(offlinePlayer -> economy.hasAccount(offlinePlayer, world.getName()))
+                .filter(offlinePlayer -> economy.hasAccount(offlinePlayer, world.key().asString()))
                 .map(player -> new WrappedAccount(null, economy, player))
                 .collect(Collectors.toUnmodifiableSet());
     }

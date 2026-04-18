@@ -147,7 +147,7 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         final var world = npc.getWorld();
         if (world != null) {
             final var npcs = controller.getNPCs(world);
-            pass("getNPCs(world)", npcs.size() + " NPC(s) in " + world.getName());
+            pass("getNPCs(world)", npcs.size() + " NPC(s) in " + world.key().asString());
         } else {
             fail("getNPCs(world)", "NPC has no world");
         }
@@ -377,7 +377,7 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
 
     private void assertGetWorld(final Character<?> npc) {
         final var world = npc.getWorld();
-        if (world != null) pass("getWorld", world.getName());
+        if (world != null) pass("getWorld", world.key().asString());
         else fail("getWorld", "world is null");
     }
 

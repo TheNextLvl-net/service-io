@@ -111,7 +111,7 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
     private void assertHologramsByWorld(final Hologram hologram) {
         final var world = hologram.getWorld();
         final var holograms = controller.getHolograms(world);
-        pass("getHolograms(world)", holograms.size() + " hologram(s) in " + world.getName());
+        pass("getHolograms(world)", holograms.size() + " hologram(s) in " + world.key().asString());
     }
 
     private void assertHologramsByPlayer(final Player player) {
@@ -133,12 +133,12 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
 
     private void assertGetLocation(final Hologram hologram) {
         final var loc = hologram.getLocation();
-        pass("getLocation", String.format("%.1f, %.1f, %.1f in %s", loc.getX(), loc.getY(), loc.getZ(), hologram.getWorld().getName()));
+        pass("getLocation", String.format("%.1f, %.1f, %.1f in %s", loc.getX(), loc.getY(), loc.getZ(), hologram.getWorld().key().asString()));
     }
 
     private void assertGetWorld(final Hologram hologram) {
         final var world = hologram.getWorld();
-        pass("getWorld", world.getName());
+        pass("getWorld", world.key().asString());
     }
 
     private CompletableFuture<Void> assertTeleport(final Hologram hologram) {
@@ -293,7 +293,7 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
     }
 
     private void assertTextLineGetWorld(final TextHologramLine line) {
-        pass("TextHologramLine.getWorld", line.getWorld().getName());
+        pass("TextHologramLine.getWorld", line.getWorld().key().asString());
     }
 
     private void assertTextLineSetText(final TextHologramLine line, final Player player) {

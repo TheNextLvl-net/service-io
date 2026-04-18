@@ -171,9 +171,9 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
     }
 
     private void assertAccountWorld(final Account account) {
-        final var world = account.getWorld();
-        if (world.isPresent()) pass("getWorld", world.get().getName());
-        else pass("getWorld", "global account (no world)");
+        pass("getWorld", account.getWorld()
+                .map(world -> world.key().asString())
+                .orElse("global account (no world)"));
     }
 
     private void assertBalance(final BigDecimal balance, final Currency currency) {
