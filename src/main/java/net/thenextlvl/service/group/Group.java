@@ -5,7 +5,6 @@ import net.thenextlvl.service.permission.PermissionHolder;
 import org.bukkit.World;
 
 import java.util.Optional;
-import java.util.OptionalInt;
 
 /**
  * The Group interface represents a group entity that holds permissions and display attributes such as
@@ -26,7 +25,7 @@ public interface Group extends PermissionHolder, Display {
      *
      * @return The weight of the group.
      */
-    OptionalInt getWeight();
+    Optional<Integer> getWeight();
 
     /**
      * Returns the name of the object.

@@ -11,7 +11,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -45,8 +44,8 @@ public record GroupManagerGroup(org.anjocaido.groupmanager.data.Group group) imp
     }
 
     @Override
-    public OptionalInt getWeight() {
-        return OptionalInt.empty();
+    public Optional<Integer> getWeight() {
+        return Optional.empty();
     }
 
     @Override

@@ -18,7 +18,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.function.Function;
 
 @NullMarked
@@ -63,8 +62,9 @@ public record LuckPermsGroup(
     }
 
     @Override
-    public OptionalInt getWeight() {
-        return group().getWeight();
+    public Optional<Integer> getWeight() {
+        final var weight = group().getWeight();
+        return weight.isPresent() ? Optional.of(weight.getAsInt()) : Optional.empty();
     }
 
     @Override

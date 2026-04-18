@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 
 import java.time.Duration;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -339,7 +338,7 @@ public interface PagedHologramLine extends HologramLine {
      * @return the current page index, or empty if not set
      * @since 3.0.0
      */
-    OptionalInt getCurrentPageIndex(Player player);
+    Optional<Integer> getCurrentPageIndex(Player player);
 
     /**
      * Gets the current page of this line for the given player.
