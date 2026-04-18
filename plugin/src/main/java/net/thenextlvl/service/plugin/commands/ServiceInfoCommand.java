@@ -95,11 +95,11 @@ final class ServiceInfoCommand extends SimpleCommand {
         final var sender = context.getSource().getSender();
         final var sources = new ArrayList<ServiceSource>();
 
-        sources.add(source(type, Wrapper.Type.SERVICE_IO, Controller::getName));
+        sources.add(source(type, "ServiceIO", Controller::getName));
         if (vault != null && vaultMapper != null)
-            sources.add(source(vault, Wrapper.Type.VAULT, vaultMapper));
+            sources.add(source(vault, "Vault", vaultMapper));
         if (vaultUnlocked != null && vaultUnlockedMapper != null)
-            sources.add(source(vaultUnlocked, Wrapper.Type.VAULT_UNLOCKED, vaultUnlockedMapper));
+            sources.add(source(vaultUnlocked, "VaultUnlocked", vaultUnlockedMapper));
 
         sendServiceInfo(sender, buildSection(type, sources));
         return SINGLE_SUCCESS;
@@ -214,7 +214,7 @@ final class ServiceInfoCommand extends SimpleCommand {
         return new ServiceRegistration(
                 registration.getPlugin().getName(),
                 name,
-                source.wrapperType().getName(),
+                source.name(),
                 registration.getPriority(),
                 active,
                 provider instanceof Wrapper
@@ -247,11 +247,11 @@ final class ServiceInfoCommand extends SimpleCommand {
         }
     }
 
-    private static <T> ServiceSource source(final Class<T> type, final Wrapper.Type wrapperType, final Function<T, String> nameMapper) {
-        return new ServiceSource(type, wrapperType, value -> nameMapper.apply(type.cast(value)));
+    private static <T> ServiceSource source(final Class<T> type, final String source, final Function<T, String> nameMapper) {
+        return new ServiceSource(type, source, value -> nameMapper.apply(type.cast(value)));
     }
 
-    private record ServiceSource(Class<?> type, Wrapper.Type wrapperType, Function<Object, String> nameMapper) {
+    private record ServiceSource(Class<?> type, String name, Function<Object, String> nameMapper) {
     }
 
     private record ServiceSection(Class<? extends Controller> type, List<ServiceGroup> groups) {
