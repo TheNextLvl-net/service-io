@@ -86,44 +86,49 @@ public final class ServiceListener implements Listener {
 
     private void loadServicePermissionWrapper(final RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> provider) {
         final var wrapper = new PermissionServiceWrapper(provider.getProvider(), provider.getPlugin());
-        getServicesManager().register(PermissionController.class, wrapper, provider.getPlugin(), provider.getPriority());
+        final var priority = getWrapperPriority(provider);
+        getServicesManager().register(PermissionController.class, wrapper, provider.getPlugin(), priority);
         plugin.getComponentLogger().info("Registered permission service wrapper for {} - {} ({})",
-                provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
+                provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
     }
 
     private void loadServiceEconomyWrapper(final RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> provider) {
         final var wrapper = new EconomyServiceWrapper(provider.getProvider(), provider.getPlugin());
-        getServicesManager().register(EconomyController.class, wrapper, provider.getPlugin(), provider.getPriority());
+        final var priority = getWrapperPriority(provider);
+        getServicesManager().register(EconomyController.class, wrapper, provider.getPlugin(), priority);
         plugin.getComponentLogger().info("Registered economy service wrapper for {} - {} ({})",
-                provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
+                provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
 
         if (!provider.getProvider().hasBankSupport()) return;
         final var banks = new BankServiceWrapper(provider.getProvider(), provider.getPlugin(), wrapper);
-        getServicesManager().register(BankController.class, banks, provider.getPlugin(), provider.getPriority());
+        getServicesManager().register(BankController.class, banks, provider.getPlugin(), priority);
         plugin.getComponentLogger().info("Registered bank service wrapper for {} - {} ({})",
-                provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
+                provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
     }
 
     private void loadServiceChatWrapper(final RegisteredServiceProvider<net.milkbowl.vault.chat.Chat> provider) {
         final var wrapper = new ChatServiceWrapper(provider.getProvider(), provider.getPlugin());
-        getServicesManager().register(ChatController.class, wrapper, provider.getPlugin(), provider.getPriority());
+        final var priority = getWrapperPriority(provider);
+        getServicesManager().register(ChatController.class, wrapper, provider.getPlugin(), priority);
         plugin.getComponentLogger().info("Registered chat service wrapper for {} - {} ({})",
-                provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
+                provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
     }
 
     private void loadVaultPermissionWrapper(final RegisteredServiceProvider<PermissionController> provider) {
         final var groupController = getServicesManager().load(GroupController.class);
         final var wrapper = new VaultPermissionServiceWrapper(groupController, provider.getProvider(), provider.getPlugin());
-        getServicesManager().register(net.milkbowl.vault.permission.Permission.class, wrapper, provider.getPlugin(), provider.getPriority());
+        final var priority = getWrapperPriority(provider);
+        getServicesManager().register(net.milkbowl.vault.permission.Permission.class, wrapper, provider.getPlugin(), priority);
         plugin.getComponentLogger().info("Registered vault permission wrapper for {} - {} ({})",
-                provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
+                provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
     }
 
     private void loadVaultEconomyWrapper(final RegisteredServiceProvider<EconomyController> provider) {
         final var wrapper = new VaultEconomyServiceWrapper(provider.getProvider(), provider.getPlugin());
-        getServicesManager().register(net.milkbowl.vault.economy.Economy.class, wrapper, provider.getPlugin(), provider.getPriority());
+        final var priority = getWrapperPriority(provider);
+        getServicesManager().register(net.milkbowl.vault.economy.Economy.class, wrapper, provider.getPlugin(), priority);
         plugin.getComponentLogger().info("Registered vault economy wrapper for {} - {} ({})",
-                provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
+                provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
     }
 
     private void loadVaultChatWrapper(final RegisteredServiceProvider<ChatController> provider) {
@@ -136,24 +141,27 @@ public final class ServiceListener implements Listener {
         }
 
         final var wrapper = new VaultChatServiceWrapper(permission, groupController, provider.getProvider(), provider.getPlugin());
-        getServicesManager().register(net.milkbowl.vault.chat.Chat.class, wrapper, provider.getPlugin(), ServicePriority.Highest);
+        final var priority = getWrapperPriority(provider);
+        getServicesManager().register(net.milkbowl.vault.chat.Chat.class, wrapper, provider.getPlugin(), priority);
         plugin.getComponentLogger().info("Registered vault chat wrapper for {} - {} ({})",
-                provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
+                provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
     }
 
     private void loadVaultUnlockedPermissionWrapper(final RegisteredServiceProvider<PermissionController> provider) {
         final var groupController = getServicesManager().load(GroupController.class);
         final var wrapper = new VaultUnlockedPermissionServiceWrapper(groupController, provider.getProvider(), provider.getPlugin());
-        getServicesManager().register(net.milkbowl.vault2.permission.Permission.class, wrapper, provider.getPlugin(), provider.getPriority());
+        final var priority = getWrapperPriority(provider);
+        getServicesManager().register(net.milkbowl.vault2.permission.Permission.class, wrapper, provider.getPlugin(), priority);
         plugin.getComponentLogger().info("Registered vault unlocked permission wrapper for {} - {} ({})",
-                provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
+                provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
     }
 
     private void loadVaultUnlockedEconomyWrapper(final RegisteredServiceProvider<EconomyController> provider) {
         final var wrapper = new VaultUnlockedEconomyServiceWrapper(provider.getProvider(), provider.getPlugin());
-        getServicesManager().register(net.milkbowl.vault2.economy.Economy.class, wrapper, provider.getPlugin(), provider.getPriority());
+        final var priority = getWrapperPriority(provider);
+        getServicesManager().register(net.milkbowl.vault2.economy.Economy.class, wrapper, provider.getPlugin(), priority);
         plugin.getComponentLogger().info("Registered vault unlocked economy wrapper for {} - {} ({})",
-                provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
+                provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
     }
 
     private void loadVaultUnlockedChatWrapper(final RegisteredServiceProvider<ChatController> provider) {
@@ -166,33 +174,46 @@ public final class ServiceListener implements Listener {
         }
 
         final var wrapper = new VaultUnlockedChatServiceWrapper(permission, groupController, provider.getProvider(), provider.getPlugin());
-        getServicesManager().register(net.milkbowl.vault2.chat.Chat.class, wrapper, provider.getPlugin(), ServicePriority.Highest);
+        final var priority = getWrapperPriority(provider);
+        getServicesManager().register(net.milkbowl.vault2.chat.Chat.class, wrapper, provider.getPlugin(), priority);
         plugin.getComponentLogger().info("Registered vault unlocked chat wrapper for {} - {} ({})",
-                provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
+                provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
     }
 
     private void loadVaultUnlockedServicePermissionWrapper(final RegisteredServiceProvider<net.milkbowl.vault2.permission.Permission> provider) {
         final var wrapper = new net.thenextlvl.service.plugin.wrapper.service.VaultUnlockedPermissionServiceWrapper(provider.getProvider(), provider.getPlugin());
-        getServicesManager().register(PermissionController.class, wrapper, provider.getPlugin(), provider.getPriority());
+        final var priority = getWrapperPriority(provider);
+        getServicesManager().register(PermissionController.class, wrapper, provider.getPlugin(), priority);
         plugin.getComponentLogger().info("Registered vault unlocked permission service wrapper for {} - {} ({})",
-                provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
+                provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
     }
 
     private void loadVaultUnlockedServiceEconomyWrapper(final RegisteredServiceProvider<net.milkbowl.vault2.economy.Economy> provider) {
         final var wrapper = new net.thenextlvl.service.plugin.wrapper.service.VaultUnlockedEconomyServiceWrapper(provider.getProvider(), provider.getPlugin());
-        getServicesManager().register(EconomyController.class, wrapper, provider.getPlugin(), provider.getPriority());
+        final var priority = getWrapperPriority(provider);
+        getServicesManager().register(EconomyController.class, wrapper, provider.getPlugin(), priority);
         plugin.getComponentLogger().info("Registered vault unlocked economy service wrapper for {} - {} ({})",
-                provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
+                provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
     }
 
     private void loadVaultUnlockedServiceChatWrapper(final RegisteredServiceProvider<net.milkbowl.vault2.chat.Chat> provider) {
         final var wrapper = new net.thenextlvl.service.plugin.wrapper.service.VaultUnlockedChatServiceWrapper(provider.getProvider(), provider.getPlugin());
-        getServicesManager().register(ChatController.class, wrapper, provider.getPlugin(), provider.getPriority());
+        final var priority = getWrapperPriority(provider);
+        getServicesManager().register(ChatController.class, wrapper, provider.getPlugin(), priority);
         plugin.getComponentLogger().info("Registered vault unlocked chat service wrapper for {} - {} ({})",
-                provider.getPlugin().getName(), provider.getProvider().getName(), provider.getPriority().name());
+                provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
     }
 
     private ServicesManager getServicesManager() {
         return plugin.getServer().getServicesManager();
+    }
+
+    private ServicePriority getWrapperPriority(final RegisteredServiceProvider<?> provider) {
+        return switch (provider.getPriority()) {
+            case Highest -> ServicePriority.High;
+            case High -> ServicePriority.Normal;
+            case Normal -> ServicePriority.Low;
+            case Low, Lowest -> ServicePriority.Lowest;
+        };
     }
 }
