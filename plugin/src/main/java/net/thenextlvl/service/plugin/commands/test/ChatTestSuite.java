@@ -7,6 +7,8 @@ import net.thenextlvl.service.plugin.ServicePlugin;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.WorldInfo;
 
+import java.util.concurrent.CompletableFuture;
+
 public final class ChatTestSuite extends TestSuite<ChatController> {
     public ChatTestSuite(final ServicePlugin plugin, final CommandSourceStack source, final ChatController controller) {
         super(plugin, source, controller);
@@ -14,13 +16,13 @@ public final class ChatTestSuite extends TestSuite<ChatController> {
 
     @Override
     protected void setup() {
-        playerTest("loadProfile", this::testLoadProfile);
+        playerAsyncTest("loadProfile", this::testLoadProfile);
         playerTest("getProfile", this::testGetProfile);
-        playerTest("resolveProfile", this::testResolveProfile);
+        playerAsyncTest("resolveProfile", this::testResolveProfile);
     }
 
-    private void testLoadProfile(final Player player) {
-        controller.loadProfile(player).thenAccept(profile -> {
+    private CompletableFuture<Void> testLoadProfile(final Player player) {
+        return controller.loadProfile(player).thenAccept(profile -> {
             pass("loadProfile", "loaded profile for " + player.getName());
 
             assertGetName(profile);
@@ -37,9 +39,6 @@ public final class ChatTestSuite extends TestSuite<ChatController> {
             assertGetSuffixes(profile);
 
             assertInfoNodes(profile);
-        }).exceptionally(throwable -> {
-            fail("loadProfile", throwable.getMessage());
-            return null;
         });
     }
 
@@ -49,13 +48,9 @@ public final class ChatTestSuite extends TestSuite<ChatController> {
         else fail("getProfile", "profile not cached after load");
     }
 
-    private void testResolveProfile(final Player player) {
-        controller.resolveProfile(player).thenAccept(profile ->
-                pass("resolveProfile", "resolved profile for " + player.getName())
-        ).exceptionally(throwable -> {
-            fail("resolveProfile", throwable.getMessage());
-            return null;
-        });
+    private CompletableFuture<Void> testResolveProfile(final Player player) {
+        return controller.resolveProfile(player).thenAccept(profile ->
+                pass("resolveProfile", "resolved profile for " + player.getName()));
     }
 
     private void assertGetName(final ChatProfile profile) {

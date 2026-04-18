@@ -73,10 +73,10 @@ final class ServiceTestCommand extends BrigadierCommand {
         plugin.bundle().sendMessage(source.getSender(), "service.test.started",
                 Placeholder.component("service", displayName),
                 Placeholder.parsed("provider", controller.getName()));
-        entry.factory().create(plugin, source, controller).execute();
-        plugin.bundle().sendMessage(source.getSender(), "service.test.completed",
-                Placeholder.component("service", displayName),
-                Placeholder.parsed("provider", controller.getName()));
+        entry.factory().create(plugin, source, controller).execute().whenComplete((ignored, throwable) ->
+                plugin.bundle().sendMessage(source.getSender(), "service.test.completed",
+                        Placeholder.component("service", displayName),
+                        Placeholder.parsed("provider", controller.getName())));
         return Command.SINGLE_SUCCESS;
     }
 }

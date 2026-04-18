@@ -7,10 +7,12 @@ import net.thenextlvl.service.character.Character;
 import net.thenextlvl.service.character.CharacterCapability;
 import net.thenextlvl.service.character.CharacterController;
 import net.thenextlvl.service.plugin.ServicePlugin;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public final class CharacterTestSuite extends TestSuite<CharacterController> {
     public CharacterTestSuite(final ServicePlugin plugin, final CommandSourceStack source, final CharacterController controller) {
@@ -21,7 +23,7 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
     protected void setup() {
         test("getCapabilities", this::testGetCapabilities);
         test("getNPCs", this::testGetNPCs);
-        playerTest("characterLifecycle", this::testCharacterLifecycle);
+        playerAsyncTest("characterLifecycle", this::testCharacterLifecycle);
     }
 
     private void testGetCapabilities() {
@@ -34,7 +36,7 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         pass("getNPCs", npcs.size() + " NPC(s)");
     }
 
-    private void testCharacterLifecycle(final Player player) {
+    private CompletableFuture<Void> testCharacterLifecycle(final Player player) {
         final var name = "service-io-test";
         final var npc = controller.spawnNPC(name, player.getLocation());
         pass("spawnNPC", "spawned '" + name + "'");
@@ -80,35 +82,35 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         assertLookAtEntity(npc, player);
 
         // Character teleportAsync
-        assertTeleportAsync(npc, player);
+        return assertTeleportAsync(npc, player).thenRun(() -> {
+            // Character getLocation / getWorld
+            assertGetLocation(npc);
+            assertGetWorld(npc);
 
-        // Character getLocation / getWorld
-        assertGetLocation(npc);
-        assertGetWorld(npc);
+            // Character getEntity (capability-gated)
+            assertGetEntity(npc);
 
-        // Character getEntity (capability-gated)
-        assertGetEntity(npc);
+            // despawn / isSpawned / respawn / spawn cycle
+            assertDespawn(npc);
+            assertIsSpawned(npc, false);
+            assertRespawn(npc);
+            assertIsSpawned(npc, true);
+            assertDespawn(npc);
+            assertIsSpawned(npc, false);
+            assertSpawn(npc, player);
+            assertIsSpawned(npc, true);
 
-        // despawn / isSpawned / respawn / spawn cycle
-        assertDespawn(npc);
-        assertIsSpawned(npc, false);
-        assertRespawn(npc);
-        assertIsSpawned(npc, true);
-        assertDespawn(npc);
-        assertIsSpawned(npc, false);
-        assertSpawn(npc, player);
-        assertIsSpawned(npc, true);
+            // isNPC via entity
+            npc.getEntity().ifPresent(this::assertIsNPC);
 
-        // isNPC via entity
-        npc.getEntity().ifPresent(this::assertIsNPC);
+            // createNPC (unspawned)
+            assertCreateNPC();
 
-        // createNPC (unspawned)
-        assertCreateNPC();
-
-        // remove
-        npc.remove();
-        pass("remove", "permanently removed '" + name + "'");
-        assertNPCNotFound(name);
+            // remove
+            npc.remove();
+            pass("remove", "permanently removed '" + name + "'");
+            assertNPCNotFound(name);
+        });
     }
 
     // ---- CharacterController assertions ----
@@ -120,7 +122,7 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
     }
 
     private void assertGetNPCByUUID(final Character<?> npc) {
-        final var uuid = npc.getEntity().map(org.bukkit.entity.Entity::getUniqueId).orElse(null);
+        final var uuid = npc.getEntity().map(Entity::getUniqueId).orElse(null);
         if (uuid == null) {
             skip("getNPC(uuid)", "no entity UUID available");
             return;
@@ -357,15 +359,12 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         pass("lookAt(entity)", "looked at " + player.getName());
     }
 
-    private void assertTeleportAsync(final Character<?> npc, final Player player) {
+    private CompletableFuture<Void> assertTeleportAsync(final Character<?> npc, final Player player) {
         final var target = player.getLocation().add(0, 2, 0);
-        npc.teleportAsync(target).thenAccept(success -> {
+        return npc.teleportAsync(target).thenAccept(success -> {
             if (success)
                 pass("teleportAsync", String.format("moved to %.1f, %.1f, %.1f", target.getX(), target.getY(), target.getZ()));
             else fail("teleportAsync", "teleport returned false");
-        }).exceptionally(throwable -> {
-            fail("teleportAsync", throwable.getMessage());
-            return null;
         });
     }
 
@@ -423,7 +422,7 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         }
     }
 
-    private void assertIsNPC(final org.bukkit.entity.Entity entity) {
+    private void assertIsNPC(final Entity entity) {
         if (controller.isNPC(entity)) pass("isNPC", "entity is an NPC");
         else fail("isNPC", "entity is not recognized as NPC");
     }

@@ -10,6 +10,8 @@ import net.thenextlvl.service.plugin.ServicePlugin;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.WorldInfo;
 
+import java.util.concurrent.CompletableFuture;
+
 public final class GroupTestSuite extends TestSuite<GroupController> {
     public GroupTestSuite(final ServicePlugin plugin, final CommandSourceStack source, final GroupController controller) {
         super(plugin, source, controller);
@@ -18,9 +20,9 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
     @Override
     protected void setup() {
         test("getGroups", this::testGetGroups);
-        test("loadGroups", this::testLoadGroups);
-        test("groupLifecycle", this::testGroupLifecycle);
-        playerTest("groupHolder", this::testGroupHolder);
+        asyncTest("loadGroups", this::testLoadGroups);
+        asyncTest("groupLifecycle", this::testGroupLifecycle);
+        playerAsyncTest("groupHolder", this::testGroupHolder);
     }
 
     private void testGetGroups() {
@@ -28,19 +30,15 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
         pass("getGroups", groups.size() + " group(s) cached");
     }
 
-    private void testLoadGroups() {
-        controller.loadGroups().thenAccept(groups ->
-                pass("loadGroups", groups.size() + " group(s) loaded")
-        ).exceptionally(throwable -> {
-            fail("loadGroups", throwable.getMessage());
-            return null;
-        });
+    private CompletableFuture<Void> testLoadGroups() {
+        return controller.loadGroups().thenAccept(groups ->
+                pass("loadGroups", groups.size() + " group(s) loaded"));
     }
 
-    private void testGroupLifecycle() {
+    private CompletableFuture<Void> testGroupLifecycle() {
         final var name = "service-io-test";
 
-        controller.createGroup(name).thenAccept(group -> {
+        return controller.createGroup(name).thenCompose(group -> {
             pass("createGroup", "created group '" + group.getName() + "'");
 
             assertGroupFound(name);
@@ -62,26 +60,19 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
             assertRemovePermission(group);
             assertCheckPermission(group, "service.io.test", TriState.NOT_SET);
             assertInfoNode(group);
-            assertLoadGroup(name);
-            assertResolveGroup(name);
+            return assertLoadGroup(name)
+                    .thenCompose(ignored -> assertResolveGroup(name))
+                    .thenCompose(ignored -> controller.deleteGroup(name).thenAccept(deleted -> {
+                        if (deleted) pass("deleteGroup", "deleted group '" + name + "'");
+                        else fail("deleteGroup", "failed to delete group");
 
-            controller.deleteGroup(name).thenAccept(deleted -> {
-                if (deleted) pass("deleteGroup", "deleted group '" + name + "'");
-                else fail("deleteGroup", "failed to delete group");
-
-                assertGroupNotFound(name);
-            }).exceptionally(throwable -> {
-                fail("deleteGroup", throwable.getMessage());
-                return null;
-            });
-        }).exceptionally(throwable -> {
-            fail("createGroup", throwable.getMessage());
-            return null;
+                        assertGroupNotFound(name);
+                    }));
         });
     }
 
-    private void testGroupHolder(final Player player) {
-        controller.loadGroupHolder(player).thenAccept(holder -> {
+    private CompletableFuture<Void> testGroupHolder(final Player player) {
+        return controller.loadGroupHolder(player).thenCompose(holder -> {
             pass("loadGroupHolder", "loaded group holder for " + player.getName());
 
             final var groups = holder.getGroups();
@@ -110,10 +101,7 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
             assertInfoNode(holder);
 
             assertGetGroupHolder(player);
-            assertResolveGroupHolder(player);
-        }).exceptionally(throwable -> {
-            fail("loadGroupHolder", throwable.getMessage());
-            return null;
+            return assertResolveGroupHolder(player);
         });
     }
 
@@ -273,22 +261,14 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
         else fail("hasInfoNode (after remove)", "'service.io.key' still exists after removal");
     }
 
-    private void assertLoadGroup(final String name) {
-        controller.loadGroup(name).thenAccept(group ->
-                pass("loadGroup", "loaded group '" + group.getName() + "'")
-        ).exceptionally(throwable -> {
-            fail("loadGroup", throwable.getMessage());
-            return null;
-        });
+    private CompletableFuture<Void> assertLoadGroup(final String name) {
+        return controller.loadGroup(name).thenAccept(group ->
+                pass("loadGroup", "loaded group '" + group.getName() + "'"));
     }
 
-    private void assertResolveGroup(final String name) {
-        controller.resolveGroup(name).thenAccept(group ->
-                pass("resolveGroup", "resolved group '" + group.getName() + "'")
-        ).exceptionally(throwable -> {
-            fail("resolveGroup", throwable.getMessage());
-            return null;
-        });
+    private CompletableFuture<Void> assertResolveGroup(final String name) {
+        return controller.resolveGroup(name).thenAccept(group ->
+                pass("resolveGroup", "resolved group '" + group.getName() + "'"));
     }
 
     private void assertGetGroupHolder(final Player player) {
@@ -297,13 +277,9 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
         else fail("getGroupHolder", "group holder not cached after load");
     }
 
-    private void assertResolveGroupHolder(final Player player) {
-        controller.resolveGroupHolder(player).thenAccept(holder ->
-                pass("resolveGroupHolder", "resolved group holder for " + player.getName())
-        ).exceptionally(throwable -> {
-            fail("resolveGroupHolder", throwable.getMessage());
-            return null;
-        });
+    private CompletableFuture<Void> assertResolveGroupHolder(final Player player) {
+        return controller.resolveGroupHolder(player).thenAccept(holder ->
+                pass("resolveGroupHolder", "resolved group holder for " + player.getName()));
     }
 
     private void assertHolderAddGroup(final GroupHolder holder) {

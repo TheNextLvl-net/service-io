@@ -14,6 +14,7 @@ import org.bukkit.entity.TextDisplay.TextAlignment;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public final class HologramTestSuite extends TestSuite<HologramController> {
     public HologramTestSuite(final ServicePlugin plugin, final CommandSourceStack source, final HologramController controller) {
@@ -24,7 +25,7 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
     protected void setup() {
         test("getCapabilities", this::testGetCapabilities);
         test("getHolograms", this::testGetHolograms);
-        test("hologramLifecycle", this::testHologramLifecycle);
+        asyncTest("hologramLifecycle", this::testHologramLifecycle);
         playerTest("playerHolograms", this::testPlayerHolograms);
     }
 
@@ -38,10 +39,10 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         pass("getHolograms", holograms.size() + " hologram(s)");
     }
 
-    private void testHologramLifecycle() {
+    private CompletableFuture<Void> testHologramLifecycle() {
         final var name = "service-io-test";
         final var hologram = createHologram(name);
-        if (hologram == null) return;
+        if (hologram == null) return CompletableFuture.completedFuture(null);
 
         assertHologramFound(name);
         assertHologramsByWorld(hologram);
@@ -50,21 +51,21 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         assertSetName(hologram);
         assertGetLocation(hologram);
         assertGetWorld(hologram);
-        assertTeleport(hologram);
+        return assertTeleport(hologram).thenRun(() -> {
+            assertIsPersistent(hologram);
+            assertSetPersistent(hologram);
+            assertPersist(hologram);
 
-        assertIsPersistent(hologram);
-        assertSetPersistent(hologram);
-        assertPersist(hologram);
+            assertViewPermission(hologram);
+            assertVisibleByDefault(hologram);
+            assertGetTrackedBy(hologram);
+            assertGetLines(hologram);
 
-        assertViewPermission(hologram);
-        assertVisibleByDefault(hologram);
-        assertGetTrackedBy(hologram);
-        assertGetLines(hologram);
+            assertLineManagement(hologram);
 
-        assertLineManagement(hologram);
-
-        assertDeleteHologram(hologram);
-        assertHologramNotFound(name);
+            assertDeleteHologram(hologram);
+            assertHologramNotFound(name);
+        });
     }
 
     private void testPlayerHolograms(final Player player) {
@@ -147,15 +148,12 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         pass("getWorld", world.getName());
     }
 
-    private void assertTeleport(final Hologram hologram) {
+    private CompletableFuture<Void> assertTeleport(final Hologram hologram) {
         final var target = source.getLocation().add(0, 2, 0);
-        hologram.teleportAsync(target).thenAccept(success -> {
+        return hologram.teleportAsync(target).thenAccept(success -> {
             if (success)
                 pass("teleportAsync", String.format("moved to %.1f, %.1f, %.1f", target.getX(), target.getY(), target.getZ()));
             else fail("teleportAsync", "teleport returned false");
-        }).exceptionally(throwable -> {
-            fail("teleportAsync", throwable.getMessage());
-            return null;
         });
     }
 

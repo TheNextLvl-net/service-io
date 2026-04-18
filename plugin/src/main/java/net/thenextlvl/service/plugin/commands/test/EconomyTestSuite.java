@@ -3,6 +3,7 @@ package net.thenextlvl.service.plugin.commands.test;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.thenextlvl.service.economy.Account;
 import net.thenextlvl.service.economy.EconomyController;
 import net.thenextlvl.service.economy.TransactionResult;
 import net.thenextlvl.service.economy.currency.Currency;
@@ -10,6 +11,7 @@ import net.thenextlvl.service.plugin.ServicePlugin;
 import org.bukkit.entity.Player;
 
 import java.math.BigDecimal;
+import java.util.concurrent.CompletableFuture;
 
 public final class EconomyTestSuite extends TestSuite<EconomyController> {
     public EconomyTestSuite(final ServicePlugin plugin, final CommandSourceStack source, final EconomyController controller) {
@@ -28,8 +30,8 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
         test("currencyToData", this::testCurrencyToData);
         test("formatCurrency", this::testFormatCurrency);
         test("getAccounts", this::testGetAccounts);
-        test("loadAccounts", this::testLoadAccounts);
-        playerTest("accountLifecycle", this::testAccountLifecycle);
+        asyncTest("loadAccounts", this::testLoadAccounts);
+        playerAsyncTest("accountLifecycle", this::testAccountLifecycle);
     }
 
     private void testGetCapabilities() {
@@ -111,19 +113,15 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
         pass("getAccounts", accounts.size() + " account(s) cached");
     }
 
-    private void testLoadAccounts() {
-        controller.loadAccounts().thenAccept(accounts -> {
-            pass("loadAccounts", accounts.size() + " account(s) loaded");
-        }).exceptionally(throwable -> {
-            fail("loadAccounts", throwable.getMessage());
-            return null;
-        }).join();
+    private CompletableFuture<Void> testLoadAccounts() {
+        return controller.loadAccounts().thenAccept(accounts ->
+                pass("loadAccounts", accounts.size() + " account(s) loaded"));
     }
 
-    private void testAccountLifecycle(final Player player) {
+    private CompletableFuture<Void> testAccountLifecycle(final Player player) {
         final var currency = controller.getCurrencyController().getDefaultCurrency();
 
-        controller.createAccount(player).thenAccept(account -> {
+        return controller.createAccount(player).thenCompose(account -> {
             pass("createAccount", "created account for " + player.getName());
 
             assertAccountCached(player);
@@ -139,21 +137,14 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
             assertSetBalance(account, 1000, currency);
             assertInsufficientFunds(account.withdraw(5000, currency), currency);
 
-            assertLoadAccount(player);
-            assertResolveAccount(player);
+            return assertLoadAccount(player)
+                    .thenCompose(ignored -> assertResolveAccount(player))
+                    .thenCompose(ignored -> controller.deleteAccount(account).thenAccept(deleted -> {
+                        if (deleted) pass("deleteAccount", "deleted account for " + player.getName());
+                        else fail("deleteAccount", "failed to delete account");
 
-            controller.deleteAccount(account).thenAccept(deleted -> {
-                if (deleted) pass("deleteAccount", "deleted account for " + player.getName());
-                else fail("deleteAccount", "failed to delete account");
-
-                assertAccountNotCached(player);
-            }).exceptionally(throwable -> {
-                fail("deleteAccount", throwable.getMessage());
-                return null;
-            });
-        }).exceptionally(throwable -> {
-            fail("createAccount", throwable.getMessage());
-            return null;
+                        assertAccountNotCached(player);
+                    }));
         });
     }
 
@@ -174,12 +165,12 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
         pass("getAccounts", accounts.size() + " account(s) cached");
     }
 
-    private void assertAccountOwner(final net.thenextlvl.service.economy.Account account, final Player player) {
+    private void assertAccountOwner(final Account account, final Player player) {
         if (account.getOwner().equals(player.getUniqueId())) pass("getOwner", "matches player UUID");
         else fail("getOwner", "expected " + player.getUniqueId() + " but got " + account.getOwner());
     }
 
-    private void assertAccountWorld(final net.thenextlvl.service.economy.Account account) {
+    private void assertAccountWorld(final Account account) {
         final var world = account.getWorld();
         if (world.isPresent()) pass("getWorld", world.get().getName());
         else pass("getWorld", "global account (no world)");
@@ -194,7 +185,7 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
         else fail("canHold", "account cannot hold default currency");
     }
 
-    private void assertDeposit(final net.thenextlvl.service.economy.Account account, final Number amount, final Currency currency) {
+    private void assertDeposit(final Account account, final Number amount, final Currency currency) {
         final var balanceBefore = account.getBalance(currency);
         final var result = account.deposit(amount, currency);
         final var balanceAfter = account.getBalance(currency);
@@ -209,7 +200,7 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
         }
     }
 
-    private void assertWithdraw(final net.thenextlvl.service.economy.Account account, final Number amount, final Currency currency) {
+    private void assertWithdraw(final Account account, final Number amount, final Currency currency) {
         final var balanceBefore = account.getBalance(currency);
         final var result = account.withdraw(amount, currency);
         final var balanceAfter = account.getBalance(currency);
@@ -224,7 +215,7 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
         }
     }
 
-    private void assertSetBalance(final net.thenextlvl.service.economy.Account account, final Number balance, final Currency currency) {
+    private void assertSetBalance(final Account account, final Number balance, final Currency currency) {
         final var result = account.setBalance(balance, currency);
         final var balanceAfter = account.getBalance(currency);
 
@@ -258,23 +249,17 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
         else pass("withdraw(5000) insufficient", "returned " + result.status());
     }
 
-    private void assertLoadAccount(final Player player) {
-        controller.loadAccount(player).thenAccept(account -> {
+    private CompletableFuture<Void> assertLoadAccount(final Player player) {
+        return controller.loadAccount(player).thenAccept(account -> {
             if (account.isPresent()) pass("loadAccount", "loaded account for " + player.getName());
             else fail("loadAccount", "account not found in backing store");
-        }).exceptionally(throwable -> {
-            fail("loadAccount", throwable.getMessage());
-            return null;
-        }).join();
+        });
     }
 
-    private void assertResolveAccount(final Player player) {
-        controller.resolveAccount(player).thenAccept(account -> {
+    private CompletableFuture<Void> assertResolveAccount(final Player player) {
+        return controller.resolveAccount(player).thenAccept(account -> {
             if (account.isPresent()) pass("resolveAccount", "resolved account for " + player.getName());
             else fail("resolveAccount", "account not found");
-        }).exceptionally(throwable -> {
-            fail("resolveAccount", throwable.getMessage());
-            return null;
-        }).join();
+        });
     }
 }

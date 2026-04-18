@@ -7,6 +7,8 @@ import net.thenextlvl.service.permission.PermissionHolder;
 import net.thenextlvl.service.plugin.ServicePlugin;
 import org.bukkit.entity.Player;
 
+import java.util.concurrent.CompletableFuture;
+
 public final class PermissionTestSuite extends TestSuite<PermissionController> {
     public PermissionTestSuite(final ServicePlugin plugin, final CommandSourceStack source, final PermissionController controller) {
         super(plugin, source, controller);
@@ -14,13 +16,13 @@ public final class PermissionTestSuite extends TestSuite<PermissionController> {
 
     @Override
     protected void setup() {
-        playerTest("loadPermissionHolder", this::testLoadPermissionHolder);
+        playerAsyncTest("loadPermissionHolder", this::testLoadPermissionHolder);
         playerTest("getPermissionHolder", this::testGetPermissionHolder);
-        playerTest("resolvePermissionHolder", this::testResolvePermissionHolder);
+        playerAsyncTest("resolvePermissionHolder", this::testResolvePermissionHolder);
     }
 
-    private void testLoadPermissionHolder(final Player player) {
-        controller.loadPermissionHolder(player).thenAccept(holder -> {
+    private CompletableFuture<Void> testLoadPermissionHolder(final Player player) {
+        return controller.loadPermissionHolder(player).thenAccept(holder -> {
             pass("loadPermissionHolder", "loaded permission holder for " + player.getName());
 
             assertGetPermissions(holder);
@@ -37,9 +39,6 @@ public final class PermissionTestSuite extends TestSuite<PermissionController> {
             assertIntInfoNode(holder);
             assertDoubleInfoNode(holder);
             assertRemoveInfoNode(holder);
-        }).exceptionally(throwable -> {
-            fail("loadPermissionHolder", throwable.getMessage());
-            return null;
         });
     }
 
@@ -49,13 +48,9 @@ public final class PermissionTestSuite extends TestSuite<PermissionController> {
         else fail("getPermissionHolder", "permission holder not cached after load");
     }
 
-    private void testResolvePermissionHolder(final Player player) {
-        controller.resolvePermissionHolder(player).thenAccept(holder ->
-                pass("resolvePermissionHolder", "resolved permission holder for " + player.getName())
-        ).exceptionally(throwable -> {
-            fail("resolvePermissionHolder", throwable.getMessage());
-            return null;
-        });
+    private CompletableFuture<Void> testResolvePermissionHolder(final Player player) {
+        return controller.resolvePermissionHolder(player).thenAccept(holder ->
+                pass("resolvePermissionHolder", "resolved permission holder for " + player.getName()));
     }
 
     private void assertGetPermissions(final PermissionHolder holder) {
@@ -104,7 +99,8 @@ public final class PermissionTestSuite extends TestSuite<PermissionController> {
                 return;
             }
             final var value = holder.getInfoNode("service.io.test");
-            if (value.isPresent() && "hello".equals(value.get())) pass("setInfoNode", "set 'service.io.test' to 'hello'");
+            if (value.isPresent() && "hello".equals(value.get()))
+                pass("setInfoNode", "set 'service.io.test' to 'hello'");
             else fail("setInfoNode", "set but getInfoNode returned " + value + " instead of Optional[hello]");
         } else fail("setInfoNode", "failed to set info node");
     }
