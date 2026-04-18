@@ -188,4 +188,9 @@ public final class VaultChatServiceWrapper extends Chat implements Wrapper {
                 .map(world -> controller.resolveGroup(groupName, world).join())
                 .orElseGet(() -> controller.resolveGroup(groupName).join()));
     }
+
+    @Override
+    public Type type() {
+        return Type.VAULT;
+    }
 }

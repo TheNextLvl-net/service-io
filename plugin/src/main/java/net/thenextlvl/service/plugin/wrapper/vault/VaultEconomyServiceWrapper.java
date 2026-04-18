@@ -342,6 +342,11 @@ public final class VaultEconomyServiceWrapper implements Economy, Wrapper {
         return new EconomyResponse(amount, result.balance().doubleValue(), responseType, errorMessage);
     }
 
+    @Override
+    public Type type() {
+        return Type.VAULT;
+    }
+
     @FunctionalInterface
     public interface ThrowingFunction<T> {
         T apply(BankController controller) throws Exception;

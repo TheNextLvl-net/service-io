@@ -51,4 +51,9 @@ public final class VaultUnlockedPermissionServiceWrapper implements PermissionCo
     public String getName() {
         return permission.getName() + " Wrapper";
     }
+
+    @Override
+    public Type type() {
+        return Type.VAULT_UNLOCKED;
+    }
 }

@@ -188,4 +188,9 @@ public final class VaultUnlockedChatServiceWrapper extends Chat implements Wrapp
                 .map(world -> controller.resolveGroup(groupName, world).join())
                 .orElseGet(() -> controller.resolveGroup(groupName).join()));
     }
+
+    @Override
+    public Type type() {
+        return Type.VAULT_UNLOCKED;
+    }
 }

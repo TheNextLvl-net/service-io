@@ -175,4 +175,9 @@ public final class VaultPermissionServiceWrapper extends Permission implements W
         assert plugin != null;
         return plugin;
     }
+
+    @Override
+    public Type type() {
+        return Type.VAULT;
+    }
 }

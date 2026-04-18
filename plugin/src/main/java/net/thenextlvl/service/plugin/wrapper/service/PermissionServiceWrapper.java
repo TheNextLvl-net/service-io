@@ -51,4 +51,9 @@ public final class PermissionServiceWrapper implements PermissionController, Wra
     public String getName() {
         return permission.getName() + " Wrapper";
     }
+
+    @Override
+    public Type type() {
+        return Type.VAULT;
+    }
 }

@@ -175,4 +175,9 @@ public final class VaultUnlockedPermissionServiceWrapper extends Permission impl
         assert plugin != null;
         return plugin;
     }
+
+    @Override
+    public Type type() {
+        return Type.VAULT_UNLOCKED;
+    }
 }

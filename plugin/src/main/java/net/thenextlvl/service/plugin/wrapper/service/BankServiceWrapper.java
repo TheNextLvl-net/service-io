@@ -142,4 +142,9 @@ public final class BankServiceWrapper implements BankController, Wrapper {
     public boolean hasCapability(final EconomyCapability capability) {
         return capabilities.contains(capability);
     }
+
+    @Override
+    public Type type() {
+        return Type.VAULT;
+    }
 }

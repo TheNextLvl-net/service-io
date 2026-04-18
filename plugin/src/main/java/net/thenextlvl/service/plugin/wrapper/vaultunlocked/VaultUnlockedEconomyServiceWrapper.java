@@ -356,6 +356,11 @@ public final class VaultUnlockedEconomyServiceWrapper implements Economy, Wrappe
         return new EconomyResponse(amount, new BigDecimal(result.balance().toString()), responseType, errorMessage);
     }
 
+    @Override
+    public Type type() {
+        return Type.VAULT_UNLOCKED;
+    }
+
     @FunctionalInterface
     public interface ThrowingFunction<T> {
         T apply(BankController controller) throws Exception;

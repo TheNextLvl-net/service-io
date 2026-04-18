@@ -137,4 +137,9 @@ public final class VaultUnlockedEconomyServiceWrapper implements EconomyControll
     public boolean hasCapability(final EconomyCapability capability) {
         return capabilities.contains(capability);
     }
+
+    @Override
+    public Type type() {
+        return Type.VAULT_UNLOCKED;
+    }
 }

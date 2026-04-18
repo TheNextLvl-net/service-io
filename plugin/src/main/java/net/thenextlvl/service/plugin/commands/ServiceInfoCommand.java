@@ -6,9 +6,6 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.JoinConfiguration;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
@@ -23,16 +20,45 @@ import net.thenextlvl.service.hologram.HologramController;
 import net.thenextlvl.service.permission.PermissionController;
 import net.thenextlvl.service.plugin.ServicePlugin;
 import net.thenextlvl.service.plugin.commands.brigadier.SimpleCommand;
+import net.thenextlvl.service.plugin.wrapper.Wrapper;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.ServicePriority;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 final class ServiceInfoCommand extends SimpleCommand {
+    private static final Comparator<ServiceRegistration> registrationOrder = (left, right) -> {
+        final var active = Integer.compare(activeWeight(right), activeWeight(left));
+        if (active != 0) return active;
+        final var priority = Integer.compare(priorityWeight(right), priorityWeight(left));
+        if (priority != 0) return priority;
+        final var source = left.source().compareTo(right.source());
+        if (source != 0) return source;
+        return left.name().compareTo(right.name());
+    };
+    private static final Comparator<ServiceRegistration> representativeOrder = (left, right) -> {
+        final var wrapper = Integer.compare(wrapperWeight(left), wrapperWeight(right));
+        if (wrapper != 0) return wrapper;
+        final var active = Integer.compare(activeWeight(right), activeWeight(left));
+        if (active != 0) return active;
+        final var priority = Integer.compare(priorityWeight(right), priorityWeight(left));
+        if (priority != 0) return priority;
+        final var source = left.source().compareTo(right.source());
+        if (source != 0) return source;
+        return left.name().compareTo(right.name());
+    };
+    private static final Comparator<ServiceGroup> groupOrder = Comparator
+            .comparing(ServiceGroup::active).reversed()
+            .thenComparing(ServiceGroup::name);
+
     private ServiceInfoCommand(final ServicePlugin plugin) {
         super(plugin, "info", "service.info");
     }
@@ -66,18 +92,23 @@ final class ServiceInfoCommand extends SimpleCommand {
         return SINGLE_SUCCESS;
     }
 
-    private <C extends Controller, V> int info(
+    private <C extends Controller, V, U> int info(
             final CommandContext<CommandSourceStack> context, final Class<C> type,
-            @Nullable final Class<V> vault, @Nullable final Function<V, String> mapper
+            @Nullable final Class<V> vault, @Nullable final Class<U> vaultUnlocked,
+            @Nullable final Function<V, String> vaultMapper,
+            @Nullable final Function<U, String> vaultUnlockedMapper
     ) {
         final var sender = context.getSource().getSender();
-        final C service = plugin.getServer().getServicesManager().load(type);
-        final var registrations = getRegistrations(type, service, vault, mapper);
-        if (sendServiceInfo(sender, type, service != null ? service.getName() : null, registrations))
-            return SINGLE_SUCCESS;
-        plugin.bundle().sendMessage(sender, "service.missing",
-                Placeholder.component("service", translate(plugin, sender, type)));
-        return 0;
+        final var sources = new ArrayList<ServiceSource>();
+
+        sources.add(source(type, Wrapper.Type.SERVICE_IO, Controller::getName));
+        if (vault != null && vaultMapper != null)
+            sources.add(source(vault, Wrapper.Type.VAULT, vaultMapper));
+        if (vaultUnlocked != null && vaultUnlockedMapper != null)
+            sources.add(source(vaultUnlocked, Wrapper.Type.VAULT_UNLOCKED, vaultUnlockedMapper));
+
+        sendServiceInfo(sender, buildSection(type, sources));
+        return SINGLE_SUCCESS;
     }
 
     private static final Map<Class<? extends Controller>, String> translations = Map.ofEntries(
@@ -89,6 +120,15 @@ final class ServiceInfoCommand extends SimpleCommand {
             Map.entry(HologramController.class, "service.name.hologram"),
             Map.entry(PermissionController.class, "service.name.permission")
     );
+    private static final Map<Class<? extends Controller>, String> sectionTranslations = Map.ofEntries(
+            Map.entry(BankController.class, "service.section.type.bank"),
+            Map.entry(CharacterController.class, "service.section.type.character"),
+            Map.entry(ChatController.class, "service.section.type.chat"),
+            Map.entry(EconomyController.class, "service.section.type.economy"),
+            Map.entry(GroupController.class, "service.section.type.group"),
+            Map.entry(HologramController.class, "service.section.type.hologram"),
+            Map.entry(PermissionController.class, "service.section.type.permission")
+    );
 
     static Component translate(final ServicePlugin plugin, final Audience audience, final Class<? extends Controller> type) {
         final var translation = translations.get(type);
@@ -96,63 +136,156 @@ final class ServiceInfoCommand extends SimpleCommand {
         throw new IllegalStateException("Unexpected controller: " + type);
     }
 
+    private static Component translateSection(final ServicePlugin plugin, final Audience audience, final Class<? extends Controller> type) {
+        final var translation = sectionTranslations.get(type);
+        if (translation != null) return plugin.bundle().component(translation, audience);
+        throw new IllegalStateException("Unexpected controller: " + type);
+    }
+
     private int infoBanks(final CommandContext<CommandSourceStack> context) {
-        return info(context, BankController.class, null, null);
+        return info(context, BankController.class, null, null, null, null);
     }
 
     private int infoCharacters(final CommandContext<CommandSourceStack> context) {
-        return info(context, CharacterController.class, null, null);
+        return info(context, CharacterController.class, null, null, null, null);
     }
 
     private int infoChat(final CommandContext<CommandSourceStack> context) {
-        return info(context, ChatController.class, Chat.class, Chat::getName);
+        return info(context, ChatController.class, 
+                Chat.class, net.milkbowl.vault2.chat.Chat.class,
+                Chat::getName, net.milkbowl.vault2.chat.Chat::getName);
     }
 
     private int infoEconomy(final CommandContext<CommandSourceStack> context) {
-        return info(context, EconomyController.class, Economy.class, Economy::getName);
+        return info(context, EconomyController.class, 
+                Economy.class, net.milkbowl.vault2.economy.Economy.class,
+                Economy::getName, net.milkbowl.vault2.economy.Economy::getName);
     }
 
     private int infoGroups(final CommandContext<CommandSourceStack> context) {
-        return info(context, GroupController.class, null, null);
+        return info(context, GroupController.class, null, null, null, null);
     }
 
     private int infoHolograms(final CommandContext<CommandSourceStack> context) {
-        return info(context, HologramController.class, null, null);
+        return info(context, HologramController.class, null, null, null, null);
     }
 
     private int infoPermissions(final CommandContext<CommandSourceStack> context) {
-        return info(context, PermissionController.class, Permission.class, Permission::getName);
+        return info(context, PermissionController.class,
+                Permission.class, net.milkbowl.vault2.permission.Permission.class,
+                Permission::getName, net.milkbowl.vault2.permission.Permission::getName);
     }
 
-    private final JoinConfiguration separator = JoinConfiguration.builder()
-            .separator(Component.text(", ", NamedTextColor.WHITE))
-            .prefix(Component.text(" - ", NamedTextColor.DARK_GRAY))
-            .build();
-
-    private <C extends Controller, V> List<TextComponent> getRegistrations(final Class<C> registration, @Nullable final C loaded, @Nullable final Class<V> vault, @Nullable final Function<V, String> mapper) {
-        final var name = loaded != null ? loaded.getName() : null;
-        final var registrations = plugin.getServer().getServicesManager().getRegistrations(registration).stream()
-                .map(RegisteredServiceProvider::getProvider)
-                .map(Controller::getName);
-        final var vaultRegistrations = vault != null && mapper != null
-                ? plugin.getServer().getServicesManager().getRegistrations(vault).stream()
-                  .map(RegisteredServiceProvider::getProvider)
-                  .map(mapper) : Stream.<String>empty();
-        return Stream.concat(registrations, vaultRegistrations)
-                .filter(provider -> !provider.equals(name))
-                .distinct()
-                .map(Component::text)
-                .toList();
-    }
-
-    private boolean sendServiceInfo(
-            final CommandSender sender, final Class<? extends Controller> type,
-            @Nullable final String provider, final List<TextComponent> registrations
+    private <C extends Controller> ServiceSection buildSection(
+            final Class<C> type, final List<ServiceSource> sources
     ) {
-        if (provider != null) plugin.bundle().sendMessage(sender, "service.provider.name",
-                Placeholder.parsed("provider", provider), Placeholder.component("type", translate(plugin, sender, type)));
-        if (!registrations.isEmpty()) plugin.bundle().sendMessage(sender, "service.provider.registrations",
-                Placeholder.component("registered", Component.join(separator, registrations)));
-        return provider != null || !registrations.isEmpty();
+        final var activeRegistration = plugin.getServer().getServicesManager().getRegistration(type);
+        final var activeProvider = activeRegistration != null ? activeRegistration.getProvider() : null;
+        final var entries = sources.stream()
+                .flatMap(source -> getRegistrations(source, activeProvider))
+                .toList();
+        final var groups = entries.stream()
+                .collect(Collectors.groupingBy(ServiceRegistration::group))
+                .values().stream()
+                .map(this::buildGroup)
+                .sorted(groupOrder)
+                .toList();
+        return new ServiceSection(type, groups);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Stream<ServiceRegistration> getRegistrations(
+            final ServiceSource source, @Nullable final Object activeProvider
+    ) {
+        return plugin.getServer().getServicesManager().getRegistrations((Class<Object>) source.type())
+                .stream()
+                .map(registration -> createRegistration(source, registration, registration.getProvider() == activeProvider));
+    }
+
+    private ServiceGroup buildGroup(final List<ServiceRegistration> registrations) {
+        final var entries = registrations.stream()
+                .sorted(registrationOrder)
+                .toList();
+        final var representative = entries.stream().min(representativeOrder)
+                .orElseThrow();
+        final var active = entries.stream().anyMatch(ServiceRegistration::active);
+        return new ServiceGroup(representative.group(), active, entries);
+    }
+
+    private ServiceRegistration createRegistration(
+            final ServiceSource source, final RegisteredServiceProvider<?> registration, final boolean active
+    ) {
+        final var provider = registration.getProvider();
+        final var name = source.nameMapper().apply(provider);
+        return new ServiceRegistration(
+                registration.getPlugin().getName(),
+                name,
+                source.wrapperType().getName(),
+                registration.getPriority(),
+                active,
+                provider instanceof Wrapper
+        );
+    }
+
+    private void sendServiceInfo(final CommandSender sender, final ServiceSection section) {
+        plugin.bundle().sendMessage(sender, "service.section.header",
+                Placeholder.component("type", translateSection(plugin, sender, section.type())),
+                Placeholder.parsed("count", Integer.toString(section.groups().size())));
+        if (section.groups().isEmpty()) {
+            plugin.bundle().sendMessage(sender, "service.section.empty");
+            return;
+        }
+        section.groups().forEach(group -> sendGroup(sender, group));
+    }
+
+    private void sendGroup(final CommandSender sender, final ServiceGroup group) {
+        plugin.bundle().sendMessage(sender, "service.section.group",
+                Placeholder.parsed("provider", group.name()));
+        for (var i = 0; i < group.registrations().size(); i++) {
+            final var registration = group.registrations().get(i);
+            plugin.bundle().sendMessage(sender, i + 1 == group.registrations().size()
+                            ? "service.section.entry.last"
+                            : "service.section.entry.branch",
+                    Placeholder.parsed("tree", i + 1 == group.registrations().size() ? "└" : "├"),
+                    Placeholder.parsed("name", registration.name()),
+                    Placeholder.parsed("priority", registration.priority().name()),
+                    Placeholder.parsed("source", registration.source()));
+        }
+    }
+
+    private static int priorityWeight(final ServiceRegistration registration) {
+        return switch (registration.priority()) {
+            case Highest -> 5;
+            case High -> 4;
+            case Normal -> 3;
+            case Low -> 2;
+            case Lowest -> 1;
+        };
+    }
+
+    private static int activeWeight(final ServiceRegistration registration) {
+        return registration.active() ? 1 : 0;
+    }
+
+    private static int wrapperWeight(final ServiceRegistration registration) {
+        return registration.wrapper() ? 1 : 0;
+    }
+
+    private static <T> ServiceSource source(final Class<T> type, final Wrapper.Type wrapperType, final Function<T, String> nameMapper) {
+        return new ServiceSource(type, wrapperType, value -> nameMapper.apply(type.cast(value)));
+    }
+
+    private record ServiceSource(Class<?> type, Wrapper.Type wrapperType, Function<Object, String> nameMapper) {
+    }
+
+    private record ServiceSection(Class<? extends Controller> type, List<ServiceGroup> groups) {
+    }
+
+    private record ServiceGroup(String name, boolean active, List<ServiceRegistration> registrations) {
+    }
+
+    private record ServiceRegistration(
+            String group, String name, String source, ServicePriority priority, boolean active, boolean wrapper
+    ) {
     }
 }
