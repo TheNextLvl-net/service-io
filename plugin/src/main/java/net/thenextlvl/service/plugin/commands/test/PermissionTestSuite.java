@@ -60,11 +60,11 @@ public final class PermissionTestSuite extends TestSuite<PermissionController> {
 
     private void assertAddPermission(final PermissionHolder holder) {
         final var added = holder.addPermission("service.io.test");
-        if (added) {
-            final var state = holder.checkPermission("service.io.test");
-            if (state == TriState.TRUE) pass("addPermission", "added 'service.io.test'");
-            else fail("addPermission", "added but checkPermission returned " + state + " instead of TRUE");
-        } else fail("addPermission", "failed to add permission");
+        final var state = holder.checkPermission("service.io.test");
+        assertRequiredStateChange("addPermission", added, state == TriState.TRUE,
+                "added 'service.io.test'",
+                "failed to add permission",
+                "addPermission returned true but checkPermission returned " + state + " instead of TRUE");
     }
 
     private void assertCheckPermission(final PermissionHolder holder, final String permission, final TriState expected) {
@@ -75,34 +75,31 @@ public final class PermissionTestSuite extends TestSuite<PermissionController> {
 
     private void assertSetPermission(final PermissionHolder holder) {
         final var set = holder.setPermission("service.io.test", false);
-        if (set) {
-            final var state = holder.checkPermission("service.io.test");
-            if (state == TriState.FALSE) pass("setPermission", "set 'service.io.test' to false");
-            else fail("setPermission", "set but checkPermission returned " + state + " instead of FALSE");
-        } else fail("setPermission", "failed to set permission");
+        final var state = holder.checkPermission("service.io.test");
+        assertRequiredStateChange("setPermission", set, state == TriState.FALSE,
+                "set 'service.io.test' to false",
+                "failed to set permission",
+                "setPermission returned true but checkPermission returned " + state + " instead of FALSE");
     }
 
     private void assertRemovePermission(final PermissionHolder holder) {
         final var removed = holder.removePermission("service.io.test");
-        if (removed) {
-            final var state = holder.checkPermission("service.io.test");
-            if (state == TriState.NOT_SET) pass("removePermission", "removed 'service.io.test'");
-            else fail("removePermission", "removed but checkPermission returned " + state + " instead of NOT_SET");
-        } else fail("removePermission", "failed to remove permission");
+        final var state = holder.checkPermission("service.io.test");
+        assertRequiredStateChange("removePermission", removed, state == TriState.NOT_SET,
+                "removed 'service.io.test'",
+                "failed to remove permission",
+                "removePermission returned true but checkPermission returned " + state + " instead of NOT_SET");
     }
 
     private void assertSetInfoNode(final PermissionHolder holder) {
         final var set = holder.setInfoNode("service.io.test", "hello");
-        if (set) {
-            if (!holder.hasInfoNode("service.io.test")) {
-                fail("setInfoNode", "set but hasInfoNode returned false");
-                return;
-            }
-            final var value = holder.getInfoNode("service.io.test");
-            if (value.isPresent() && "hello".equals(value.get()))
-                pass("setInfoNode", "set 'service.io.test' to 'hello'");
-            else fail("setInfoNode", "set but getInfoNode returned " + value + " instead of Optional[hello]");
-        } else fail("setInfoNode", "failed to set info node");
+        final var has = holder.hasInfoNode("service.io.test");
+        final var value = holder.getInfoNode("service.io.test");
+        assertRequiredStateChange("setInfoNode", set, has && value.isPresent() && "hello".equals(value.get()),
+                "set 'service.io.test' to 'hello'",
+                "failed to set info node",
+                !has ? "setInfoNode returned true but hasInfoNode returned false"
+                        : "setInfoNode returned true but getInfoNode returned " + value + " instead of Optional[hello]");
     }
 
     private void assertBooleanInfoNode(final PermissionHolder holder) {
@@ -128,9 +125,10 @@ public final class PermissionTestSuite extends TestSuite<PermissionController> {
 
     private void assertRemoveInfoNode(final PermissionHolder holder) {
         final var removed = holder.removeInfoNode("service.io.test");
-        if (removed) {
-            if (holder.hasInfoNode("service.io.test")) fail("removeInfoNode", "removed but hasInfoNode returned true");
-            else pass("removeInfoNode", "removed 'service.io.test'");
-        } else fail("removeInfoNode", "failed to remove info node");
+        final var has = holder.hasInfoNode("service.io.test");
+        assertRequiredStateChange("removeInfoNode", removed, !has,
+                "removed 'service.io.test'",
+                "failed to remove info node",
+                "removeInfoNode returned true but hasInfoNode returned true");
     }
 }

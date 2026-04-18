@@ -126,16 +126,9 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
     private void assertSetName(final Hologram hologram) {
         final var original = hologram.getName();
         final var renamed = hologram.setName("service-io-test-renamed");
-        if (renamed) {
-            if ("service-io-test-renamed".equals(hologram.getName())) {
-                pass("setName", "renamed to '" + hologram.getName() + "'");
-            } else {
-                fail("setName", "setName returned true but getName returned '" + hologram.getName() + "'");
-            }
-            hologram.setName(original);
-        } else {
-            fail("setName", "failed to rename hologram");
-        }
+        final var updated = hologram.getName();
+        assertChangedValue("setName", renamed, original, updated, "service-io-test-renamed", "renamed to '" + updated + "'");
+        hologram.setName(original);
     }
 
     private void assertGetLocation(final Hologram hologram) {
@@ -151,9 +144,15 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
     private CompletableFuture<Void> assertTeleport(final Hologram hologram) {
         final var target = source.getLocation().add(0, 2, 0);
         return hologram.teleportAsync(target).thenAccept(success -> {
-            if (success)
-                pass("teleportAsync", String.format("moved to %.1f, %.1f, %.1f", target.getX(), target.getY(), target.getZ()));
-            else fail("teleportAsync", "teleport returned false");
+            final var location = hologram.getLocation();
+            final var matches = location.getWorld() != null
+                    && location.getWorld().equals(target.getWorld())
+                    && location.distanceSquared(target) == 0;
+            assertRequiredStateChange("teleportAsync", success, matches,
+                    String.format("moved to %.1f, %.1f, %.1f", target.getX(), target.getY(), target.getZ()),
+                    "teleport returned false",
+                    String.format("teleportAsync returned true but location is %.1f, %.1f, %.1f",
+                            location.getX(), location.getY(), location.getZ()));
         });
     }
 
@@ -164,16 +163,9 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
     private void assertSetPersistent(final Hologram hologram) {
         final var original = hologram.isPersistent();
         final var changed = hologram.setPersistent(!original);
-        if (changed) {
-            if (hologram.isPersistent() != original) {
-                pass("setPersistent", "changed to " + hologram.isPersistent());
-            } else {
-                fail("setPersistent", "setPersistent returned true but value did not change");
-            }
-            hologram.setPersistent(original);
-        } else {
-            pass("setPersistent", "already " + original + " (no change)");
-        }
+        final var updated = hologram.isPersistent();
+        assertChangedValue("setPersistent", changed, original, updated, !original, "changed to " + updated);
+        hologram.setPersistent(original);
     }
 
     private void assertPersist(final Hologram hologram) {
@@ -186,16 +178,9 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         pass("getViewPermission", originalPermission.map(p -> "'" + p + "'").orElse("empty"));
 
         final var changed = hologram.setViewPermission("service.test.view");
-        if (changed) {
-            final var retrieved = hologram.getViewPermission();
-            if (retrieved.isPresent() && "service.test.view".equals(retrieved.get())) {
-                pass("setViewPermission", "set to 'service.test.view'");
-            } else {
-                fail("setViewPermission", "setViewPermission returned true but getViewPermission returned " + retrieved);
-            }
-        } else {
-            pass("setViewPermission", "no change");
-        }
+        final var retrieved = hologram.getViewPermission().orElse(null);
+        assertChangedValue("setViewPermission", changed, originalPermission.orElse(null), retrieved,
+                "service.test.view", "set to 'service.test.view'");
 
         hologram.setViewPermission(originalPermission.orElse(null));
     }
@@ -205,16 +190,9 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         pass("isVisibleByDefault", String.valueOf(original));
 
         final var changed = hologram.setVisibleByDefault(!original);
-        if (changed) {
-            if (hologram.isVisibleByDefault() != original) {
-                pass("setVisibleByDefault", "changed to " + hologram.isVisibleByDefault());
-            } else {
-                fail("setVisibleByDefault", "setVisibleByDefault returned true but value did not change");
-            }
-            hologram.setVisibleByDefault(original);
-        } else {
-            pass("setVisibleByDefault", "already " + original + " (no change)");
-        }
+        final var updated = hologram.isVisibleByDefault();
+        assertChangedValue("setVisibleByDefault", changed, original, updated, !original, "changed to " + updated);
+        hologram.setVisibleByDefault(original);
     }
 
     private void assertGetTrackedBy(final Hologram hologram) {
@@ -233,36 +211,29 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         pass("canSee", String.valueOf(hologram.canSee(player)));
         pass("isTrackedBy", String.valueOf(hologram.isTrackedBy(player)));
 
+        final var viewerBeforeAdd = hologram.isViewer(player.getUniqueId());
         final var added = hologram.addViewer(player.getUniqueId());
-        if (added) {
-            if (hologram.isViewer(player.getUniqueId())) pass("addViewer", "added");
-            else fail("addViewer", "addViewer returned true but isViewer is false");
-        } else {
-            pass("addViewer", "already a viewer");
-        }
+        final var isViewerAfterAdd = hologram.isViewer(player.getUniqueId());
+        assertChangedValue("addViewer", added, viewerBeforeAdd, isViewerAfterAdd, true, "added");
 
         pass("isViewer", String.valueOf(hologram.isViewer(player.getUniqueId())));
         pass("getViewers", hologram.getViewers().size() + " viewer(s)");
 
+        final var viewerBeforeBatchAdd = hologram.isViewer(player.getUniqueId());
         final var addedBatch = hologram.addViewers(List.of(player.getUniqueId()));
-        pass("addViewers(Collection)", addedBatch ? "added" : "already viewers");
+        final var isViewerAfterBatchAdd = hologram.isViewer(player.getUniqueId());
+        assertChangedValue("addViewers(Collection)", addedBatch, viewerBeforeBatchAdd, isViewerAfterBatchAdd, true, "added");
 
+        final var viewerBeforeRemove = hologram.isViewer(player.getUniqueId());
         final var removed = hologram.removeViewer(player.getUniqueId());
-        if (removed) {
-            if (!hologram.isViewer(player.getUniqueId())) pass("removeViewer", "removed");
-            else fail("removeViewer", "removeViewer returned true but isViewer is still true");
-        } else {
-            pass("removeViewer", "was not a viewer");
-        }
+        final var isViewerAfterRemove = hologram.isViewer(player.getUniqueId());
+        assertChangedValue("removeViewer", removed, viewerBeforeRemove, isViewerAfterRemove, false, "removed");
 
         hologram.addViewer(player.getUniqueId());
+        final var viewerBeforeBatchRemove = hologram.isViewer(player.getUniqueId());
         final var removedBatch = hologram.removeViewers(List.of(player.getUniqueId()));
-        if (removedBatch) {
-            if (!hologram.isViewer(player.getUniqueId())) pass("removeViewers(Collection)", "removed");
-            else fail("removeViewers(Collection)", "removeViewers returned true but isViewer is still true");
-        } else {
-            pass("removeViewers(Collection)", "was not a viewer");
-        }
+        final var isViewerAfterBatchRemove = hologram.isViewer(player.getUniqueId());
+        assertChangedValue("removeViewers(Collection)", removedBatch, viewerBeforeBatchRemove, isViewerAfterBatchRemove, false, "removed");
     }
 
     private void assertTextLine(final Hologram hologram, final Player player) {
@@ -272,8 +243,13 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         }
 
         try {
+            final var beforeCount = hologram.getLineCount();
             final var line = hologram.addTextLine();
-            pass("addTextLine", "added text line at index " + hologram.getLineIndex(line));
+            final var afterCount = hologram.getLineCount();
+            assertRequiredStateChange("addTextLine", true, afterCount == beforeCount + 1 && hologram.hasLine(line),
+                    "added text line at index " + hologram.getLineIndex(line),
+                    "failed to add text line",
+                    "line count did not increase or hologram does not track the new line");
 
             assertTextLineGetHologram(line, hologram);
             assertTextLineGetType(line);
@@ -323,13 +299,11 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
     private void assertTextLineSetText(final TextHologramLine line, final Player player) {
         final var text = Component.text("Hello from ServiceIO test!", NamedTextColor.GOLD);
         final var changed = line.setText(text);
-        if (changed) {
-            final var retrieved = line.getText(player);
-            if (retrieved.isPresent()) pass("setText / getText", "text content verified");
-            else fail("setText / getText", "setText returned true but getText is empty");
-        } else {
-            fail("setText", "text was not changed");
-        }
+        final var retrieved = line.getText(player);
+        assertRequiredStateChange("setText / getText", changed, retrieved.isPresent(),
+                "text content verified",
+                "text was not changed",
+                "setText returned true but getText is empty");
     }
 
     private void assertTextLineUnparsedText(final TextHologramLine line) {
@@ -337,13 +311,9 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         pass("getUnparsedText", original.map(t -> "'" + t + "'").orElse("empty"));
 
         final var changed = line.setUnparsedText("<gold>Unparsed test</gold>");
-        if (changed) {
-            final var retrieved = line.getUnparsedText();
-            if (retrieved.isPresent()) pass("setUnparsedText", "set to '" + retrieved.get() + "'");
-            else fail("setUnparsedText", "setUnparsedText returned true but getUnparsedText is empty");
-        } else {
-            pass("setUnparsedText", "no change");
-        }
+        final var retrieved = line.getUnparsedText().orElse(null);
+        assertChangedValue("setUnparsedText", changed, original.orElse(null), retrieved,
+                "<gold>Unparsed test</gold>", "set to '" + retrieved + "'");
 
         line.setUnparsedText(original.orElse(null));
     }
@@ -354,16 +324,9 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
 
         final var newWidth = original == 200 ? 150 : 200;
         final var changed = line.setLineWidth(newWidth);
-        if (changed) {
-            if (line.getLineWidth() == newWidth) {
-                pass("setLineWidth", "changed to " + newWidth);
-            } else {
-                fail("setLineWidth", "setLineWidth returned true but getLineWidth returned " + line.getLineWidth());
-            }
-            line.setLineWidth(original);
-        } else {
-            pass("setLineWidth", "no change");
-        }
+        final var updated = line.getLineWidth();
+        assertChangedValue("setLineWidth", changed, original, updated, newWidth, "changed to " + newWidth);
+        line.setLineWidth(original);
     }
 
     private void assertTextLineBackgroundColor(final TextHologramLine line) {
@@ -371,13 +334,8 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         pass("getBackgroundColor", original.map(Color::toString).orElse("empty"));
 
         final var changed = line.setBackgroundColor(Color.RED);
-        if (changed) {
-            final var retrieved = line.getBackgroundColor();
-            if (retrieved.isPresent()) pass("setBackgroundColor", "set to " + retrieved.get());
-            else fail("setBackgroundColor", "setBackgroundColor returned true but getBackgroundColor is empty");
-        } else {
-            pass("setBackgroundColor", "no change");
-        }
+        final var retrieved = line.getBackgroundColor().orElse(null);
+        assertChangedValue("setBackgroundColor", changed, original.orElse(null), retrieved, Color.RED, "set to " + retrieved);
 
         line.setBackgroundColor(original.orElse(null));
     }
@@ -388,16 +346,9 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
 
         final var newOpacity = original == 100 ? 50 : 100;
         final var changed = line.setTextOpacity(newOpacity);
-        if (changed) {
-            if (line.getTextOpacity() == newOpacity) {
-                pass("setTextOpacity", "changed to " + newOpacity);
-            } else {
-                fail("setTextOpacity", "setTextOpacity returned true but getTextOpacity returned " + line.getTextOpacity());
-            }
-            line.setTextOpacity(original);
-        } else {
-            pass("setTextOpacity", "no change");
-        }
+        final var updated = line.getTextOpacity();
+        assertChangedValue("setTextOpacity", changed, original, updated, newOpacity, "changed to " + newOpacity);
+        line.setTextOpacity(original);
     }
 
     private void assertTextLineShadowed(final TextHologramLine line) {
@@ -405,16 +356,9 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         pass("isShadowed", String.valueOf(original));
 
         final var changed = line.setShadowed(!original);
-        if (changed) {
-            if (line.isShadowed() != original) {
-                pass("setShadowed", "changed to " + line.isShadowed());
-            } else {
-                fail("setShadowed", "setShadowed returned true but value did not change");
-            }
-            line.setShadowed(original);
-        } else {
-            pass("setShadowed", "no change");
-        }
+        final var updated = line.isShadowed();
+        assertChangedValue("setShadowed", changed, original, updated, !original, "changed to " + updated);
+        line.setShadowed(original);
     }
 
     private void assertTextLineSeeThrough(final TextHologramLine line) {
@@ -422,16 +366,9 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         pass("isSeeThrough", String.valueOf(original));
 
         final var changed = line.setSeeThrough(!original);
-        if (changed) {
-            if (line.isSeeThrough() != original) {
-                pass("setSeeThrough", "changed to " + line.isSeeThrough());
-            } else {
-                fail("setSeeThrough", "setSeeThrough returned true but value did not change");
-            }
-            line.setSeeThrough(original);
-        } else {
-            pass("setSeeThrough", "no change");
-        }
+        final var updated = line.isSeeThrough();
+        assertChangedValue("setSeeThrough", changed, original, updated, !original, "changed to " + updated);
+        line.setSeeThrough(original);
     }
 
     private void assertTextLineDefaultBackground(final TextHologramLine line) {
@@ -439,16 +376,9 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         pass("isDefaultBackground", String.valueOf(original));
 
         final var changed = line.setDefaultBackground(!original);
-        if (changed) {
-            if (line.isDefaultBackground() != original) {
-                pass("setDefaultBackground", "changed to " + line.isDefaultBackground());
-            } else {
-                fail("setDefaultBackground", "setDefaultBackground returned true but value did not change");
-            }
-            line.setDefaultBackground(original);
-        } else {
-            pass("setDefaultBackground", "no change");
-        }
+        final var updated = line.isDefaultBackground();
+        assertChangedValue("setDefaultBackground", changed, original, updated, !original, "changed to " + updated);
+        line.setDefaultBackground(original);
     }
 
     private void assertTextLineAlignment(final TextHologramLine line) {
@@ -457,16 +387,9 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
 
         final var newAlignment = original == TextAlignment.CENTER ? TextAlignment.LEFT : TextAlignment.CENTER;
         final var changed = line.setAlignment(newAlignment);
-        if (changed) {
-            if (line.getAlignment() == newAlignment) {
-                pass("setAlignment", "changed to " + newAlignment);
-            } else {
-                fail("setAlignment", "setAlignment returned true but getAlignment returned " + line.getAlignment());
-            }
-            line.setAlignment(original);
-        } else {
-            pass("setAlignment", "no change");
-        }
+        final var updated = line.getAlignment();
+        assertChangedValue("setAlignment", changed, original, updated, newAlignment, "changed to " + newAlignment);
+        line.setAlignment(original);
     }
 
     private void assertTextLineViewPermission(final TextHologramLine line) {
@@ -474,16 +397,9 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         pass("HologramLine.getViewPermission", original.map(p -> "'" + p + "'").orElse("empty"));
 
         final var changed = line.setViewPermission("service.test.line.view");
-        if (changed) {
-            final var retrieved = line.getViewPermission();
-            if (retrieved.isPresent() && "service.test.line.view".equals(retrieved.get())) {
-                pass("HologramLine.setViewPermission", "set to 'service.test.line.view'");
-            } else {
-                fail("HologramLine.setViewPermission", "setViewPermission returned true but getViewPermission returned " + retrieved);
-            }
-        } else {
-            pass("HologramLine.setViewPermission", "no change");
-        }
+        final var retrieved = line.getViewPermission().orElse(null);
+        assertChangedValue("HologramLine.setViewPermission", changed, original.orElse(null), retrieved,
+                "service.test.line.view", "set to 'service.test.line.view'");
 
         line.setViewPermission(original.orElse(null));
     }
@@ -501,17 +417,21 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
         try {
             hologram.addTextLine();
             hologram.addTextLine();
-            pass("getLineCount (after adding)", String.valueOf(hologram.getLineCount()));
+            assertState("getLineCount (after adding)", hologram.getLineCount() >= 2,
+                    String.valueOf(hologram.getLineCount()),
+                    "expected at least 2 lines after adding but got " + hologram.getLineCount());
 
             final var lines = hologram.getLines().toList();
-            pass("getLines (after adding)", lines.size() + " line(s)");
+            assertState("getLines (after adding)", lines.size() >= 2,
+                    lines.size() + " line(s)",
+                    "expected at least 2 lines after adding but got " + lines.size());
 
             if (hologram.getLineCount() >= 2) {
                 final var swapped = hologram.swapLines(0, 1);
-                pass("swapLines(0, 1)", swapped ? "swapped" : "not swapped");
+                assertState("swapLines(0, 1)", swapped, "swapped", "not swapped");
 
                 final var moved = hologram.moveLine(1, 0);
-                pass("moveLine(1, 0)", moved ? "moved" : "not moved");
+                assertState("moveLine(1, 0)", moved, "moved", "not moved");
             }
 
             final var line = hologram.getLine(0);
@@ -522,15 +442,20 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
                 if (typedLine.isPresent()) pass("getLine(0, TextHologramLine.class)", "found");
                 else fail("getLine(0, TextHologramLine.class)", "not found");
 
-                pass("hasLine", String.valueOf(hologram.hasLine(line.get())));
+                assertState("hasLine", hologram.hasLine(line.get()), "true", "expected line to be tracked");
                 final var removed = hologram.removeLine(line.get());
-                pass("removeLine", removed ? "removed line 0" : "failed to remove");
+                assertRequiredStateChange("removeLine", removed, !hologram.hasLine(line.get()),
+                        "removed line 0",
+                        "failed to remove",
+                        "removeLine returned true but hologram still has the line");
             } else {
                 fail("getLine(0)", "no line at index 0");
             }
 
+            final var beforeClearCount = hologram.getLineCount();
             final var cleared = hologram.clearLines();
-            pass("clearLines", cleared ? "cleared all lines" : "no lines to clear");
+            final var remaining = hologram.getLineCount();
+            assertChangedValue("clearLines", cleared, beforeClearCount, remaining, 0, "cleared all lines");
         } catch (final Exception e) {
             fail("line management", e.getMessage());
         }

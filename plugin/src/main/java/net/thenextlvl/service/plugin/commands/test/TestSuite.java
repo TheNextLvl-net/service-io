@@ -10,6 +10,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -107,6 +108,53 @@ public abstract class TestSuite<C extends Controller> {
         record(AssertionState.SKIP, test, detail);
     }
 
+    protected final void assertState(
+            final String test,
+            final boolean condition,
+            final String successDetail,
+            final String failureDetail
+    ) {
+        if (condition) pass(test, successDetail);
+        else fail(test, failureDetail);
+    }
+
+    protected final void assertRequiredStateChange(
+            final String test,
+            final boolean changed,
+            final boolean stateVerified,
+            final String successDetail,
+            final String failureDetail,
+            final String verificationFailureDetail
+    ) {
+        if (!changed) {
+            fail(test, failureDetail);
+            return;
+        }
+        if (stateVerified) pass(test, successDetail);
+        else fail(test, verificationFailureDetail);
+    }
+
+    protected final <T> void assertChangedValue(
+            final String test,
+            final boolean changed,
+            final @Nullable T before,
+            final @Nullable T after,
+            final @Nullable T expected,
+            final String successDetail
+    ) {
+        if (changed) {
+            if (Objects.equals(after, expected)) pass(test, successDetail);
+            else fail(test, "returned true but expected " + formatValue(expected) + " and got " + formatValue(after));
+            return;
+        }
+        if (Objects.equals(after, before)) pass(test, "returned false, value unchanged");
+        else fail(test, "returned false but value changed from " + formatValue(before) + " to " + formatValue(after));
+    }
+
+    private String formatValue(final @Nullable Object value) {
+        return value == null ? "(not set)" : String.valueOf(value);
+    }
+
     private CompletableFuture<Void> executeStep(
             final TestStep step,
             final @Nullable Player player,
@@ -167,7 +215,7 @@ public abstract class TestSuite<C extends Controller> {
 
     private void scheduleDrain() {
         if (!drainScheduled.compareAndSet(false, true)) return;
-        plugin.getServer().getScheduler().runTask(plugin, this::drainMessages);
+        plugin.getServer().getGlobalRegionScheduler().execute(plugin, this::drainMessages);
     }
 
     private void drainMessages() {

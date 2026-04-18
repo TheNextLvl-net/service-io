@@ -79,16 +79,7 @@ public final class ChatTestSuite extends TestSuite<ChatController> {
 
         final var set = profile.setDisplayName("service-io-test");
         final var after = profile.getDisplayName().orElse(null);
-
-        if (set) {
-            if ("service-io-test".equals(after)) pass("setDisplayName", "value changed");
-            else fail("setDisplayName", "returned true but value did not change");
-        } else {
-            if (original == null ? after == null : original.equals(after))
-                pass("setDisplayName", "returned false, value unchanged");
-            else fail("setDisplayName", "returned false but value changed");
-        }
-
+        assertChangedValue("setDisplayName", set, original, after, "service-io-test", "value changed");
         profile.setDisplayName(original);
     }
 
@@ -98,16 +89,7 @@ public final class ChatTestSuite extends TestSuite<ChatController> {
 
         final var set = profile.setPrefix("service-io-test");
         final var after = profile.getPrefix().orElse(null);
-
-        if (set) {
-            if ("service-io-test".equals(after)) pass("setPrefix", "value changed");
-            else fail("setPrefix", "returned true but value did not change");
-        } else {
-            if (original == null ? after == null : original.equals(after))
-                pass("setPrefix", "returned false, value unchanged");
-            else fail("setPrefix", "returned false but value changed");
-        }
-
+        assertChangedValue("setPrefix", set, original, after, "service-io-test", "value changed");
         profile.setPrefix(original);
     }
 
@@ -118,16 +100,7 @@ public final class ChatTestSuite extends TestSuite<ChatController> {
 
         final var set = profile.setPrefix("service-io-test", priority);
         final var after = profile.getPrefix(priority).orElse(null);
-
-        if (set) {
-            if ("service-io-test".equals(after)) pass("setPrefix(priority)", "value changed");
-            else fail("setPrefix(priority)", "returned true but value did not change");
-        } else {
-            if (original == null ? after == null : original.equals(after))
-                pass("setPrefix(priority)", "returned false, value unchanged");
-            else fail("setPrefix(priority)", "returned false but value changed");
-        }
-
+        assertChangedValue("setPrefix(priority)", set, original, after, "service-io-test", "value changed");
         profile.setPrefix(original, priority);
     }
 
@@ -142,16 +115,7 @@ public final class ChatTestSuite extends TestSuite<ChatController> {
 
         final var set = profile.setSuffix("service-io-test");
         final var after = profile.getSuffix().orElse(null);
-
-        if (set) {
-            if ("service-io-test".equals(after)) pass("setSuffix", "value changed");
-            else fail("setSuffix", "returned true but value did not change");
-        } else {
-            if (original == null ? after == null : original.equals(after))
-                pass("setSuffix", "returned false, value unchanged");
-            else fail("setSuffix", "returned false but value changed");
-        }
-
+        assertChangedValue("setSuffix", set, original, after, "service-io-test", "value changed");
         profile.setSuffix(original);
     }
 
@@ -162,16 +126,7 @@ public final class ChatTestSuite extends TestSuite<ChatController> {
 
         final var set = profile.setSuffix("service-io-test", priority);
         final var after = profile.getSuffix(priority).orElse(null);
-
-        if (set) {
-            if ("service-io-test".equals(after)) pass("setSuffix(priority)", "value changed");
-            else fail("setSuffix(priority)", "returned true but value did not change");
-        } else {
-            if (original == null ? after == null : original.equals(after))
-                pass("setSuffix(priority)", "returned false, value unchanged");
-            else fail("setSuffix(priority)", "returned false but value changed");
-        }
-
+        assertChangedValue("setSuffix(priority)", set, original, after, "service-io-test", "value changed");
         profile.setSuffix(original, priority);
     }
 
@@ -184,38 +139,56 @@ public final class ChatTestSuite extends TestSuite<ChatController> {
         final var key = "service.io.test";
 
         final var set = profile.setInfoNode(key, "hello");
-        if (set) pass("setInfoNode", "set '" + key + "' to 'hello'");
-        else fail("setInfoNode", "failed to set info node");
-
         final var has = profile.hasInfoNode(key);
-        if (has) pass("hasInfoNode", "key exists");
-        else fail("hasInfoNode", "key not found after set");
-
         final var value = profile.getInfoNode(key);
-        if (value.isPresent() && "hello".equals(value.get())) pass("getInfoNode", "value is 'hello'");
-        else fail("getInfoNode", "expected 'hello', got " + value.orElse("(not set)"));
+        assertRequiredStateChange("setInfoNode", set, has && value.isPresent() && "hello".equals(value.get()),
+                "set '" + key + "' to 'hello'",
+                "failed to set info node",
+                !has ? "key not found after set" : "expected 'hello', got " + value.orElse("(not set)"));
+        assertState("hasInfoNode", has, "key exists", "key not found after set");
+        assertState("getInfoNode", value.isPresent() && "hello".equals(value.get()),
+                "value is 'hello'",
+                "expected 'hello', got " + value.orElse("(not set)"));
 
-        profile.setInfoNode(key, "true");
+        final var setBoolean = profile.setInfoNode(key, "true");
         final var boolValue = profile.booleanInfoNode(key);
-        if (boolValue.isPresent() && boolValue.get()) pass("booleanInfoNode", "value is true");
-        else fail("booleanInfoNode", "expected true, got " + boolValue.map(String::valueOf).orElse("(not set)"));
+        assertRequiredStateChange("setInfoNode(boolean)", setBoolean, boolValue.isPresent() && boolValue.get(),
+                "set '" + key + "' to 'true'",
+                "failed to set info node to 'true'",
+                "booleanInfoNode did not return true");
+        assertState("booleanInfoNode", boolValue.isPresent() && boolValue.get(),
+                "value is true",
+                "expected true, got " + boolValue.map(String::valueOf).orElse("(not set)"));
 
-        profile.setInfoNode(key, "42");
+        final var setInt = profile.setInfoNode(key, "42");
         final var intValue = profile.intInfoNode(key);
-        if (intValue.isPresent() && intValue.get() == 42) pass("intInfoNode", "value is 42");
-        else fail("intInfoNode", "expected 42, got " + intValue.map(String::valueOf).orElse("(not set)"));
+        assertRequiredStateChange("setInfoNode(int)", setInt, intValue.isPresent() && intValue.get() == 42,
+                "set '" + key + "' to '42'",
+                "failed to set info node to '42'",
+                "intInfoNode did not return 42");
+        assertState("intInfoNode", intValue.isPresent() && intValue.get() == 42,
+                "value is 42",
+                "expected 42, got " + intValue.map(String::valueOf).orElse("(not set)"));
 
-        profile.setInfoNode(key, "3.14");
+        final var setDouble = profile.setInfoNode(key, "3.14");
         final var doubleValue = profile.doubleInfoNode(key);
-        if (doubleValue.isPresent() && doubleValue.get() == 3.14) pass("doubleInfoNode", "value is 3.14");
-        else fail("doubleInfoNode", "expected 3.14, got " + doubleValue.map(String::valueOf).orElse("(not set)"));
+        assertRequiredStateChange("setInfoNode(double)", setDouble,
+                doubleValue.isPresent() && doubleValue.get() == 3.14,
+                "set '" + key + "' to '3.14'",
+                "failed to set info node to '3.14'",
+                "doubleInfoNode did not return 3.14");
+        assertState("doubleInfoNode", doubleValue.isPresent() && doubleValue.get() == 3.14,
+                "value is 3.14",
+                "expected 3.14, got " + doubleValue.map(String::valueOf).orElse("(not set)"));
 
         final var removed = profile.removeInfoNode(key);
-        if (removed) pass("removeInfoNode", "removed '" + key + "'");
-        else fail("removeInfoNode", "failed to remove info node");
-
         final var hasAfter = profile.hasInfoNode(key);
-        if (!hasAfter) pass("hasInfoNode (after remove)", "key no longer exists");
-        else fail("hasInfoNode (after remove)", "key still exists after removal");
+        assertRequiredStateChange("removeInfoNode", removed, !hasAfter,
+                "removed '" + key + "'",
+                "failed to remove info node",
+                "key still exists after removal");
+        assertState("hasInfoNode (after remove)", !hasAfter,
+                "key no longer exists",
+                "key still exists after removal");
     }
 }

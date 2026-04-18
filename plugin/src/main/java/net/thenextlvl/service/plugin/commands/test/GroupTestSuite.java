@@ -140,12 +140,8 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
         final var before = group.getWeight();
         final var set = group.setWeight(42);
         final var after = group.getWeight();
-        if (set) {
-            if (after.isPresent() && after.getAsInt() == 42) pass("setWeight", "set weight to 42");
-            else fail("setWeight", "returned true but value didn't change");
-        } else {
-            fail("setWeight", "returned false");
-        }
+        assertChangedValue("setWeight", set, before.isPresent() ? before.getAsInt() : null,
+                after.isPresent() ? after.getAsInt() : null, 42, "set weight to 42");
         before.ifPresentOrElse(group::setWeight, () -> group.setWeight(0));
     }
 
@@ -154,15 +150,9 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
         pass("getDisplayName", displayName.orElse("(not set)"));
 
         final var set = group.setDisplayName("TestDisplay");
-        if (set) {
-            final var updated = group.getDisplayName();
-            if (updated.isPresent() && "TestDisplay".equals(updated.get()))
-                pass("setDisplayName", "set to 'TestDisplay'");
-            else fail("setDisplayName", "returned true but value didn't change");
-            group.setDisplayName(displayName.orElse(null));
-        } else {
-            fail("setDisplayName", "returned false");
-        }
+        final var updated = group.getDisplayName().orElse(null);
+        assertChangedValue("setDisplayName", set, displayName.orElse(null), updated, "TestDisplay", "set to 'TestDisplay'");
+        group.setDisplayName(displayName.orElse(null));
     }
 
     private void assertPrefix(final Group group) {
@@ -170,14 +160,9 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
         pass("getPrefix", prefix.orElse("(not set)"));
 
         final var set = group.setPrefix("TestPrefix");
-        if (set) {
-            final var updated = group.getPrefix();
-            if (updated.isPresent() && "TestPrefix".equals(updated.get())) pass("setPrefix", "set to 'TestPrefix'");
-            else fail("setPrefix", "returned true but value didn't change");
-            group.setPrefix(prefix.orElse(null));
-        } else {
-            fail("setPrefix", "returned false");
-        }
+        final var updated = group.getPrefix().orElse(null);
+        assertChangedValue("setPrefix", set, prefix.orElse(null), updated, "TestPrefix", "set to 'TestPrefix'");
+        group.setPrefix(prefix.orElse(null));
     }
 
     private void assertSuffix(final Group group) {
@@ -185,14 +170,9 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
         pass("getSuffix", suffix.orElse("(not set)"));
 
         final var set = group.setSuffix("TestSuffix");
-        if (set) {
-            final var updated = group.getSuffix();
-            if (updated.isPresent() && "TestSuffix".equals(updated.get())) pass("setSuffix", "set to 'TestSuffix'");
-            else fail("setSuffix", "returned true but value didn't change");
-            group.setSuffix(suffix.orElse(null));
-        } else {
-            fail("setSuffix", "returned false");
-        }
+        final var updated = group.getSuffix().orElse(null);
+        assertChangedValue("setSuffix", set, suffix.orElse(null), updated, "TestSuffix", "set to 'TestSuffix'");
+        group.setSuffix(suffix.orElse(null));
     }
 
     private void assertPrefixes(final Group group) {
@@ -217,8 +197,11 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
 
     private void assertAddPermission(final PermissionHolder holder) {
         final var added = holder.addPermission("service.io.test");
-        if (added) pass("addPermission", "added 'service.io.test'");
-        else fail("addPermission", "failed to add permission");
+        final var state = holder.checkPermission("service.io.test");
+        assertRequiredStateChange("addPermission", added, state == TriState.TRUE,
+                "added 'service.io.test'",
+                "failed to add permission",
+                "addPermission returned true but checkPermission returned " + state + " instead of TRUE");
     }
 
     private void assertCheckPermission(final PermissionHolder holder, final String permission, final TriState expected) {
@@ -229,36 +212,45 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
 
     private void assertSetPermission(final PermissionHolder holder) {
         final var set = holder.setPermission("service.io.test", false);
-        if (set) pass("setPermission", "set 'service.io.test' to false");
-        else fail("setPermission", "failed to set permission");
+        final var state = holder.checkPermission("service.io.test");
+        assertRequiredStateChange("setPermission", set, state == TriState.FALSE,
+                "set 'service.io.test' to false",
+                "failed to set permission",
+                "setPermission returned true but checkPermission returned " + state + " instead of FALSE");
     }
 
     private void assertRemovePermission(final PermissionHolder holder) {
         final var removed = holder.removePermission("service.io.test");
-        if (removed) pass("removePermission", "removed 'service.io.test'");
-        else fail("removePermission", "failed to remove permission");
+        final var state = holder.checkPermission("service.io.test");
+        assertRequiredStateChange("removePermission", removed, state == TriState.NOT_SET,
+                "removed 'service.io.test'",
+                "failed to remove permission",
+                "removePermission returned true but checkPermission returned " + state + " instead of NOT_SET");
     }
 
     private void assertInfoNode(final PermissionHolder holder) {
         final var set = holder.setInfoNode("service.io.key", "testValue");
-        if (set) pass("setInfoNode", "set 'service.io.key' to 'testValue'");
-        else fail("setInfoNode", "failed to set info node");
-
         final var has = holder.hasInfoNode("service.io.key");
-        if (has) pass("hasInfoNode", "'service.io.key' exists");
-        else fail("hasInfoNode", "'service.io.key' not found after set");
-
         final var value = holder.getInfoNode("service.io.key");
-        if (value.isPresent() && "testValue".equals(value.get())) pass("getInfoNode", "value is 'testValue'");
-        else fail("getInfoNode", "expected 'testValue' but got " + value.orElse("(not set)"));
+        assertRequiredStateChange("setInfoNode", set, has && value.isPresent() && "testValue".equals(value.get()),
+                "set 'service.io.key' to 'testValue'",
+                "failed to set info node",
+                !has ? "'service.io.key' not found after set"
+                        : "expected 'testValue' but got " + value.orElse("(not set)"));
+        assertState("hasInfoNode", has, "'service.io.key' exists", "'service.io.key' not found after set");
+        assertState("getInfoNode", value.isPresent() && "testValue".equals(value.get()),
+                "value is 'testValue'",
+                "expected 'testValue' but got " + value.orElse("(not set)"));
 
         final var removed = holder.removeInfoNode("service.io.key");
-        if (removed) pass("removeInfoNode", "removed 'service.io.key'");
-        else fail("removeInfoNode", "failed to remove info node");
-
         final var hasAfter = holder.hasInfoNode("service.io.key");
-        if (!hasAfter) pass("hasInfoNode (after remove)", "'service.io.key' no longer exists");
-        else fail("hasInfoNode (after remove)", "'service.io.key' still exists after removal");
+        assertRequiredStateChange("removeInfoNode", removed, !hasAfter,
+                "removed 'service.io.key'",
+                "failed to remove info node",
+                "'service.io.key' still exists after removal");
+        assertState("hasInfoNode (after remove)", !hasAfter,
+                "'service.io.key' no longer exists",
+                "'service.io.key' still exists after removal");
     }
 
     private CompletableFuture<Void> assertLoadGroup(final String name) {
@@ -284,13 +276,11 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
 
     private void assertHolderAddGroup(final GroupHolder holder) {
         final var added = holder.addGroup("service-io-test");
-        if (added) {
-            final var inGroup = holder.inGroup("service-io-test");
-            if (inGroup) pass("addGroup", "added and verified 'service-io-test'");
-            else fail("addGroup", "returned true but inGroup is false");
-        } else {
-            fail("addGroup", "failed to add group");
-        }
+        final var inGroup = holder.inGroup("service-io-test");
+        assertRequiredStateChange("addGroup", added, inGroup,
+                "added and verified 'service-io-test'",
+                "failed to add group",
+                "addGroup returned true but inGroup is false");
     }
 
     private void assertHolderInGroup(final GroupHolder holder, final String name, final boolean expected) {
@@ -302,24 +292,17 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
     private void assertHolderSetPrimaryGroup(final GroupHolder holder) {
         final var before = holder.getPrimaryGroup();
         final var set = holder.setPrimaryGroup("service-io-test");
-        if (set) {
-            final var after = holder.getPrimaryGroup();
-            if ("service-io-test".equals(after)) pass("setPrimaryGroup", "set to 'service-io-test'");
-            else fail("setPrimaryGroup", "returned true but getPrimaryGroup is '" + after + "'");
-            holder.setPrimaryGroup(before);
-        } else {
-            fail("setPrimaryGroup", "returned false");
-        }
+        final var after = holder.getPrimaryGroup();
+        assertChangedValue("setPrimaryGroup", set, before, after, "service-io-test", "set to 'service-io-test'");
+        holder.setPrimaryGroup(before);
     }
 
     private void assertHolderRemoveGroup(final GroupHolder holder) {
         final var removed = holder.removeGroup("service-io-test");
-        if (removed) {
-            final var inGroup = holder.inGroup("service-io-test");
-            if (!inGroup) pass("removeGroup", "removed and verified 'service-io-test'");
-            else fail("removeGroup", "returned true but inGroup is still true");
-        } else {
-            fail("removeGroup", "failed to remove group");
-        }
+        final var inGroup = holder.inGroup("service-io-test");
+        assertRequiredStateChange("removeGroup", removed, !inGroup,
+                "removed and verified 'service-io-test'",
+                "failed to remove group",
+                "removeGroup returned true but inGroup is still true");
     }
 }
