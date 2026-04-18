@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -22,221 +23,234 @@ public abstract class TestSuite<C extends Controller> {
     protected final ServicePlugin plugin;
     protected final C controller;
 
-    private final List<TestStep> steps = new ArrayList<>();
-    private final SuiteCounters suiteCounters = new SuiteCounters();
-    private final ConcurrentLinkedQueue<QueuedUpdate> updates = new ConcurrentLinkedQueue<>();
+    private final AtomicBoolean executing = new AtomicBoolean(false);
+    private final ConcurrentLinkedQueue<QueuedMessage> queuedMessages = new ConcurrentLinkedQueue<>();
     private final AtomicBoolean drainScheduled = new AtomicBoolean(false);
 
-    private volatile @Nullable StepContext currentStep;
+    private final List<TestStep> steps = new ArrayList<>();
+    private volatile @Nullable AssertionSink assertions;
 
     protected TestSuite(final ServicePlugin plugin, final CommandSourceStack source, final C controller) {
-        this.controller = controller;
         this.plugin = plugin;
         this.source = source;
+        this.controller = controller;
     }
 
     protected abstract void setup();
 
-    protected void test(final String name, final Runnable action) {
+    protected final void test(final String name, final Runnable action) {
         asyncTest(name, () -> {
             action.run();
             return CompletableFuture.completedFuture(null);
         });
     }
 
-    protected void playerTest(final String name, final Consumer<Player> action) {
+    protected final void playerTest(final String name, final Consumer<Player> action) {
         playerAsyncTest(name, player -> {
             action.accept(player);
             return CompletableFuture.completedFuture(null);
         });
     }
 
-    protected void asyncTest(final String name, final Supplier<CompletableFuture<Void>> action) {
+    protected final void asyncTest(final String name, final Supplier<CompletableFuture<Void>> action) {
         steps.add(new TestStep(name, false, ignored -> action.get()));
     }
 
-    protected void playerAsyncTest(final String name, final Function<Player, CompletableFuture<Void>> action) {
-        steps.add(new TestStep(name, true, action));
+    protected final void playerAsyncTest(final String name, final Function<Player, CompletableFuture<Void>> action) {
+        steps.add(new TestStep(name, true, player -> player == null
+                ? CompletableFuture.failedFuture(new IllegalStateException("player step invoked without a player"))
+                : action.apply(player)));
     }
 
-    public CompletableFuture<@Nullable Void> execute() {
+    public final CompletableFuture<@Nullable Void> execute() {
+        if (!executing.compareAndSet(false, true)) {
+            return CompletableFuture.failedFuture(new IllegalStateException("suite execution already in progress"));
+        }
+
         steps.clear();
-        suiteCounters.reset();
-        updates.clear();
+        queuedMessages.clear();
         drainScheduled.set(false);
-        currentStep = null;
+        assertions = null;
+
         setup();
 
         final var sender = source.getSender();
-        final var player = sender instanceof final Player p ? p : null;
+        final var player = sender instanceof final Player current ? current : null;
         final var totalSteps = steps.size();
+        final var summary = new SuiteSummary();
 
-        var execution = CompletableFuture.<@Nullable Void>completedFuture(null);
-        for (final var step : steps) {
-            execution = execution.thenCompose(ignored -> {
-                if (step.requiresPlayer() && player == null) {
-                    return enqueueUpdate(() -> {
-                        suiteCounters.stepsSkipped++;
-                        sender.sendMessage(stepLine("⊘", NamedTextColor.YELLOW, step.name(),
-                                "skipped (requires player)"));
-                    });
-                }
-
-                final var context = new StepContext(step.name());
-                currentStep = context;
-                return enqueueUpdate(() -> sender.sendMessage(stepLine("•", NamedTextColor.AQUA, step.name(), "running")))
-                        .thenCompose(unused -> {
-                            try {
-                                return step.action().apply(player);
-                            } catch (final Exception exception) {
-                                fail(step.name(), resolveMessage(exception));
-                                return CompletableFuture.completedFuture(null);
-                            }
-                        }).handle((result, throwable) -> {
-                            if (throwable != null) fail(step.name(), resolveMessage(throwable));
-                            return result;
-                        }).thenCompose(unused -> enqueueUpdate(() -> finishStep(context)))
-                        .whenComplete((result, throwable) -> currentStep = null);
-            });
+        var chain = CompletableFuture.completedFuture((Void) null);
+        for (final var step : List.copyOf(steps)) {
+            chain = chain.thenCompose(ignored -> executeStep(step, player, summary));
         }
 
-        return execution.thenCompose(ignored -> enqueueUpdate(() -> sender.sendMessage(summaryLine(totalSteps))));
+        return chain.thenCompose(ignored -> enqueueMessage(() -> sender.sendMessage(renderSummary(summary, totalSteps))))
+                .handle((result, throwable) -> {
+                    if (throwable != null) throw unwrap(throwable);
+                    return (@Nullable Void) null;
+                })
+                .whenComplete((ignored, throwable) -> {
+                    assertions = null;
+                    executing.set(false);
+                });
     }
 
-    private String resolveMessage(final Throwable throwable) {
-        var cause = throwable;
-        while (cause.getCause() != null) cause = cause.getCause();
-        return cause.getMessage() != null ? cause.getMessage() : cause.getClass().getSimpleName();
+    protected final void pass(final String test, final String detail) {
+        record(AssertionState.PASS, test, detail);
     }
 
-    protected void pass(final String test, final String detail) {
-        recordAssertion(AssertionResult.PASS, "✓", NamedTextColor.GREEN, test, detail);
+    protected final void fail(final String test, final String detail) {
+        record(AssertionState.FAIL, test, detail);
     }
 
-    protected void fail(final String test, final String detail) {
-        recordAssertion(AssertionResult.FAIL, "✗", NamedTextColor.RED, test, detail);
+    protected final void skip(final String test, final String detail) {
+        record(AssertionState.SKIP, test, detail);
     }
 
-    protected void skip(final String test, final String reason) {
-        recordAssertion(AssertionResult.SKIP, "⊘", NamedTextColor.YELLOW, test, reason);
-    }
-
-    private void recordAssertion(
-            final AssertionResult result,
-            final String symbol,
-            final NamedTextColor color,
-            final String test,
-            final String detail
+    private CompletableFuture<Void> executeStep(
+            final TestStep step,
+            final @Nullable Player player,
+            final SuiteSummary summary
     ) {
-        final var step = currentStep;
-        enqueueUpdate(() -> {
-            switch (result) {
-                case PASS -> suiteCounters.assertionsPassed++;
-                case FAIL -> suiteCounters.assertionsFailed++;
-                case SKIP -> suiteCounters.assertionsSkipped++;
-            }
+        if (step.requiresPlayer && player == null) {
+            summary.stepsSkipped.increment();
+            return enqueueMessage(() -> source.getSender().sendMessage(renderStep(
+                    "⊘",
+                    NamedTextColor.YELLOW,
+                    step.name,
+                    "skipped, player context required"
+            )));
+        }
 
-            if (step != null) {
-                switch (result) {
-                    case PASS -> step.passed++;
-                    case FAIL -> step.failed++;
-                    case SKIP -> step.skipped++;
-                }
-            }
+        final var stepAssertions = new AssertionSink(step.name);
+        assertions = stepAssertions;
 
-            source.getSender().sendMessage(assertionLine(symbol, color, test, detail));
-        });
+        return enqueueMessage(() -> source.getSender().sendMessage(renderStep("•", NamedTextColor.AQUA, step.name, "running")))
+                .thenCompose(ignored -> invokeStep(step, player))
+                .exceptionally(throwable -> {
+                    stepAssertions.record(AssertionState.FAIL, step.name, rootMessage(throwable));
+                    return null;
+                })
+                .thenCompose(ignored -> {
+                    final var outcome = stepAssertions.finish();
+                    summary.accept(outcome);
+                    return enqueueMessage(() -> source.getSender().sendMessage(renderOutcome(outcome)));
+                })
+                .whenComplete((ignored, throwable) -> {
+                    if (assertions == stepAssertions) assertions = null;
+                });
     }
 
-    private CompletableFuture<@Nullable Void> enqueueUpdate(final Runnable action) {
+    private CompletableFuture<@Nullable Void> invokeStep(final TestStep step, final @Nullable Player player) {
+        try {
+            return step.action.apply(player);
+        } catch (final Throwable throwable) {
+            return CompletableFuture.failedFuture(throwable);
+        }
+    }
+
+    private void record(final AssertionState state, final String test, final String detail) {
+        final var current = assertions;
+        if (current == null || current.isClosed()) {
+            enqueueMessage(() -> source.getSender().sendMessage(renderAssertion(state.marker, state.color, test, detail)));
+            return;
+        }
+        current.record(state, test, detail);
+    }
+
+    private CompletableFuture<Void> enqueueMessage(final Runnable action) {
         final var future = new CompletableFuture<Void>();
-        updates.add(new QueuedUpdate(action, future));
+        queuedMessages.add(new QueuedMessage(action, future));
         scheduleDrain();
         return future;
     }
 
     private void scheduleDrain() {
         if (!drainScheduled.compareAndSet(false, true)) return;
-        plugin.getServer().getScheduler().runTask(plugin, this::drainUpdates);
+        plugin.getServer().getScheduler().runTask(plugin, this::drainMessages);
     }
 
-    private void drainUpdates() {
-        QueuedUpdate update;
-        while ((update = updates.poll()) != null) {
+    private void drainMessages() {
+        QueuedMessage message;
+        while ((message = queuedMessages.poll()) != null) {
             try {
-                update.action().run();
-                update.future().complete(null);
+                message.action.run();
+                message.future.complete(null);
             } catch (final Throwable throwable) {
-                update.future().completeExceptionally(throwable);
+                message.future.completeExceptionally(throwable);
             }
         }
         drainScheduled.set(false);
-        if (!updates.isEmpty()) scheduleDrain();
+        if (!queuedMessages.isEmpty()) scheduleDrain();
     }
 
-    private void finishStep(final StepContext step) {
-        if (step.failed > 0) {
-            suiteCounters.stepsFailed++;
-            source.getSender().sendMessage(stepLine("✗", NamedTextColor.RED, step.name(), stepSummary(step, "failed")));
-        } else {
-            suiteCounters.stepsPassed++;
-            source.getSender().sendMessage(stepLine("✓", NamedTextColor.GREEN, step.name(), stepSummary(step, "passed")));
-        }
+    private RuntimeException unwrap(final Throwable throwable) {
+        if (throwable instanceof final RuntimeException runtime) return runtime;
+        return new RuntimeException(throwable);
     }
 
-    private Component stepLine(
-            final String symbol,
+    private String rootMessage(final Throwable throwable) {
+        var cause = throwable;
+        while (cause.getCause() != null) cause = cause.getCause();
+        final var message = cause.getMessage();
+        return message == null || message.isBlank() ? cause.getClass().getSimpleName() : message;
+    }
+
+    private Component renderStep(
+            final String marker,
             final NamedTextColor color,
             final String name,
             final String detail
     ) {
-        return Component.text(" " + symbol + " ", color)
+        return Component.text(" " + marker + " ", color)
                 .append(Component.text(name, NamedTextColor.WHITE))
-                .append(Component.text(" → " + detail, NamedTextColor.DARK_GRAY));
+                .append(Component.text(" | " + detail, NamedTextColor.DARK_GRAY));
     }
 
-    private Component assertionLine(
-            final String symbol,
+    private Component renderAssertion(
+            final String marker,
             final NamedTextColor color,
             final String test,
             final String detail
     ) {
-        return Component.text("   " + symbol + " ", color)
+        return Component.text("   " + marker + " ", color)
                 .append(Component.text(test, NamedTextColor.GRAY))
-                .append(Component.text(" → " + detail, NamedTextColor.DARK_GRAY));
+                .append(Component.text(" | " + detail, NamedTextColor.DARK_GRAY));
     }
 
-    private String stepSummary(final StepContext step, final String status) {
-        final var totalAssertions = step.passed + step.failed + step.skipped;
-        if (totalAssertions == 0) return status + ", no assertions recorded";
+    private Component renderOutcome(final StepOutcome outcome) {
+        final var totalAssertions = outcome.passed + outcome.failed + outcome.skipped;
+        final var detail = totalAssertions == 0
+                ? (outcome.failed > 0 ? "failed, no assertions recorded" : "passed, no assertions recorded")
+                : (outcome.failed > 0 ? "failed" : "passed") +
+                  ", " +
+                  totalAssertions +
+                  " assertion(s): " +
+                  outcome.passed +
+                  " passed" +
+                  (outcome.failed > 0 ? ", " + outcome.failed + " failed" : "") +
+                  (outcome.skipped > 0 ? ", " + outcome.skipped + " skipped" : "");
 
-        final var summary = new StringBuilder(status)
-                .append(", ")
-                .append(totalAssertions)
-                .append(" assertion(s): ")
-                .append(step.passed)
-                .append(" passed");
-        if (step.failed > 0) summary.append(", ").append(step.failed).append(" failed");
-        if (step.skipped > 0) summary.append(", ").append(step.skipped).append(" skipped");
-        return summary.toString();
+        return renderStep(outcome.failed > 0 ? "✗" : "✓",
+                outcome.failed > 0 ? NamedTextColor.RED : NamedTextColor.GREEN,
+                outcome.name,
+                detail);
     }
 
-    private Component summaryLine(final int totalSteps) {
-        final var totalAssertions = suiteCounters.assertionsPassed + suiteCounters.assertionsFailed + suiteCounters.assertionsSkipped;
-        final var stepSummary = new StringBuilder()
-                .append(suiteCounters.stepsPassed)
-                .append(" passed");
-        if (suiteCounters.stepsFailed > 0) stepSummary.append(", ").append(suiteCounters.stepsFailed).append(" failed");
-        if (suiteCounters.stepsSkipped > 0)
-            stepSummary.append(", ").append(suiteCounters.stepsSkipped).append(" skipped");
+    private Component renderSummary(final SuiteSummary summary, final int totalSteps) {
+        final var totalAssertions = summary.assertionsPassed.intValue()
+                + summary.assertionsFailed.intValue()
+                + summary.assertionsSkipped.intValue();
 
-        final var assertionSummary = new StringBuilder()
-                .append(suiteCounters.assertionsPassed)
-                .append(" passed");
-        if (suiteCounters.assertionsFailed > 0)
-            assertionSummary.append(", ").append(suiteCounters.assertionsFailed).append(" failed");
-        if (suiteCounters.assertionsSkipped > 0)
-            assertionSummary.append(", ").append(suiteCounters.assertionsSkipped).append(" skipped");
+        final var stepSummary = summary.stepsPassed.intValue() +
+                " passed" +
+                (summary.stepsFailed.intValue() > 0 ? ", " + summary.stepsFailed.intValue() + " failed" : "") +
+                (summary.stepsSkipped.intValue() > 0 ? ", " + summary.stepsSkipped.intValue() + " skipped" : "");
+
+        final var assertionSummary = summary.assertionsPassed.intValue() +
+                " passed" +
+                (summary.assertionsFailed.intValue() > 0 ? ", " + summary.assertionsFailed.intValue() + " failed" : "") +
+                (summary.assertionsSkipped.intValue() > 0 ? ", " + summary.assertionsSkipped.intValue() + " skipped" : "");
 
         return Component.text(" ■ ", NamedTextColor.DARK_GRAY)
                 .append(Component.text("Steps: " + stepSummary + " (" + totalSteps + " total)", NamedTextColor.GRAY))
@@ -255,48 +269,83 @@ public abstract class TestSuite<C extends Controller> {
     }
 
     private record TestStep(
-            String name, boolean requiresPlayer,
+            String name,
+            boolean requiresPlayer,
             Function<@Nullable Player, CompletableFuture<Void>> action
     ) {
     }
 
-    private static final class StepContext {
-        private final String name;
-        private int passed;
-        private int failed;
-        private int skipped;
+    private record QueuedMessage(
+            Runnable action,
+            CompletableFuture<@Nullable Void> future
+    ) {
+    }
 
-        private StepContext(final String name) {
+    private enum AssertionState {
+        PASS("✓", NamedTextColor.GREEN),
+        FAIL("✗", NamedTextColor.RED),
+        SKIP("⊘", NamedTextColor.YELLOW);
+
+        private final String marker;
+        private final NamedTextColor color;
+
+        AssertionState(final String marker, final NamedTextColor color) {
+            this.marker = marker;
+            this.color = color;
+        }
+    }
+
+    private record StepOutcome(String name, int passed, int failed, int skipped) {
+    }
+
+    private final class AssertionSink {
+        private final String name;
+        private final LongAdder passed = new LongAdder();
+        private final LongAdder failed = new LongAdder();
+        private final LongAdder skipped = new LongAdder();
+        private final AtomicBoolean closed = new AtomicBoolean(false);
+
+        private AssertionSink(final String name) {
             this.name = name;
         }
 
-        private String name() {
-            return name;
+        private void record(final AssertionState state, final String test, final String detail) {
+            if (closed.get()) return;
+
+            switch (state) {
+                case PASS -> passed.increment();
+                case FAIL -> failed.increment();
+                case SKIP -> skipped.increment();
+            }
+
+            enqueueMessage(() -> source.getSender().sendMessage(renderAssertion(state.marker, state.color, test, detail)));
+        }
+
+        private boolean isClosed() {
+            return closed.get();
+        }
+
+        private StepOutcome finish() {
+            closed.set(true);
+            return new StepOutcome(name, passed.intValue(), failed.intValue(), skipped.intValue());
         }
     }
 
-    private enum AssertionResult {
-        PASS, FAIL, SKIP
-    }
+    private static final class SuiteSummary {
+        private final LongAdder stepsPassed = new LongAdder();
+        private final LongAdder stepsFailed = new LongAdder();
+        private final LongAdder stepsSkipped = new LongAdder();
+        private final LongAdder assertionsPassed = new LongAdder();
+        private final LongAdder assertionsFailed = new LongAdder();
+        private final LongAdder assertionsSkipped = new LongAdder();
 
-    private static final class SuiteCounters {
-        private int stepsPassed;
-        private int stepsFailed;
-        private int stepsSkipped;
-        private int assertionsPassed;
-        private int assertionsFailed;
-        private int assertionsSkipped;
+        private void accept(final StepOutcome outcome) {
+            assertionsPassed.add(outcome.passed);
+            assertionsFailed.add(outcome.failed);
+            assertionsSkipped.add(outcome.skipped);
 
-        private void reset() {
-            stepsPassed = 0;
-            stepsFailed = 0;
-            stepsSkipped = 0;
-            assertionsPassed = 0;
-            assertionsFailed = 0;
-            assertionsSkipped = 0;
+            if (outcome.failed > 0) stepsFailed.increment();
+            else stepsPassed.increment();
         }
-    }
-
-    private record QueuedUpdate(Runnable action, CompletableFuture<@Nullable Void> future) {
     }
 }
