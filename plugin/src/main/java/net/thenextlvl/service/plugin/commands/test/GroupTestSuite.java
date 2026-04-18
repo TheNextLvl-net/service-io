@@ -40,33 +40,36 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
         return controller.createGroup(name).thenCompose(group -> {
             pass("createGroup", "created group '" + group.getName() + "'");
 
-            assertGroupFound(name);
-            assertGetGroups();
-            assertGetName(group);
-            assertGetWorld(group);
-            assertGetWeight(group);
-            assertSetWeight(group);
-            assertDisplayName(group);
-            assertPrefix(group);
-            assertSuffix(group);
-            assertPrefixes(group);
-            assertSuffixes(group);
-            assertPermissions(group);
-            assertAddPermission(group);
-            assertCheckPermission(group, "service.io.test", TriState.TRUE);
-            assertSetPermission(group);
-            assertCheckPermission(group, "service.io.test", TriState.FALSE);
-            assertRemovePermission(group);
-            assertCheckPermission(group, "service.io.test", TriState.NOT_SET);
-            assertInfoNode(group);
-            return assertLoadGroup(name)
-                    .thenCompose(ignored -> assertResolveGroup(name))
-                    .thenCompose(ignored -> controller.deleteGroup(name).thenAccept(deleted -> {
+            return lifecycle(
+                    () -> assertGroupFound(name),
+                    this::assertGetGroups,
+                    () -> assertGetName(group),
+                    () -> assertGetWorld(group),
+                    () -> assertGetWeight(group),
+                    () -> assertSetWeight(group),
+                    () -> assertDisplayName(group),
+                    () -> assertPrefix(group),
+                    () -> assertSuffix(group),
+                    () -> assertPrefixes(group),
+                    () -> assertSuffixes(group),
+                    () -> assertPermissions(group),
+                    () -> assertAddPermission(group),
+                    () -> assertCheckPermission(group, "service.io.test", TriState.TRUE),
+                    () -> assertSetPermission(group),
+                    () -> assertCheckPermission(group, "service.io.test", TriState.FALSE),
+                    () -> assertRemovePermission(group),
+                    () -> assertCheckPermission(group, "service.io.test", TriState.NOT_SET),
+                    () -> assertInfoNode(group)
+            ).thenCompose(ignored -> lifecycleAsync(
+                    () -> assertLoadGroup(name),
+                    () -> assertResolveGroup(name),
+                    () -> controller.deleteGroup(name).thenAccept(deleted -> {
                         if (deleted) pass("deleteGroup", "deleted group '" + name + "'");
                         else fail("deleteGroup", "failed to delete group");
 
                         assertGroupNotFound(name);
-                    }));
+                    })
+            ));
         });
     }
 
@@ -84,36 +87,35 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
                 pass("getPrimaryGroup", "no groups assigned");
             }
 
-            assertHolderAddGroup(holder);
-            assertHolderInGroup(holder, "service-io-test", true);
-            assertHolderSetPrimaryGroup(holder);
-            assertHolderRemoveGroup(holder);
-            assertHolderInGroup(holder, "service-io-test", false);
-
-            assertHolderPermissions(holder);
-            assertAddPermission(holder);
-            assertCheckPermission(holder, "service.io.test", TriState.TRUE);
-            assertSetPermission(holder);
-            assertCheckPermission(holder, "service.io.test", TriState.FALSE);
-            assertRemovePermission(holder);
-            assertCheckPermission(holder, "service.io.test", TriState.NOT_SET);
-            assertInfoNode(holder);
-
-            assertGetGroupHolder(player);
-            return assertResolveGroupHolder(player);
+            return lifecycle(
+                    () -> assertHolderAddGroup(holder),
+                    () -> assertHolderInGroup(holder, "service-io-test", true),
+                    () -> assertHolderSetPrimaryGroup(holder),
+                    () -> assertHolderRemoveGroup(holder),
+                    () -> assertHolderInGroup(holder, "service-io-test", false),
+                    () -> assertHolderPermissions(holder),
+                    () -> assertAddPermission(holder),
+                    () -> assertCheckPermission(holder, "service.io.test", TriState.TRUE),
+                    () -> assertSetPermission(holder),
+                    () -> assertCheckPermission(holder, "service.io.test", TriState.FALSE),
+                    () -> assertRemovePermission(holder),
+                    () -> assertCheckPermission(holder, "service.io.test", TriState.NOT_SET),
+                    () -> assertInfoNode(holder),
+                    () -> assertGetGroupHolder(player)
+            ).thenCompose(ignored -> lifecycleAsync(
+                    () -> assertResolveGroupHolder(player)
+            ));
         });
     }
 
     private void assertGroupFound(final String name) {
         final var group = controller.getGroup(name);
-        if (group.isPresent()) pass("getGroup", "found '" + name + "'");
-        else fail("getGroup", "group '" + name + "' not found after creation");
+        assertTrue(group.isPresent(), "getGroup");
     }
 
     private void assertGroupNotFound(final String name) {
         final var group = controller.getGroup(name);
-        if (group.isEmpty()) pass("getGroup (after delete)", "group no longer found");
-        else fail("getGroup (after delete)", "group still found after deletion");
+        assertTrue(group.isEmpty(), "getGroup (after delete)");
     }
 
     private void assertGetGroups() {
@@ -202,8 +204,7 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
 
     private void assertCheckPermission(final PermissionHolder holder, final String permission, final TriState expected) {
         final var state = holder.checkPermission(permission);
-        if (state == expected) pass("checkPermission('" + permission + "')", state.toString());
-        else fail("checkPermission('" + permission + "')", "expected " + expected + " but got " + state);
+        assertEquals(expected, state, "checkPermission('" + permission + "')");
     }
 
     private void assertSetPermission(final PermissionHolder holder) {
@@ -261,8 +262,7 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
 
     private void assertGetGroupHolder(final Player player) {
         final var holder = controller.getGroupHolder(player);
-        if (holder.isPresent()) pass("getGroupHolder", "found cached group holder");
-        else fail("getGroupHolder", "group holder not cached after load");
+        assertTrue(holder.isPresent(), "getGroupHolder");
     }
 
     private CompletableFuture<Void> assertResolveGroupHolder(final Player player) {
@@ -281,8 +281,7 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
 
     private void assertHolderInGroup(final GroupHolder holder, final String name, final boolean expected) {
         final var inGroup = holder.inGroup(name);
-        if (inGroup == expected) pass("inGroup('" + name + "')", String.valueOf(inGroup));
-        else fail("inGroup('" + name + "')", "expected " + expected + " but got " + inGroup);
+        assertEquals(expected, inGroup, "inGroup('" + name + "')");
     }
 
     private void assertHolderSetPrimaryGroup(final GroupHolder holder) {

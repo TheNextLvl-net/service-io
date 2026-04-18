@@ -6,12 +6,14 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.thenextlvl.service.Controller;
 import net.thenextlvl.service.plugin.ServicePlugin;
 import org.bukkit.entity.Player;
+import org.intellij.lang.annotations.PrintFormat;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.LongAdder;
@@ -75,7 +77,7 @@ public abstract class TestSuite<C extends Controller> {
 
         setup();
 
-        final var sender = source.getSender();
+        final var sender = source.getExecutor() != null ?  source.getExecutor() : null;
         final var player = sender instanceof final Player current ? current : null;
         final var totalSteps = steps.size();
         final var summary = new SuiteSummary();
@@ -85,7 +87,7 @@ public abstract class TestSuite<C extends Controller> {
             chain = chain.thenCompose(ignored -> executeStep(step, player, summary));
         }
 
-        return chain.thenCompose(ignored -> enqueueMessage(() -> sender.sendMessage(renderSummary(summary, totalSteps))))
+        return chain.thenCompose(ignored -> enqueueMessage(() -> source.getSender().sendMessage(renderSummary(summary, totalSteps))))
                 .handle((result, throwable) -> {
                     if (throwable != null) throw unwrap(throwable);
                     return (@Nullable Void) null;
@@ -96,15 +98,48 @@ public abstract class TestSuite<C extends Controller> {
                 });
     }
 
-    protected final void pass(final String test, final String detail) {
+    protected <T> void assertEquals(@Nullable final T expectation, @Nullable final T actual, final String test) {
+        if (Objects.equals(expectation, actual)) pass(test, String.valueOf(actual));
+        else throw assertionFailure(test, "Expected '%s' but got '%s'", expectation, actual);
+    }
+
+    protected void assertTrue(final boolean condition, final String test) {
+        assertEquals(true, condition, test);
+    }
+
+    protected void assertFalse(final boolean condition, final String test) {
+        assertEquals(false, condition, test);
+    }
+
+    @SafeVarargs
+    protected final CompletableFuture<Void> lifecycleAsync(final CheckedSupplier<CompletableFuture<Void>>... actions) {
+        var chain = CompletableFuture.completedFuture((Void) null);
+        for (final var action : actions) {
+            chain = chain.thenCompose(ignored -> guard(action));
+        }
+        return chain;
+    }
+
+    protected final CompletableFuture<Void> lifecycle(final CheckedRunnable... actions) {
+        var chain = CompletableFuture.completedFuture((Void) null);
+        for (final var action : actions) {
+            chain = chain.thenCompose(ignored -> guard(() -> {
+                action.run();
+                return CompletableFuture.completedFuture(null);
+            }));
+        }
+        return chain;
+    }
+
+    protected final void pass(final String test, @Nullable final String detail) {
         record(AssertionState.PASS, test, detail);
     }
 
-    protected final void fail(final String test, final String detail) {
+    protected final void fail(final String test, @Nullable final String detail) {
         record(AssertionState.FAIL, test, detail);
     }
 
-    protected final void skip(final String test, final String detail) {
+    protected final void skip(final String test, @Nullable final String detail) {
         record(AssertionState.SKIP, test, detail);
     }
 
@@ -155,6 +190,12 @@ public abstract class TestSuite<C extends Controller> {
         return value == null ? "(not set)" : String.valueOf(value);
     }
 
+    private RecordedAssertionError assertionFailure(final String test, @PrintFormat final String detail, final @Nullable Object... args) {
+        final var formatted = detail.formatted(args);
+        fail(test, formatted);
+        return new RecordedAssertionError(formatted);
+    }
+
     private CompletableFuture<Void> executeStep(
             final TestStep step,
             final @Nullable Player player,
@@ -197,7 +238,27 @@ public abstract class TestSuite<C extends Controller> {
         }
     }
 
-    private void record(final AssertionState state, final String test, final String detail) {
+    private CompletableFuture<@Nullable Void> guard(final CheckedSupplier<CompletableFuture<Void>> action) {
+        try {
+            return action.get().handle((ignored, throwable) -> {
+                handleLifecycleThrowable(throwable);
+                return null;
+            });
+        } catch (final Throwable throwable) {
+            handleLifecycleThrowable(throwable);
+            return CompletableFuture.completedFuture(null);
+        }
+    }
+
+    private void handleLifecycleThrowable(@Nullable final Throwable throwable) {
+        if (throwable == null) return;
+
+        final var cause = unwrapThrowable(throwable);
+        if (cause instanceof RecordedAssertionError) return;
+        fail(currentStepName(), rootMessage(cause));
+    }
+
+    private void record(final AssertionState state, final String test, @Nullable final String detail) {
         final var current = assertions;
         if (current == null || current.isClosed()) {
             enqueueMessage(() -> source.getSender().sendMessage(renderAssertion(state.marker, state.color, test, detail)));
@@ -237,6 +298,18 @@ public abstract class TestSuite<C extends Controller> {
         return new RuntimeException(throwable);
     }
 
+    private Throwable unwrapThrowable(final Throwable throwable) {
+        if (throwable instanceof CompletionException && throwable.getCause() != null) {
+            return unwrapThrowable(throwable.getCause());
+        }
+        return throwable;
+    }
+
+    private String currentStepName() {
+        final var current = assertions;
+        return current != null ? current.name() : "test";
+    }
+
     private String rootMessage(final Throwable throwable) {
         var cause = throwable;
         while (cause.getCause() != null) cause = cause.getCause();
@@ -259,11 +332,12 @@ public abstract class TestSuite<C extends Controller> {
             final String marker,
             final NamedTextColor color,
             final String test,
-            final String detail
+            @Nullable final String detail
     ) {
-        return Component.text("   " + marker + " ", color)
-                .append(Component.text(test, NamedTextColor.GRAY))
-                .append(Component.text(" | " + detail, NamedTextColor.DARK_GRAY));
+        final var rendered = Component.text("   " + marker + " ", color)
+                .append(Component.text(test, NamedTextColor.GRAY));
+        if (detail == null) return rendered;
+        return rendered.append(Component.text(" | " + detail, NamedTextColor.DARK_GRAY));
     }
 
     private Component renderOutcome(final StepOutcome outcome) {
@@ -357,7 +431,7 @@ public abstract class TestSuite<C extends Controller> {
             this.name = name;
         }
 
-        private void record(final AssertionState state, final String test, final String detail) {
+        private void record(final AssertionState state, final String test, @Nullable final String detail) {
             if (closed.get()) return;
 
             switch (state) {
@@ -373,9 +447,29 @@ public abstract class TestSuite<C extends Controller> {
             return closed.get();
         }
 
+        private String name() {
+            return name;
+        }
+
         private StepOutcome finish() {
             closed.set(true);
             return new StepOutcome(name, passed.intValue(), failed.intValue(), skipped.intValue());
+        }
+    }
+
+    @FunctionalInterface
+    protected interface CheckedRunnable {
+        void run() throws Exception;
+    }
+
+    @FunctionalInterface
+    protected interface CheckedSupplier<T> {
+        T get() throws Exception;
+    }
+
+    private static final class RecordedAssertionError extends AssertionError {
+        private RecordedAssertionError(final String message) {
+            super(message);
         }
     }
 

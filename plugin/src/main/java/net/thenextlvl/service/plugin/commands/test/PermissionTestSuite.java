@@ -22,30 +22,30 @@ public final class PermissionTestSuite extends TestSuite<PermissionController> {
     }
 
     private CompletableFuture<Void> testLoadPermissionHolder(final Player player) {
-        return controller.loadPermissionHolder(player).thenAccept(holder -> {
+        return controller.loadPermissionHolder(player).thenCompose(holder -> {
             pass("loadPermissionHolder", "loaded permission holder for " + player.getName());
 
-            assertGetPermissions(holder);
-            assertCheckPermission(holder, "service.io.test", TriState.NOT_SET);
-            assertAddPermission(holder);
-            assertCheckPermission(holder, "service.io.test", TriState.TRUE);
-            assertSetPermission(holder);
-            assertCheckPermission(holder, "service.io.test", TriState.FALSE);
-            assertRemovePermission(holder);
-            assertCheckPermission(holder, "service.io.test", TriState.NOT_SET);
-
-            assertSetInfoNode(holder);
-            assertBooleanInfoNode(holder);
-            assertIntInfoNode(holder);
-            assertDoubleInfoNode(holder);
-            assertRemoveInfoNode(holder);
+            return lifecycle(
+                    () -> assertGetPermissions(holder),
+                    () -> assertCheckPermission(holder, "service.io.test", TriState.NOT_SET),
+                    () -> assertAddPermission(holder),
+                    () -> assertCheckPermission(holder, "service.io.test", TriState.TRUE),
+                    () -> assertSetPermission(holder),
+                    () -> assertCheckPermission(holder, "service.io.test", TriState.FALSE),
+                    () -> assertRemovePermission(holder),
+                    () -> assertCheckPermission(holder, "service.io.test", TriState.NOT_SET),
+                    () -> assertSetInfoNode(holder),
+                    () -> assertBooleanInfoNode(holder),
+                    () -> assertIntInfoNode(holder),
+                    () -> assertDoubleInfoNode(holder),
+                    () -> assertRemoveInfoNode(holder)
+            );
         });
     }
 
     private void testGetPermissionHolder(final Player player) {
         final var holder = controller.getPermissionHolder(player);
-        if (holder.isPresent()) pass("getPermissionHolder", "found cached permission holder");
-        else fail("getPermissionHolder", "permission holder not cached after load");
+        assertTrue(holder.isPresent(), "getPermissionHolder");
     }
 
     private CompletableFuture<Void> testResolvePermissionHolder(final Player player) {
@@ -69,8 +69,7 @@ public final class PermissionTestSuite extends TestSuite<PermissionController> {
 
     private void assertCheckPermission(final PermissionHolder holder, final String permission, final TriState expected) {
         final var state = holder.checkPermission(permission);
-        if (state == expected) pass("checkPermission('" + permission + "')", state.toString());
-        else fail("checkPermission('" + permission + "')", "expected " + expected + " but got " + state);
+        assertEquals(expected, state, "checkPermission('" + permission + "')");
     }
 
     private void assertSetPermission(final PermissionHolder holder) {
@@ -105,22 +104,19 @@ public final class PermissionTestSuite extends TestSuite<PermissionController> {
     private void assertBooleanInfoNode(final PermissionHolder holder) {
         holder.setInfoNode("service.io.test", "true");
         final var value = holder.booleanInfoNode("service.io.test");
-        if (value.isPresent() && value.get()) pass("booleanInfoNode", "returned true");
-        else fail("booleanInfoNode", "expected Optional[true] but got " + value);
+        assertEquals(true, value.orElse(null), "booleanInfoNode");
     }
 
     private void assertIntInfoNode(final PermissionHolder holder) {
         holder.setInfoNode("service.io.test", "42");
         final var value = holder.intInfoNode("service.io.test");
-        if (value.isPresent() && value.get() == 42) pass("intInfoNode", "returned 42");
-        else fail("intInfoNode", "expected Optional[42] but got " + value);
+        assertEquals(42, value.orElse(null), "intInfoNode");
     }
 
     private void assertDoubleInfoNode(final PermissionHolder holder) {
         holder.setInfoNode("service.io.test", "3.14");
         final var value = holder.doubleInfoNode("service.io.test");
-        if (value.isPresent() && value.get() == 3.14) pass("doubleInfoNode", "returned 3.14");
-        else fail("doubleInfoNode", "expected Optional[3.14] but got " + value);
+        assertEquals(3.14, value.orElse(null), "doubleInfoNode");
     }
 
     private void assertRemoveInfoNode(final PermissionHolder holder) {

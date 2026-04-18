@@ -52,8 +52,7 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
     private void testGetCurrency() {
         final var currency = controller.getCurrencyController().getDefaultCurrency();
         final var lookup = controller.getCurrencyController().getCurrency(currency.getName());
-        if (lookup.isPresent()) pass("getCurrency", "found '" + currency.getName() + "' by name");
-        else fail("getCurrency", "could not find default currency by name '" + currency.getName() + "'");
+        assertTrue(lookup.isPresent(), "getCurrency");
     }
 
     private void testCurrencySymbol() {
@@ -96,8 +95,7 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
     private void testCurrencyToData() {
         final var currency = controller.getCurrencyController().getDefaultCurrency();
         final var data = currency.toData();
-        if (data.name().equals(currency.getName())) pass("toData", "name matches: " + data.name());
-        else fail("toData", "name mismatch: " + data.name() + " != " + currency.getName());
+        assertEquals(currency.getName(), data.name(), "toData");
     }
 
     private void testFormatCurrency() {
@@ -124,40 +122,38 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
         return controller.createAccount(player).thenCompose(account -> {
             pass("createAccount", "created account for " + player.getName());
 
-            assertAccountCached(player);
-            assertGetAccounts();
-            assertAccountOwner(account, player);
-            assertAccountWorld(account);
-
-            assertBalance(account.getBalance(currency), currency);
-            assertCanHold(account.canHold(currency), currency);
-
-            assertDeposit(account, 100, currency);
-            assertWithdraw(account, 50, currency);
-            assertSetBalance(account, 1000, currency);
-            assertInsufficientFunds(account.withdraw(5000, currency), currency);
-
-            return assertLoadAccount(player)
-                    .thenCompose(ignored -> assertResolveAccount(player))
-                    .thenCompose(ignored -> controller.deleteAccount(account).thenAccept(deleted -> {
+            return lifecycle(
+                    () -> assertAccountCached(player),
+                    this::assertGetAccounts,
+                    () -> assertAccountOwner(account, player),
+                    () -> assertAccountWorld(account),
+                    () -> assertBalance(account.getBalance(currency), currency),
+                    () -> assertCanHold(account.canHold(currency), currency),
+                    () -> assertDeposit(account, 100, currency),
+                    () -> assertWithdraw(account, 50, currency),
+                    () -> assertSetBalance(account, 1000, currency),
+                    () -> assertInsufficientFunds(account.withdraw(5000, currency), currency)
+            ).thenCompose(ignored -> lifecycleAsync(
+                    () -> assertLoadAccount(player),
+                    () -> assertResolveAccount(player),
+                    () -> controller.deleteAccount(account).thenAccept(deleted -> {
                         if (deleted) pass("deleteAccount", "deleted account for " + player.getName());
                         else fail("deleteAccount", "failed to delete account");
 
                         assertAccountNotCached(player);
-                    }));
+                    })
+            ));
         });
     }
 
     private void assertAccountCached(final Player player) {
         final var account = controller.getAccount(player);
-        if (account.isPresent()) pass("getAccount", "found cached account");
-        else fail("getAccount", "account not cached after creation");
+        assertTrue(account.isPresent(), "getAccount");
     }
 
     private void assertAccountNotCached(final Player player) {
         final var account = controller.getAccount(player);
-        if (account.isEmpty()) pass("getAccount (after delete)", "account no longer cached");
-        else fail("getAccount (after delete)", "account still cached after deletion");
+        assertTrue(account.isEmpty(), "getAccount (after delete)");
     }
 
     private void assertGetAccounts() {
@@ -166,8 +162,7 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
     }
 
     private void assertAccountOwner(final Account account, final Player player) {
-        if (account.getOwner().equals(player.getUniqueId())) pass("getOwner", "matches player UUID");
-        else fail("getOwner", "expected " + player.getUniqueId() + " but got " + account.getOwner());
+        assertEquals(player.getUniqueId(), account.getOwner(), "getOwner");
     }
 
     private void assertAccountWorld(final Account account) {
@@ -181,8 +176,7 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
     }
 
     private void assertCanHold(final boolean canHold, final Currency currency) {
-        if (canHold) pass("canHold", "account can hold " + currency.getName());
-        else fail("canHold", "account cannot hold default currency");
+        assertTrue(canHold, "canHold");
     }
 
     private void assertDeposit(final Account account, final Number amount, final Currency currency) {
@@ -251,15 +245,13 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
 
     private CompletableFuture<Void> assertLoadAccount(final Player player) {
         return controller.loadAccount(player).thenAccept(account -> {
-            if (account.isPresent()) pass("loadAccount", "loaded account for " + player.getName());
-            else fail("loadAccount", "account not found in backing store");
+            assertTrue(account.isPresent(), "loadAccount");
         });
     }
 
     private CompletableFuture<Void> assertResolveAccount(final Player player) {
         return controller.resolveAccount(player).thenAccept(account -> {
-            if (account.isPresent()) pass("resolveAccount", "resolved account for " + player.getName());
-            else fail("resolveAccount", "account not found");
+            assertTrue(account.isPresent(), "resolveAccount");
         });
     }
 }

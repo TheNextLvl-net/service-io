@@ -21,30 +21,29 @@ public final class ChatTestSuite extends TestSuite<ChatController> {
     }
 
     private CompletableFuture<Void> testLoadProfile(final Player player) {
-        return controller.loadProfile(player).thenAccept(profile -> {
+        return controller.loadProfile(player).thenCompose(profile -> {
             pass("loadProfile", "loaded profile for " + player.getName());
 
-            assertGetName(profile);
-            assertGetPrimaryGroup(profile);
-            assertGetWorld(profile);
-            assertGetGroups(profile);
-
-            assertDisplayName(profile);
-            assertPrefix(profile);
-            assertPrefixWithPriority(profile);
-            assertGetPrefixes(profile);
-            assertSuffix(profile);
-            assertSuffixWithPriority(profile);
-            assertGetSuffixes(profile);
-
-            assertInfoNodes(profile);
+            return lifecycle(
+                    () -> assertGetName(profile),
+                    () -> assertGetPrimaryGroup(profile),
+                    () -> assertGetWorld(profile),
+                    () -> assertGetGroups(profile),
+                    () -> assertDisplayName(profile),
+                    () -> assertPrefix(profile),
+                    () -> assertPrefixWithPriority(profile),
+                    () -> assertGetPrefixes(profile),
+                    () -> assertSuffix(profile),
+                    () -> assertSuffixWithPriority(profile),
+                    () -> assertGetSuffixes(profile),
+                    () -> assertInfoNodes(profile)
+            );
         });
     }
 
     private void testGetProfile(final Player player) {
         final var profile = controller.getProfile(player);
-        if (profile.isPresent()) pass("getProfile", "found cached profile");
-        else fail("getProfile", "profile not cached after load");
+        assertTrue(profile.isPresent(), "getProfile");
     }
 
     private CompletableFuture<Void> testResolveProfile(final Player player) {
