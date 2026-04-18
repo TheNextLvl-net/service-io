@@ -36,24 +36,18 @@ import java.util.stream.Stream;
 
 final class ServiceInfoCommand extends SimpleCommand {
     private static final Comparator<ServiceRegistration> registrationOrder = (left, right) -> {
-        final var active = Integer.compare(activeWeight(right), activeWeight(left));
+        final var active = Boolean.compare(right.active(), left.active());
         if (active != 0) return active;
-        final var priority = Integer.compare(priorityWeight(right), priorityWeight(left));
+        final var priority = Integer.compare(right.priority().ordinal() + 1, left.priority().ordinal() + 1);
         if (priority != 0) return priority;
         final var source = left.source().compareTo(right.source());
         if (source != 0) return source;
         return left.name().compareTo(right.name());
     };
     private static final Comparator<ServiceRegistration> representativeOrder = (left, right) -> {
-        final var wrapper = Integer.compare(wrapperWeight(left), wrapperWeight(right));
+        final var wrapper = Boolean.compare(left.wrapper(), right.wrapper());
         if (wrapper != 0) return wrapper;
-        final var active = Integer.compare(activeWeight(right), activeWeight(left));
-        if (active != 0) return active;
-        final var priority = Integer.compare(priorityWeight(right), priorityWeight(left));
-        if (priority != 0) return priority;
-        final var source = left.source().compareTo(right.source());
-        if (source != 0) return source;
-        return left.name().compareTo(right.name());
+        return registrationOrder.compare(left, right);
     };
     private static final Comparator<ServiceGroup> groupOrder = Comparator
             .comparing(ServiceGroup::active).reversed()
@@ -151,13 +145,13 @@ final class ServiceInfoCommand extends SimpleCommand {
     }
 
     private int infoChat(final CommandContext<CommandSourceStack> context) {
-        return info(context, ChatController.class, 
+        return info(context, ChatController.class,
                 Chat.class, net.milkbowl.vault2.chat.Chat.class,
                 Chat::getName, net.milkbowl.vault2.chat.Chat::getName);
     }
 
     private int infoEconomy(final CommandContext<CommandSourceStack> context) {
-        return info(context, EconomyController.class, 
+        return info(context, EconomyController.class,
                 Economy.class, net.milkbowl.vault2.economy.Economy.class,
                 Economy::getName, net.milkbowl.vault2.economy.Economy::getName);
     }
@@ -251,24 +245,6 @@ final class ServiceInfoCommand extends SimpleCommand {
                     Placeholder.parsed("priority", registration.priority().name()),
                     Placeholder.parsed("source", registration.source()));
         }
-    }
-
-    private static int priorityWeight(final ServiceRegistration registration) {
-        return switch (registration.priority()) {
-            case Highest -> 5;
-            case High -> 4;
-            case Normal -> 3;
-            case Low -> 2;
-            case Lowest -> 1;
-        };
-    }
-
-    private static int activeWeight(final ServiceRegistration registration) {
-        return registration.active() ? 1 : 0;
-    }
-
-    private static int wrapperWeight(final ServiceRegistration registration) {
-        return registration.wrapper() ? 1 : 0;
     }
 
     private static <T> ServiceSource source(final Class<T> type, final Wrapper.Type wrapperType, final Function<T, String> nameMapper) {
