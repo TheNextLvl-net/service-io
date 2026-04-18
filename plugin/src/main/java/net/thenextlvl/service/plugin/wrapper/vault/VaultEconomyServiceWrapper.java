@@ -49,6 +49,7 @@ public final class VaultEconomyServiceWrapper implements Economy, Wrapper {
 
     @Override
     public String getName() {
+        if (economyController instanceof Wrapper) return economyController.getName();
         return economyController.getName() + " Wrapper";
     }
 
@@ -340,11 +341,6 @@ public final class VaultEconomyServiceWrapper implements Economy, Wrapper {
             default -> null;
         };
         return new EconomyResponse(amount, result.balance().doubleValue(), responseType, errorMessage);
-    }
-
-    @Override
-    public Type type() {
-        return Type.VAULT;
     }
 
     @FunctionalInterface

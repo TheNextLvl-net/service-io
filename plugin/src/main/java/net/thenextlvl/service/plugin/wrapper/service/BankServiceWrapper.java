@@ -143,8 +143,4 @@ public final class BankServiceWrapper implements BankController, Wrapper {
         return capabilities.contains(capability);
     }
 
-    @Override
-    public Type type() {
-        return Type.VAULT;
-    }
 }

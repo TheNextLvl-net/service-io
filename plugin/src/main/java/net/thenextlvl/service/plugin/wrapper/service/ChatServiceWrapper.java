@@ -51,9 +51,4 @@ public final class ChatServiceWrapper implements ChatController, Wrapper {
     public String getName() {
         return chat.getName() + " Wrapper";
     }
-
-    @Override
-    public Type type() {
-        return Type.VAULT;
-    }
 }

@@ -135,9 +135,4 @@ public final class EconomyServiceWrapper implements EconomyController, Wrapper {
     public boolean hasCapability(final EconomyCapability capability) {
         return capabilities.contains(capability);
     }
-
-    @Override
-    public Type type() {
-        return Type.VAULT;
-    }
 }

@@ -54,6 +54,7 @@ public final class VaultUnlockedEconomyServiceWrapper implements Economy, Wrappe
 
     @Override
     public String getName() {
+        if (economyController instanceof Wrapper) return economyController.getName();
         return economyController.getName() + " Wrapper";
     }
 
@@ -354,11 +355,6 @@ public final class VaultUnlockedEconomyServiceWrapper implements Economy, Wrappe
             default -> "";
         };
         return new EconomyResponse(amount, new BigDecimal(result.balance().toString()), responseType, errorMessage);
-    }
-
-    @Override
-    public Type type() {
-        return Type.VAULT_UNLOCKED;
     }
 
     @FunctionalInterface

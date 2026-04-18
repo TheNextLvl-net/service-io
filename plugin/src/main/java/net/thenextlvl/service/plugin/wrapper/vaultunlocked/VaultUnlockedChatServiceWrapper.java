@@ -31,6 +31,7 @@ public final class VaultUnlockedChatServiceWrapper extends Chat implements Wrapp
 
     @Override
     public String getName() {
+        if (chatController instanceof Wrapper) return chatController.getName();
         return chatController.getName() + " Wrapper";
     }
 
@@ -187,10 +188,5 @@ public final class VaultUnlockedChatServiceWrapper extends Chat implements Wrapp
                 .map(plugin.getServer()::getWorld)
                 .map(world -> controller.resolveGroup(groupName, world).join())
                 .orElseGet(() -> controller.resolveGroup(groupName).join()));
-    }
-
-    @Override
-    public Type type() {
-        return Type.VAULT_UNLOCKED;
     }
 }

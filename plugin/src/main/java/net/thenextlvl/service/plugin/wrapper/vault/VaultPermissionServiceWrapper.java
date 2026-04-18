@@ -29,6 +29,7 @@ public final class VaultPermissionServiceWrapper extends Permission implements W
 
     @Override
     public String getName() {
+        if (permissionController instanceof Wrapper) return permissionController.getName();
         return permissionController.getName() + " Wrapper";
     }
 
@@ -174,10 +175,5 @@ public final class VaultPermissionServiceWrapper extends Permission implements W
     private Plugin getPlugin() {
         assert plugin != null;
         return plugin;
-    }
-
-    @Override
-    public Type type() {
-        return Type.VAULT;
     }
 }

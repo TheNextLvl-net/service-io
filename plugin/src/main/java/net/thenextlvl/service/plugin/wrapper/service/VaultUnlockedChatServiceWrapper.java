@@ -51,9 +51,4 @@ public final class VaultUnlockedChatServiceWrapper implements ChatController, Wr
     public String getName() {
         return chat.getName() + " Wrapper";
     }
-
-    @Override
-    public Type type() {
-        return Type.VAULT_UNLOCKED;
-    }
 }
