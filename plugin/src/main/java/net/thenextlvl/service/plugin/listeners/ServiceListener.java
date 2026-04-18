@@ -67,6 +67,7 @@ public final class ServiceListener implements Listener {
             loadVaultUnlockedServicePermissionWrapper((RegisteredServiceProvider<net.milkbowl.vault2.permission.Permission>) registered);
         } else if (provider instanceof net.milkbowl.vault.permission.Permission) {
             loadServicePermissionWrapper((RegisteredServiceProvider<net.milkbowl.vault.permission.Permission>) registered);
+            loadVaultUnlockedVaultPermissionWrapper((RegisteredServiceProvider<net.milkbowl.vault.permission.Permission>) registered);
         } else if (provider instanceof EconomyController) {
             loadVaultEconomyWrapper((RegisteredServiceProvider<EconomyController>) registered);
             loadVaultUnlockedEconomyWrapper((RegisteredServiceProvider<EconomyController>) registered);
@@ -74,6 +75,7 @@ public final class ServiceListener implements Listener {
             loadVaultUnlockedServiceEconomyWrapper((RegisteredServiceProvider<net.milkbowl.vault2.economy.Economy>) registered);
         } else if (provider instanceof net.milkbowl.vault.economy.Economy) {
             loadServiceEconomyWrapper((RegisteredServiceProvider<net.milkbowl.vault.economy.Economy>) registered);
+            loadVaultUnlockedVaultEconomyWrapper((RegisteredServiceProvider<net.milkbowl.vault.economy.Economy>) registered);
         } else if (provider instanceof ChatController) {
             loadVaultChatWrapper((RegisteredServiceProvider<ChatController>) registered);
             loadVaultUnlockedChatWrapper((RegisteredServiceProvider<ChatController>) registered);
@@ -81,6 +83,7 @@ public final class ServiceListener implements Listener {
             loadVaultUnlockedServiceChatWrapper((RegisteredServiceProvider<net.milkbowl.vault2.chat.Chat>) registered);
         } else if (provider instanceof net.milkbowl.vault.chat.Chat) {
             loadServiceChatWrapper((RegisteredServiceProvider<net.milkbowl.vault.chat.Chat>) registered);
+            loadVaultUnlockedVaultChatWrapper((RegisteredServiceProvider<net.milkbowl.vault.chat.Chat>) registered);
         }
     }
 
@@ -188,6 +191,16 @@ public final class ServiceListener implements Listener {
                 provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
     }
 
+    private void loadVaultUnlockedVaultPermissionWrapper(final RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> provider) {
+        final var groupController = getServicesManager().load(GroupController.class);
+        final var service = new PermissionServiceWrapper(provider.getProvider(), provider.getPlugin());
+        final var wrapper = new VaultUnlockedPermissionServiceWrapper(groupController, service, provider.getPlugin());
+        final var priority = getWrapperPriority(provider);
+        getServicesManager().register(net.milkbowl.vault2.permission.Permission.class, wrapper, provider.getPlugin(), priority);
+        plugin.getComponentLogger().info("Registered vault to vault unlocked permission wrapper for {} - {} ({})",
+                provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
+    }
+
     private void loadVaultUnlockedServiceEconomyWrapper(final RegisteredServiceProvider<net.milkbowl.vault2.economy.Economy> provider) {
         final var wrapper = new net.thenextlvl.service.plugin.wrapper.service.VaultUnlockedEconomyServiceWrapper(provider.getProvider(), provider.getPlugin());
         final var priority = getWrapperPriority(provider);
@@ -196,11 +209,37 @@ public final class ServiceListener implements Listener {
                 provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
     }
 
+    private void loadVaultUnlockedVaultEconomyWrapper(final RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> provider) {
+        final var service = new EconomyServiceWrapper(provider.getProvider(), provider.getPlugin());
+        final var wrapper = new VaultUnlockedEconomyServiceWrapper(service, provider.getPlugin());
+        final var priority = getWrapperPriority(provider);
+        getServicesManager().register(net.milkbowl.vault2.economy.Economy.class, wrapper, provider.getPlugin(), priority);
+        plugin.getComponentLogger().info("Registered vault to vault unlocked economy wrapper for {} - {} ({})",
+                provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
+    }
+
     private void loadVaultUnlockedServiceChatWrapper(final RegisteredServiceProvider<net.milkbowl.vault2.chat.Chat> provider) {
         final var wrapper = new net.thenextlvl.service.plugin.wrapper.service.VaultUnlockedChatServiceWrapper(provider.getProvider(), provider.getPlugin());
         final var priority = getWrapperPriority(provider);
         getServicesManager().register(ChatController.class, wrapper, provider.getPlugin(), priority);
         plugin.getComponentLogger().info("Registered vault unlocked chat service wrapper for {} - {} ({})",
+                provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
+    }
+
+    private void loadVaultUnlockedVaultChatWrapper(final RegisteredServiceProvider<net.milkbowl.vault.chat.Chat> provider) {
+        final var groupController = getServicesManager().load(GroupController.class);
+        final var permission = getServicesManager().load(net.milkbowl.vault2.permission.Permission.class);
+
+        if (permission == null) {
+            plugin.getComponentLogger().warn("Failed to register vault to vault unlocked chat wrapper, no permission service found");
+            return;
+        }
+
+        final var service = new ChatServiceWrapper(provider.getProvider(), provider.getPlugin());
+        final var wrapper = new VaultUnlockedChatServiceWrapper(permission, groupController, service, provider.getPlugin());
+        final var priority = getWrapperPriority(provider);
+        getServicesManager().register(net.milkbowl.vault2.chat.Chat.class, wrapper, provider.getPlugin(), priority);
+        plugin.getComponentLogger().info("Registered vault to vault unlocked chat wrapper for {} - {} ({})",
                 provider.getPlugin().getName(), provider.getProvider().getName(), priority.name());
     }
 
