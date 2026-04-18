@@ -1,6 +1,7 @@
 package net.thenextlvl.service.providers.fancyholograms.v2;
 
 import de.oliver.fancyholograms.api.FancyHologramsPlugin;
+import de.oliver.fancyholograms.api.data.TextHologramData;
 import net.thenextlvl.service.hologram.Hologram;
 import net.thenextlvl.service.hologram.HologramCapability;
 import net.thenextlvl.service.hologram.HologramController;
@@ -31,7 +32,7 @@ public final class FancyHologramController implements HologramController {
     @Override
     public Hologram createHologram(final String name, final Location location) {
         final var manager = FancyHologramsPlugin.get().getHologramManager();
-        final var data = new de.oliver.fancyholograms.api.data.TextHologramData(name, location);
+        final var data = new TextHologramData(name, location);
         final var hologram = manager.create(data);
         manager.addHologram(hologram);
         return new FancyHologram(hologram);

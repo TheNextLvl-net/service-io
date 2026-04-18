@@ -19,6 +19,7 @@ import net.thenextlvl.service.providers.citizens.CitizensListener;
 import net.thenextlvl.service.providers.decentholograms.DecentHologramController;
 import net.thenextlvl.service.providers.fancyholograms.v3.FancyHologramController;
 import net.thenextlvl.service.providers.fancynpcs.FancyCharacterController;
+import net.thenextlvl.service.providers.fancynpcs.FancyNpcsListener;
 import net.thenextlvl.service.providers.groupmanager.GroupManagerChatController;
 import net.thenextlvl.service.providers.groupmanager.GroupManagerGroupController;
 import net.thenextlvl.service.providers.groupmanager.GroupManagerPermission;
@@ -61,7 +62,7 @@ public final class PluginListener implements Listener {
                 }),
                 Map.entry("FancyNpcs", plugin -> {
                     hookService(plugin, CharacterController.class, () -> new FancyCharacterController(plugin),
-                            controller -> new net.thenextlvl.service.providers.fancynpcs.FancyNpcsListener(controller), ServicePriority.High);
+                            controller -> new FancyNpcsListener(controller), ServicePriority.High);
                 }),
                 Map.entry("GroupManager", plugin -> {
                     hookService(plugin, ChatController.class, () -> new GroupManagerChatController(), ServicePriority.Low);

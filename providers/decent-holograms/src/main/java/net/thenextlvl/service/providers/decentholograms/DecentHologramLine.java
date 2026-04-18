@@ -1,5 +1,6 @@
 package net.thenextlvl.service.providers.decentholograms;
 
+import eu.decentsoftware.holograms.api.holograms.HologramLine;
 import net.thenextlvl.service.hologram.Hologram;
 import net.thenextlvl.service.hologram.line.StaticHologramLine;
 import org.bukkit.World;
@@ -16,9 +17,9 @@ import java.util.Optional;
 @NullMarked
 abstract class DecentHologramLine implements StaticHologramLine {
     protected final DecentHologram hologram;
-    protected final eu.decentsoftware.holograms.api.holograms.HologramLine line;
+    protected final HologramLine line;
 
-    protected DecentHologramLine(final DecentHologram hologram, final eu.decentsoftware.holograms.api.holograms.HologramLine line) {
+    protected DecentHologramLine(final DecentHologram hologram, final HologramLine line) {
         this.hologram = hologram;
         this.line = line;
     }

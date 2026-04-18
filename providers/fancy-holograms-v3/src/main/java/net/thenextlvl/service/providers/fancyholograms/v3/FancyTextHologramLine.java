@@ -15,6 +15,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -49,7 +50,7 @@ public final class FancyTextHologramLine extends FancyHologramLine<TextHologramD
     public boolean setText(@Nullable final Component text) {
         if (text == null) {
             if (data.getText().isEmpty()) return false;
-            data.setText(java.util.List.of());
+            data.setText(List.of());
             return true;
         }
         final var lines = Arrays.asList(MiniMessage.miniMessage().serialize(text).split("\\\\n|<newline>|<br>"));
@@ -62,7 +63,7 @@ public final class FancyTextHologramLine extends FancyHologramLine<TextHologramD
     public boolean setUnparsedText(@Nullable final String text) {
         if (text == null) {
             if (data.getText().isEmpty()) return false;
-            data.setText(java.util.List.of());
+            data.setText(List.of());
             return true;
         }
         final var lines = Arrays.asList(text.split("\n"));
