@@ -4,3 +4,4 @@ plugins {
 
 rootProject.name = "service-io"
 include("plugin")
+include("providers")
