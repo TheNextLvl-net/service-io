@@ -3,22 +3,29 @@ plugins {
     id("maven-publish")
 }
 
-val javaVersion = 21
+val compileJvm = 21
+val toolchainJvm = 25
 
 allprojects {
-    apply(plugin = "java")
-    apply(plugin = "java-library")
+    apply {
+        plugin("java")
+        plugin("java-library")
+    }
 
     group = "net.thenextlvl.services"
 
     extensions.configure<JavaPluginExtension> {
-        toolchain.languageVersion = JavaLanguageVersion.of(javaVersion)
+        toolchain.languageVersion = JavaLanguageVersion.of(toolchainJvm)
         withSourcesJar()
         withJavadocJar()
     }
 
     tasks.compileJava {
-        options.release.set(javaVersion)
+        options.release.set(compileJvm)
+    }
+
+    configurations.compileClasspath {
+        attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, toolchainJvm)
     }
 
     tasks.test {
