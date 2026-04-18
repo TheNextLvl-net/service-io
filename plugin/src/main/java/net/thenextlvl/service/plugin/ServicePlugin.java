@@ -21,6 +21,7 @@ import net.thenextlvl.service.plugin.listeners.ServiceListener;
 import net.thenextlvl.service.plugin.version.PluginVersionChecker;
 import net.thenextlvl.service.providers.superperms.SuperPermsPermission;
 import net.thenextlvl.service.providers.superperms.SuperPermsPermissionController;
+import net.thenextlvl.service.providers.superperms.SuperPermsPermissionUnlocked;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -75,6 +76,7 @@ public final class ServicePlugin extends Vault {
 
     private void registerServices() {
         getServer().getServicesManager().register(Permission.class, new SuperPermsPermission(this), this, ServicePriority.Lowest);
+        getServer().getServicesManager().register(net.milkbowl.vault2.permission.Permission.class, new SuperPermsPermissionUnlocked(this), this, ServicePriority.Lowest);
         getServer().getServicesManager().register(PermissionController.class, new SuperPermsPermissionController(this), this, ServicePriority.Lowest);
         getComponentLogger().debug("Added SuperPerms as backup permission provider (Lowest)");
     }
