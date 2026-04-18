@@ -8,6 +8,7 @@ import net.luckperms.api.node.types.MetaNode;
 import net.luckperms.api.query.QueryOptions;
 import net.thenextlvl.service.group.Group;
 import net.thenextlvl.service.group.GroupHolder;
+import net.thenextlvl.service.model.MetadataHolder;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -19,7 +20,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @NullMarked
-public record LuckPermsPermissionHolder(User user, QueryOptions options) implements GroupHolder {
+public record LuckPermsPermissionHolder(User user, QueryOptions options) implements GroupHolder, MetadataHolder {
     @Override
     public @Unmodifiable Map<String, Boolean> getPermissions() {
         return user().getCachedData().getPermissionData(options()).getPermissionMap();

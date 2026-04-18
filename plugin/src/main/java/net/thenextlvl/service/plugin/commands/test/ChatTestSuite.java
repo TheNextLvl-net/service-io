@@ -3,6 +3,7 @@ package net.thenextlvl.service.plugin.commands.test;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.thenextlvl.service.chat.ChatController;
 import net.thenextlvl.service.chat.ChatProfile;
+import net.thenextlvl.service.model.MetadataHolder;
 import net.thenextlvl.service.plugin.ServicePlugin;
 import org.bukkit.entity.Player;
 
@@ -36,7 +37,7 @@ public final class ChatTestSuite extends TestSuite<ChatController> {
                     () -> assertSuffix(profile),
                     () -> assertSuffixWithPriority(profile),
                     () -> assertGetSuffixes(profile),
-                    () -> assertInfoNodes(profile)
+                    () -> assertMetadata(profile)
             );
         });
     }
@@ -131,7 +132,16 @@ public final class ChatTestSuite extends TestSuite<ChatController> {
         pass("getSuffixes", suffixes.size() + " suffix(es)");
     }
 
-    private void assertInfoNodes(final ChatProfile profile) {
+    private void assertMetadata(final ChatProfile profile) {
+        if (!(profile instanceof final MetadataHolder metadata)) {
+            skip("metadata", "metadata unsupported");
+            return;
+        }
+
+        assertInfoNodes(metadata);
+    }
+
+    private void assertInfoNodes(final MetadataHolder profile) {
         final var key = "service.io.test";
 
         final var set = profile.setInfoNode(key, "hello");

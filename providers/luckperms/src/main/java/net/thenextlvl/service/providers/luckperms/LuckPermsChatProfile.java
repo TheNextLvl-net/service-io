@@ -9,6 +9,7 @@ import net.luckperms.api.node.types.PrefixNode;
 import net.luckperms.api.node.types.SuffixNode;
 import net.luckperms.api.query.QueryOptions;
 import net.thenextlvl.service.chat.ChatProfile;
+import net.thenextlvl.service.model.MetadataHolder;
 import org.bukkit.World;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
@@ -21,7 +22,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @NullMarked
-public record LuckPermsChatProfile(User user, QueryOptions options, @Nullable World world) implements ChatProfile {
+public record LuckPermsChatProfile(User user, QueryOptions options, @Nullable World world) implements ChatProfile, MetadataHolder {
     @Override
     public Optional<String> getDisplayName() {
         return getInfoNode("DISPLAY_NAME");

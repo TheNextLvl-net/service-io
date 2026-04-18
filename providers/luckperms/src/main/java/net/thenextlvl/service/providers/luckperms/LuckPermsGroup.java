@@ -11,6 +11,7 @@ import net.luckperms.api.node.types.WeightNode;
 import net.luckperms.api.query.QueryOptions;
 import net.luckperms.api.util.Tristate;
 import net.thenextlvl.service.group.Group;
+import net.thenextlvl.service.model.MetadataHolder;
 import org.bukkit.World;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
@@ -25,7 +26,7 @@ public record LuckPermsGroup(
         net.luckperms.api.model.group.Group group,
         QueryOptions options,
         @Nullable World world
-) implements Group {
+) implements Group, MetadataHolder {
     @Override
     public Optional<String> getDisplayName() {
         return Optional.ofNullable(group().getDisplayName(options()));

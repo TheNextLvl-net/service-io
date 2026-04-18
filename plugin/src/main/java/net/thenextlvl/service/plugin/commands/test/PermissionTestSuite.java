@@ -2,6 +2,7 @@ package net.thenextlvl.service.plugin.commands.test;
 
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.util.TriState;
+import net.thenextlvl.service.model.MetadataHolder;
 import net.thenextlvl.service.permission.PermissionController;
 import net.thenextlvl.service.permission.PermissionHolder;
 import net.thenextlvl.service.plugin.ServicePlugin;
@@ -34,11 +35,7 @@ public final class PermissionTestSuite extends TestSuite<PermissionController> {
                     () -> assertCheckPermission(holder, "service.io.test", TriState.FALSE),
                     () -> assertRemovePermission(holder),
                     () -> assertCheckPermission(holder, "service.io.test", TriState.NOT_SET),
-                    () -> assertSetInfoNode(holder),
-                    () -> assertBooleanInfoNode(holder),
-                    () -> assertIntInfoNode(holder),
-                    () -> assertDoubleInfoNode(holder),
-                    () -> assertRemoveInfoNode(holder)
+                    () -> assertMetadata(holder)
             );
         });
     }
@@ -90,7 +87,20 @@ public final class PermissionTestSuite extends TestSuite<PermissionController> {
                 "removePermission returned true but checkPermission returned " + state + " instead of NOT_SET");
     }
 
-    private void assertSetInfoNode(final PermissionHolder holder) {
+    private void assertMetadata(final PermissionHolder holder) {
+        if (!(holder instanceof final MetadataHolder metadata)) {
+            skip("metadata", "metadata unsupported");
+            return;
+        }
+
+        assertSetInfoNode(metadata);
+        assertBooleanInfoNode(metadata);
+        assertIntInfoNode(metadata);
+        assertDoubleInfoNode(metadata);
+        assertRemoveInfoNode(metadata);
+    }
+
+    private void assertSetInfoNode(final MetadataHolder holder) {
         final var set = holder.setInfoNode("service.io.test", "hello");
         final var has = holder.hasInfoNode("service.io.test");
         final var value = holder.getInfoNode("service.io.test");
@@ -101,25 +111,25 @@ public final class PermissionTestSuite extends TestSuite<PermissionController> {
                         : "setInfoNode returned true but getInfoNode returned " + value + " instead of Optional[hello]");
     }
 
-    private void assertBooleanInfoNode(final PermissionHolder holder) {
+    private void assertBooleanInfoNode(final MetadataHolder holder) {
         holder.setInfoNode("service.io.test", "true");
         final var value = holder.booleanInfoNode("service.io.test");
         assertEquals(true, value.orElse(null), "booleanInfoNode");
     }
 
-    private void assertIntInfoNode(final PermissionHolder holder) {
+    private void assertIntInfoNode(final MetadataHolder holder) {
         holder.setInfoNode("service.io.test", "42");
         final var value = holder.intInfoNode("service.io.test");
         assertEquals(42, value.orElse(null), "intInfoNode");
     }
 
-    private void assertDoubleInfoNode(final PermissionHolder holder) {
+    private void assertDoubleInfoNode(final MetadataHolder holder) {
         holder.setInfoNode("service.io.test", "3.14");
         final var value = holder.doubleInfoNode("service.io.test");
         assertEquals(3.14, value.orElse(null), "doubleInfoNode");
     }
 
-    private void assertRemoveInfoNode(final PermissionHolder holder) {
+    private void assertRemoveInfoNode(final MetadataHolder holder) {
         final var removed = holder.removeInfoNode("service.io.test");
         final var has = holder.hasInfoNode("service.io.test");
         assertRequiredStateChange("removeInfoNode", removed, !has,

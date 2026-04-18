@@ -6,6 +6,7 @@ import net.thenextlvl.service.chat.ChatController;
 import net.thenextlvl.service.chat.ChatProfile;
 import net.thenextlvl.service.group.Group;
 import net.thenextlvl.service.group.GroupController;
+import net.thenextlvl.service.model.MetadataHolder;
 import net.thenextlvl.service.plugin.wrapper.Wrapper;
 import org.bukkit.plugin.Plugin;
 import org.jspecify.annotations.Nullable;
@@ -82,31 +83,31 @@ public final class VaultChatServiceWrapper extends Chat implements Wrapper {
 
     @Override
     public int getPlayerInfoInteger(@Nullable final String world, final String player, final String node, final int defaultValue) {
-        return getProfile(world, player)
+        return getMetadataProfile(world, player)
                 .flatMap(profile -> profile.intInfoNode(node))
                 .orElse(defaultValue);
     }
 
     @Override
     public void setPlayerInfoInteger(@Nullable final String world, final String player, final String node, final int value) {
-        getProfile(world, player).ifPresent(profile -> profile.setInfoNode(node, String.valueOf(value)));
+        getMetadataProfile(world, player).ifPresent(profile -> profile.setInfoNode(node, String.valueOf(value)));
     }
 
     @Override
     public int getGroupInfoInteger(@Nullable final String world, final String groupName, final String node, final int defaultValue) {
-        return getGroup(world, groupName)
+        return getMetadataGroup(world, groupName)
                 .flatMap(group -> group.intInfoNode(node))
                 .orElse(defaultValue);
     }
 
     @Override
     public void setGroupInfoInteger(@Nullable final String world, final String groupName, final String node, final int value) {
-        getGroup(world, groupName).ifPresent(group -> group.setInfoNode(node, String.valueOf(value)));
+        getMetadataGroup(world, groupName).ifPresent(group -> group.setInfoNode(node, String.valueOf(value)));
     }
 
     @Override
     public double getPlayerInfoDouble(@Nullable final String world, final String player, final String node, final double defaultValue) {
-        return getProfile(world, player)
+        return getMetadataProfile(world, player)
                 .flatMap(chatProfile -> chatProfile.doubleInfoNode(node))
                 .orElse(defaultValue);
     }
@@ -118,7 +119,7 @@ public final class VaultChatServiceWrapper extends Chat implements Wrapper {
 
     @Override
     public double getGroupInfoDouble(@Nullable final String world, final String groupName, final String node, final double defaultValue) {
-        return getGroup(world, groupName)
+        return getMetadataGroup(world, groupName)
                 .flatMap(group -> group.doubleInfoNode(node))
                 .orElse(defaultValue);
     }
@@ -130,7 +131,7 @@ public final class VaultChatServiceWrapper extends Chat implements Wrapper {
 
     @Override
     public boolean getPlayerInfoBoolean(@Nullable final String world, final String player, final String node, final boolean defaultValue) {
-        return getProfile(world, player)
+        return getMetadataProfile(world, player)
                 .flatMap(chatProfile -> chatProfile.booleanInfoNode(node))
                 .orElse(defaultValue);
     }
@@ -142,7 +143,7 @@ public final class VaultChatServiceWrapper extends Chat implements Wrapper {
 
     @Override
     public boolean getGroupInfoBoolean(@Nullable final String world, final String groupName, final String node, final boolean defaultValue) {
-        return getGroup(world, groupName)
+        return getMetadataGroup(world, groupName)
                 .flatMap(group -> group.booleanInfoNode(node))
                 .orElse(defaultValue);
     }
@@ -154,26 +155,26 @@ public final class VaultChatServiceWrapper extends Chat implements Wrapper {
 
     @Override
     public String getPlayerInfoString(@Nullable final String world, final String player, final String node, final String defaultValue) {
-        return getProfile(world, player)
+        return getMetadataProfile(world, player)
                 .flatMap(profile -> profile.getInfoNode(node))
                 .orElse(defaultValue);
     }
 
     @Override
     public void setPlayerInfoString(@Nullable final String world, final String player, final String node, final String value) {
-        getProfile(world, player).ifPresent(profile -> profile.setInfoNode(node, value));
+        getMetadataProfile(world, player).ifPresent(profile -> profile.setInfoNode(node, value));
     }
 
     @Override
     public String getGroupInfoString(@Nullable final String world, final String groupName, final String node, final String defaultValue) {
-        return getGroup(world, groupName)
+        return getMetadataGroup(world, groupName)
                 .flatMap(group -> group.getInfoNode(node))
                 .orElse(defaultValue);
     }
 
     @Override
     public void setGroupInfoString(@Nullable final String world, final String groupName, final String node, final String value) {
-        getGroup(world, groupName).ifPresent(group -> group.setInfoNode(node, value));
+        getMetadataGroup(world, groupName).ifPresent(group -> group.setInfoNode(node, value));
     }
 
     private Optional<ChatProfile> getProfile(@Nullable final String worldName, final String name) {
@@ -188,5 +189,17 @@ public final class VaultChatServiceWrapper extends Chat implements Wrapper {
                 .map(plugin.getServer()::getWorld)
                 .map(world -> controller.resolveGroup(groupName, world).join())
                 .orElseGet(() -> controller.resolveGroup(groupName).join()));
+    }
+
+    private Optional<MetadataHolder> getMetadataProfile(@Nullable final String worldName, final String name) {
+        return getProfile(worldName, name)
+                .filter(MetadataHolder.class::isInstance)
+                .map(MetadataHolder.class::cast);
+    }
+
+    private Optional<MetadataHolder> getMetadataGroup(@Nullable final String worldName, final String groupName) {
+        return getGroup(worldName, groupName)
+                .filter(MetadataHolder.class::isInstance)
+                .map(MetadataHolder.class::cast);
     }
 }

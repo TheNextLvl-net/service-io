@@ -3,6 +3,7 @@ package net.thenextlvl.service.providers.groupmanager;
 import net.kyori.adventure.util.TriState;
 import net.thenextlvl.service.group.Group;
 import net.thenextlvl.service.group.GroupHolder;
+import net.thenextlvl.service.model.MetadataHolder;
 import org.anjocaido.groupmanager.data.User;
 import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
 import org.jetbrains.annotations.Unmodifiable;
@@ -16,7 +17,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @NullMarked
-public record GroupManagerPermissionHolder(User user, WorldDataHolder holder) implements GroupHolder {
+public record GroupManagerPermissionHolder(User user, WorldDataHolder holder) implements GroupHolder, MetadataHolder {
     @Override
     public @Unmodifiable Map<String, Boolean> getPermissions() {
         return user().getPermissionList().stream().collect(Collectors.toUnmodifiableMap(

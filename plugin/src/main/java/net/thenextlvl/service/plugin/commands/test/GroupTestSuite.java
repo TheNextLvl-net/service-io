@@ -5,6 +5,7 @@ import net.kyori.adventure.util.TriState;
 import net.thenextlvl.service.group.Group;
 import net.thenextlvl.service.group.GroupController;
 import net.thenextlvl.service.group.GroupHolder;
+import net.thenextlvl.service.model.MetadataHolder;
 import net.thenextlvl.service.permission.PermissionHolder;
 import net.thenextlvl.service.plugin.ServicePlugin;
 import org.bukkit.entity.Player;
@@ -59,7 +60,7 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
                     () -> assertCheckPermission(group, "service.io.test", TriState.FALSE),
                     () -> assertRemovePermission(group),
                     () -> assertCheckPermission(group, "service.io.test", TriState.NOT_SET),
-                    () -> assertInfoNode(group)
+                    () -> assertMetadata(group)
             ).thenCompose(ignored -> lifecycleAsync(
                     () -> assertLoadGroup(name),
                     () -> assertResolveGroup(name),
@@ -100,7 +101,7 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
                     () -> assertCheckPermission(holder, "service.io.test", TriState.FALSE),
                     () -> assertRemovePermission(holder),
                     () -> assertCheckPermission(holder, "service.io.test", TriState.NOT_SET),
-                    () -> assertInfoNode(holder),
+                    () -> assertMetadata(holder),
                     () -> assertGetGroupHolder(player)
             ).thenCompose(ignored -> lifecycleAsync(
                     () -> assertResolveGroupHolder(player)
@@ -225,7 +226,16 @@ public final class GroupTestSuite extends TestSuite<GroupController> {
                 "removePermission returned true but checkPermission returned " + state + " instead of NOT_SET");
     }
 
-    private void assertInfoNode(final PermissionHolder holder) {
+    private void assertMetadata(final PermissionHolder holder) {
+        if (!(holder instanceof final MetadataHolder metadata)) {
+            skip("metadata", "metadata unsupported");
+            return;
+        }
+
+        assertInfoNode(metadata);
+    }
+
+    private void assertInfoNode(final MetadataHolder holder) {
         final var set = holder.setInfoNode("service.io.key", "testValue");
         final var has = holder.hasInfoNode("service.io.key");
         final var value = holder.getInfoNode("service.io.key");

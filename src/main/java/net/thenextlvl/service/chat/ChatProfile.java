@@ -1,14 +1,13 @@
 package net.thenextlvl.service.chat;
 
 import net.thenextlvl.service.model.Display;
-import net.thenextlvl.service.model.InfoNode;
 import org.bukkit.World;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Optional;
 import java.util.Set;
 
-public interface ChatProfile extends InfoNode, Display {
+public interface ChatProfile extends Display {
     /**
      * Retrieves the name associated with the chat profile.
      *

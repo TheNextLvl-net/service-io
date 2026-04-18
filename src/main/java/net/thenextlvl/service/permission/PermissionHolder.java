@@ -1,17 +1,15 @@
 package net.thenextlvl.service.permission;
 
 import net.kyori.adventure.util.TriState;
-import net.thenextlvl.service.model.InfoNode;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Map;
 
 /**
  * The {@code PermissionHolder} interface represents an entity that holds permissions.
- * It extends the {@link InfoNode} interface.
  * It provides methods to check, add, and remove permissions for the holder.
  */
-public interface PermissionHolder extends InfoNode {
+public interface PermissionHolder {
     /**
      * Retrieves the permissions held by the permission holder.
      *

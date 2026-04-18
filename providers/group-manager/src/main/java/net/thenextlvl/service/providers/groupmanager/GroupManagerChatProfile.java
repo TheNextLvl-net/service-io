@@ -1,6 +1,7 @@
 package net.thenextlvl.service.providers.groupmanager;
 
 import net.thenextlvl.service.chat.ChatProfile;
+import net.thenextlvl.service.model.MetadataHolder;
 import org.anjocaido.groupmanager.data.Group;
 import org.anjocaido.groupmanager.data.User;
 import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
@@ -17,7 +18,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @NullMarked
-public record GroupManagerChatProfile(User user, WorldDataHolder holder, @Nullable World world) implements ChatProfile {
+public record GroupManagerChatProfile(User user, WorldDataHolder holder, @Nullable World world) implements ChatProfile, MetadataHolder {
     @Override
     public Optional<String> getDisplayName() {
         return Optional.empty();

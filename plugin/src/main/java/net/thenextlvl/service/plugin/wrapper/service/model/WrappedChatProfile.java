@@ -2,6 +2,7 @@ package net.thenextlvl.service.plugin.wrapper.service.model;
 
 import net.milkbowl.vault.chat.Chat;
 import net.thenextlvl.service.chat.ChatProfile;
+import net.thenextlvl.service.model.MetadataHolder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.jetbrains.annotations.Unmodifiable;
@@ -12,7 +13,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-public final class WrappedChatProfile implements ChatProfile {
+public final class WrappedChatProfile implements ChatProfile, MetadataHolder {
     private final @Nullable World world;
     private final Chat chat;
     private final OfflinePlayer holder;

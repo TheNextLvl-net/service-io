@@ -2,6 +2,7 @@ package net.thenextlvl.service.providers.groupmanager;
 
 import net.kyori.adventure.util.TriState;
 import net.thenextlvl.service.group.Group;
+import net.thenextlvl.service.model.MetadataHolder;
 import org.anjocaido.groupmanager.GroupManager;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 import static org.anjocaido.groupmanager.utils.PermissionCheckResult.Type;
 
 @NullMarked
-public record GroupManagerGroup(org.anjocaido.groupmanager.data.Group group) implements Group {
+public record GroupManagerGroup(org.anjocaido.groupmanager.data.Group group) implements Group, MetadataHolder {
     @Override
     public Optional<String> getDisplayName() {
         return Optional.empty();
