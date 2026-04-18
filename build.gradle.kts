@@ -33,13 +33,18 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven("https://repo.thenextlvl.net/releases")
+        maven("https://repo.codemc.org/repository/maven-public")
         maven("https://repo.papermc.io/repository/maven-public/")
+        maven("https://repo.thenextlvl.net/releases")
     }
 
     dependencies {
         compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
         compileOnly("net.thenextlvl:vault-api:1.7.1")
+        compileOnly("net.milkbowl.vault:VaultUnlockedAPI:2.15") {
+            exclude("com.github.MilkBowl", "VaultAPI")
+            exclude("org.jetbrains", "annotations")
+        }
     }
 }
 
