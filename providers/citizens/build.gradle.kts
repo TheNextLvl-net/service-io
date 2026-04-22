@@ -4,5 +4,5 @@ repositories {
 }
 
 dependencies {
-    compileOnly("net.citizensnpcs:citizens-main:2.0.41-SNAPSHOT")
+    compileOnly("net.citizensnpcs:citizens-main:2.0.42-SNAPSHOT")
 }
