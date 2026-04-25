@@ -12,17 +12,17 @@ final class CharacterConverter extends Converter<CharacterController> {
 
     @Override
     public CompletableFuture<Void> convert() {
-        source.getNPCs().forEach(character -> target.getNPC(character.getName()).orElseGet(() -> {
-            final var npc = target.createNPC(character.getName(), character.getType());
-            npc.setDisplayName(character.getDisplayName());
-            npc.setDisplayRange(character.getDisplayRange());
-            npc.setInvulnerable(character.isInvulnerable());
-            npc.setPersistent(character.isPersistent());
-            npc.setTablistEntryHidden(character.isTablistEntryHidden());
-            npc.setVisibleByDefault(character.isVisibleByDefault());
-            character.getLocation().ifPresent(npc::spawn);
-            character.addViewers(npc.getViewers());
-            return npc;
+        source.getCharacters().forEach(character -> target.getCharacter(character.getName()).orElseGet(() -> {
+            final var createdCharacter = target.createCharacter(character.getName(), character.getType());
+            createdCharacter.setDisplayName(character.getDisplayName());
+            createdCharacter.setDisplayRange(character.getDisplayRange());
+            createdCharacter.setInvulnerable(character.isInvulnerable());
+            createdCharacter.setPersistent(character.isPersistent());
+            createdCharacter.setTablistEntryHidden(character.isTablistEntryHidden());
+            createdCharacter.setVisibleByDefault(character.isVisibleByDefault());
+            character.getLocation().ifPresent(createdCharacter::spawn);
+            character.addViewers(createdCharacter.getViewers());
+            return createdCharacter;
         }));
         return CompletableFuture.completedFuture(null);
     }

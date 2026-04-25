@@ -39,31 +39,31 @@ public final class CitizensCharacterController implements CharacterController {
     }
 
     @Override
-    public Character createNPC(final String name, final EntityType type) {
+    public Character createCharacter(final String name, final EntityType type) {
         final var npc = CitizensAPI.getNPCRegistry().createNPC(type, name);
         return new CitizensCharacter(npc);
     }
 
     @Override
-    public Character spawnNPC(final String name, final Location location, final EntityType type) {
+    public Character spawnCharacter(final String name, final Location location, final EntityType type) {
         final var npc = CitizensAPI.getNPCRegistry().createNPC(type, name, location);
         return new CitizensCharacter(npc);
     }
 
     @Override
-    public Optional<Character> getNPC(final Entity entity) {
+    public Optional<Character> getCharacter(final Entity entity) {
         return Optional.ofNullable(CitizensAPI.getNPCRegistry().getNPC(entity))
                 .map(CitizensCharacter::new);
     }
 
     @Override
-    public @Unmodifiable List<Character> getNPCs() {
+    public @Unmodifiable List<Character> getCharacters() {
         return streamNPCs().map(CitizensCharacter::new)
                 .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
-    public @Unmodifiable List<Character> getNPCs(final Player player) {
+    public @Unmodifiable List<Character> getCharacters(final Player player) {
         return streamNPCs()
                 .filter(character -> !character.isHiddenFrom(player))
                 .map(CitizensCharacter::new)
@@ -71,7 +71,7 @@ public final class CitizensCharacterController implements CharacterController {
     }
 
     @Override
-    public @Unmodifiable List<Character> getNPCs(final World world) {
+    public @Unmodifiable List<Character> getCharacters(final World world) {
         return streamNPCs()
                 .filter(character -> world.equals(character.getEntity().getWorld()))
                 .map(CitizensCharacter::new)
@@ -79,21 +79,21 @@ public final class CitizensCharacterController implements CharacterController {
     }
 
     @Override
-    public Optional<Character> getNPC(final String name) {
+    public Optional<Character> getCharacter(final String name) {
         return streamNPCs().filter(npc -> name.equals(npc.getRawName()))
                 .<Character>map(CitizensCharacter::new)
                 .findAny();
     }
 
     @Override
-    public Optional<Character> getNPC(final UUID uuid) {
+    public Optional<Character> getCharacter(final UUID uuid) {
         return Optional.ofNullable(plugin.getServer().getEntity(uuid))
                 .map(CitizensAPI.getNPCRegistry()::getNPC)
                 .map(CitizensCharacter::new);
     }
 
     @Override
-    public Optional<Character> getNPC(final Player player) {
+    public Optional<Character> getCharacter(final Player player) {
         return Optional.ofNullable(CitizensAPI.getNPCRegistry().getNPC(player))
                 .filter(npc -> npc.getEntity().getType().equals(EntityType.PLAYER))
                 .map(CitizensCharacter::new);
@@ -110,7 +110,7 @@ public final class CitizensCharacterController implements CharacterController {
     }
 
     @Override
-    public boolean isNPC(final Entity entity) {
+    public boolean isCharacter(final Entity entity) {
         return CitizensAPI.getNPCRegistry().isNPC(entity);
     }
 

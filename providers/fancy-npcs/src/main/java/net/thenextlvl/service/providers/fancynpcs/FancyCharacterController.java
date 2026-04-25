@@ -35,7 +35,7 @@ public final class FancyCharacterController implements CharacterController {
     }
 
     @Override
-    public Character createNPC(final String name, final EntityType type) {
+    public Character createCharacter(final String name, final EntityType type) {
         final var plugin = FancyNpcsPlugin.get();
 
         final var location = new Location(this.plugin.getServer().getWorlds().getFirst(), 0, 0, 0);
@@ -49,26 +49,26 @@ public final class FancyCharacterController implements CharacterController {
     }
 
     @Override
-    public Character spawnNPC(final String name, final Location location, final EntityType type) {
-        final var npc = createNPC(name, type);
+    public Character spawnCharacter(final String name, final Location location, final EntityType type) {
+        final var npc = createCharacter(name, type);
         npc.spawn(location);
         return npc;
     }
 
     @Override
-    public Optional<Character> getNPC(final Entity entity) {
+    public Optional<Character> getCharacter(final Entity entity) {
         return Optional.empty();
     }
 
     @Override
-    public @Unmodifiable List<Character> getNPCs() {
+    public @Unmodifiable List<Character> getCharacters() {
         return FancyNpcsPlugin.get().getNpcManager().getAllNpcs().stream()
                 .map(FancyCharacter::new)
                 .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
-    public @Unmodifiable List<Character> getNPCs(final Player player) {
+    public @Unmodifiable List<Character> getCharacters(final Player player) {
         return FancyNpcsPlugin.get().getNpcManager().getAllNpcs().stream()
                 .filter(npc -> npc.getIsVisibleForPlayer().containsKey(player.getUniqueId()))
                 .map(FancyCharacter::new)
@@ -76,7 +76,7 @@ public final class FancyCharacterController implements CharacterController {
     }
 
     @Override
-    public @Unmodifiable List<Character> getNPCs(final World world) {
+    public @Unmodifiable List<Character> getCharacters(final World world) {
         return FancyNpcsPlugin.get().getNpcManager().getAllNpcs().stream()
                 .filter(npc -> npc.getData().getLocation() != null)
                 .filter(npc -> world.equals(npc.getData().getLocation().getWorld()))
@@ -85,18 +85,18 @@ public final class FancyCharacterController implements CharacterController {
     }
 
     @Override
-    public Optional<Character> getNPC(final String name) {
+    public Optional<Character> getCharacter(final String name) {
         return Optional.ofNullable(FancyNpcsPlugin.get().getNpcManager().getNpc(name))
                 .map(FancyCharacter::new);
     }
 
     @Override
-    public Optional<Character> getNPC(final UUID uuid) {
+    public Optional<Character> getCharacter(final UUID uuid) {
         return Optional.empty();
     }
 
     @Override
-    public Optional<Character> getNPC(final Player player) {
+    public Optional<Character> getCharacter(final Player player) {
         return Optional.empty();
     }
 
@@ -126,7 +126,7 @@ public final class FancyCharacterController implements CharacterController {
     }
 
     @Override
-    public boolean isNPC(final Entity entity) {
+    public boolean isCharacter(final Entity entity) {
         return false;
     }
 }
