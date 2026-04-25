@@ -16,11 +16,10 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @NullMarked
 public final class FancyCharacterController implements CharacterController {
@@ -61,27 +60,24 @@ public final class FancyCharacterController implements CharacterController {
     }
 
     @Override
-    public @Unmodifiable List<Character> getCharacters() {
+    public Stream<Character> getCharacters() {
         return FancyNpcsPlugin.get().getNpcManager().getAllNpcs().stream()
-                .map(FancyCharacter::new)
-                .collect(Collectors.toUnmodifiableList());
+                .map(FancyCharacter::new);
     }
 
     @Override
-    public @Unmodifiable List<Character> getCharacters(final Player player) {
+    public Stream<Character> getCharacters(final Player player) {
         return FancyNpcsPlugin.get().getNpcManager().getAllNpcs().stream()
                 .filter(npc -> npc.getIsVisibleForPlayer().containsKey(player.getUniqueId()))
-                .map(FancyCharacter::new)
-                .collect(Collectors.toUnmodifiableList());
+                .map(FancyCharacter::new);
     }
 
     @Override
-    public @Unmodifiable List<Character> getCharacters(final World world) {
+    public Stream<Character> getCharacters(final World world) {
         return FancyNpcsPlugin.get().getNpcManager().getAllNpcs().stream()
                 .filter(npc -> npc.getData().getLocation() != null)
                 .filter(npc -> world.equals(npc.getData().getLocation().getWorld()))
-                .map(FancyCharacter::new)
-                .collect(Collectors.toUnmodifiableList());
+                .map(FancyCharacter::new);
     }
 
     @Override

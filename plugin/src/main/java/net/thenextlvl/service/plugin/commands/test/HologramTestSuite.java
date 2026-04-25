@@ -36,7 +36,7 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
 
     private void testGetHolograms() {
         final var holograms = controller.getHolograms();
-        pass("getHolograms", holograms.size() + " hologram(s)");
+        pass("getHolograms", holograms.count() + " hologram(s)");
     }
 
     private CompletableFuture<Void> testHologramLifecycle() {
@@ -110,12 +110,12 @@ public final class HologramTestSuite extends TestSuite<HologramController> {
     private void assertHologramsByWorld(final Hologram hologram) {
         final var world = hologram.getWorld();
         final var holograms = controller.getHolograms(world);
-        pass("getHolograms(world)", holograms.size() + " hologram(s) in " + world.key().asString());
+        pass("getHolograms(world)", holograms.count() + " hologram(s) in " + world.key().asString());
     }
 
     private void assertHologramsByPlayer(final Player player) {
         final var holograms = controller.getHolograms(player);
-        pass("getHolograms(player)", holograms.size() + " hologram(s) for " + player.getName());
+        pass("getHolograms(player)", holograms.count() + " hologram(s) for " + player.getName());
     }
 
     private void assertGetName(final Hologram hologram) {

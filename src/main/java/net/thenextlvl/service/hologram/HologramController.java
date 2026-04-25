@@ -5,10 +5,9 @@ import net.thenextlvl.service.capability.CapabilityProvider;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Represents a controller for managing holograms and their related functionality.
@@ -38,30 +37,30 @@ public interface HologramController extends CapabilityProvider<HologramCapabilit
     boolean deleteHologram(Hologram hologram);
 
     /**
-     * Retrieves an unmodifiable list of all available holograms.
+     * Retrieves a stream of all available holograms.
      *
-     * @return an unmodifiable list containing all hologram instances
+     * @return a stream containing all hologram instances
+     * @since 3.0.0
      */
-    @Unmodifiable
-    List<Hologram> getHolograms();
+    Stream<Hologram> getHolograms();
 
     /**
-     * Retrieves an unmodifiable list of holograms associated with the specified player.
+     * Retrieves a stream of holograms associated with the specified player.
      *
      * @param player the player whose associated holograms are to be retrieved
-     * @return an unmodifiable list of hologram instances associated with the given player
+     * @return a stream of hologram instances associated with the given player
+     * @since 3.0.0
      */
-    @Unmodifiable
-    List<Hologram> getHolograms(Player player);
+    Stream<Hologram> getHolograms(Player player);
 
     /**
-     * Retrieves an unmodifiable list of all holograms present in the specified world.
+     * Retrieves a stream of all holograms present in the specified world.
      *
      * @param world the world for which holograms are to be retrieved
-     * @return an unmodifiable list containing all hologram instances in the specified world
+     * @return a stream containing all hologram instances in the specified world
+     * @since 3.0.0
      */
-    @Unmodifiable
-    List<Hologram> getHolograms(World world);
+    Stream<Hologram> getHolograms(World world);
 
     /**
      * Retrieves an existing hologram by its name.

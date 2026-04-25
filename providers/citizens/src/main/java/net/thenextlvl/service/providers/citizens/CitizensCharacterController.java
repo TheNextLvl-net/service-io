@@ -16,11 +16,9 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -57,25 +55,22 @@ public final class CitizensCharacterController implements CharacterController {
     }
 
     @Override
-    public @Unmodifiable List<Character> getCharacters() {
-        return streamNPCs().map(CitizensCharacter::new)
-                .collect(Collectors.toUnmodifiableList());
+    public Stream<Character> getCharacters() {
+        return streamNPCs().map(CitizensCharacter::new);
     }
 
     @Override
-    public @Unmodifiable List<Character> getCharacters(final Player player) {
+    public Stream<Character> getCharacters(final Player player) {
         return streamNPCs()
                 .filter(character -> !character.isHiddenFrom(player))
-                .map(CitizensCharacter::new)
-                .collect(Collectors.toUnmodifiableList());
+                .map(CitizensCharacter::new);
     }
 
     @Override
-    public @Unmodifiable List<Character> getCharacters(final World world) {
+    public Stream<Character> getCharacters(final World world) {
         return streamNPCs()
                 .filter(character -> world.equals(character.getEntity().getWorld()))
-                .map(CitizensCharacter::new)
-                .collect(Collectors.toUnmodifiableList());
+                .map(CitizensCharacter::new);
     }
 
     @Override

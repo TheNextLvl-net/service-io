@@ -33,7 +33,7 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
 
     private void testGetCharacters() {
         final var characters = controller.getCharacters();
-        pass("getCharacters", characters.size() + " character(s)");
+        pass("getCharacters", characters.count() + " character(s)");
     }
 
     private CompletableFuture<Void> testCharacterLifecycle(final Player player) {
@@ -118,19 +118,19 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
 
     private void assertGetCharacters() {
         final var characters = controller.getCharacters();
-        pass("getCharacters", characters.size() + " character(s)");
+        pass("getCharacters", characters.count() + " character(s)");
     }
 
     private void assertGetCharactersByWorld(final Character character) {
         character.getWorld().ifPresentOrElse(world -> {
             final var characters = controller.getCharacters(world);
-            pass("getCharacters(world)", characters.size() + " character(s) in " + world.key().asString());
+            pass("getCharacters(world)", characters.count() + " character(s) in " + world.key().asString());
         }, () -> fail("getCharacters(world)", "character has no world"));
     }
 
     private void assertGetCharactersByPlayer(final Player player) {
         final var characters = controller.getCharacters(player);
-        pass("getCharacters(player)", characters.size() + " character(s) for " + player.getName());
+        pass("getCharacters(player)", characters.count() + " character(s) for " + player.getName());
     }
 
     private void assertGetCharacterByEntity(final Character character) {

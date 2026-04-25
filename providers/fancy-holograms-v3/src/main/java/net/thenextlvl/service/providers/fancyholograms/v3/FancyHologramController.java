@@ -14,10 +14,9 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @NullMarked
 public final class FancyHologramController implements HologramController {
@@ -48,29 +47,26 @@ public final class FancyHologramController implements HologramController {
     }
 
     @Override
-    public @Unmodifiable List<Hologram> getHolograms() {
+    public Stream<Hologram> getHolograms() {
         final var registry = FancyHolograms.get().getRegistry();
         return registry.getAll().stream()
-                .map(FancyHologram::new)
-                .collect(Collectors.toUnmodifiableList());
+                .map(FancyHologram::new);
     }
 
     @Override
-    public @Unmodifiable List<Hologram> getHolograms(final Player player) {
+    public Stream<Hologram> getHolograms(final Player player) {
         final var registry = FancyHolograms.get().getRegistry();
         return registry.getAll().stream()
                 .filter(hologram -> hologram.isViewer(player))
-                .map(FancyHologram::new)
-                .collect(Collectors.toUnmodifiableList());
+                .map(FancyHologram::new);
     }
 
     @Override
-    public @Unmodifiable List<Hologram> getHolograms(final World world) {
+    public Stream<Hologram> getHolograms(final World world) {
         final var registry = FancyHolograms.get().getRegistry();
         return registry.getAll().stream()
                 .filter(hologram -> world.equals(hologram.getData().getLocation().getWorld()))
-                .map(FancyHologram::new)
-                .collect(Collectors.toUnmodifiableList());
+                .map(FancyHologram::new);
     }
 
     @Override

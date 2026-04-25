@@ -8,12 +8,11 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 /**
  * Manages creation, lookup, and lifecycle operations for {@link Character}
@@ -118,31 +117,31 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
     }
 
     /**
-     * Retrieves a list of all available characters.
+     * Retrieves a stream of all available characters.
      *
-     * @return an unmodifiable list of {@code Character} objects
+     * @return a stream of {@code Character} objects
+     * @since 3.0.0
      */
-    @Unmodifiable
-    List<Character> getCharacters();
+    Stream<Character> getCharacters();
 
     /**
-     * Retrieves all characters that currently qualify to be visible to the
+     * Retrieves a stream of all characters that currently qualify to be visible to the
      * specified player.
      *
      * @param player the {@code Player} for which to retrieve the associated characters
-     * @return an unmodifiable list of {@code Character} objects
+     * @return a stream of {@code Character} objects
+     * @since 3.0.0
      */
-    @Unmodifiable
-    List<Character> getCharacters(Player player);
+    Stream<Character> getCharacters(Player player);
 
     /**
-     * Retrieves a list of all characters within a specific world.
+     * Retrieves a stream of all characters within a specific world.
      *
      * @param world the world in which to locate the characters
-     * @return an unmodifiable list of {@code Character} objects
+     * @return a stream of {@code Character} objects
+     * @since 3.0.0
      */
-    @Unmodifiable
-    List<Character> getCharacters(World world);
+    Stream<Character> getCharacters(World world);
 
     /**
      * Retrieves the character associated with the specified name.

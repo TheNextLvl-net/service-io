@@ -1,7 +1,6 @@
 package net.thenextlvl.service.plugin.converter;
 
 import net.thenextlvl.service.capability.CapabilityException;
-import net.thenextlvl.service.hologram.Hologram;
 import net.thenextlvl.service.hologram.HologramController;
 import net.thenextlvl.service.hologram.line.BlockHologramLine;
 import net.thenextlvl.service.hologram.line.DisplayHologramLine;
@@ -22,7 +21,7 @@ final class HologramConverter extends Converter<HologramController> {
 
     @Override
     public CompletableFuture<Void> convert() {
-        for (final Hologram hologram : source.getHolograms()) {
+        source.getHolograms().forEach(hologram -> {
             final var created = target.createHologram(hologram.getName(), hologram.getLocation());
             hologram.forEach(hologramLine -> {
                 try {
@@ -52,7 +51,7 @@ final class HologramConverter extends Converter<HologramController> {
             created.setViewPermission(hologram.getViewPermission().orElse(null));
             created.setPersistent(hologram.isPersistent());
             created.persist();
-        }
+        });
         return CompletableFuture.completedFuture(null);
     }
 

@@ -9,15 +9,13 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @NullMarked
 public final class DecentHologramController implements HologramController {
@@ -44,26 +42,23 @@ public final class DecentHologramController implements HologramController {
     }
 
     @Override
-    public @Unmodifiable List<Hologram> getHolograms() {
+    public Stream<Hologram> getHolograms() {
         return eu.decentsoftware.holograms.api.holograms.Hologram.getCachedHolograms().stream()
-                .map(DecentHologram::new)
-                .collect(Collectors.toUnmodifiableList());
+                .map(DecentHologram::new);
     }
 
     @Override
-    public @Unmodifiable List<Hologram> getHolograms(final Player player) {
+    public Stream<Hologram> getHolograms(final Player player) {
         return eu.decentsoftware.holograms.api.holograms.Hologram.getCachedHolograms().stream()
                 .filter(hologram -> hologram.isVisible(player))
-                .map(DecentHologram::new)
-                .collect(Collectors.toUnmodifiableList());
+                .map(DecentHologram::new);
     }
 
     @Override
-    public @Unmodifiable List<Hologram> getHolograms(final World world) {
+    public Stream<Hologram> getHolograms(final World world) {
         return eu.decentsoftware.holograms.api.holograms.Hologram.getCachedHolograms().stream()
                 .filter(hologram -> world.equals(hologram.getLocation().getWorld()))
-                .map(DecentHologram::new)
-                .collect(Collectors.toUnmodifiableList());
+                .map(DecentHologram::new);
     }
 
     @Override
