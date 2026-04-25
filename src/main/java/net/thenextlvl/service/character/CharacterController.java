@@ -162,17 +162,6 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
     Optional<Character> getCharacter(UUID uuid);
 
     /**
-     * Retrieves the character represented by the specified player entity.
-     * <p>
-     * This lookup is intended for providers that expose real server-backed
-     * player entities via {@link CharacterCapability#ACTUAL_ENTITIES}.
-     *
-     * @param player the player object for which to retrieve the character
-     * @return an {@code Optional} containing the character or empty if the player is not represented as a character
-     */
-    Optional<Character> getCharacter(Player player);
-
-    /**
      * Determines whether a given entity is currently managed as a character.
      *
      * @param entity the entity to be checked

@@ -96,11 +96,6 @@ public final class FancyCharacterController implements CharacterController {
     }
 
     @Override
-    public Optional<Character> getCharacter(final Player player) {
-        return Optional.empty();
-    }
-
-    @Override
     public @Unmodifiable Set<CharacterCapability> getCapabilities() {
         return Set.copyOf(capabilities);
     }

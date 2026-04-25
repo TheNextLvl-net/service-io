@@ -93,13 +93,6 @@ public final class CitizensCharacterController implements CharacterController {
     }
 
     @Override
-    public Optional<Character> getCharacter(final Player player) {
-        return Optional.ofNullable(CitizensAPI.getNPCRegistry().getNPC(player))
-                .filter(npc -> npc.getEntity().getType().equals(EntityType.PLAYER))
-                .map(CitizensCharacter::new);
-    }
-
-    @Override
     public Plugin getPlugin() {
         return this.plugin;
     }
