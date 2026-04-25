@@ -4,10 +4,9 @@ import net.kyori.adventure.text.Component;
 import net.thenextlvl.service.capability.CapabilityException;
 import net.thenextlvl.service.economy.EconomyCapability;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * Manages currencies for an economy provider.
@@ -32,14 +31,13 @@ public interface CurrencyController {
      * Retrieves all currencies managed by this controller, including the default currency.
      * <p>
      * Providers without {@link EconomyCapability#MULTI_CURRENCY MULTI_CURRENCY}
-     * return a singleton set containing the default currency.
+     * return a singleton stream containing the default currency.
      *
-     * @return an unmodifiable set of currencies
+     * @return a stream of all currencies
      * @since 3.0.0
      */
-    @Unmodifiable
-    default Set<Currency> getCurrencies() {
-        return Set.of(getDefaultCurrency());
+    default Stream<Currency> getCurrencies() {
+        return Stream.of(getDefaultCurrency());
     }
 
     /**

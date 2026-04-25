@@ -18,7 +18,7 @@ final class EconomyConverter extends Converter<EconomyController> {
         final var sourceCurrencies = source.getCurrencyController().getCurrencies();
         final var targetCurrencies = target.getCurrencyController();
 
-        return source.loadAccounts().thenCompose(accounts -> CompletableFuture.allOf(sourceCurrencies.stream()
+        return source.loadAccounts().thenCompose(accounts -> CompletableFuture.allOf(sourceCurrencies
                 .map(currency -> {
                     final var targetCurrency = targetCurrencies.getCurrency(currency.getName())
                             .orElseGet(() -> targetCurrencies.createCurrency(currency.toData()));

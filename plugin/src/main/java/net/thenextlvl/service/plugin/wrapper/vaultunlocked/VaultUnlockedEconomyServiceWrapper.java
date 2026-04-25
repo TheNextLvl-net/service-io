@@ -65,7 +65,7 @@ public final class VaultUnlockedEconomyServiceWrapper implements Economy, Wrappe
 
     @Override
     public boolean hasMultiCurrencySupport() {
-        return economyController.getCurrencyController().getCurrencies().size() > 1;
+        return economyController.getCurrencyController().getCurrencies().count() > 1;
     }
 
     @Override
@@ -121,7 +121,7 @@ public final class VaultUnlockedEconomyServiceWrapper implements Economy, Wrappe
 
     @Override
     public Collection<String> currencies() {
-        return economyController.getCurrencyController().getCurrencies().stream()
+        return economyController.getCurrencyController().getCurrencies()
                 .map(Currency::getName)
                 .toList();
     }

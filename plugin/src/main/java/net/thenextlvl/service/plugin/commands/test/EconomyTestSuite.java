@@ -46,7 +46,7 @@ public final class EconomyTestSuite extends TestSuite<EconomyController> {
 
     private void testGetCurrencies() {
         final var currencies = controller.getCurrencyController().getCurrencies();
-        pass("getCurrencies", currencies.size() + " currency/currencies");
+        pass("getCurrencies", currencies.count() + " currency/currencies");
     }
 
     private void testGetCurrency() {
