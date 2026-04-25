@@ -16,8 +16,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * The {@code CharacterController} interface defines methods for managing and
- * interacting with characters.
+ * Manages creation, lookup, and lifecycle operations for {@link Character}
+ * instances.
  * <p>
  * The API consistently uses the term {@code Character} for the public model,
  * even when a provider internally thinks in terms of NPCs. That keeps the
@@ -86,7 +86,10 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
     Character spawnCharacter(String name, Location location, EntityType type) throws CapabilityException;
 
     /**
-     * Retrieves the {@code Character} representation of the specified entity.
+     * Retrieves the managed character represented by the specified entity.
+     * <p>
+     * This lookup is only meaningful for providers that can associate
+     * characters with Bukkit entities.
      *
      * @param entity the entity to retrieve the character for
      * @return an {@code Optional} containing the {@code Character} if the entity is managed as a character
@@ -123,7 +126,8 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
     List<Character> getCharacters();
 
     /**
-     * Retrieves a list of all characters that may be visible to the specified player.
+     * Retrieves all characters that currently qualify to be visible to the
+     * specified player.
      *
      * @param player the {@code Player} for which to retrieve the associated characters
      * @return an unmodifiable list of {@code Character} objects
@@ -149,17 +153,19 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
     Optional<Character> getCharacter(String name);
 
     /**
-     * Retrieves the character associated with the specified uuid.
+     * Retrieves the character associated with the specified UUID.
      *
-     * @param uuid the unique id of the character to retrieve
-     * @return an {@code Optional} containing the character or empty if no character exists with the given uuid
+     * @param uuid the unique identifier of the character to retrieve
+     * @return an {@code Optional} containing the character or empty if no
+     * character exists with the given UUID
      */
     Optional<Character> getCharacter(UUID uuid);
 
     /**
-     * Retrieves the character object represented by the specified player.
+     * Retrieves the character represented by the specified player entity.
      * <p>
-     * This method requires the provider to support the {@link CharacterCapability#ACTUAL_ENTITIES} capability.
+     * This lookup is intended for providers that expose real server-backed
+     * player entities via {@link CharacterCapability#ACTUAL_ENTITIES}.
      *
      * @param player the player object for which to retrieve the character
      * @return an {@code Optional} containing the character or empty if the player is not represented as a character
@@ -167,7 +173,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
     Optional<Character> getCharacter(Player player);
 
     /**
-     * Determines whether a given entity is managed as a character.
+     * Determines whether a given entity is currently managed as a character.
      *
      * @param entity the entity to be checked
      * @return true if the entity is a character, false otherwise

@@ -14,8 +14,10 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * Represents a character in a world that is associated with an entity and provides various
- * functionalities such as spawning, despawning, teleportation, and state management.
+ * Represents a managed character exposed by a {@link CharacterController}.
+ * <p>
+ * A character may or may not be backed by a real server entity, depending on
+ * provider capabilities and spawn state.
  */
 public interface Character {
     /**
@@ -70,14 +72,29 @@ public interface Character {
      */
     EntityType getType();
 
+    /**
+     * Retrieves the character's current location if it is known.
+     *
+     * @return the current location, or an empty {@code Optional} if it is not
+     * available
+     */
     Optional<Location> getLocation();
 
+    /**
+     * Retrieves the world the character is currently associated with, if known.
+     *
+     * @return the current world, or an empty {@code Optional} if it is not
+     * available
+     */
     Optional<World> getWorld();
 
     /**
      * Retrieves the entity associated with the character.
      * <p>
-     * This method requires the provider to support the {@link CharacterCapability#ACTUAL_ENTITIES} capability.
+     * Implementations may return custom or fake {@link Entity} objects even
+     * when {@link CharacterCapability#ACTUAL_ENTITIES} is not supported. The
+     * capability only guarantees that the returned entity is a real server
+     * entity the server can interact with.
      *
      * @return an {@code Optional} containing the associated entity, or an empty {@code Optional}
      * if no entity is associated with the character
@@ -93,9 +110,10 @@ public interface Character {
     Set<Player> getTrackedBy();
 
     /**
-     * Retrieves an unmodifiable set of players that may be able to view this character.
+     * Retrieves an unmodifiable set of players explicitly configured as viewers
+     * of this character.
      *
-     * @return the viewers of this character
+     * @return the configured viewers of this character
      */
     @Unmodifiable
     Set<Player> getViewers();
@@ -125,10 +143,11 @@ public interface Character {
     boolean isTrackedBy(Player player);
 
     /**
-     * Checks if the given player can see this character.
+     * Checks if the given player can currently see this character.
      *
      * @param player the player to check
-     * @return {@code true} if the player can see this character, {@code false} otherwise
+     * @return {@code true} if the player currently qualifies to see this
+     * character, {@code false} otherwise
      */
     boolean canSee(Player player);
 
@@ -193,8 +212,6 @@ public interface Character {
 
     /**
      * Checks if the character is invulnerable.
-     * <p>
-     * This method requires the provider to support the {@link CharacterCapability#HEALTH} capability.
      *
      * @return {@code true} if the character is invulnerable, otherwise {@code false}
      */
@@ -265,9 +282,7 @@ public interface Character {
     void setDisplayName(Component displayName);
 
     /**
-     * Sets whether the character can take damage.
-     * <p>
-     * This method requires the provider to support the {@link CharacterCapability#HEALTH} capability.
+     * Sets whether the character should be invulnerable.
      *
      * @param invulnerable {@code true} if the character should be invulnerable, {@code false} otherwise
      */

@@ -7,15 +7,10 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Represents a base class for events related to a character in the game.
+ * Base event for operations involving a managed {@link Character}.
  * <p>
- * This class serves as a foundation for character-based events, providing
- * common functionality through the controller and character references.
- * It allows for tracking the controller, managing the character, and the target character
- * involved in the event.
- * <p>
- * Subclasses can make use of these common properties while implementing specific
- * character-related event functionalities.
+ * Every character event exposes the controller that emitted it and the
+ * character the event applies to.
  */
 public abstract class CharacterEvent extends Event {
     private static final HandlerList handlers = new HandlerList();

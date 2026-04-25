@@ -1,49 +1,41 @@
 package net.thenextlvl.service.character;
 
-import net.kyori.adventure.key.Key;
 import net.thenextlvl.service.capability.Capability;
 
 /**
- * An enum representing various capabilities a {@link Character} might possess.
+ * Capabilities exposed by a {@link CharacterController} implementation.
  * <p>
- * Each capability indicates a specific feature or limitation
- * in how characters can be represented or interacted with.
- * <p>
- * The enum constant values represent specific capabilities that can be
- * queried or utilized to determine the functionality of particular
- * implementations.
- * <p>
- * Each capability is associated with a unique {@link Key} that acts as an
- * identifier for the capability.
+ * Capabilities describe optional parts of the character API that may not be
+ * available for every provider.
  */
 public enum CharacterCapability implements Capability {
     /**
-     * Represents the capability for a character to have a health attribute.
+     * Supports health-like behavior such as taking damage, regenerating, and
+     * emitting related events.
      * <p>
-     * This capability indicates that the character can make use of features related
-     * to health, such as taking damage or recovering health.
+     * This capability does not control whether a character can be marked
+     * invulnerable.
      */
     HEALTH,
 
     /**
-     * Represents the capability for a character to handle
-     * interactions such as left, and right-click actions.
+     * Supports player interaction events such as left-click and right-click
+     * actions.
      */
     INTERACTIONS,
 
     /**
-     * Represents the capability for supporting non-player entities such as pigs or zombies.
-     * This indicates whether the provider can handle entity types beyond player characters.
+     * Supports creating characters backed by entity types other than
+     * {@link org.bukkit.entity.EntityType#PLAYER}.
      */
     NON_PLAYER_ENTITIES,
 
     /**
-     * Represents the capability to utilize actual entity objects.
+     * Supports backing characters with real server entities that exist in the
+     * world and can be interacted with by the server.
      * <p>
-     * This capability indicates that the character provider supports using real, tangible entities
-     * within the game world.
-     * Such entities are recognized by the server and may be subject to various
-     * physical interactions, such as collisions, gravity, or other in-game mechanics.
+     * Implementations may still return custom or fake {@link
+     * org.bukkit.entity.Entity} instances without this capability.
      */
     ACTUAL_ENTITIES
 }
