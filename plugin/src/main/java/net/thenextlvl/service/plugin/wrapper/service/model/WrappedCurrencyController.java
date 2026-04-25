@@ -8,6 +8,9 @@ import net.thenextlvl.service.economy.currency.CurrencyController;
 import net.thenextlvl.service.economy.currency.CurrencyData;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
 public final class WrappedCurrencyController implements CurrencyController {
     private final WrappedCurrency defaultCurrency;
     private final Plugin plugin;
@@ -20,6 +23,21 @@ public final class WrappedCurrencyController implements CurrencyController {
     @Override
     public Currency getDefaultCurrency() {
         return defaultCurrency;
+    }
+
+    @Override
+    public Stream<Currency> getCurrencies() {
+        return Stream.of(defaultCurrency);
+    }
+
+    @Override
+    public Optional<Currency> getCurrency(final String name) {
+        return defaultCurrency.getName().equals(name) ? Optional.of(defaultCurrency) : Optional.empty();
+    }
+
+    @Override
+    public boolean currencyExists(final String name) {
+        return defaultCurrency.getName().equals(name);
     }
 
     @Override

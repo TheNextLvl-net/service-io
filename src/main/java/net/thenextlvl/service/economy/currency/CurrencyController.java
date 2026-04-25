@@ -36,9 +36,7 @@ public interface CurrencyController {
      * @return a stream of all currencies
      * @since 3.0.0
      */
-    default Stream<Currency> getCurrencies() {
-        return Stream.of(getDefaultCurrency());
-    }
+    Stream<Currency> getCurrencies();
 
     /**
      * Retrieves a currency by its name.
@@ -50,10 +48,9 @@ public interface CurrencyController {
      * @return an optional containing the currency, or empty if not found
      * @since 3.0.0
      */
-    default Optional<Currency> getCurrency(final String name) {
-        final var currency = getDefaultCurrency();
-        return currency.getName().equals(name) ? Optional.of(currency) : Optional.empty();
-    }
+    Optional<Currency> getCurrency(final String name);
+
+    boolean currencyExists(String name);
 
     /**
      * Creates a new currency from the provided data.
