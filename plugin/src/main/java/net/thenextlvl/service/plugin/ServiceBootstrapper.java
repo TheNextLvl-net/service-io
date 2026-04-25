@@ -72,7 +72,7 @@ public final class ServiceBootstrapper implements PluginBootstrap {
             name.set(meta, "Vault");
             provides.set(meta, List.copyOf(providedPlugins));
             pluginVersion.set(meta, version);
-            logger.info("Enabled compatibility mode with version {}, only use this if you really need to.", version);
+            logger.warn("Enabled compatibility mode with version {}, only use this if you really need to!", version);
         } catch (final NoSuchFieldException | IllegalAccessException e) {
             logger.warn("Failed to initialize compatibility mode", e);
             logger.warn("Please look for similar issues or report this on GitHub: {}", ISSUES);
