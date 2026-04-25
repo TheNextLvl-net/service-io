@@ -10,10 +10,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-public record VaultUnlockedCurrency(Economy economy, String pluginName) implements Currency {
+public record VaultUnlockedCurrency(Economy economy, String currency, String pluginName) implements Currency {
     @Override
     public String getName() {
-        return economy.getDefaultCurrency(pluginName);
+        return currency;
     }
 
     @Override
@@ -44,7 +44,8 @@ public record VaultUnlockedCurrency(Economy economy, String pluginName) implemen
 
     @Override
     public Component format(final Number amount, final Locale locale) {
-        return Component.text(economy.format(pluginName, new BigDecimal(amount.toString())));
+        final var decimal = amount instanceof final BigDecimal big ? big : new BigDecimal(amount.toString());
+        return Component.text(economy.format(pluginName, decimal, currency));
     }
 
     @Override

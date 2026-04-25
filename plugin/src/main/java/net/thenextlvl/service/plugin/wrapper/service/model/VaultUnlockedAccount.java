@@ -83,7 +83,7 @@ public final class VaultUnlockedAccount implements Account {
     @Override
     public boolean canHold(final Currency currency) {
         return currency instanceof VaultUnlockedCurrency(
-                final Economy wrapped, final String name
+                final Economy wrapped, final String currency1, final String name
         ) && wrapped == economy;
     }
 }
