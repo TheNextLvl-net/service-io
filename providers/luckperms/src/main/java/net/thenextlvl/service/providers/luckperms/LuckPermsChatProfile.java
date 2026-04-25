@@ -22,7 +22,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @NullMarked
-public record LuckPermsChatProfile(User user, QueryOptions options, @Nullable World world) implements ChatProfile, MetadataHolder {
+public record LuckPermsChatProfile(
+        User user, QueryOptions options, @Nullable World world
+) implements ChatProfile, MetadataHolder {
     @Override
     public Optional<String> getDisplayName() {
         return getInfoNode("DISPLAY_NAME");

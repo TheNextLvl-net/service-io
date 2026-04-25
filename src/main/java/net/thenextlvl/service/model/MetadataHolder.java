@@ -27,9 +27,9 @@ public interface MetadataHolder {
      * Resolves metadata for the given key and maps the stored string value to a
      * caller-defined type.
      *
-     * @param key the metadata key
+     * @param key    the metadata key
      * @param mapper mapping function applied to the stored value
-     * @param <T> mapped result type
+     * @param <T>    mapped result type
      * @return the mapped value when metadata exists for the key
      */
     <T> Optional<T> getInfoNode(String key, Function<@Nullable String, @Nullable T> mapper);
@@ -45,7 +45,7 @@ public interface MetadataHolder {
     /**
      * Removes metadata only when the stored value matches the supplied value.
      *
-     * @param key the metadata key
+     * @param key   the metadata key
      * @param value the expected stored value
      * @return {@code true} when the key existed with the expected value and was removed
      */
@@ -58,7 +58,7 @@ public interface MetadataHolder {
     /**
      * Stores metadata for the given key.
      *
-     * @param key the metadata key
+     * @param key   the metadata key
      * @param value the metadata value to store
      * @return {@code true} when the provider accepted the update
      */

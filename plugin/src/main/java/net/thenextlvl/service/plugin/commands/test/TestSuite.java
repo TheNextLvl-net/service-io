@@ -77,7 +77,7 @@ public abstract class TestSuite<C extends Controller> {
 
         setup();
 
-        final var sender = source.getExecutor() != null ?  source.getExecutor() : null;
+        final var sender = source.getExecutor() != null ? source.getExecutor() : null;
         final var player = sender instanceof final Player current ? current : null;
         final var totalSteps = steps.size();
         final var summary = new SuiteSummary();

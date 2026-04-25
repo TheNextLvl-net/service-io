@@ -18,7 +18,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @NullMarked
-public record GroupManagerChatProfile(User user, WorldDataHolder holder, @Nullable World world) implements ChatProfile, MetadataHolder {
+public record GroupManagerChatProfile(
+        User user, WorldDataHolder holder, @Nullable World world
+) implements ChatProfile, MetadataHolder {
     @Override
     public Optional<String> getDisplayName() {
         return Optional.empty();
