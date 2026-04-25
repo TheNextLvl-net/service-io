@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -168,27 +169,31 @@ public record FancyCharacter(Npc npc) implements Character {
     }
 
     @Override
-    public @Unmodifiable Set<Player> getViewers() {
-        return Bukkit.getOnlinePlayers().stream()
-                .filter(this::canSee)
-                .collect(Collectors.toUnmodifiableSet());
+    public @Unmodifiable Set<UUID> getViewers() {
+        return Set.copyOf(npc().getIsVisibleForPlayer().keySet());
     }
 
     @Override
-    public boolean addViewer(final Player player) {
-        if (!canSee(player)) return false;
-        npc().spawn(player);
+    public boolean addViewer(final UUID player) {
+        final var viewer = Bukkit.getPlayer(player);
+        if (viewer == null || !canSee(viewer)) return false;
+        npc().spawn(viewer);
         return true;
     }
 
     @Override
-    public boolean addViewers(final Collection<Player> players) {
+    public boolean addViewers(final Collection<UUID> players) {
         return players.stream().map(this::addViewer).reduce(false, Boolean::logicalOr);
     }
 
     @Override
     public boolean isTrackedBy(final Player player) {
         return npc().getIsVisibleForPlayer().containsKey(player.getUniqueId());
+    }
+
+    @Override
+    public boolean isViewer(final UUID player) {
+        return getViewers().contains(player);
     }
 
     @Override
@@ -218,14 +223,15 @@ public record FancyCharacter(Npc npc) implements Character {
     }
 
     @Override
-    public boolean removeViewer(final Player player) {
-        if (!isTrackedBy(player)) return false;
-        npc().remove(player);
+    public boolean removeViewer(final UUID player) {
+        final var viewer = Bukkit.getPlayer(player);
+        if (viewer == null || !isTrackedBy(viewer)) return false;
+        npc().remove(viewer);
         return true;
     }
 
     @Override
-    public boolean removeViewers(final Collection<Player> players) {
+    public boolean removeViewers(final Collection<UUID> players) {
         return players.stream().map(this::removeViewer).reduce(false, Boolean::logicalOr);
     }
 

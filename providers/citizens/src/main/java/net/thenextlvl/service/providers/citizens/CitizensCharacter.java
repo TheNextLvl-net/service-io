@@ -8,7 +8,6 @@ import net.citizensnpcs.api.trait.trait.PlayerFilter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.thenextlvl.service.character.Character;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -23,8 +22,8 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 @NullMarked
 public final class CitizensCharacter implements Character {
@@ -66,34 +65,39 @@ public final class CitizensCharacter implements Character {
     }
 
     @Override
-    public @Unmodifiable Set<Player> getViewers() {
+    public @Unmodifiable Set<UUID> getViewers() {
         return npc.getTraitOptional(PlayerFilter.class).toJavaUtil()
                 .map(PlayerFilter::getPlayerUUIDs)
-                .map(players -> players.stream()
-                        .map(Bukkit::getPlayer)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toUnmodifiableSet())
-                ).orElseGet(Set::of);
+                .map(Set::copyOf)
+                .orElseGet(Set::of);
     }
 
     @Override
-    public boolean addViewer(final Player player) {
+    public boolean addViewer(final UUID player) {
         return npc.getTraitOptional(PlayerFilter.class).toJavaUtil()
-                .filter(filter -> filter.isHidden(player))
+                .filter(filter -> !filter.getPlayerUUIDs().contains(player))
                 .map(filter -> {
-                    filter.addPlayer(player.getUniqueId());
+                    filter.addPlayer(player);
                     return true;
                 }).orElse(false);
     }
 
     @Override
-    public boolean addViewers(final Collection<Player> players) {
+    public boolean addViewers(final Collection<UUID> players) {
         return players.stream().map(this::addViewer).reduce(false, Boolean::logicalOr);
     }
 
     @Override
     public boolean isTrackedBy(final Player player) {
         return getEntity().map(entity -> entity.getTrackedBy().contains(player)).orElse(false);
+    }
+
+    @Override
+    public boolean isViewer(final UUID player) {
+        return npc.getTraitOptional(PlayerFilter.class).toJavaUtil()
+                .map(PlayerFilter::getPlayerUUIDs)
+                .map(uuids -> uuids.contains(player))
+                .orElse(false);
     }
 
     @Override
@@ -107,17 +111,17 @@ public final class CitizensCharacter implements Character {
     }
 
     @Override
-    public boolean removeViewer(final Player player) {
+    public boolean removeViewer(final UUID player) {
         return npc.getTraitOptional(PlayerFilter.class).toJavaUtil()
-                .filter(filter -> !filter.isHidden(player))
+                .filter(filter -> filter.getPlayerUUIDs().contains(player))
                 .map(filter -> {
-                    filter.removePlayer(player.getUniqueId());
+                    filter.removePlayer(player);
                     return true;
                 }).orElse(false);
     }
 
     @Override
-    public boolean removeViewers(final Collection<Player> players) {
+    public boolean removeViewers(final Collection<UUID> players) {
         return players.stream().map(this::removeViewer).reduce(false, Boolean::logicalOr);
     }
 

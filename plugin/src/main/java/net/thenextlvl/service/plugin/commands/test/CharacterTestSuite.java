@@ -268,27 +268,28 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
     }
 
     private void assertAddRemoveViewer(final Character character, final Player player) {
-        final var added = character.addViewer(player);
+        final var viewer = player.getUniqueId();
+        final var added = character.addViewer(viewer);
         if (added) {
             final var viewers = character.getViewers();
-            if (viewers.contains(player)) pass("addViewer", "added and verified in getViewers()");
-            else fail("addViewer", "addViewer returned true but player not in getViewers()");
+            if (viewers.contains(viewer)) pass("addViewer", "added and verified in getViewers()");
+            else fail("addViewer", "addViewer returned true but player UUID not in getViewers()");
         } else {
             pass("addViewer", "returned false (player may already be a viewer)");
         }
 
-        final var removed = character.removeViewer(player);
+        final var removed = character.removeViewer(viewer);
         if (removed) {
             final var viewers = character.getViewers();
-            if (!viewers.contains(player)) pass("removeViewer", "removed and verified not in getViewers()");
-            else fail("removeViewer", "removeViewer returned true but player still in getViewers()");
+            if (!viewers.contains(viewer)) pass("removeViewer", "removed and verified not in getViewers()");
+            else fail("removeViewer", "removeViewer returned true but player UUID still in getViewers()");
         } else {
             pass("removeViewer", "returned false (player may not have been a viewer)");
         }
     }
 
     private void assertAddRemoveViewers(final Character character, final Player player) {
-        final var players = List.of(player);
+        final var players = List.of(player.getUniqueId());
         final var added = character.addViewers(players);
         if (added) pass("addViewers", "added viewer(s)");
         else pass("addViewers", "returned false (viewer(s) may already exist)");
