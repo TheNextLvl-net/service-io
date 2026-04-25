@@ -34,7 +34,7 @@ public final class ServiceListener implements Listener {
     public ServiceListener(final Plugin plugin) {
         this.plugin = plugin;
         getServicesManager().getKnownServices().forEach(aClass ->
-                getServicesManager().getRegistrations(aClass).forEach(this::loadWrapper));
+                getServicesManager().getRegistrations(aClass).forEach(this::safeLoadWrapper));
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -50,7 +50,15 @@ public final class ServiceListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onServiceRegister(final ServiceRegisterEvent event) {
-        loadWrapper(event.getProvider());
+        safeLoadWrapper(event.getProvider());
+    }
+
+    private void safeLoadWrapper(final RegisteredServiceProvider<?> provider) {
+        try {
+            loadWrapper(provider);
+        } catch (final Throwable t) {
+            plugin.getComponentLogger().error("Failed to register wrapper for {}", provider.getPlugin().getName(), t);
+        }
     }
 
     @SuppressWarnings({"unchecked", "IfCanBeSwitch"})
