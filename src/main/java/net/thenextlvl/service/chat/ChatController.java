@@ -13,6 +13,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * @implSpec Implementations must be thread-safe. All methods may be called from any thread,
  * including the main server thread and asynchronous task threads concurrently.
+ * @since 1.0.0
  */
 public interface ChatController extends Controller {
     /**
@@ -20,6 +21,7 @@ public interface ChatController extends Controller {
      *
      * @param player The OfflinePlayer whose ChatProfile is to be retrieved.
      * @return a CompletableFuture that will complete with the chat profile
+     * @since 3.0.0
      */
     CompletableFuture<ChatProfile> loadProfile(OfflinePlayer player);
 
@@ -29,6 +31,7 @@ public interface ChatController extends Controller {
      * @param player The OfflinePlayer whose chat profile is to be retrieved.
      * @param world  The world for which the chat profile is requested.
      * @return A CompletableFuture that will complete with the chat profile.
+     * @since 3.0.0
      */
     CompletableFuture<ChatProfile> loadProfile(OfflinePlayer player, World world);
 
@@ -37,6 +40,7 @@ public interface ChatController extends Controller {
      *
      * @param uuid The UUID of the player whose ChatProfile is to be retrieved.
      * @return A CompletableFuture that will complete with the chat profile.
+     * @since 3.0.0
      */
     default CompletableFuture<ChatProfile> loadProfile(final UUID uuid) {
         return loadProfile(getPlugin().getServer().getOfflinePlayer(uuid));
@@ -48,6 +52,7 @@ public interface ChatController extends Controller {
      * @param uuid  The UUID of the player whose ChatProfile is to be retrieved.
      * @param world The world for which the ChatProfile is requested.
      * @return A CompletableFuture that will complete with the chat profile.
+     * @since 3.0.0
      */
     default CompletableFuture<ChatProfile> loadProfile(final UUID uuid, final World world) {
         return loadProfile(getPlugin().getServer().getOfflinePlayer(uuid), world);
@@ -112,6 +117,7 @@ public interface ChatController extends Controller {
      *
      * @param player The OfflinePlayer whose ChatProfile is to be retrieved.
      * @return an optional containing the chat profile, or empty.
+     * @since 3.0.0
      */
     Optional<ChatProfile> getProfile(OfflinePlayer player);
 
@@ -121,6 +127,7 @@ public interface ChatController extends Controller {
      * @param player The OfflinePlayer whose chat profile is to be retrieved.
      * @param world  The world for which the chat profile is requested.
      * @return an optional containing the chat profile, or empty.
+     * @since 3.0.0
      */
     Optional<ChatProfile> getProfile(OfflinePlayer player, World world);
 
@@ -129,6 +136,7 @@ public interface ChatController extends Controller {
      *
      * @param uuid The UUID of the player whose ChatProfile is to be retrieved.
      * @return an optional containing the chat profile, or empty.
+     * @since 3.0.0
      */
     default Optional<ChatProfile> getProfile(final UUID uuid) {
         return getProfile(getPlugin().getServer().getOfflinePlayer(uuid));
@@ -140,6 +148,7 @@ public interface ChatController extends Controller {
      * @param uuid  The UUID of the player whose ChatProfile is to be retrieved.
      * @param world The world for which the ChatProfile is requested.
      * @return an optional containing the chat profile, or empty.
+     * @since 3.0.0
      */
     default Optional<ChatProfile> getProfile(final UUID uuid, final World world) {
         return getProfile(getPlugin().getServer().getOfflinePlayer(uuid), world);

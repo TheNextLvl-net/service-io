@@ -21,6 +21,8 @@ import java.util.function.Function;
  * Callers should treat this interface as optional capability:
  * use {@code instanceof MetadataHolder} or another explicit support check
  * before reading or mutating metadata.
+ *
+ * @since 3.0.0
  */
 public interface MetadataHolder {
     /**
@@ -31,6 +33,7 @@ public interface MetadataHolder {
      * @param mapper mapping function applied to the stored value
      * @param <T>    mapped result type
      * @return the mapped value when metadata exists for the key
+     * @since 3.0.0
      */
     <T> Optional<T> getInfoNode(String key, Function<@Nullable String, @Nullable T> mapper);
 
@@ -39,6 +42,7 @@ public interface MetadataHolder {
      *
      * @param key the metadata key
      * @return {@code true} when the provider accepted the removal request
+     * @since 3.0.0
      */
     boolean removeInfoNode(String key);
 
@@ -48,6 +52,7 @@ public interface MetadataHolder {
      * @param key   the metadata key
      * @param value the expected stored value
      * @return {@code true} when the key existed with the expected value and was removed
+     * @since 3.0.0
      */
     default boolean removeInfoNode(final String key, final String value) {
         final var infoNode = getInfoNode(key).orElse(null);
@@ -61,6 +66,7 @@ public interface MetadataHolder {
      * @param key   the metadata key
      * @param value the metadata value to store
      * @return {@code true} when the provider accepted the update
+     * @since 3.0.0
      */
     boolean setInfoNode(String key, String value);
 
@@ -69,6 +75,7 @@ public interface MetadataHolder {
      *
      * @param key the metadata key
      * @return the parsed boolean value when present
+     * @since 3.0.0
      */
     default Optional<Boolean> booleanInfoNode(final String key) {
         return getInfoNode(key, s -> s != null ? Boolean.parseBoolean(s) : null);
@@ -79,6 +86,7 @@ public interface MetadataHolder {
      *
      * @param key the metadata key
      * @return the stored string value when present
+     * @since 3.0.0
      */
     default Optional<String> getInfoNode(final String key) {
         return getInfoNode(key, Function.identity());
@@ -90,6 +98,7 @@ public interface MetadataHolder {
      * @param key the metadata key
      * @return the parsed double value when present
      * @throws NumberFormatException when the stored value cannot be parsed as a double
+     * @since 3.0.0
      */
     default Optional<Double> doubleInfoNode(final String key) throws NumberFormatException {
         return getInfoNode(key, s -> s != null ? Double.parseDouble(s) : null);
@@ -101,6 +110,7 @@ public interface MetadataHolder {
      * @param key the metadata key
      * @return the parsed integer value when present
      * @throws NumberFormatException when the stored value cannot be parsed as an integer
+     * @since 3.0.0
      */
     default Optional<Integer> intInfoNode(final String key) throws NumberFormatException {
         return getInfoNode(key, s -> s != null ? Integer.parseInt(s) : null);
@@ -111,6 +121,7 @@ public interface MetadataHolder {
      *
      * @param key the metadata key
      * @return {@code true} when metadata is present
+     * @since 3.0.0
      */
     default boolean hasInfoNode(final String key) {
         return getInfoNode(key).isPresent();

@@ -15,12 +15,16 @@ import net.thenextlvl.service.capability.Capability;
  * <p>
  * Each capability is associated with a unique {@link Key} that acts as an
  * identifier for the capability.
+ *
+ * @since 2.2.0
  */
 public enum HologramCapability implements Capability {
     /**
      * Represents the capability of using block-oriented lines within a hologram.
      * This capability determines whether holograms can include lines that
      * display blocks as their visual elements.
+     *
+     * @since 3.0.0
      */
     BLOCK_LINES,
 
@@ -28,6 +32,8 @@ public enum HologramCapability implements Capability {
      * Represents the capability of using entity-oriented lines within a hologram.
      * This capability determines whether holograms can include lines that display
      * entities as their visual elements.
+     *
+     * @since 3.0.0
      */
     ENTITY_LINES,
 
@@ -35,6 +41,8 @@ public enum HologramCapability implements Capability {
      * Represents the capability of using item-oriented lines within a hologram.
      * This capability determines whether holograms can include lines that display
      * items as their visual elements.
+     *
+     * @since 3.0.0
      */
     ITEM_LINES,
 
@@ -44,6 +52,8 @@ public enum HologramCapability implements Capability {
      * textual content, such as plain or stylized text.
      * <p>
      * It is generally safe to assume that every hologram will have this capability
+     *
+     * @since 3.0.0
      */
     TEXT_LINES,
 
@@ -51,6 +61,8 @@ public enum HologramCapability implements Capability {
      * Represents the capability of having multiple lines within a hologram.
      * This capability determines whether holograms can consist of more than
      * a single line.
+     *
+     * @since 3.0.0
      */
     MULTILINE,
 
@@ -60,6 +72,8 @@ public enum HologramCapability implements Capability {
      * multiple lines of text as part of their visual content.
      * <p>
      * It is mutually exclusive with the {@link #DISPLAY_BACKED} capability.
+     *
+     * @since 3.0.0
      */
     MULTILINE_TEXT,
 
@@ -69,6 +83,8 @@ public enum HologramCapability implements Capability {
      * using display entities within the underlying system.
      * <p>
      * It is mutually exclusive with the {@link #MULTILINE_TEXT} capability.
+     *
+     * @since 3.0.0
      */
     DISPLAY_BACKED,
 

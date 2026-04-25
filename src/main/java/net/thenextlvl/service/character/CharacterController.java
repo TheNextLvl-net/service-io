@@ -24,6 +24,8 @@ import java.util.stream.Stream;
  * characters and non-player entity-backed characters. Provider capabilities
  * still describe the underlying implementation details such as support for
  * {@link CharacterCapability#NON_PLAYER_ENTITIES}.
+ *
+ * @since 2.2.0
  */
 public interface CharacterController extends CapabilityProvider<CharacterCapability>, Controller {
     /**
@@ -36,6 +38,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * @param type the entity type of the character
      * @return the {@code Character} instance representing the created character
      * @throws CapabilityException if the operation is not supported due to capability limitations
+     * @since 3.0.0
      */
     default Character createCharacter(final String name, final Class<? extends Entity> type) throws CapabilityException {
         return createCharacter(name, getEntityType(type));
@@ -51,6 +54,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * @param type the entity type of the character
      * @return the {@code Character} instance representing the created character
      * @throws CapabilityException if the operation is not supported due to capability limitations
+     * @since 3.0.0
      */
     Character createCharacter(String name, EntityType type) throws CapabilityException;
 
@@ -65,6 +69,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * @param type     the entity type of the character
      * @return the {@code Character} instance representing the spawned character
      * @throws CapabilityException if the operation is not supported due to capability limitations
+     * @since 3.0.0
      */
     default Character spawnCharacter(final String name, final Location location, final Class<? extends Entity> type) throws CapabilityException {
         return spawnCharacter(name, location, getEntityType(type));
@@ -81,6 +86,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * @param type     the entity type of the character
      * @return the {@code Character} instance representing the spawned character
      * @throws CapabilityException if the operation is not supported due to capability limitations
+     * @since 3.0.0
      */
     Character spawnCharacter(String name, Location location, EntityType type) throws CapabilityException;
 
@@ -92,6 +98,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      *
      * @param entity the entity to retrieve the character for
      * @return an {@code Optional} containing the {@code Character} if the entity is managed as a character
+     * @since 3.0.0
      */
     Optional<Character> getCharacter(Entity entity);
 
@@ -100,6 +107,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      *
      * @param name the name to assign to the character
      * @return the {@code Character} instance representing the character
+     * @since 3.0.0
      */
     default Character createCharacter(final String name) {
         return createCharacter(name, EntityType.PLAYER);
@@ -111,6 +119,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * @param name     the name to assign to the character
      * @param location the location where the character will be spawned
      * @return the {@code Character} instance representing the character
+     * @since 3.0.0
      */
     default Character spawnCharacter(final String name, final Location location) {
         return spawnCharacter(name, location, EntityType.PLAYER);
@@ -148,6 +157,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      *
      * @param name the name of the character to retrieve
      * @return an {@code Optional} containing the character or empty if no character exists with the given name
+     * @since 3.0.0
      */
     Optional<Character> getCharacter(String name);
 
@@ -157,6 +167,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * @param uuid the unique identifier of the character to retrieve
      * @return an {@code Optional} containing the character or empty if no
      * character exists with the given UUID
+     * @since 3.0.0
      */
     Optional<Character> getCharacter(UUID uuid);
 
@@ -165,6 +176,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      *
      * @param entity the entity to be checked
      * @return true if the entity is a character, false otherwise
+     * @since 3.0.0
      */
     boolean isCharacter(Entity entity);
 

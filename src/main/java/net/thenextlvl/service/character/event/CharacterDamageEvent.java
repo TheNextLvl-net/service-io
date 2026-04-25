@@ -13,6 +13,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
  * the damage, and controlling whether the event should be cancelled.
  * <p>
  * This event will only be fired for providers that support the {@link CharacterCapability#HEALTH} capability.
+ *
+ * @since 2.2.0
  */
 public class CharacterDamageEvent extends CharacterEvent implements Cancellable {
     private final EntityDamageEvent.DamageCause cause;
@@ -26,6 +28,7 @@ public class CharacterDamageEvent extends CharacterEvent implements Cancellable 
      * @param character  the character that is taking damage
      * @param cause      the cause of the damage
      * @param damage     the amount of damage dealt to the character
+     * @since 3.0.0
      */
     public CharacterDamageEvent(final CharacterController controller, final Character character, final EntityDamageEvent.DamageCause cause, final double damage) {
         super(controller, character);
@@ -37,6 +40,7 @@ public class CharacterDamageEvent extends CharacterEvent implements Cancellable 
      * Retrieves the cause of the damage associated with this event.
      *
      * @return the {@link EntityDamageEvent.DamageCause} that represents the underlying cause of the damage
+     * @since 2.2.0
      */
     public EntityDamageEvent.DamageCause getCause() {
         return cause;
@@ -46,6 +50,7 @@ public class CharacterDamageEvent extends CharacterEvent implements Cancellable 
      * Retrieves the amount of damage associated with this event.
      *
      * @return the damage value as a double
+     * @since 2.2.0
      */
     public double getDamage() {
         return damage;
@@ -55,6 +60,7 @@ public class CharacterDamageEvent extends CharacterEvent implements Cancellable 
      * Sets the amount of damage for this event.
      *
      * @param damage the new damage value to be set
+     * @since 3.0.0
      */
     public void setDamage(final double damage) {
         this.damage = damage;

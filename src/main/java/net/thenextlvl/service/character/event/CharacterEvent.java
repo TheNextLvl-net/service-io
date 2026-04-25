@@ -11,6 +11,8 @@ import org.bukkit.event.HandlerList;
  * <p>
  * Every character event exposes the controller that emitted it and the
  * character the event applies to.
+ *
+ * @since 2.2.0
  */
 public abstract class CharacterEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
@@ -22,6 +24,7 @@ public abstract class CharacterEvent extends Event {
      *
      * @param controller the character controller responsible for managing the character
      * @param character  the character instance involved in the event
+     * @since 3.0.0
      */
     public CharacterEvent(final CharacterController controller, final Character character) {
         super(!Bukkit.isPrimaryThread());
@@ -33,6 +36,7 @@ public abstract class CharacterEvent extends Event {
      * Retrieves the character controller associated with this event.
      *
      * @return the {@code CharacterController} responsible for managing the character in this event.
+     * @since 2.2.0
      */
     public CharacterController getController() {
         return controller;
@@ -42,6 +46,7 @@ public abstract class CharacterEvent extends Event {
      * Retrieves the character associated with this event.
      *
      * @return the {@code Character} instance involved in this event
+     * @since 3.0.0
      */
     public Character getCharacter() {
         return character;

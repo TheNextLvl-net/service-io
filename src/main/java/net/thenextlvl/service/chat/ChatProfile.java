@@ -13,6 +13,7 @@ public interface ChatProfile extends Display {
      *
      * @return An Optional containing the name of the chat profile.
      * Returns an empty Optional if no name is set.
+     * @since 1.0.0
      */
     Optional<String> getName();
 
@@ -21,6 +22,7 @@ public interface ChatProfile extends Display {
      *
      * @return An Optional containing the primary group of the chat profile.
      * Returns an empty Optional if no primary group is set.
+     * @since 1.0.0
      */
     Optional<String> getPrimaryGroup();
 
@@ -36,6 +38,7 @@ public interface ChatProfile extends Display {
      * Retrieves the name of the groups associated with the chat profile.
      *
      * @return The name of the groups associated with the chat profile.
+     * @since 1.0.0
      */
     @Unmodifiable
     Set<String> getGroups();

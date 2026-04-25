@@ -9,12 +9,15 @@ import java.util.Set;
  * The {@code GroupHolder} interface represents an entity that holds groups.
  * It extends the {@link PermissionHolder} interface.
  * It provides methods to retrieve and manipulate groups for the holder.
+ *
+ * @since 1.0.0
  */
 public interface GroupHolder extends PermissionHolder {
     /**
      * Retrieves the groups associated with the permission holder.
      *
      * @return A set of Group objects representing the groups associated with the permission holder.
+     * @since 1.0.0
      */
     @Unmodifiable
     Set<Group> getGroups();
@@ -27,6 +30,7 @@ public interface GroupHolder extends PermissionHolder {
      * @see GroupHolder#getGroups()
      * @see GroupHolder#setPrimaryGroup(Group)
      * @see GroupHolder#setPrimaryGroup(String)
+     * @since 1.0.0
      */
     String getPrimaryGroup();
 
@@ -35,6 +39,7 @@ public interface GroupHolder extends PermissionHolder {
      *
      * @param group the group object to be added
      * @return true if the group was successfully added, false otherwise
+     * @since 1.0.0
      */
     boolean addGroup(Group group);
 
@@ -43,6 +48,7 @@ public interface GroupHolder extends PermissionHolder {
      *
      * @param name the name of the group to be added
      * @return true if the group was successfully added, false otherwise
+     * @since 1.0.0
      */
     boolean addGroup(String name);
 
@@ -51,6 +57,7 @@ public interface GroupHolder extends PermissionHolder {
      *
      * @param group the group to check
      * @return true if the permission holder is in the group, false otherwise
+     * @since 1.0.0
      */
     boolean inGroup(Group group);
 
@@ -59,6 +66,7 @@ public interface GroupHolder extends PermissionHolder {
      *
      * @param name the name of the group to check
      * @return true if the permission holder is in the group, false otherwise
+     * @since 1.0.0
      */
     boolean inGroup(String name);
 
@@ -67,6 +75,7 @@ public interface GroupHolder extends PermissionHolder {
      *
      * @param group the group to be removed
      * @return true if the group was successfully removed, false otherwise
+     * @since 1.0.0
      */
     boolean removeGroup(Group group);
 
@@ -75,6 +84,7 @@ public interface GroupHolder extends PermissionHolder {
      *
      * @param name the name of the group to be removed
      * @return true if the group was successfully removed, false otherwise
+     * @since 1.0.0
      */
     boolean removeGroup(String name);
 
@@ -83,6 +93,7 @@ public interface GroupHolder extends PermissionHolder {
      *
      * @param group the group to set as the primary group
      * @return true if the primary group is successfully set, false otherwise
+     * @since 1.0.0
      */
     boolean setPrimaryGroup(Group group);
 
@@ -91,6 +102,7 @@ public interface GroupHolder extends PermissionHolder {
      *
      * @param name the name of the group to set as the primary group
      * @return true if the primary group is successfully set, false otherwise
+     * @since 1.0.0
      */
     boolean setPrimaryGroup(String name);
 }

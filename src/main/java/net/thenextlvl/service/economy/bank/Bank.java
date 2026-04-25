@@ -12,13 +12,14 @@ import java.util.UUID;
 /**
  * Represents a bank account that extends {@link Account} with ownership and membership management.
  *
- * @since 3.0.0
+ * @since 1.0.0
  */
 public interface Bank extends Account {
     /**
      * Retrieves the name of the bank.
      *
      * @return the name of the bank
+     * @since 3.0.0
      */
     @Contract(pure = true)
     String getName();
@@ -27,6 +28,7 @@ public interface Bank extends Account {
      * Retrieves the UUIDs of all members of the bank (excluding the owner).
      *
      * @return an unmodifiable set of member UUIDs
+     * @since 3.0.0
      */
     @Unmodifiable
     Set<UUID> getMembers();
@@ -36,6 +38,7 @@ public interface Bank extends Account {
      *
      * @param player the player to add
      * @return {@code true} if the player was added
+     * @since 3.0.0
      */
     default boolean addMember(final OfflinePlayer player) {
         return addMember(player.getUniqueId());
@@ -46,6 +49,7 @@ public interface Bank extends Account {
      *
      * @param uuid the UUID of the member to add
      * @return {@code true} if the member was added
+     * @since 1.0.0
      */
     boolean addMember(UUID uuid);
 
@@ -54,6 +58,7 @@ public interface Bank extends Account {
      *
      * @param player the player to check
      * @return {@code true} if the player is a member
+     * @since 3.0.0
      */
     default boolean isMember(final OfflinePlayer player) {
         return isMember(player.getUniqueId());
@@ -64,6 +69,7 @@ public interface Bank extends Account {
      *
      * @param uuid the UUID to check
      * @return {@code true} if the UUID corresponds to a member
+     * @since 1.0.0
      */
     boolean isMember(UUID uuid);
 
@@ -72,6 +78,7 @@ public interface Bank extends Account {
      *
      * @param player the player to remove
      * @return {@code true} if the member was removed
+     * @since 3.0.0
      */
     default boolean removeMember(final OfflinePlayer player) {
         return removeMember(player.getUniqueId());
@@ -82,6 +89,7 @@ public interface Bank extends Account {
      *
      * @param uuid the UUID of the member to remove
      * @return {@code true} if the member was removed
+     * @since 1.0.0
      */
     boolean removeMember(UUID uuid);
 
@@ -90,6 +98,7 @@ public interface Bank extends Account {
      *
      * @param player the player to set as owner
      * @return {@code true} if the owner was changed
+     * @since 3.0.0
      */
     default boolean setOwner(final OfflinePlayer player) {
         return setOwner(player.getUniqueId());
@@ -100,6 +109,7 @@ public interface Bank extends Account {
      *
      * @param uuid the UUID of the new owner
      * @return {@code true} if the owner was changed
+     * @since 1.0.0
      */
     boolean setOwner(UUID uuid);
 
@@ -110,6 +120,7 @@ public interface Bank extends Account {
      * @param amount   the amount to deposit
      * @param currency the currency of the deposit
      * @return {@code true} if the deposit is allowed
+     * @since 3.0.0
      */
     default boolean canDeposit(final OfflinePlayer player, final Number amount, final Currency currency) {
         return canDeposit(player.getUniqueId(), amount, currency);
@@ -122,6 +133,7 @@ public interface Bank extends Account {
      * @param amount   the amount to deposit
      * @param currency the currency of the deposit
      * @return {@code true} if the deposit is allowed
+     * @since 3.0.0
      */
     default boolean canDeposit(final UUID uuid, final Number amount, final Currency currency) {
         return getOwner().equals(uuid) || isMember(uuid);
@@ -134,6 +146,7 @@ public interface Bank extends Account {
      * @param amount   the amount to withdraw
      * @param currency the currency of the withdrawal
      * @return {@code true} if the withdrawal is allowed
+     * @since 3.0.0
      */
     default boolean canWithdraw(final OfflinePlayer player, final Number amount, final Currency currency) {
         return canWithdraw(player.getUniqueId(), amount, currency);
@@ -146,6 +159,7 @@ public interface Bank extends Account {
      * @param amount   the amount to withdraw
      * @param currency the currency of the withdrawal
      * @return {@code true} if the withdrawal is allowed
+     * @since 3.0.0
      */
     default boolean canWithdraw(final UUID uuid, final Number amount, final Currency currency) {
         return getOwner().equals(uuid);

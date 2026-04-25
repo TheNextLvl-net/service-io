@@ -12,12 +12,14 @@ import java.util.Set;
  * capabilities and provides mechanisms to check whether the provider supports individual or multiple capabilities.
  *
  * @param <T> the type of {@link Capability} supported by this provider
+ * @since 2.2.0
  */
 public interface CapabilityProvider<T extends Capability> {
     /**
      * Retrieves an unmodifiable set of all available capabilities supported by the capability provider.
      *
      * @return an unmodifiable {@link Set} containing the supported {@link T capability} values
+     * @since 2.2.0
      */
     @Unmodifiable
     Set<T> getCapabilities();
@@ -27,6 +29,7 @@ public interface CapabilityProvider<T extends Capability> {
      *
      * @param capabilities the collection of {@link T capability} instances to verify for support
      * @return {@code true} if all the specified capabilities are supported; {@code false} otherwise
+     * @since 2.2.0
      */
     boolean hasCapabilities(Collection<T> capabilities);
 
@@ -35,6 +38,7 @@ public interface CapabilityProvider<T extends Capability> {
      *
      * @param capability the {@link T capability} to verify for support
      * @return {@code true} if the given capability is supported; {@code false} otherwise
+     * @since 2.2.0
      */
     boolean hasCapability(T capability);
 }

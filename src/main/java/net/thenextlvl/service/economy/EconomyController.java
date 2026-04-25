@@ -22,12 +22,14 @@ import java.util.concurrent.CompletableFuture;
  *
  * @implSpec Implementations must be thread-safe. All methods may be called from any thread,
  * including the main server thread and asynchronous task threads concurrently.
+ * @since 1.0.0
  */
 public interface EconomyController extends Controller, CapabilityProvider<EconomyCapability> {
     /**
      * Retrieves the currency controller for managing currencies.
      *
      * @return the currency controller
+     * @since 3.0.0
      */
     @Contract(pure = true)
     CurrencyController getCurrencyController();
@@ -38,6 +40,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      * This method returns immediately without performing any I/O.
      *
      * @return an unmodifiable set of cached accounts
+     * @since 2.2.0
      */
     @Unmodifiable
     Set<Account> getAccounts();
@@ -49,6 +52,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      *
      * @param world the world to get all accounts from
      * @return an unmodifiable set of cached accounts
+     * @since 3.0.0
      */
     @Unmodifiable
     Set<Account> getAccounts(World world);
@@ -58,6 +62,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      *
      * @param player the player whose account is being retrieved
      * @return an optional containing the account, or empty if not cached
+     * @since 3.0.0
      */
     Optional<Account> getAccount(OfflinePlayer player);
 
@@ -68,6 +73,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      * @param world  the world scope of the account
      * @return an optional containing the account, or empty if not cached
      * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
      */
     Optional<Account> getAccount(OfflinePlayer player, World world);
 
@@ -76,6 +82,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      *
      * @param uuid the UUID of the account owner
      * @return an optional containing the account, or empty if not cached
+     * @since 3.0.0
      */
     default Optional<Account> getAccount(final UUID uuid) {
         return getAccount(getPlugin().getServer().getOfflinePlayer(uuid));
@@ -88,6 +95,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      * @param world the world scope of the account
      * @return an optional containing the account, or empty if not cached
      * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
      */
     default Optional<Account> getAccount(final UUID uuid, final World world) {
         return getAccount(getPlugin().getServer().getOfflinePlayer(uuid), world);
@@ -212,6 +220,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      * @param player the player for whom the account will be created
      * @return a future that completes with the created account
      * @throws IllegalStateException if a similar account already exists
+     * @since 3.0.0
      */
     CompletableFuture<Account> createAccount(OfflinePlayer player);
 
@@ -223,6 +232,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      * @return a future that completes with the created account
      * @throws IllegalStateException if a similar account already exists
      * @throws CapabilityException   if multi-world is not supported
+     * @since 3.0.0
      */
     CompletableFuture<Account> createAccount(OfflinePlayer player, World world);
 
@@ -232,6 +242,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      * @param uuid the UUID of the account owner
      * @return a future that completes with the created account
      * @throws IllegalStateException if a similar account already exists
+     * @since 3.0.0
      */
     default CompletableFuture<Account> createAccount(final UUID uuid) {
         return createAccount(getPlugin().getServer().getOfflinePlayer(uuid));
@@ -245,6 +256,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      * @return a future that completes with the created account
      * @throws IllegalStateException if a similar account already exists
      * @throws CapabilityException   if multi-world is not supported
+     * @since 3.0.0
      */
     default CompletableFuture<Account> createAccount(final UUID uuid, final World world) {
         return createAccount(getPlugin().getServer().getOfflinePlayer(uuid), world);
@@ -255,6 +267,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      *
      * @param account the account to delete
      * @return a future that completes with {@code true} if the account was deleted
+     * @since 3.0.0
      */
     default CompletableFuture<Boolean> deleteAccount(final Account account) {
         return account.getWorld()
@@ -267,6 +280,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      *
      * @param player the player whose account will be deleted
      * @return a future that completes with {@code true} if the account was deleted
+     * @since 3.0.0
      */
     CompletableFuture<Boolean> deleteAccount(OfflinePlayer player);
 
@@ -277,6 +291,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      * @param world  the world scope of the account
      * @return a future that completes with {@code true} if the account was deleted
      * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
      */
     CompletableFuture<Boolean> deleteAccount(OfflinePlayer player, World world);
 
@@ -285,6 +300,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      *
      * @param uuid the UUID of the account owner
      * @return a future that completes with {@code true} if the account was deleted
+     * @since 3.0.0
      */
     default CompletableFuture<Boolean> deleteAccount(final UUID uuid) {
         return deleteAccount(getPlugin().getServer().getOfflinePlayer(uuid));
@@ -297,6 +313,7 @@ public interface EconomyController extends Controller, CapabilityProvider<Econom
      * @param world the world scope of the account
      * @return a future that completes with {@code true} if the account was deleted
      * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
      */
     default CompletableFuture<Boolean> deleteAccount(final UUID uuid, final World world) {
         return deleteAccount(getPlugin().getServer().getOfflinePlayer(uuid), world);

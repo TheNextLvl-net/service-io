@@ -6,6 +6,8 @@ import org.bukkit.plugin.Plugin;
  * An exception that indicates a problem related to a specific {@link Capability}.
  * This exception is typically thrown when there is an issue or unsupported operation
  * associated with a particular capability in the system.
+ *
+ * @since 2.2.0
  */
 public class CapabilityException extends RuntimeException {
     private final Capability capability;
@@ -29,6 +31,7 @@ public class CapabilityException extends RuntimeException {
      * @param message    the detail message, providing additional information about the exception.
      * @param capability the {@link Capability} instance associated with this exception,
      *                   indicating the capability that caused the issue.
+     * @since 3.0.0
      */
     public CapabilityException(final String message, final Capability capability) {
         super(message);
@@ -40,6 +43,7 @@ public class CapabilityException extends RuntimeException {
      *
      * @return the {@link Capability} instance that caused this exception,
      * representing a specific feature or limitation.
+     * @since 2.2.0
      */
     public Capability getCapability() {
         return this.capability;

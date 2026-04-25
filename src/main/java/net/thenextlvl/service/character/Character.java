@@ -18,6 +18,8 @@ import java.util.concurrent.CompletableFuture;
  * <p>
  * A character may or may not be backed by a real server entity, depending on
  * provider capabilities and spawn state.
+ *
+ * @since 2.2.0
  */
 public interface Character {
     /**
@@ -26,6 +28,7 @@ public interface Character {
      * @param location the {@code Location} to which the character will be teleported
      * @return a {@code CompletableFuture} that resolves to {@code true} if the teleportation was
      * successful, or {@code false} otherwise
+     * @since 2.2.0
      */
     CompletableFuture<Boolean> teleportAsync(Location location);
 
@@ -33,6 +36,7 @@ public interface Character {
      * Retrieves the name of the character.
      *
      * @return the name of the character
+     * @since 3.0.0
      */
     String getName();
 
@@ -40,6 +44,7 @@ public interface Character {
      * Checks if this character is persistent.
      *
      * @return {@code true} if this character is persistent, {@code false} otherwise
+     * @since 3.0.0
      */
     boolean isPersistent();
 
@@ -48,6 +53,7 @@ public interface Character {
      *
      * @param persistent {@code true} if this character should be persistent, {@code false} otherwise
      * @return {@code true} if the persistence was changed, {@code false} otherwise
+     * @since 3.0.0
      */
     boolean setPersistent(boolean persistent);
 
@@ -55,6 +61,7 @@ public interface Character {
      * Persists this character.
      *
      * @return {@code true} if the character was persisted, {@code false} otherwise
+     * @since 3.0.0
      */
     boolean persist();
 
@@ -62,6 +69,7 @@ public interface Character {
      * Retrieves the display name of the character.
      *
      * @return the {@code Component} representing the display name of the character
+     * @since 2.2.0
      */
     Component getDisplayName();
 
@@ -69,6 +77,7 @@ public interface Character {
      * Retrieves the type of entity associated with the character.
      *
      * @return the entity type of the character
+     * @since 2.2.0
      */
     EntityType getType();
 
@@ -77,6 +86,7 @@ public interface Character {
      *
      * @return the current location, or an empty {@code Optional} if it is not
      * available
+     * @since 3.0.0
      */
     Optional<Location> getLocation();
 
@@ -85,6 +95,7 @@ public interface Character {
      *
      * @return the current world, or an empty {@code Optional} if it is not
      * available
+     * @since 3.0.0
      */
     Optional<World> getWorld();
 
@@ -98,6 +109,7 @@ public interface Character {
      *
      * @return an {@code Optional} containing the associated entity, or an empty {@code Optional}
      * if no entity is associated with the character
+     * @since 3.0.0
      */
     Optional<Entity> getEntity();
 
@@ -105,6 +117,7 @@ public interface Character {
      * Retrieves an unmodifiable set of players currently tracking this character.
      *
      * @return the players currently tracking this character
+     * @since 3.0.0
      */
     @Unmodifiable
     Set<Player> getTrackedBy();
@@ -114,6 +127,7 @@ public interface Character {
      * of this character.
      *
      * @return the configured viewers of this character
+     * @since 3.0.0
      */
     @Unmodifiable
     Set<Player> getViewers();
@@ -123,6 +137,7 @@ public interface Character {
      *
      * @param player the player to add
      * @return {@code true} if the viewer was added, {@code false} otherwise
+     * @since 3.0.0
      */
     boolean addViewer(Player player);
 
@@ -131,6 +146,7 @@ public interface Character {
      *
      * @param players the players to add
      * @return {@code true} if any viewers were added, {@code false} otherwise
+     * @since 3.0.0
      */
     boolean addViewers(Collection<Player> players);
 
@@ -139,6 +155,7 @@ public interface Character {
      *
      * @param player the player to check
      * @return {@code true} if the player is tracking this character, {@code false} otherwise
+     * @since 3.0.0
      */
     boolean isTrackedBy(Player player);
 
@@ -148,6 +165,7 @@ public interface Character {
      * @param player the player to check
      * @return {@code true} if the player currently qualifies to see this
      * character, {@code false} otherwise
+     * @since 3.0.0
      */
     boolean canSee(Player player);
 
@@ -155,6 +173,7 @@ public interface Character {
      * Checks if this character is visible by default.
      *
      * @return {@code true} if this character is visible by default, {@code false} otherwise
+     * @since 3.0.0
      */
     boolean isVisibleByDefault();
 
@@ -163,6 +182,7 @@ public interface Character {
      *
      * @param player the player to remove
      * @return {@code true} if the viewer was removed, {@code false} otherwise
+     * @since 3.0.0
      */
     boolean removeViewer(Player player);
 
@@ -171,6 +191,7 @@ public interface Character {
      *
      * @param players the players to remove
      * @return {@code true} if any viewers were removed, {@code false} otherwise
+     * @since 3.0.0
      */
     boolean removeViewers(Collection<Player> players);
 
@@ -178,6 +199,7 @@ public interface Character {
      * Retrieves the display range of this character.
      *
      * @return the display range
+     * @since 3.0.0
      */
     double getDisplayRange();
 
@@ -185,6 +207,7 @@ public interface Character {
      * Sets the display range of this character.
      *
      * @param range the new display range
+     * @since 3.0.0
      */
     void setDisplayRange(double range);
 
@@ -193,6 +216,7 @@ public interface Character {
      *
      * @param visible {@code true} if this character should be visible by default, {@code false} otherwise
      * @return {@code true} if the visibility was changed, {@code false} otherwise
+     * @since 3.0.0
      */
     boolean setVisibleByDefault(boolean visible);
 
@@ -200,6 +224,7 @@ public interface Character {
      * Despawns the character, effectively removing it from the world or rendering it inactive.
      *
      * @return {@code true} if the character was successfully despawned, otherwise {@code false}
+     * @since 2.2.0
      */
     boolean despawn();
 
@@ -207,6 +232,7 @@ public interface Character {
      * Checks if the character is collidable, meaning it can interact physically with other entities.
      *
      * @return {@code true} if the character is collidable, otherwise {@code false}
+     * @since 2.2.0
      */
     boolean isCollidable();
 
@@ -214,6 +240,7 @@ public interface Character {
      * Checks if the character is invulnerable.
      *
      * @return {@code true} if the character is invulnerable, otherwise {@code false}
+     * @since 2.2.0
      */
     boolean isInvulnerable();
 
@@ -221,6 +248,7 @@ public interface Character {
      * Checks if the character is currently spawned in the world.
      *
      * @return {@code true} if the character is spawned, otherwise {@code false}
+     * @since 2.2.0
      */
     boolean isSpawned();
 
@@ -228,6 +256,7 @@ public interface Character {
      * Checks whether the tablist entry for the character is currently hidden.
      *
      * @return {@code true} if the tablist entry is hidden, otherwise {@code false}
+     * @since 2.2.0
      */
     boolean isTablistEntryHidden();
 
@@ -235,6 +264,7 @@ public interface Character {
      * Respawns the character, bringing it back to the world if it was previously despawned.
      *
      * @return {@code true} if the character was successfully respawned, otherwise {@code false}
+     * @since 2.2.0
      */
     boolean respawn();
 
@@ -243,6 +273,7 @@ public interface Character {
      *
      * @param location the {@code Location} where the character will be spawned
      * @return {@code true} if the character was successfully spawned, otherwise {@code false}
+     * @since 2.2.0
      */
     boolean spawn(Location location);
 
@@ -250,6 +281,7 @@ public interface Character {
      * Adjusts the character's orientation to face the given entity.
      *
      * @param entity the {@code Entity} that the character should face
+     * @since 2.2.0
      */
     void lookAt(Entity entity);
 
@@ -257,12 +289,15 @@ public interface Character {
      * Adjusts the character's orientation to face the specified location.
      *
      * @param location the {@code Location} that the character should face
+     * @since 2.2.0
      */
     void lookAt(Location location);
 
     /**
      * Permanently removes the character, rendering it inaccessible and removing all associated data.
      * After invoking this method, the character can't be respawned or interacted with.
+     *
+     * @since 2.2.0
      */
     void remove();
 
@@ -271,6 +306,7 @@ public interface Character {
      * with other entities in the world.
      *
      * @param collidable {@code true} to make the character collidable, allowing physical interactions
+     * @since 2.2.0
      */
     void setCollidable(boolean collidable);
 
@@ -278,6 +314,7 @@ public interface Character {
      * Sets the display name for the character.
      *
      * @param displayName the {@code Component} representing the new display name to be set
+     * @since 2.2.0
      */
     void setDisplayName(Component displayName);
 
@@ -285,6 +322,7 @@ public interface Character {
      * Sets whether the character should be invulnerable.
      *
      * @param invulnerable {@code true} if the character should be invulnerable, {@code false} otherwise
+     * @since 2.2.0
      */
     void setInvulnerable(boolean invulnerable);
 
@@ -292,6 +330,7 @@ public interface Character {
      * Sets the visibility state of the character's tablist entry.
      *
      * @param hidden {@code true} to hide the tablist entry, {@code false} to make it visible
+     * @since 2.2.0
      */
     void setTablistEntryHidden(boolean hidden);
 }

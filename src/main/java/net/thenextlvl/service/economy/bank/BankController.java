@@ -20,12 +20,14 @@ import java.util.concurrent.CompletableFuture;
  *
  * @implSpec Implementations must be thread-safe. All methods may be called from any thread,
  * including the main server thread and asynchronous task threads concurrently.
+ * @since 1.0.0
  */
 public interface BankController extends Controller, CapabilityProvider<EconomyCapability> {
     /**
      * Retrieves the currency controller for managing currencies.
      *
      * @return the currency controller
+     * @since 3.0.0
      */
     @Contract(pure = true)
     CurrencyController getCurrencyController();
@@ -34,6 +36,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      * Retrieves all currently cached banks.
      *
      * @return an unmodifiable set of cached banks
+     * @since 3.0.0
      */
     @Unmodifiable
     Set<Bank> getBanks();
@@ -44,6 +47,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      * @param world the world to filter by
      * @return an unmodifiable set of cached banks
      * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
      */
     @Unmodifiable
     Set<Bank> getBanks(World world);
@@ -53,6 +57,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      *
      * @param name the name of the bank
      * @return an optional containing the bank, or empty if not cached
+     * @since 3.0.0
      */
     Optional<Bank> getBank(String name);
 
@@ -61,6 +66,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      *
      * @param player the player whose bank is being retrieved
      * @return an optional containing the bank, or empty if not cached
+     * @since 3.0.0
      */
     Optional<Bank> getBank(OfflinePlayer player);
 
@@ -71,6 +77,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      * @param world  the world scope of the bank
      * @return an optional containing the bank, or empty if not cached
      * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
      */
     Optional<Bank> getBank(OfflinePlayer player, World world);
 
@@ -79,6 +86,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      *
      * @param uuid the UUID of the bank owner
      * @return an optional containing the bank, or empty if not cached
+     * @since 3.0.0
      */
     default Optional<Bank> getBank(final UUID uuid) {
         return getBank(getPlugin().getServer().getOfflinePlayer(uuid));
@@ -91,6 +99,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      * @param world the world scope of the bank
      * @return an optional containing the bank, or empty if not cached
      * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
      */
     default Optional<Bank> getBank(final UUID uuid, final World world) {
         return getBank(getPlugin().getServer().getOfflinePlayer(uuid), world);
@@ -239,6 +248,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      * @param name   the unique name of the bank
      * @return a future that completes with the created bank
      * @throws IllegalStateException if a bank with that owner or name already exists
+     * @since 3.0.0
      */
     @Contract("_, _ -> new")
     CompletableFuture<Bank> createBank(OfflinePlayer player, String name);
@@ -252,6 +262,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      * @return a future that completes with the created bank
      * @throws IllegalStateException if a bank with that owner or name already exists
      * @throws CapabilityException   if multi-world is not supported
+     * @since 3.0.0
      */
     @Contract("_, _, _ -> new")
     CompletableFuture<Bank> createBank(OfflinePlayer player, String name, World world);
@@ -263,6 +274,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      * @param name the unique name of the bank
      * @return a future that completes with the created bank
      * @throws IllegalStateException if a bank with that owner or name already exists
+     * @since 3.0.0
      */
     @Contract("_, _ -> new")
     default CompletableFuture<Bank> createBank(final UUID uuid, final String name) {
@@ -278,6 +290,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      * @return a future that completes with the created bank
      * @throws IllegalStateException if a bank with that owner or name already exists
      * @throws CapabilityException   if multi-world is not supported
+     * @since 3.0.0
      */
     @Contract("_, _, _ -> new")
     default CompletableFuture<Bank> createBank(final UUID uuid, final String name, final World world) {
@@ -289,6 +302,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      *
      * @param bank the bank to delete
      * @return a future that completes with {@code true} if the bank was deleted
+     * @since 3.0.0
      */
     default CompletableFuture<Boolean> deleteBank(final Bank bank) {
         return bank.getWorld()
@@ -301,6 +315,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      *
      * @param player the player whose bank will be deleted
      * @return a future that completes with {@code true} if the bank was deleted
+     * @since 3.0.0
      */
     CompletableFuture<Boolean> deleteBank(OfflinePlayer player);
 
@@ -311,6 +326,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      * @param world  the world scope of the bank
      * @return a future that completes with {@code true} if the bank was deleted
      * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
      */
     CompletableFuture<Boolean> deleteBank(OfflinePlayer player, World world);
 
@@ -319,6 +335,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      *
      * @param name the name of the bank to delete
      * @return a future that completes with {@code true} if the bank was deleted
+     * @since 1.0.0
      */
     CompletableFuture<Boolean> deleteBank(String name);
 
@@ -327,6 +344,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      *
      * @param uuid the UUID of the bank owner
      * @return a future that completes with {@code true} if the bank was deleted
+     * @since 3.0.0
      */
     default CompletableFuture<Boolean> deleteBank(final UUID uuid) {
         return deleteBank(getPlugin().getServer().getOfflinePlayer(uuid));
@@ -339,6 +357,7 @@ public interface BankController extends Controller, CapabilityProvider<EconomyCa
      * @param world the world scope of the bank
      * @return a future that completes with {@code true} if the bank was deleted
      * @throws CapabilityException if multi-world is not supported
+     * @since 3.0.0
      */
     default CompletableFuture<Boolean> deleteBank(final UUID uuid, final World world) {
         return deleteBank(getPlugin().getServer().getOfflinePlayer(uuid), world);

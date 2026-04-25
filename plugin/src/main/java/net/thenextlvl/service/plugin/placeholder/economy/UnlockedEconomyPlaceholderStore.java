@@ -10,6 +10,8 @@ import java.util.UUID;
 
 /**
  * <a href="https://github.com/TheNewEconomy/VaultUnlocked/blob/master/src/net/milkbowl/vault/papi/EconomyPlaceholders.java">Source</a>
+ *
+ * @since 2.6.1
  */
 public final class UnlockedEconomyPlaceholderStore extends PlaceholderStore<Economy> {
     private static final String PLUGIN_NAME = "VaultUnlocked";

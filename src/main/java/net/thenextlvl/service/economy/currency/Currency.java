@@ -19,6 +19,7 @@ public interface Currency {
      * Retrieves the unique identifier of the currency.
      *
      * @return the name of the currency as a string
+     * @since 3.0.0
      */
     @Contract(pure = true)
     String getName();
@@ -27,6 +28,7 @@ public interface Currency {
      * Retrieves the currency symbol.
      *
      * @return the currency symbol as a component
+     * @since 3.0.0
      */
     @Contract(pure = true)
     Component getSymbol();
@@ -35,6 +37,7 @@ public interface Currency {
      * Retrieves the number of fractional digits used for formatting currency amounts.
      *
      * @return the number of fractional digits
+     * @since 3.0.0
      */
     @Contract(pure = true)
     int getFractionalDigits();
@@ -46,6 +49,7 @@ public interface Currency {
      *
      * @param audience the audience whose locale is used to determine the singular display name
      * @return an {@code Optional} containing the singular display name, or empty
+     * @since 3.0.0
      */
     default Optional<Component> getDisplayNameSingular(final Audience audience) {
         return getDisplayNameSingular(audience.getOrDefault(Identity.LOCALE, Locale.US));
@@ -56,6 +60,7 @@ public interface Currency {
      *
      * @param locale the locale for which the singular display name should be retrieved
      * @return an {@code Optional} containing the singular display name, or empty
+     * @since 3.0.0
      */
     Optional<Component> getDisplayNameSingular(Locale locale);
 
@@ -66,6 +71,7 @@ public interface Currency {
      *
      * @param audience the audience whose locale is used to determine the plural display name
      * @return an {@code Optional} containing the plural display name, or empty
+     * @since 3.0.0
      */
     default Optional<Component> getDisplayNamePlural(final Audience audience) {
         return getDisplayNamePlural(audience.getOrDefault(Identity.LOCALE, Locale.US));
@@ -76,6 +82,7 @@ public interface Currency {
      *
      * @param locale the locale for which the plural display name should be retrieved
      * @return an {@code Optional} containing the plural display name, or empty
+     * @since 3.0.0
      */
     Optional<Component> getDisplayNamePlural(Locale locale);
 
@@ -83,6 +90,7 @@ public interface Currency {
      * Creates a {@link CurrencyData} snapshot from this currency's current state.
      *
      * @return a currency data instance reflecting this currency's properties
+     * @since 3.0.0
      */
     CurrencyData toData();
 
@@ -93,6 +101,7 @@ public interface Currency {
      * @param audience the audience to format the amount for
      * @return the formatted amount as a component
      * @see #format(Number, Locale)
+     * @since 3.0.0
      */
     default Component format(final Number amount, final Audience audience) {
         return format(amount, audience.getOrDefault(Identity.LOCALE, Locale.US));
@@ -104,6 +113,7 @@ public interface Currency {
      * @param amount the amount to be formatted
      * @param locale the locale to format the amount in
      * @return the formatted amount as a component
+     * @since 3.0.0
      */
     Component format(Number amount, Locale locale);
 }

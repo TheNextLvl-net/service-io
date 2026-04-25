@@ -23,6 +23,7 @@ public interface CurrencyController {
      * Retrieves the default currency.
      *
      * @return the default currency
+     * @since 3.0.0
      */
     @Contract(pure = true)
     Currency getDefaultCurrency();
@@ -34,6 +35,7 @@ public interface CurrencyController {
      * return a singleton set containing the default currency.
      *
      * @return an unmodifiable set of currencies
+     * @since 3.0.0
      */
     @Unmodifiable
     default Set<Currency> getCurrencies() {
@@ -48,6 +50,7 @@ public interface CurrencyController {
      *
      * @param name the name of the currency to retrieve
      * @return an optional containing the currency, or empty if not found
+     * @since 3.0.0
      */
     default Optional<Currency> getCurrency(final String name) {
         final var currency = getDefaultCurrency();
@@ -61,6 +64,7 @@ public interface CurrencyController {
      * @return the newly created currency
      * @throws CapabilityException      if multi-currency is not supported
      * @throws IllegalArgumentException if a currency with the same name already exists
+     * @since 3.0.0
      */
     @Contract("_ -> new")
     Currency createCurrency(CurrencyData data) throws IllegalArgumentException;
@@ -74,6 +78,7 @@ public interface CurrencyController {
      * @return the newly created currency
      * @throws CapabilityException      if multi-currency is not supported
      * @throws IllegalArgumentException if a currency with the same name already exists
+     * @since 3.0.0
      */
     @Contract("_, _, _ -> new")
     default Currency createCurrency(final String name, final Component symbol, final int fractionalDigits) throws IllegalArgumentException {
@@ -86,6 +91,7 @@ public interface CurrencyController {
      * @param currency the currency to delete
      * @return {@code true} if the currency was successfully deleted
      * @throws CapabilityException if multi-currency is not supported
+     * @since 3.0.0
      */
     default boolean deleteCurrency(final Currency currency) {
         return deleteCurrency(currency.getName());
@@ -97,6 +103,7 @@ public interface CurrencyController {
      * @param name the name of the currency to delete
      * @return {@code true} if the currency was successfully deleted
      * @throws CapabilityException if multi-currency is not supported
+     * @since 3.0.0
      */
     boolean deleteCurrency(String name);
 }

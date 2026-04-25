@@ -17,13 +17,14 @@ import java.util.UUID;
  *
  * @implSpec Implementations must be thread-safe. All methods may be called from any thread,
  * including the main server thread and asynchronous task threads concurrently.
- * @since 3.0.0
+ * @since 1.0.0
  */
 public interface Account {
     /**
      * Returns the UUID of the owner of this account.
      *
      * @return the UUID of the owner
+     * @since 3.0.0
      */
     UUID getOwner();
 
@@ -31,6 +32,7 @@ public interface Account {
      * Returns the world associated with this account, if any.
      *
      * @return an optional containing the world, or empty for global accounts
+     * @since 3.0.0
      */
     Optional<World> getWorld();
 
@@ -40,6 +42,7 @@ public interface Account {
      * @param currency the currency for which the balance is to be retrieved
      * @return the balance of the account
      * @throws IllegalArgumentException if the account cannot hold the specified currency
+     * @since 3.0.0
      */
     BigDecimal getBalance(Currency currency);
 
@@ -49,6 +52,7 @@ public interface Account {
      * @param amount   the amount to deposit
      * @param currency the currency to deposit
      * @return the result of the transaction
+     * @since 3.0.0
      */
     TransactionResult deposit(Number amount, Currency currency);
 
@@ -58,6 +62,7 @@ public interface Account {
      * @param amount   the amount to withdraw
      * @param currency the currency to withdraw
      * @return the result of the transaction
+     * @since 3.0.0
      */
     TransactionResult withdraw(Number amount, Currency currency);
 
@@ -67,6 +72,7 @@ public interface Account {
      * @param balance  the new balance
      * @param currency the currency of the balance
      * @return the result of the transaction
+     * @since 3.0.0
      */
     TransactionResult setBalance(Number balance, Currency currency);
 
@@ -75,6 +81,7 @@ public interface Account {
      *
      * @param currency the currency to check
      * @return {@code true} if the account supports the currency
+     * @since 3.0.0
      */
     boolean canHold(Currency currency);
 }

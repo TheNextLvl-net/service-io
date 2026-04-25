@@ -15,6 +15,8 @@ import java.util.stream.Stream;
  * <p>
  * The controller ensures that capabilities of the hologram provider are respected and throws
  * exceptions if unsupported capabilities are used.
+ *
+ * @since 2.2.0
  */
 public interface HologramController extends CapabilityProvider<HologramCapability>, Controller {
     /**
@@ -67,6 +69,7 @@ public interface HologramController extends CapabilityProvider<HologramCapabilit
      *
      * @param name the name of the hologram to be retrieved
      * @return an {@link Optional} containing the hologram if found, or empty if no such hologram exists
+     * @since 2.2.0
      */
     Optional<Hologram> getHologram(String name);
 }

@@ -10,6 +10,8 @@ import net.thenextlvl.service.capability.Capability;
 public enum EconomyCapability implements Capability {
     /**
      * The provider supports multiple currencies beyond the default.
+     *
+     * @since 3.0.0
      */
     MULTI_CURRENCY,
     /**
@@ -22,6 +24,8 @@ public enum EconomyCapability implements Capability {
     CURRENCY_CREATION,
     /**
      * The provider supports per-world economies.
+     *
+     * @since 3.0.0
      */
     MULTI_WORLD
 }

@@ -27,7 +27,7 @@ import java.util.stream.Stream;
  * This interface provides methods for managing the hologram's lines, visibility, position,
  * and persistence.
  *
- * @since 3.0.0
+ * @since 2.2.0
  */
 public interface Hologram extends Iterable<HologramLine> {
     /**
@@ -76,6 +76,7 @@ public interface Hologram extends Iterable<HologramLine> {
      * Returns the location of the hologram.
      *
      * @return the location of the hologram
+     * @since 3.0.0
      */
     Location getLocation();
 
@@ -83,6 +84,7 @@ public interface Hologram extends Iterable<HologramLine> {
      * Returns the world of the hologram.
      *
      * @return the world of the hologram
+     * @since 3.0.0
      */
     World getWorld();
 

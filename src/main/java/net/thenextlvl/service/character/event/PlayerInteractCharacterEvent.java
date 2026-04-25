@@ -18,6 +18,8 @@ import org.bukkit.event.Cancellable;
  * the interaction from proceeding by setting the event's cancelled state.
  * <p>
  * This event will only be fired for providers that support the {@link CharacterCapability#INTERACTIONS} capability.
+ *
+ * @since 2.2.0
  */
 public class PlayerInteractCharacterEvent extends CharacterEvent implements Cancellable {
     private final Player player;
@@ -31,6 +33,7 @@ public class PlayerInteractCharacterEvent extends CharacterEvent implements Canc
      * @param character  the character being interacted with
      * @param player     the player performing the interaction
      * @param type       the type of interaction performed by the player
+     * @since 3.0.0
      */
     public PlayerInteractCharacterEvent(final CharacterController controller, final Character character,
                                         final Player player, final InteractionType type) {
@@ -43,6 +46,7 @@ public class PlayerInteractCharacterEvent extends CharacterEvent implements Canc
      * Retrieves the player involved in the event.
      *
      * @return the {@code Player} instance that is performing the interaction in this event
+     * @since 2.2.0
      */
     public Player getPlayer() {
         return player;
@@ -52,6 +56,7 @@ public class PlayerInteractCharacterEvent extends CharacterEvent implements Canc
      * Retrieves the type of interaction performed during the event.
      *
      * @return the {@code InteractionType} representing the type of interaction
+     * @since 2.2.0
      */
     public InteractionType getType() {
         return type;
@@ -69,12 +74,16 @@ public class PlayerInteractCharacterEvent extends CharacterEvent implements Canc
 
     /**
      * Represents the type of interaction performed by a player.
+     *
+     * @since 2.2.0
      */
     public enum InteractionType {
         /**
          * Represents a left-click interaction performed by a player.
          * <p>
          * This type of interaction occurs when a player attacks.
+         *
+         * @since 2.2.0
          */
         LEFT_CLICK,
 
@@ -82,6 +91,8 @@ public class PlayerInteractCharacterEvent extends CharacterEvent implements Canc
          * Represents a right-click interaction performed by a player.
          * <p>
          * This type of interaction occurs when a player interacts.
+         *
+         * @since 2.2.0
          */
         RIGHT_CLICK,
 
@@ -89,6 +100,8 @@ public class PlayerInteractCharacterEvent extends CharacterEvent implements Canc
          * Represents a shift-left-click interaction performed by a player.
          * <p>
          * This type of interaction occurs when a player attacks while sneaking.
+         *
+         * @since 2.2.0
          */
         SHIFT_LEFT_CLICK,
 
@@ -96,6 +109,8 @@ public class PlayerInteractCharacterEvent extends CharacterEvent implements Canc
          * Represents a shift-right-click interaction performed by a player.
          * <p>
          * This type of interaction occurs when a player interacts while sneaking.
+         *
+         * @since 2.2.0
          */
         SHIFT_RIGHT_CLICK;
 
@@ -103,6 +118,7 @@ public class PlayerInteractCharacterEvent extends CharacterEvent implements Canc
          * Checks if the interaction type is a left-click.
          *
          * @return whether this interaction represents a left-click
+         * @since 2.2.0
          */
         public boolean isLeftClick() {
             return equals(LEFT_CLICK) || equals(SHIFT_LEFT_CLICK);
@@ -112,6 +128,7 @@ public class PlayerInteractCharacterEvent extends CharacterEvent implements Canc
          * Checks if the interaction type is a right-click.
          *
          * @return whether this interaction represents a right-click
+         * @since 2.2.0
          */
         public boolean isRightClick() {
             return equals(RIGHT_CLICK) || equals(SHIFT_RIGHT_CLICK);
@@ -121,6 +138,7 @@ public class PlayerInteractCharacterEvent extends CharacterEvent implements Canc
          * Checks if the interaction type is a shift-click.
          *
          * @return whether this interaction represents either a shift-left-click or a shift-right-click
+         * @since 2.2.0
          */
         public boolean isShiftClick() {
             return equals(SHIFT_LEFT_CLICK) || equals(SHIFT_RIGHT_CLICK);
