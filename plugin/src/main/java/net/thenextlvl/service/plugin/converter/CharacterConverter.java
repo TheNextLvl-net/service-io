@@ -20,7 +20,7 @@ final class CharacterConverter extends Converter<CharacterController> {
             npc.setPersistent(character.isPersistent());
             npc.setTablistEntryHidden(character.isTablistEntryHidden());
             npc.setVisibleByDefault(character.isVisibleByDefault());
-            if (character.getLocation() != null) npc.spawn(character.getLocation());
+            character.getLocation().ifPresent(npc::spawn);
             character.addViewers(npc.getViewers());
             return npc;
         }));

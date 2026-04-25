@@ -7,6 +7,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.thenextlvl.service.hologram.LineType;
 import net.thenextlvl.service.hologram.line.BlockHologramLine;
 import net.thenextlvl.service.hologram.line.PagedHologramLine;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Skull;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Display;
@@ -52,7 +53,7 @@ public final class DecentBlockHologramLine extends DecentHologramLine implements
             if (!(blockData instanceof final Skull skull)) return;
             final var data = item.getData(DataComponentTypes.PROFILE);
             if (data == null) return;
-            final var profile = hologram.getServer().createProfile(data.uuid(), data.name());
+            final var profile = Bukkit.createProfile(data.uuid(), data.name());
             skull.setPlayerProfile(profile);
         });
     }

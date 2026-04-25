@@ -35,7 +35,7 @@ public final class CitizensListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onNPCDamageByEntity(final NPCDamageByEntityEvent event) {
         final var cause = (EntityDamageByEntityEvent) event.getEvent();
-        final var character = new CitizensCharacter<>(event.getNPC());
+        final var character = new CitizensCharacter(event.getNPC());
         final var damageEvent = new EntityDamageCharacterEvent(
                 controller, character, event.getDamager(), event.getCause(),
                 event.getDamage(), cause.isCritical()
@@ -55,7 +55,7 @@ public final class CitizensListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onNPCDamage(final NPCDamageEvent event) {
-        final var character = new CitizensCharacter<>(event.getNPC());
+        final var character = new CitizensCharacter(event.getNPC());
         final var damageEvent = new CharacterDamageEvent(
                 controller, character, event.getCause(), event.getDamage()
         );
@@ -64,7 +64,7 @@ public final class CitizensListener implements Listener {
     }
 
     private void onNPCClick(final NPCClickEvent event, final InteractionType type) {
-        final var character = new CitizensCharacter<>(event.getNPC());
+        final var character = new CitizensCharacter(event.getNPC());
         final var characterEvent = new PlayerInteractCharacterEvent(
                 controller, character, event.getClicker(), type
         );

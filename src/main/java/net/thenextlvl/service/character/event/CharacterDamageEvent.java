@@ -27,7 +27,7 @@ public class CharacterDamageEvent extends CharacterEvent implements Cancellable 
      * @param cause      the cause of the damage
      * @param damage     the amount of damage dealt to the character
      */
-    public CharacterDamageEvent(final CharacterController controller, final Character<?> character, final EntityDamageEvent.DamageCause cause, final double damage) {
+    public CharacterDamageEvent(final CharacterController controller, final Character character, final EntityDamageEvent.DamageCause cause, final double damage) {
         super(controller, character);
         this.cause = cause;
         this.damage = damage;

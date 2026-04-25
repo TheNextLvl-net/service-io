@@ -16,7 +16,6 @@ import net.thenextlvl.service.hologram.line.PagedHologramLine;
 import net.thenextlvl.service.hologram.line.TextHologramLine;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -196,13 +195,13 @@ public record FancyHologram(com.fancyinnovations.fancyholograms.api.hologram.Hol
     @Override
     public Stream<Player> getTrackedBy() {
         return hologram().getViewers().stream()
-                .map(getServer()::getPlayer)
+                .map(Bukkit::getPlayer)
                 .filter(Objects::nonNull);
     }
 
     @Override
     public @Unmodifiable Set<UUID> getViewers() {
-        return getServer().getOnlinePlayers().stream()
+        return Bukkit.getOnlinePlayers().stream()
                 .filter(this::canSee)
                 .map(Player::getUniqueId)
                 .collect(Collectors.toUnmodifiableSet());
@@ -210,7 +209,7 @@ public record FancyHologram(com.fancyinnovations.fancyholograms.api.hologram.Hol
 
     @Override
     public boolean addViewer(final UUID player) {
-        final var online = getServer().getPlayer(player);
+        final var online = Bukkit.getPlayer(player);
         if (online == null) return false;
         FancyHolograms.get().getController().showHologramTo(hologram, online);
         return true;
@@ -223,7 +222,7 @@ public record FancyHologram(com.fancyinnovations.fancyholograms.api.hologram.Hol
 
     @Override
     public boolean removeViewer(final UUID player) {
-        final var online = getServer().getPlayer(player);
+        final var online = Bukkit.getPlayer(player);
         if (online == null) return false;
         hologram.despawnFrom(online);
         return true;
@@ -236,7 +235,7 @@ public record FancyHologram(com.fancyinnovations.fancyholograms.api.hologram.Hol
 
     @Override
     public boolean isViewer(final UUID player) {
-        final var online = getServer().getPlayer(player);
+        final var online = Bukkit.getPlayer(player);
         return online != null && canSee(online);
     }
 
@@ -293,10 +292,6 @@ public record FancyHologram(com.fancyinnovations.fancyholograms.api.hologram.Hol
     @Override
     public Location getLocation() {
         return hologram().getData().getLocation();
-    }
-
-    public Server getServer() {
-        return Bukkit.getServer();
     }
 
     @Override

@@ -24,7 +24,7 @@ public final class FancyNpcsListener implements Listener {
                 ? event.getPlayer().isSneaking() ? InteractionType.SHIFT_RIGHT_CLICK : InteractionType.RIGHT_CLICK
                 : event.getPlayer().isSneaking() ? InteractionType.SHIFT_LEFT_CLICK : InteractionType.LEFT_CLICK;
         final var interactEvent = new PlayerInteractCharacterEvent(
-                controller, new FancyCharacter<>(event.getNpc()),
+                controller, new FancyCharacter(event.getNpc()),
                 event.getPlayer(), interactionType
         );
         interactEvent.setCancelled(event.isCancelled());

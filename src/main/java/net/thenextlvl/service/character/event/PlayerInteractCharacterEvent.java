@@ -32,7 +32,7 @@ public class PlayerInteractCharacterEvent extends CharacterEvent implements Canc
      * @param player     the player performing the interaction
      * @param type       the type of interaction performed by the player
      */
-    public PlayerInteractCharacterEvent(final CharacterController controller, final Character<?> character,
+    public PlayerInteractCharacterEvent(final CharacterController controller, final Character character,
                                         final Player player, final InteractionType type) {
         super(controller, character);
         this.player = player;

@@ -266,7 +266,7 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
     @Override
     public Stream<Player> getTrackedBy() {
         return hologram.getViewers().stream()
-                .map(getServer()::getPlayer)
+                .map(Bukkit::getPlayer)
                 .filter(Objects::nonNull);
     }
 
@@ -277,7 +277,7 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
 
     @Override
     public boolean addViewer(final UUID player) {
-        final var online = getServer().getPlayer(player);
+        final var online = Bukkit.getPlayer(player);
         if (online == null || hologram.isShowState(online)) return false;
         hologram.setShowPlayer(online);
         return true;
@@ -290,7 +290,7 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
 
     @Override
     public boolean removeViewer(final UUID player) {
-        final var online = getServer().getPlayer(player);
+        final var online = Bukkit.getPlayer(player);
         if (online == null || !hologram.isShowState(online)) return false;
         hologram.removeShowPlayer(online);
         hologram.update(true, online);
@@ -304,7 +304,7 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
 
     @Override
     public boolean isViewer(final UUID player) {
-        final var online = getServer().getPlayer(player);
+        final var online = Bukkit.getPlayer(player);
         return online != null && hologram.isShowState(online);
     }
 
@@ -362,10 +362,6 @@ public record DecentHologram(eu.decentsoftware.holograms.api.holograms.Hologram 
     @Override
     public Location getLocation() {
         return hologram.getLocation();
-    }
-
-    public Server getServer() {
-        return Bukkit.getServer();
     }
 
     @Override

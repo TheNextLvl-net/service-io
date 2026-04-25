@@ -10,6 +10,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Unmodifiable;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,13 +28,14 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * This method may throw a {@code CapabilityException} if the capability
      * {@link CharacterCapability#NON_PLAYER_ENTITIES} is not available.
      *
-     * @param <T>  the type of the entity being created as an NPC
      * @param name the name to assign to the NPC
      * @param type the entity type of the NPC
      * @return the {@code Character} instance representing the created NPC
      * @throws CapabilityException if the operation is not supported due to capability limitations
      */
-    <T extends Entity> Character<T> createNPC(String name, Class<T> type) throws CapabilityException;
+    default Character createNPC(final String name, final Class<? extends Entity> type) throws CapabilityException {
+        return createNPC(name, getEntityType(type));
+    }
 
     /**
      * Creates a character with the given name and entity type.
@@ -41,13 +43,12 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * This method may throw a {@code CapabilityException} if the capability
      * {@link CharacterCapability#NON_PLAYER_ENTITIES} is not available.
      *
-     * @param <T>  the type of the entity being created as an NPC
      * @param name the name to assign to the NPC
      * @param type the entity type of the NPC
      * @return the {@code Character} instance representing the created NPC
      * @throws CapabilityException if the operation is not supported due to capability limitations
      */
-    <T extends Entity> Character<T> createNPC(String name, EntityType type) throws CapabilityException;
+    Character createNPC(String name, EntityType type) throws CapabilityException;
 
     /**
      * Spawns a character at the specified location with the given name and entity type.
@@ -55,14 +56,15 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * This method may throw a {@code CapabilityException} if the capability
      * {@link CharacterCapability#NON_PLAYER_ENTITIES} is not available.
      *
-     * @param <T>      the type of the entity being spawned as an NPC
      * @param name     the name to assign to the NPC
      * @param location the location where the NPC will be spawned
      * @param type     the entity type of the NPC
      * @return the {@code Character} instance representing the spawned NPC
      * @throws CapabilityException if the operation is not supported due to capability limitations
      */
-    <T extends Entity> Character<T> spawnNPC(String name, Location location, Class<T> type) throws CapabilityException;
+    default Character spawnNPC(final String name, final Location location, final Class<? extends Entity> type) throws CapabilityException {
+        return spawnNPC(name, location, getEntityType(type));
+    }
 
     /**
      * Spawns a character at the specified location with the given name and entity type.
@@ -70,23 +72,21 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * This method may throw a {@code CapabilityException} if the capability
      * {@link CharacterCapability#NON_PLAYER_ENTITIES} is not available.
      *
-     * @param <T>      the type of the entity being spawned as an NPC
      * @param name     the name to assign to the NPC
      * @param location the location where the NPC will be spawned
      * @param type     the entity type of the NPC
      * @return the {@code Character} instance representing the spawned NPC
      * @throws CapabilityException if the operation is not supported due to capability limitations
      */
-    <T extends Entity> Character<T> spawnNPC(String name, Location location, EntityType type) throws CapabilityException;
+    Character spawnNPC(String name, Location location, EntityType type) throws CapabilityException;
 
     /**
      * Retrieves the {@code Character} representation of the specified entity if it is an NPC.
      *
      * @param entity the entity to retrieve the NPC for
-     * @param <T>    the type of the entity
      * @return an {@code Optional} containing the {@code Character} if the entity is an NPC
      */
-    <T extends Entity> Optional<Character<T>> getNPC(T entity);
+    Optional<Character> getNPC(Entity entity);
 
     /**
      * Creates a player character with the specified name.
@@ -94,7 +94,9 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * @param name the name to assign to the NPC
      * @return the {@code Character} instance representing the NPC
      */
-    Character<Player> createNPC(String name);
+    default Character createNPC(final String name) {
+        return createNPC(name, EntityType.PLAYER);
+    }
 
     /**
      * Spawns a player character at the specified location.
@@ -103,7 +105,9 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * @param location the location where the NPC will be spawned
      * @return the {@code Character} instance representing the NPC
      */
-    Character<Player> spawnNPC(String name, Location location);
+    default Character spawnNPC(final String name, final Location location) {
+        return spawnNPC(name, location, EntityType.PLAYER);
+    }
 
     /**
      * Retrieves a list of all available NPCs.
@@ -111,7 +115,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * @return an unmodifiable list of {@code Character} objects
      */
     @Unmodifiable
-    List<Character<?>> getNPCs();
+    List<Character> getNPCs();
 
     /**
      * Retrieves a list of all NPCs that may be visible to the specified player.
@@ -120,7 +124,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * @return an unmodifiable list of {@code Character} objects
      */
     @Unmodifiable
-    List<Character<?>> getNPCs(Player player);
+    List<Character> getNPCs(Player player);
 
     /**
      * Retrieves a list of all NPCs within a specific world.
@@ -129,7 +133,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * @return an unmodifiable list of {@code Character} objects
      */
     @Unmodifiable
-    List<Character<?>> getNPCs(World world);
+    List<Character> getNPCs(World world);
 
     /**
      * Retrieves the character associated with the specified name.
@@ -137,7 +141,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * @param name the name of the NPC to retrieve
      * @return an {@code Optional} containing the NPC or empty if no NPC exists with the given name
      */
-    Optional<Character<?>> getNPC(String name);
+    Optional<Character> getNPC(String name);
 
     /**
      * Retrieves the character associated with the specified uuid.
@@ -145,7 +149,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * @param uuid the unique id of the character to retrieve
      * @return an {@code Optional} containing the NPC or empty if no NPC exists with the given uuid
      */
-    Optional<Character<?>> getNPC(UUID uuid);
+    Optional<Character> getNPC(UUID uuid);
 
     /**
      * Retrieves the character object represented by the specified player.
@@ -155,7 +159,7 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * @param player the player object for which to retrieve the character
      * @return an {@code Optional} containing the NPC or empty if the player is not an NPC
      */
-    Optional<Character<Player>> getNPC(Player player);
+    Optional<Character> getNPC(Player player);
 
     /**
      * Determines whether a given entity is a non-player character (NPC).
@@ -164,4 +168,11 @@ public interface CharacterController extends CapabilityProvider<CharacterCapabil
      * @return true if the entity is an NPC, false otherwise
      */
     boolean isNPC(Entity entity);
+
+    private static EntityType getEntityType(final Class<? extends Entity> type) {
+        return Arrays.stream(EntityType.values())
+                .filter(entityType -> type.equals(entityType.getEntityClass()))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid entity type: " + type.getName()));
+    }
 }

@@ -101,7 +101,7 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         assertTrue(npc.isPresent(), "getNPC(name)");
     }
 
-    private void assertGetNPCByUUID(final Character<?> npc) {
+    private void assertGetNPCByUUID(final Character npc) {
         final var uuid = npc.getEntity().map(Entity::getUniqueId).orElse(null);
         if (uuid == null) {
             skip("getNPC(uuid)", "no entity UUID available");
@@ -121,14 +121,11 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         pass("getNPCs", npcs.size() + " NPC(s)");
     }
 
-    private void assertGetNPCsByWorld(final Character<?> npc) {
-        final var world = npc.getWorld();
-        if (world != null) {
+    private void assertGetNPCsByWorld(final Character npc) {
+        npc.getWorld().ifPresentOrElse(world -> {
             final var npcs = controller.getNPCs(world);
             pass("getNPCs(world)", npcs.size() + " NPC(s) in " + world.key().asString());
-        } else {
-            fail("getNPCs(world)", "NPC has no world");
-        }
+        }, () -> fail("getNPCs(world)", "NPC has no world"));
     }
 
     private void assertGetNPCsByPlayer(final Player player) {
@@ -136,7 +133,7 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         pass("getNPCs(player)", npcs.size() + " NPC(s) for " + player.getName());
     }
 
-    private void assertGetNPCByEntity(final Character<?> npc) {
+    private void assertGetNPCByEntity(final Character npc) {
         if (!controller.hasCapability(CharacterCapability.ACTUAL_ENTITIES)) {
             assertTrue(npc.getEntity().isEmpty(), "#getEntity().isEmpty()");
             skip("getNPC(entity)", "requires ACTUAL_ENTITIES capability");
@@ -150,7 +147,7 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         });
     }
 
-    private void assertGetNPCByPlayer(final Character<?> npc, final Player player) {
+    private void assertGetNPCByPlayer(final Character npc, final Player player) {
         if (!controller.hasCapability(CharacterCapability.ACTUAL_ENTITIES)) {
             skip("getNPC(player)", "requires ACTUAL_ENTITIES capability");
             return;
@@ -171,34 +168,34 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         pass("createNPC (cleanup)", "removed created NPC");
     }
 
-    private void assertGetName(final Character<?> npc, final String expected) {
+    private void assertGetName(final Character npc, final String expected) {
         final var name = npc.getName();
         assertEquals(expected, name, "getName");
     }
 
-    private void assertIsPersistent(final Character<?> npc) {
+    private void assertIsPersistent(final Character npc) {
         pass("isPersistent", String.valueOf(npc.isPersistent()));
     }
 
-    private void assertSetPersistent(final Character<?> npc) {
+    private void assertSetPersistent(final Character npc) {
         final var before = npc.isPersistent();
-        npc.setPersistent(!before);
+        final var changed = npc.setPersistent(!before);
         final var after = npc.isPersistent();
-        if (after != before) pass("setPersistent", "changed from " + before + " to " + after);
+        if (changed && after != before) pass("setPersistent", "changed from " + before + " to " + after);
         else fail("setPersistent", "value did not change, still " + after);
         npc.setPersistent(before);
     }
 
-    private void assertPersist(final Character<?> npc) {
+    private void assertPersist(final Character npc) {
         final var result = npc.persist();
         assertTrue(result, "persist");
     }
 
-    private void assertGetDisplayName(final Character<?> npc) {
+    private void assertGetDisplayName(final Character npc) {
         pass("getDisplayName", npc.getDisplayName().toString());
     }
 
-    private void assertSetDisplayName(final Character<?> npc) {
+    private void assertSetDisplayName(final Character npc) {
         final var before = npc.getDisplayName();
         final var newName = Component.text("ServiceIO Test NPC", NamedTextColor.GOLD);
         npc.setDisplayName(newName);
@@ -208,18 +205,18 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         npc.setDisplayName(before);
     }
 
-    private void assertGetType(final Character<?> npc) {
+    private void assertGetType(final Character npc) {
         final var type = npc.getType();
         if (type == EntityType.PLAYER) pass("getType", "PLAYER");
         else pass("getType", type.toString());
     }
 
-    private void assertIsSpawned(final Character<?> npc, final boolean expected) {
+    private void assertIsSpawned(final Character npc, final boolean expected) {
         final var spawned = npc.isSpawned();
         assertEquals(expected, spawned, "isSpawned");
     }
 
-    private void assertSetCollidable(final Character<?> npc) {
+    private void assertSetCollidable(final Character npc) {
         final var before = npc.isCollidable();
         npc.setCollidable(!before);
         final var after = npc.isCollidable();
@@ -228,7 +225,7 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         npc.setCollidable(before);
     }
 
-    private void assertSetInvulnerable(final Character<?> npc) {
+    private void assertSetInvulnerable(final Character npc) {
         if (!controller.hasCapability(CharacterCapability.HEALTH)) {
             skip("setInvulnerable", "requires HEALTH capability");
             return;
@@ -241,7 +238,7 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         npc.setInvulnerable(before);
     }
 
-    private void assertSetTablistEntryHidden(final Character<?> npc) {
+    private void assertSetTablistEntryHidden(final Character npc) {
         final var before = npc.isTablistEntryHidden();
         npc.setTablistEntryHidden(!before);
         final var after = npc.isTablistEntryHidden();
@@ -250,27 +247,27 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         npc.setTablistEntryHidden(before);
     }
 
-    private void assertGetTrackedBy(final Character<?> npc) {
+    private void assertGetTrackedBy(final Character npc) {
         final var tracked = npc.getTrackedBy();
         pass("getTrackedBy", tracked.size() + " player(s)");
     }
 
-    private void assertGetViewers(final Character<?> npc) {
+    private void assertGetViewers(final Character npc) {
         final var viewers = npc.getViewers();
         pass("getViewers", viewers.size() + " viewer(s)");
     }
 
-    private void assertIsTrackedBy(final Character<?> npc, final Player player) {
+    private void assertIsTrackedBy(final Character npc, final Player player) {
         final var tracked = npc.isTrackedBy(player);
         pass("isTrackedBy", String.valueOf(tracked));
     }
 
-    private void assertCanSee(final Character<?> npc, final Player player) {
+    private void assertCanSee(final Character npc, final Player player) {
         final var canSee = npc.canSee(player);
         pass("canSee", String.valueOf(canSee));
     }
 
-    private void assertAddRemoveViewer(final Character<?> npc, final Player player) {
+    private void assertAddRemoveViewer(final Character npc, final Player player) {
         final var added = npc.addViewer(player);
         if (added) {
             final var viewers = npc.getViewers();
@@ -290,7 +287,7 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         }
     }
 
-    private void assertAddRemoveViewers(final Character<?> npc, final Player player) {
+    private void assertAddRemoveViewers(final Character npc, final Player player) {
         final var players = List.of(player);
         final var added = npc.addViewers(players);
         if (added) pass("addViewers", "added viewer(s)");
@@ -301,16 +298,16 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         else pass("removeViewers", "returned false (viewer(s) may not have existed)");
     }
 
-    private void assertSetVisibleByDefault(final Character<?> npc) {
+    private void assertSetVisibleByDefault(final Character npc) {
         final var before = npc.isVisibleByDefault();
-        npc.setVisibleByDefault(!before);
+        final var changed = npc.setVisibleByDefault(!before);
         final var after = npc.isVisibleByDefault();
-        if (after != before) pass("setVisibleByDefault", "changed from " + before + " to " + after);
+        if (changed && after != before) pass("setVisibleByDefault", "changed from " + before + " to " + after);
         else fail("setVisibleByDefault", "value did not change, still " + after);
         npc.setVisibleByDefault(before);
     }
 
-    private void assertSetDisplayRange(final Character<?> npc) {
+    private void assertSetDisplayRange(final Character npc) {
         final var before = npc.getDisplayRange();
         final var newRange = before + 10.0;
         npc.setDisplayRange(newRange);
@@ -320,18 +317,18 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         npc.setDisplayRange(before);
     }
 
-    private void assertLookAtLocation(final Character<?> npc, final Player player) {
+    private void assertLookAtLocation(final Character npc, final Player player) {
         final var target = player.getLocation().add(5, 0, 5);
         npc.lookAt(target);
         pass("lookAt(location)", String.format("looked at %.1f, %.1f, %.1f", target.getX(), target.getY(), target.getZ()));
     }
 
-    private void assertLookAtEntity(final Character<?> npc, final Player player) {
+    private void assertLookAtEntity(final Character npc, final Player player) {
         npc.lookAt(player);
         pass("lookAt(entity)", "looked at " + player.getName());
     }
 
-    private CompletableFuture<Void> assertTeleportAsync(final Character<?> npc, final Player player) {
+    private CompletableFuture<Void> assertTeleportAsync(final Character npc, final Player player) {
         final var target = player.getLocation().add(0, 2, 0);
         return npc.teleportAsync(target).thenAccept(success -> {
             if (success)
@@ -340,20 +337,19 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         });
     }
 
-    private void assertGetLocation(final Character<?> npc) {
-        final var location = npc.getLocation();
-        if (location != null)
+    private void assertGetLocation(final Character npc) {
+        npc.getLocation().ifPresentOrElse(location -> {
             pass("getLocation", String.format("%.1f, %.1f, %.1f", location.getX(), location.getY(), location.getZ()));
-        else fail("getLocation", "location is null");
+        }, () -> fail("getLocation", "location is null"));
     }
 
-    private void assertGetWorld(final Character<?> npc) {
-        final var world = npc.getWorld();
-        if (world != null) pass("getWorld", world.key().asString());
-        else fail("getWorld", "world is null");
+    private void assertGetWorld(final Character npc) {
+        npc.getWorld().ifPresentOrElse(world -> {
+            pass("getWorld", world.key().asString());
+        }, () -> fail("getWorld", "world is null"));
     }
 
-    private void assertGetEntity(final Character<?> npc) {
+    private void assertGetEntity(final Character npc) {
         if (!controller.hasCapability(CharacterCapability.ACTUAL_ENTITIES)) {
             skip("getEntity", "requires ACTUAL_ENTITIES capability");
             return;
@@ -363,7 +359,7 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         else fail("getEntity", "entity not present despite ACTUAL_ENTITIES capability");
     }
 
-    private void assertDespawn(final Character<?> npc) {
+    private void assertDespawn(final Character npc) {
         final var despawned = npc.despawn();
         if (despawned) {
             if (!npc.isSpawned()) pass("despawn", "despawned NPC");
@@ -373,7 +369,7 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         }
     }
 
-    private void assertRespawn(final Character<?> npc) {
+    private void assertRespawn(final Character npc) {
         final var respawned = npc.respawn();
         if (respawned) {
             if (npc.isSpawned()) pass("respawn", "respawned NPC");
@@ -383,7 +379,7 @@ public final class CharacterTestSuite extends TestSuite<CharacterController> {
         }
     }
 
-    private void assertSpawn(final Character<?> npc, final Player player) {
+    private void assertSpawn(final Character npc, final Player player) {
         final var location = player.getLocation();
         final var spawned = npc.spawn(location);
         if (spawned) {

@@ -7,14 +7,12 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.thenextlvl.service.character.Character;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -24,7 +22,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @NullMarked
-public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> {
+public record FancyCharacter(Npc npc) implements Character {
     @Override
     public CompletableFuture<Boolean> teleportAsync(final Location location) {
         npc().getData().setLocation(location);
@@ -38,7 +36,7 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     }
 
     @Override
-    public Optional<T> getEntity() {
+    public Optional<Entity> getEntity() {
         return Optional.empty();
     }
 
@@ -48,19 +46,13 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     }
 
     @Override
-    public @Nullable Location getLocation() {
-        return npc().getData().getLocation();
+    public Optional<Location> getLocation() {
+        return Optional.ofNullable(npc().getData().getLocation());
     }
 
     @Override
-    public Server getServer() {
-        return Bukkit.getServer();
-    }
-
-    @Override
-    public @Nullable World getWorld() {
-        final var location = getLocation();
-        return location != null ? location.getWorld() : null;
+    public Optional<World> getWorld() {
+        return getLocation().map(Location::getWorld);
     }
 
     @Override
@@ -77,36 +69,6 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     @Override
     public void setCollidable(final boolean collidable) {
         npc().getData().setCollidable(collidable);
-    }
-
-    @Override
-    public double getX() {
-        final var location = getLocation();
-        return location != null ? location.getX() : 0;
-    }
-
-    @Override
-    public double getY() {
-        final var location = getLocation();
-        return location != null ? location.getY() : 0;
-    }
-
-    @Override
-    public double getZ() {
-        final var location = getLocation();
-        return location != null ? location.getZ() : 0;
-    }
-
-    @Override
-    public float getPitch() {
-        final var location = getLocation();
-        return location != null ? location.getPitch() : 0;
-    }
-
-    @Override
-    public float getYaw() {
-        final var location = getLocation();
-        return location != null ? location.getYaw() : 0;
     }
 
     @Override
@@ -191,21 +153,23 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     }
 
     @Override
-    public void setPersistent(final boolean persistent) {
+    public boolean setPersistent(final boolean persistent) {
+        if (isPersistent() == persistent) return false;
         npc().setSaveToFile(persistent);
+        return true;
     }
 
     @Override
     public @Unmodifiable Set<Player> getTrackedBy() {
         return npc().getIsVisibleForPlayer().keySet().stream()
-                .map(getServer()::getPlayer)
+                .map(Bukkit::getPlayer)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
     public @Unmodifiable Set<Player> getViewers() {
-        return getServer().getOnlinePlayers().stream()
+        return Bukkit.getOnlinePlayers().stream()
                 .filter(this::canSee)
                 .collect(Collectors.toUnmodifiableSet());
     }
@@ -233,10 +197,11 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
         final var visibilityDistance = plugin.getFancyNpcConfig().getVisibilityDistance();
 
         if (!npc().getData().isSpawnEntity()) return false;
-        if (getLocation() == null) return false;
-        if (!player.getWorld().equals(getWorld())) return false;
+        final var location = getLocation().orElse(null);
+        if (location == null) return false;
+        if (!player.getWorld().equals(location.getWorld())) return false;
 
-        final var distanceSquared = getLocation().distanceSquared(player.getLocation());
+        final var distanceSquared = location.distanceSquared(player.getLocation());
         if (distanceSquared > visibilityDistance * visibilityDistance) return false;
 
         final var attribute = plugin.getAttributeManager().getAttributeByName(EntityType.PLAYER, "invisible");
@@ -274,6 +239,7 @@ public record FancyCharacter<T extends Entity>(Npc npc) implements Character<T> 
     }
 
     @Override
-    public void setVisibleByDefault(final boolean visible) {
+    public boolean setVisibleByDefault(final boolean visible) {
+        return false;
     }
 }

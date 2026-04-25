@@ -10,7 +10,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.thenextlvl.service.character.Character;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -28,7 +27,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @NullMarked
-public final class CitizensCharacter<T extends Entity> implements Character<T> {
+public final class CitizensCharacter implements Character {
     private final NPC npc;
 
     public CitizensCharacter(final NPC npc) {
@@ -53,8 +52,10 @@ public final class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public void setPersistent(final boolean persistent) {
+    public boolean setPersistent(final boolean persistent) {
+        if (isPersistent() == persistent) return false;
         npc.data().setPersistent(NPC.Metadata.SHOULD_SAVE, persistent);
+        return true;
     }
 
     @Override
@@ -69,7 +70,7 @@ public final class CitizensCharacter<T extends Entity> implements Character<T> {
         return npc.getTraitOptional(PlayerFilter.class).toJavaUtil()
                 .map(PlayerFilter::getPlayerUUIDs)
                 .map(players -> players.stream()
-                        .map(getServer()::getPlayer)
+                        .map(Bukkit::getPlayer)
                         .filter(Objects::nonNull)
                         .collect(Collectors.toUnmodifiableSet())
                 ).orElseGet(Set::of);
@@ -134,23 +135,22 @@ public final class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public void setVisibleByDefault(final boolean visible) {
-        getEntity().ifPresent(entity -> entity.setVisibleByDefault(visible));
+    public boolean setVisibleByDefault(final boolean visible) {
+        return getEntity().map(entity -> {
+            if (entity.isVisibleByDefault() == visible) return false;
+            entity.setVisibleByDefault(visible);
+            return true;
+        }).orElse(false);
     }
 
     @Override
-    public @Nullable Location getLocation() {
-        return npc.getStoredLocation();
+    public Optional<Location> getLocation() {
+        return Optional.ofNullable(npc.getStoredLocation());
     }
 
     @Override
-    public Server getServer() {
-        return Bukkit.getServer();
-    }
-
-    @Override
-    public @Nullable World getWorld() {
-        return getEntity().map(Entity::getWorld).orElse(null);
+    public Optional<World> getWorld() {
+        return getEntity().map(Entity::getWorld);
     }
 
     @Override
@@ -169,31 +169,6 @@ public final class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    public double getX() {
-        return getEntity().map(Entity::getX).orElse(0d);
-    }
-
-    @Override
-    public double getY() {
-        return getEntity().map(Entity::getY).orElse(0d);
-    }
-
-    @Override
-    public double getZ() {
-        return getEntity().map(Entity::getZ).orElse(0d);
-    }
-
-    @Override
-    public float getPitch() {
-        return getEntity().map(Entity::getPitch).orElse(0f);
-    }
-
-    @Override
-    public float getYaw() {
-        return getEntity().map(Entity::getYaw).orElse(0f);
-    }
-
-    @Override
     public CompletableFuture<Boolean> teleportAsync(final Location location) {
         return getEntity().map(entity -> entity.teleportAsync(location)).orElseGet(() -> {
             npc.teleport(location, PlayerTeleportEvent.TeleportCause.PLUGIN);
@@ -207,10 +182,8 @@ public final class CitizensCharacter<T extends Entity> implements Character<T> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Optional<T> getEntity() {
-        return Optional.ofNullable(npc.getEntity())
-                .map(entity -> (T) entity);
+    public Optional<Entity> getEntity() {
+        return Optional.ofNullable(npc.getEntity());
     }
 
     @Override
@@ -257,8 +230,7 @@ public final class CitizensCharacter<T extends Entity> implements Character<T> {
 
     @Override
     public boolean respawn() {
-        final var location = getLocation();
-        return location != null && npc.despawn(DespawnReason.PENDING_RESPAWN) && npc.spawn(location);
+        return getLocation().map(location -> npc.despawn(DespawnReason.PENDING_RESPAWN) && npc.spawn(location)).orElse(false);
     }
 
     @Override
@@ -279,7 +251,7 @@ public final class CitizensCharacter<T extends Entity> implements Character<T> {
     @Override
     public boolean equals(@Nullable final Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        final CitizensCharacter<?> that = (CitizensCharacter<?>) o;
+        final CitizensCharacter that = (CitizensCharacter) o;
         return Objects.equals(npc, that.npc);
     }
 

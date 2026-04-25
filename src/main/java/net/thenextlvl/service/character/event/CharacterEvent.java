@@ -2,6 +2,7 @@ package net.thenextlvl.service.character.event;
 
 import net.thenextlvl.service.character.Character;
 import net.thenextlvl.service.character.CharacterController;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -19,7 +20,7 @@ import org.bukkit.event.HandlerList;
 public abstract class CharacterEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private final CharacterController controller;
-    private final Character<?> character;
+    private final Character character;
 
     /**
      * Constructs a new CharacterEvent.
@@ -27,8 +28,8 @@ public abstract class CharacterEvent extends Event {
      * @param controller the character controller responsible for managing the character
      * @param character  the character instance involved in the event
      */
-    public CharacterEvent(final CharacterController controller, final Character<?> character) {
-        super(!character.getServer().isPrimaryThread());
+    public CharacterEvent(final CharacterController controller, final Character character) {
+        super(!Bukkit.isPrimaryThread());
         this.controller = controller;
         this.character = character;
     }
@@ -45,9 +46,9 @@ public abstract class CharacterEvent extends Event {
     /**
      * Retrieves the character associated with this event.
      *
-     * @return the {@code Character<?>} instance involved in this event
+     * @return the {@code Character} instance involved in this event
      */
-    public Character<?> getCharacter() {
+    public Character getCharacter() {
         return character;
     }
 

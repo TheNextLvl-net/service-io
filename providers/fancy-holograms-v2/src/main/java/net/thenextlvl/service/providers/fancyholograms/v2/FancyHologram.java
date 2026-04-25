@@ -196,13 +196,13 @@ public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram holog
     @Override
     public Stream<Player> getTrackedBy() {
         return hologram().getViewers().stream()
-                .map(getServer()::getPlayer)
+                .map(Bukkit::getPlayer)
                 .filter(Objects::nonNull);
     }
 
     @Override
     public @Unmodifiable Set<UUID> getViewers() {
-        return getServer().getOnlinePlayers().stream()
+        return Bukkit.getOnlinePlayers().stream()
                 .filter(this::canSee)
                 .map(Player::getUniqueId)
                 .collect(Collectors.toUnmodifiableSet());
@@ -210,7 +210,7 @@ public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram holog
 
     @Override
     public boolean addViewer(final UUID player) {
-        final var online = getServer().getPlayer(player);
+        final var online = Bukkit.getPlayer(player);
         if (online == null) return false;
         hologram().showHologram(online);
         return canSee(online);
@@ -223,7 +223,7 @@ public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram holog
 
     @Override
     public boolean removeViewer(final UUID player) {
-        final var online = getServer().getPlayer(player);
+        final var online = Bukkit.getPlayer(player);
         if (online == null) return false;
         hologram().hideHologram(online);
         hologram().forceHideHologram(online);
@@ -237,7 +237,7 @@ public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram holog
 
     @Override
     public boolean isViewer(final UUID player) {
-        final var online = getServer().getPlayer(player);
+        final var online = Bukkit.getPlayer(player);
         return online != null && canSee(online);
     }
 
@@ -296,10 +296,6 @@ public record FancyHologram(de.oliver.fancyholograms.api.hologram.Hologram holog
     @Override
     public Location getLocation() {
         return hologram().getData().getLocation();
-    }
-
-    public Server getServer() {
-        return Bukkit.getServer();
     }
 
     @Override
