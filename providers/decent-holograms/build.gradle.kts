@@ -3,5 +3,5 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.github.decentsoftware-eu:decentholograms:2.9.10")
+    compileOnly("com.github.decentsoftware-eu:decentholograms:2.10.0")
 }
