@@ -1,8 +1,8 @@
 package net.thenextlvl.service.plugin;
 
-import dev.faststats.bukkit.BukkitMetrics;
-import dev.faststats.core.data.Metric;
-import dev.faststats.core.data.SourceId;
+import dev.faststats.bukkit.BukkitContext;
+import dev.faststats.data.Metric;
+import dev.faststats.data.SourceId;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
 import net.milkbowl.vault.Vault;
@@ -43,17 +43,18 @@ public final class ServicePlugin extends Vault {
             .resource("service-io_german.properties", Locale.GERMANY)
             .build();
 
-    private final dev.faststats.core.Metrics fastStats = BukkitMetrics.factory()
-            .addMetric(createChart(BankController.class, BankController::getName, "bank_providers"))
-            .addMetric(createChart(GroupController.class, GroupController::getName, "group_providers"))
-            .addMetric(createChart(ChatController.class, ChatController::getName, "chat_providers"))
-            .addMetric(createChart(EconomyController.class, EconomyController::getName, "economy_providers"))
-            .addMetric(createChart(PermissionController.class, PermissionController::getName, "permission_providers"))
-            .addMetric(createChart(HologramController.class, HologramController::getName, "hologram_providers"))
-            .addMetric(createChart(CharacterController.class, CharacterController::getName, "npc_providers"))
-            .errorTracker(ServiceBootstrapper.ERROR_TRACKER)
-            .token("f7e1aef24e2f8fe48abfb84ccfae5163")
-            .create(this);
+    private final BukkitContext fastStats = new BukkitContext.Factory(this, "f7e1aef24e2f8fe48abfb84ccfae5163")
+            .errorTrackerService(ServiceBootstrapper.ERROR_TRACKER)
+            .metrics(factory -> factory
+                    .addMetric(createChart(BankController.class, BankController::getName, "bank_providers"))
+                    .addMetric(createChart(GroupController.class, GroupController::getName, "group_providers"))
+                    .addMetric(createChart(ChatController.class, ChatController::getName, "chat_providers"))
+                    .addMetric(createChart(EconomyController.class, EconomyController::getName, "economy_providers"))
+                    .addMetric(createChart(PermissionController.class, PermissionController::getName, "permission_providers"))
+                    .addMetric(createChart(HologramController.class, HologramController::getName, "hologram_providers"))
+                    .addMetric(createChart(CharacterController.class, CharacterController::getName, "npc_providers"))
+                    .create())
+            .create();
 
     @Override
     public void onLoad() {

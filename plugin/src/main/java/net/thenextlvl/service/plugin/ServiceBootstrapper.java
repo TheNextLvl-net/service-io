@@ -1,6 +1,6 @@
 package net.thenextlvl.service.plugin;
 
-import dev.faststats.core.ErrorTracker;
+import dev.faststats.ErrorTracker;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
 import io.papermc.paper.plugin.bootstrap.PluginProviderContext;

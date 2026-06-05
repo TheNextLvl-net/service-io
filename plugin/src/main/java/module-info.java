@@ -4,7 +4,6 @@ import org.jspecify.annotations.NullMarked;
 module net.thenextlvl.services.plugin {
     requires com.google.common;
     requires dev.faststats.bukkit;
-    requires dev.faststats.core;
     requires net.kyori.adventure.key;
     requires net.kyori.adventure.text.minimessage;
     requires net.kyori.adventure.text.serializer.plain;
@@ -19,4 +18,5 @@ module net.thenextlvl.services.plugin {
 
     requires static org.jetbrains.annotations;
     requires static org.jspecify;
+    requires dev.faststats;
 }
