@@ -1,6 +1,6 @@
 repositories {
-    maven("https://repo.fancyplugins.de/releases")
-    maven("https://repo.fancyplugins.de/snapshots")
+    maven("https://repo.fancyinnovations.com/releases")
+    maven("https://repo.fancyinnovations.com/snapshots")
 }
 
 dependencies {
