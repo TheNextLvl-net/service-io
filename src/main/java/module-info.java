@@ -19,6 +19,7 @@ module net.thenextlvl.services {
     requires com.google.common;
     requires net.kyori.adventure.api;
     requires net.kyori.adventure.key;
+    requires net.kyori.adventure.text.minimessage;
     requires net.thenextlvl.vault;
     requires org.bukkit;
     requires org.joml;
