@@ -46,7 +46,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
+        compileOnly("io.papermc.paper:paper-api:26.2.+")
         compileOnly("net.thenextlvl:vault-api:1.7.1")
         compileOnly("net.milkbowl.vault:VaultUnlockedAPI:2.15") {
             exclude("com.github.MilkBowl", "VaultAPI")

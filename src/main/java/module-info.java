@@ -17,9 +17,9 @@ module net.thenextlvl.services {
     exports net.thenextlvl.service;
 
     requires com.google.common;
+    requires net.kyori.adventure.api;
     requires net.kyori.adventure.key;
-    requires net.kyori.adventure;
-    requires net.kyori.examination.api;
+    requires net.kyori.adventure.text.minimessage;
     requires net.thenextlvl.vault;
     requires org.bukkit;
     requires org.joml;
