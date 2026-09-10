@@ -46,8 +46,8 @@ public final class VaultUnlockedAccount implements Account {
         if (!canHold(currency)) return TransactionResult.unsupported(currency);
         final var bdAmount = new BigDecimal(amount.toString());
         final var response = world != null
-                ? economy.deposit(pluginName, owner, world.getName(), bdAmount)
-                : economy.deposit(pluginName, owner, bdAmount);
+                ? economy.deposit(pluginName, owner, world.getName(), currency.getName(), bdAmount)
+                : economy.deposit(pluginName, owner, currency.getName(), bdAmount);
         return new TransactionResult(currency, amount, response.balance, switch (response.type) {
             case SUCCESS -> TransactionResult.Status.SUCCESS;
             case FAILURE, NOT_IMPLEMENTED -> TransactionResult.Status.FAILURE;
@@ -59,8 +59,8 @@ public final class VaultUnlockedAccount implements Account {
         if (!canHold(currency)) return TransactionResult.unsupported(currency);
         final var bdAmount = new BigDecimal(amount.toString());
         final var response = world != null
-                ? economy.withdraw(pluginName, owner, world.getName(), bdAmount)
-                : economy.withdraw(pluginName, owner, bdAmount);
+                ? economy.withdraw(pluginName, owner, world.getName(), currency.getName(), bdAmount)
+                : economy.withdraw(pluginName, owner, currency.getName(), bdAmount);
         return new TransactionResult(currency, amount, response.balance, switch (response.type) {
             case SUCCESS -> TransactionResult.Status.SUCCESS;
             case FAILURE -> response.amount.compareTo(response.balance) > 0
