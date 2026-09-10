@@ -13,7 +13,7 @@ final class PermissionConverter extends PlayerConverter<PermissionController> {
 
     @Override
     public CompletableFuture<Void> convert(final OfflinePlayer player) {
-        return source.resolvePermissionHolder(player).thenAccept(holder -> target.resolvePermissionHolder(player)
+        return source.resolvePermissionHolder(player).thenCompose(holder -> target.resolvePermissionHolder(player)
                 .thenAccept(targetHolder -> holder.getPermissions().forEach(targetHolder::setPermission)));
     }
 }
