@@ -35,19 +35,19 @@ public final class VaultUnlockedAccount implements Account {
     }
 
     @Override
-    public BigDecimal getBalance(final Currency currency) {
+    public synchronized BigDecimal getBalance(final Currency currency) {
         if (!canHold(currency)) throw new IllegalArgumentException("Currency not supported: " + currency);
         if (world != null) return economy.balance(pluginName, owner, world.getName());
         return economy.balance(pluginName, owner);
     }
 
     @Override
-    public TransactionResult deposit(final Number amount, final Currency currency) {
+    public synchronized TransactionResult deposit(final Number amount, final Currency currency) {
         if (!canHold(currency)) return TransactionResult.unsupported(currency);
         final var bdAmount = new BigDecimal(amount.toString());
         final var response = world != null
-                ? economy.deposit(pluginName, owner, world.getName(), bdAmount)
-                : economy.deposit(pluginName, owner, bdAmount);
+                ? economy.deposit(pluginName, owner, world.getName(), currency.getName(), bdAmount)
+                : economy.deposit(pluginName, owner, currency.getName(), bdAmount);
         return new TransactionResult(currency, amount, response.balance, switch (response.type) {
             case SUCCESS -> TransactionResult.Status.SUCCESS;
             case FAILURE, NOT_IMPLEMENTED -> TransactionResult.Status.FAILURE;
@@ -55,12 +55,12 @@ public final class VaultUnlockedAccount implements Account {
     }
 
     @Override
-    public TransactionResult withdraw(final Number amount, final Currency currency) {
+    public synchronized TransactionResult withdraw(final Number amount, final Currency currency) {
         if (!canHold(currency)) return TransactionResult.unsupported(currency);
         final var bdAmount = new BigDecimal(amount.toString());
         final var response = world != null
-                ? economy.withdraw(pluginName, owner, world.getName(), bdAmount)
-                : economy.withdraw(pluginName, owner, bdAmount);
+                ? economy.withdraw(pluginName, owner, world.getName(), currency.getName(), bdAmount)
+                : economy.withdraw(pluginName, owner, currency.getName(), bdAmount);
         return new TransactionResult(currency, amount, response.balance, switch (response.type) {
             case SUCCESS -> TransactionResult.Status.SUCCESS;
             case FAILURE -> response.amount.compareTo(response.balance) > 0
@@ -71,7 +71,7 @@ public final class VaultUnlockedAccount implements Account {
     }
 
     @Override
-    public TransactionResult setBalance(final Number balance, final Currency currency) {
+    public synchronized TransactionResult setBalance(final Number balance, final Currency currency) {
         if (!canHold(currency)) return TransactionResult.unsupported(currency);
         final var current = getBalance(currency);
         final var difference = new BigDecimal(balance.toString()).subtract(current);
