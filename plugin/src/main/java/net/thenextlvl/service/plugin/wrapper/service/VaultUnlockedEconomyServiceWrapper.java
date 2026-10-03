@@ -110,7 +110,7 @@ public final class VaultUnlockedEconomyServiceWrapper implements EconomyControll
 
     @Override
     public CompletableFuture<Boolean> deleteAccount(final OfflinePlayer player, final World world) {
-        return CompletableFuture.completedFuture(economy.deleteAccount(provider.getName(), player.getUniqueId()));
+        return deleteAccount(player);
     }
 
     @Override
